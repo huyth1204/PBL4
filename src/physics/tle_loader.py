@@ -31,13 +31,6 @@ class GroundStation:
 # 1. Nạp dữ liệu quỹ đạo (TLE) -> danh sách EarthSatellite
 # ----------------------------------------------------------------------------
 def load_tle(source: str | Path) -> list[EarthSatellite]:
-    """
-    Nạp file TLE (đường dẫn local hoặc URL) và trả về danh sách vệ tinh
-    dưới dạng đối tượng skyfield.EarthSatellite (đã tích hợp SGP4).
-
-    source: đường dẫn local (vd: 'data/tle/starlink.txt') hoặc URL trực tiếp
-            tới file TLE (Skyfield sẽ tự tải và cache).
-    """
     ts = load.timescale()
     satellites = load.tle_file(str(source), ts=ts)
     return satellites

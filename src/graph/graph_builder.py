@@ -1,21 +1,3 @@
-"""
-Giai đoạn 2: Thiết lập topo động và ma trận trọng số (NetworkX)
-================================================================
-
-Module này chuyển các tính toán vật lý ở Giai đoạn 1 (physics/tle_loader.py)
-thành cấu trúc đồ thị trừu tượng G_τ = (V, E_τ):
-
-1. Dựng đồ thị có hướng nx.DiGraph (do GSL có uplink/downlink bất đối xứng).
-2. Gán vector thuộc tính liên kết e_ij = [d_ij, b_ij, p_ij]^T cho mỗi cạnh:
-   - d_ij: độ trễ tổng (propagation + transmission + queueing + processing)
-   - b_ij: băng thông
-   - p_ij: tỷ lệ mất gói
-3. Trích xuất ma trận kề nhị phân A, ma trận trọng số độ trễ W (+inf nếu
-   không kết nối), bậc lớn nhất Δ, và vector trạng thái làm phẳng vec(W).
-
-Chạy thử:
-    python src/graph/graph_builder.py
-"""
 
 from __future__ import annotations
 

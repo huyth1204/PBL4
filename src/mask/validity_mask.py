@@ -1,24 +1,4 @@
-"""
-Giai đoạn 5: Xuất mặt nạ hợp lệ (Validity Mask)
-=================================================
 
-Module này trích xuất mặt nạ hợp lệ nhị phân m tại mỗi nút trung gian,
-để triệt tiêu hoàn toàn các lỗi sinh ra bước đi không hợp lệ (tới nút
-không kết nối) của mô hình AI sinh (diffusion model).
-
-Thuật toán:
-    Tại nút hiện tại v_i, dựa trên ma trận kề A_τ hiện tại, xuất ra
-    vector nhị phân kích thước N với:
-        m_j = 1 nếu có liên kết trực tiếp v_i -> v_j
-        m_j = 0 nếu không có liên kết
-
-Cách dùng phía model (không phải phần việc của bạn, nhưng để tham khảo):
-    logit_j <- logit_j + log(m_j)   (log(0) = -inf, log(1) = 0)
-    rồi đưa vào Softmax -> xác suất chọn nút không hợp lệ luôn bằng 0.
-
-Chạy thử:
-    python src/mask/validity_mask.py
-"""
 
 from __future__ import annotations
 
@@ -49,14 +29,7 @@ NEG_INF_LOGIT = -1e9
 # Bước 1: xuất mặt nạ cho MỘT nút cụ thể
 # ----------------------------------------------------------------------------
 def get_validity_mask(A: np.ndarray, node_order: list[str], current_node: str) -> np.ndarray:
-    """
-    Tại nút current_node, trả về vector nhị phân kích thước N:
-        m[j] = 1 nếu A[i, j] == 1 (có liên kết trực tiếp current_node -> node_order[j])
-        m[j] = 0 nếu không.
 
-    A: ma trận kề nhị phân (N x N), lấy từ extract_adjacency_matrix() ở Giai đoạn 2.
-    node_order: danh sách tên nút theo đúng thứ tự dùng khi dựng A.
-    """
     if current_node not in node_order:
         raise ValueError(f"Nút '{current_node}' không có trong node_order.")
 
