@@ -27,26 +27,44 @@ LƯU Ý QUAN TRỌNG:
       find_optimal_path() từ oracle_labeler.py và đo bằng time.time(),
       SONG SONG với việc đo T_rec vật lý ở đây. Hai phép đo này bổ sung
       cho nhau, không thay thế nhau.
-    - GIỚI HẠN ĐÃ BIẾT (môi trường WSL2): forwarding gói tin đa chặng
-      (multi-hop, qua ≥1 node trung gian) giữa các container hiện KHÔNG
-      hoạt động, dù routing table (BIRD/OSPF) hoàn toàn đúng và ip_forward
-      đã bật. Đã điều tra: `ovs-vsctl show` trả về rỗng, cho thấy Open
-      vSwitch không thực sự quản lý forwarding giữa container dù tên
-      container có tiền tố "ovs_container_*" — khả năng cao là vấn đề
-      tương thích WSL2/Docker networking, chưa xác định được cách khắc
-      phục triệt để. Vì vậy script này dùng cặp node LIỀN KỀ (1-hop),
-      nơi đã xác nhận forwarding hoạt động ổn định, làm phương án đo đạc
-      khả thi trong lúc chờ điều tra thêm vấn đề multi-hop.
+    - GIỚI HẠN ĐÃ BIẾT (môi trường WSL2, ĐÃ XÁC ĐỊNH NGUYÊN NHÂN GỐC):
+      forwarding gói tin đa chặng (multi-hop) từng KHÔNG hoạt động dù
+      routing table (BIRD/OSPF) "trông" đúng và ip_forward đã bật.
 
-Cách chạy (BẮT BUỘC chạy trong thư mục ~/StarryNet trên Ubuntu, vì cần
-import package `starrynet` nằm cùng thư mục):
+      Nguyên nhân THẬT SỰ (đã xác nhận qua debug thủ công, không phải OVS/
+      ip_forward/rp_filter/iptables như nghi ngờ ban đầu):
 
-    cd ~/StarryNet
-    cp /mnt/d/PBL4/src/eval/measure_trec.py .
-    python3 measure_trec.py
+          sn.run_routing_deamon() sinh ĐÚNG file cấu hình OSPF cho từng
+          node tại "/B{i}.conf" bên trong container, nhưng KHÔNG copy nó
+          vào "/etc/bird/bird.conf" — nơi bird thực sự đọc khi khởi động.
+          Kết quả: bird nạp nhầm file mặc định rỗng (stock Debian, cú
+          pháp BIRD 1.x: "import none;" ngay trong "protocol kernel"),
+          bird báo lỗi cú pháp và CRASH (defunct/zombie) ngay từ đầu.
+          Vì bird chết, kernel routing table chỉ có các subnet kết nối
+          trực tiếp — không có route multi-hop nào cả => ping 1-hop vẫn
+          sống (không cần forward), multi-hop luôn "Network is unreachable"
+          hoặc mất gói.
+
+      Hàm fix_bird_routing() dưới đây khắc phục tận gốc: copy đúng
+      "/B{i}.conf" -> "/etc/bird/bird.conf" và khởi động lại bird cho
+      TỪNG container theo THỨ TỰ TUẦN TỰ (có nghỉ giữa các node) để
+      tránh hiệu ứng "thundering herd" (27 con bird cùng gửi Hello/DBD
+      một lúc làm nghẽn CPU của Docker Desktop/WSL2, khiến một số cặp
+      OSPF neighbor kẹt mãi ở ExStart/Exchange/Loading do gói bị trễ/rớt
+      đúng lúc handshake). Restart tuần tự + đợi hội tụ đủ lâu đã xác
+      nhận đưa toàn bộ 27 node về trạng thái Full 100%.
+
+    - Cách chạy phiên bản này BẮT BUỘC vẫn phải chạy trong thư mục
+      ~/StarryNet trên Ubuntu (WSL2), vì cần import package `starrynet`
+      nằm cùng thư mục:
+
+          cd ~/StarryNet
+          cp /mnt/d/PBL4/src/eval/measure_trec.py .
+          python3 measure_trec.py
 """
 
 import os
+import subprocess
 import threading
 import time as walltime
 from pathlib import Path
@@ -82,6 +100,90 @@ PING_END = DAMAGE_TIME + 40    # ping tới 40 giây sau damage để chắc ch�
 # công mỗi lần chạy.
 STOP_EMULATION_TIMEOUT_S = 60
 
+# ----------------------------------------------------------------------------
+# Cấu hình bản vá bird routing (Giai đoạn 4 - fix)
+# ----------------------------------------------------------------------------
+N_NODES = 27                    # tổng số container (25 vệ tinh + 2 trạm mặt đất)
+BIRD_RESTART_STAGGER_S = 3       # nghỉ giữa mỗi node khi restart tuần tự
+BIRD_CONVERGENCE_WAIT_S = 90     # đợi OSPF hội tụ sau khi restart toàn bộ
+
+
+def fix_bird_routing(n_nodes: int = N_NODES,
+                      stagger_s: int = BIRD_RESTART_STAGGER_S,
+                      wait_after_s: int = BIRD_CONVERGENCE_WAIT_S) -> None:
+    """
+    Khắc phục lỗi gốc: bird trong mỗi container ovs_container_{i} đọc nhầm
+    file cấu hình mặc định (/etc/bird/bird.conf rỗng, cú pháp BIRD 1.x) thay
+    vì file OSPF thật mà StarryNet đã sinh ra tại /B{i}.conf, khiến bird
+    crash và routing table chỉ có route kết nối trực tiếp (không multi-hop).
+
+    Với MỖI container:
+        1. Dọn route "rác" mà bird cũ (nếu từng chạy) đã đẩy vào kernel.
+        2. Kill sạch tiến trình bird cũ (kể cả zombie/defunct).
+        3. Xoá control socket cũ (nếu còn) để tránh "Connection refused"
+           hoặc "address already in use" khi bird mới khởi động.
+        4. Copy ĐÚNG file cấu hình /B{i}.conf -> /etc/bird/bird.conf.
+        5. Khởi động lại bird với đúng config.
+
+    QUAN TRỌNG: các bước trên chạy TUẦN TỰ với độ trễ `stagger_s` giữa mỗi
+    node, KHÔNG chạy đồng loạt. Restart 27 con bird cùng lúc ("thundering
+    herd") đã được xác nhận gây nghẽn CPU tạm thời trên Docker Desktop/WSL2,
+    khiến một số cặp OSPF neighbor bị lệch nhịp handshake và kẹt mãi ở
+    ExStart/Exchange/Loading dù cấu hình hoàn toàn đúng.
+
+    Sau khi restart xong toàn bộ, hàm đợi thêm `wait_after_s` giây để OSPF
+    có đủ thời gian bầu DR/BDR, trao đổi LSA và hội tụ SPF trước khi bất kỳ
+    bước nào khác (damage, ping, đo T_rec) được thực hiện.
+    """
+    print("=" * 70)
+    print("[Fix] Khắc phục lỗi bird đọc sai file cấu hình OSPF")
+    print("=" * 70)
+
+    for i in range(1, n_nodes + 1):
+        container = f"ovs_container_{i}"
+        cmd = (
+            f"docker exec {container} sh -c "
+            f"'ip route flush proto bird 2>/dev/null; "
+            f"pkill -9 bird 2>/dev/null; "
+            f"rm -f /usr/local/var/run/bird.ctl; "
+            f"cp /B{i}.conf /etc/bird/bird.conf; "
+            f"bird -c /etc/bird/bird.conf'"
+        )
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        status = "OK" if result.returncode == 0 else f"LỖI (code={result.returncode})"
+        print(f"      [{i:2d}/{n_nodes}] {container}: {status}")
+        if result.returncode != 0 and result.stderr.strip():
+            print(f"           stderr: {result.stderr.strip()}")
+
+        walltime.sleep(stagger_s)  # tránh thundering herd
+
+    print(f"\n      Đợi {wait_after_s}s để OSPF hội tụ (bầu DR/BDR, flood LSA, tính SPF) ...")
+    walltime.sleep(wait_after_s)
+
+    # Xác minh nhanh: đếm trạng thái neighbor trên toàn bộ node.
+    print("      Kiểm tra nhanh trạng thái OSPF neighbor toàn mạng ...")
+    full_count = 0
+    other_count = 0
+    for i in range(1, n_nodes + 1):
+        container = f"ovs_container_{i}"
+        cmd = f"docker exec {container} birdc show ospf neighbors 2>/dev/null"
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        for line in result.stdout.splitlines()[2:]:  # bỏ 2 dòng header
+            parts = line.split()
+            if len(parts) < 3:
+                continue
+            state = parts[2].split("/")[0]
+            if state == "Full":
+                full_count += 1
+            else:
+                other_count += 1
+
+    print(f"      -> {full_count} adjacency Full, {other_count} chưa hội tụ hết.")
+    if other_count > 0:
+        print("      !! Vẫn còn adjacency chưa Full. Có thể cần đợi thêm hoặc")
+        print("         chạy lại fix_bird_routing() một lần nữa trước khi tiếp tục.")
+    print("[Fix] Hoàn tất.\n")
+
 
 def call_stop_emulation_with_timeout(sn, timeout: int = STOP_EMULATION_TIMEOUT_S):
     """
@@ -109,22 +211,27 @@ def main():
 
     sn = StarryNet(CONFIG_PATH, GS_LAT_LONG, HELLO_INTERVAL, AS)
 
-    print("\n[1/6] Tạo node...")
+    print("\n[1/7] Tạo node...")
     t0 = walltime.time()
     sn.create_nodes()
     print(f"      -> xong sau {walltime.time() - t0:.1f}s (thời gian thật)")
 
-    print("[2/6] Tạo liên kết...")
+    print("[2/7] Tạo liên kết...")
     t0 = walltime.time()
     sn.create_links()
     print(f"      -> xong sau {walltime.time() - t0:.1f}s (thời gian thật)")
 
-    print("[3/6] Khởi động routing daemon (OSPF)...")
+    print("[3/7] Khởi động routing daemon (OSPF)...")
     t0 = walltime.time()
     sn.run_routing_deamon()
     print(f"      -> xong sau {walltime.time() - t0:.1f}s (thời gian thật)")
 
-    print(f"[4/6] Đặt lịch: damage tỷ lệ {DAMAGE_RATIO} tại giây {DAMAGE_TIME}...")
+    print("[4/7] Áp bản vá bird routing (xem ghi chú đầu file để biết nguyên nhân) ...")
+    t0 = walltime.time()
+    fix_bird_routing()
+    print(f"      -> xong sau {walltime.time() - t0:.1f}s (thời gian thật, bao gồm thời gian đợi hội tụ)")
+
+    print(f"[5/7] Đặt lịch: damage tỷ lệ {DAMAGE_RATIO} tại giây {DAMAGE_TIME}...")
     sn.set_damage(DAMAGE_RATIO, DAMAGE_TIME)
 
     print(f"      Đặt lịch ping liên tục {PING_NODE_A}<->{PING_NODE_B} "
@@ -137,7 +244,7 @@ def main():
     for t in [DAMAGE_TIME, DAMAGE_TIME + 5, DAMAGE_TIME + 10, DAMAGE_TIME + 20]:
         sn.check_routing_table(PING_NODE_B, t)
 
-    print("\n[5/6] Bắt đầu emulation (sẽ chạy đúng Duration(s) trong config.json)...")
+    print("\n[6/7] Bắt đầu emulation (sẽ chạy đúng Duration(s) trong config.json)...")
     print("      Đây là thời gian THẬT sẽ trôi qua — không phải mô phỏng nhanh.")
     t_emulation_start = walltime.time()
     sn.start_emulation()
@@ -146,7 +253,7 @@ def main():
     print(f"      -> Emulation + cleanup mất {t_emulation_end - t_emulation_start:.1f}s (thời gian thật)"
           f"{'' if stopped_cleanly else ' (cleanup bị bỏ qua do timeout, xem cảnh báo ở trên)'}")
 
-    print("\n[6/6] Hoàn tất thu thập dữ liệu.")
+    print("\n[7/7] Hoàn tất thu thập dữ liệu.")
     print("      Các file log ping/routing table được lưu tại thư mục làm việc")
     print("      (thường có dạng StarryNet-.../  — hoặc theo tên constellation).")
     print(f"      Tìm file ping log của node #{PING_NODE_A}<->#{PING_NODE_B} "
