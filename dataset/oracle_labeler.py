@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import random
 import sys
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import networkx as nx
@@ -28,6 +28,10 @@ from src.physics.tle_loader import (
 )
 
 
+# ---------------------------------------------------------------------------
+# Oracle gán nhãn: Dijkstra của networkx
+# ---------------------------------------------------------------------------
+
 def find_optimal_path(
     G: nx.DiGraph,
     source: str,
@@ -47,6 +51,10 @@ def find_optimal_path(
     except nx.NetworkXNoPath:
         return None
 
+
+# ---------------------------------------------------------------------------
+# Tiện ích mã hóa
+# ---------------------------------------------------------------------------
 
 def encode_one_hot(
     node_name: str,
@@ -81,15 +89,63 @@ def encode_path_to_indices(
     return np.array(indices, dtype=np.int32)
 
 
+# ---------------------------------------------------------------------------
+# Sinh dataset
+# ---------------------------------------------------------------------------
+
+def resolve_start_time(ts, start_time: str, sats) -> "Time":
+    """
+    Xác định mốc thời gian của snapshot đầu tiên.
+
+    start_time:
+        "tle" : epoch trung vị của các vệ tinh trong mẫu (mặc định).
+                TLE chính xác nhất gần epoch, và cùng file TLE luôn cho
+                cùng mốc nên dữ liệu tái lập được, chạy ngày nào cũng vậy.
+        "now" : thời điểm hiện tại lúc chạy (mỗi lần chạy một khác).
+        ISO   : ví dụ "2026-09-19T00:00:00" (UTC).
+    """
+    if start_time == "now":
+        return ts.now()
+
+    if start_time == "tle":
+        epochs = [
+            float(sat.epoch.tt)
+            for sat in sats
+            if hasattr(sat, "epoch")
+        ]
+
+        if epochs:
+            return ts.tt_jd(float(np.median(epochs)))
+
+        print(
+            "!! Cảnh báo: vệ tinh không có thuộc tính epoch, "
+            "dùng thời điểm hiện tại."
+        )
+        return ts.now()
+
+    start_dt = datetime.fromisoformat(start_time)
+
+    return ts.utc(
+        start_dt.year,
+        start_dt.month,
+        start_dt.day,
+        start_dt.hour,
+        start_dt.minute,
+        start_dt.second,
+    )
+
+
 def generate_dataset_snapshots(
     tle_path: Path,
     ground_stations: list[GroundStation],
-    num_snapshots: int = 50,
-    time_step_seconds: int = 10,
-    num_pairs_per_snapshot: int = 5,
+    num_snapshots: int = 600,
+    time_step_seconds: int = 20,
+    num_pairs_per_snapshot: int = 50,
     sample_sat_count: int = 50,
     min_elevation_deg: float = 15.0,
     seed: int = 42,
+    start_time: str = "tle",
+    sat_select: str = "random",
 ) -> dict[str, np.ndarray]:
 
     if not tle_path.exists():
@@ -109,18 +165,28 @@ def generate_dataset_snapshots(
     if sample_sat_count <= 0:
         raise ValueError("sample_sat_count phải > 0")
 
+    if sat_select not in ("random", "first"):
+        raise ValueError("sat_select phải là 'random' hoặc 'first'")
+
     random.seed(seed)
     np.random.seed(seed)
 
     ts = load.timescale()
-    t_start = ts.now()
 
     satellites = load_tle(tle_path)
 
     if len(satellites) == 0:
         raise ValueError("File TLE không chứa vệ tinh nào.")
 
-    sample_sats = satellites[:sample_sat_count]
+    n_take = min(sample_sat_count, len(satellites))
+
+    if sat_select == "random":
+        # Lấy ngẫu nhiên (có seed) để không bị dồn vào một mặt phẳng quỹ đạo
+        sample_sats = random.sample(list(satellites), n_take)
+    else:
+        sample_sats = satellites[:n_take]
+
+    t_start = resolve_start_time(ts, start_time, sample_sats)
 
     all_sat_names = [
         sat.name
@@ -131,6 +197,12 @@ def generate_dataset_snapshots(
         gs.name
         for gs in ground_stations
     ]
+
+    if len(set(all_sat_names)) != len(all_sat_names):
+        print(
+            "!! Cảnh báo: có vệ tinh trùng tên trong mẫu, "
+            "số node N sẽ nhỏ hơn số vệ tinh + trạm."
+        )
 
     global_node_order = sorted(
         set(all_sat_names + all_gs_names)
@@ -149,13 +221,17 @@ def generate_dataset_snapshots(
     x_weights_list = []
     x_sources_list = []
     x_targets_list = []
+    snapshot_ids = []
 
     y_paths_indices = []
     y_paths_text = []
 
+    kept_snapshots = 0
+
     print(
         f"[Oracle Labeler] Bắt đầu sinh "
-        f"{num_snapshots} snapshots..."
+        f"{num_snapshots} snapshots "
+        f"(mốc đầu {t_start.utc_iso()}, bước {time_step_seconds}s)..."
     )
 
     print(
@@ -225,6 +301,12 @@ def generate_dataset_snapshots(
                 f"Got={len(vec_W)}"
             )
 
+        # Một bản duy nhất cho cả snapshot, các mẫu cùng snapshot dùng chung
+        vec_W32 = np.asarray(
+            vec_W,
+            dtype=np.float32,
+        )
+
         connected_nodes = [
             node
             for node in global_node_order
@@ -250,7 +332,7 @@ def generate_dataset_snapshots(
         else:
             possible_sources = connected_nodes
 
-        possible_targets = connected_nodes
+        possible_targets_set = set(connected_nodes)
 
         reachable_pairs = []
 
@@ -273,7 +355,7 @@ def generate_dataset_snapshots(
                 if src == tgt:
                     continue
 
-                if tgt not in possible_targets:
+                if tgt not in possible_targets_set:
                     continue
 
                 if len(path) < 2:
@@ -329,28 +411,15 @@ def generate_dataset_snapshots(
                 dtype=np.int32,
             )
 
-            x_weights_list.append(
-                np.asarray(
-                    vec_W,
-                    dtype=np.float32,
-                )
-            )
+            x_weights_list.append(vec_W32)
+            x_sources_list.append(onehot_src)
+            x_targets_list.append(onehot_tgt)
+            snapshot_ids.append(k)
 
-            x_sources_list.append(
-                onehot_src
-            )
+            y_paths_indices.append(path_idx)
+            y_paths_text.append("->".join(path))
 
-            x_targets_list.append(
-                onehot_tgt
-            )
-
-            y_paths_indices.append(
-                path_idx
-            )
-
-            y_paths_text.append(
-                "->".join(path)
-            )
+        kept_snapshots += 1
 
         print(
             f" [Snapshot {k + 1}/{num_snapshots}] "
@@ -368,6 +437,11 @@ def generate_dataset_snapshots(
             "Hãy kiểm tra TLE, Ground Station "
             "và graph_builder."
         )
+
+    print(
+        f"\n -> Giữ lại {kept_snapshots}/{num_snapshots} snapshots "
+        f"(các snapshot còn lại bị bỏ vì không đủ liên kết)."
+    )
 
     max_path_len = max(
         len(path)
@@ -409,6 +483,10 @@ def generate_dataset_snapshots(
             y_paths_text,
             dtype=str,
         ),
+        "snapshot_id": np.asarray(
+            snapshot_ids,
+            dtype=np.int32,
+        ),
         "node_order": np.asarray(
             global_node_order,
             dtype=str,
@@ -435,47 +513,29 @@ def save_dataset_npz(
         x_targets=dataset["x_targets"],
         y_paths_indices=dataset["y_paths_indices"],
         y_paths_text=dataset["y_paths_text"],
+        snapshot_id=dataset["snapshot_id"],
         node_order=dataset["node_order"],
     )
+
+    sid = dataset["snapshot_id"]
 
     print(
         "\n[Oracle Labeler] "
         "Đã xuất dataset thành công:"
     )
 
+    print(f" - File: {output_path}")
+    print(f" - Tổng số samples: {len(dataset['x_weights'])}")
+    print(f" - x_weights: {dataset['x_weights'].shape}")
+    print(f" - x_sources: {dataset['x_sources'].shape}")
+    print(f" - x_targets: {dataset['x_targets'].shape}")
+    print(f" - y_paths_indices: {dataset['y_paths_indices'].shape}")
     print(
-        f" - File: {output_path}"
+        f" - snapshot_id: {sid.shape} "
+        f"(từ {int(sid.min())} đến {int(sid.max())}, "
+        f"{len(np.unique(sid))} snapshot khác nhau)"
     )
-
-    print(
-        f" - Tổng số samples: "
-        f"{len(dataset['x_weights'])}"
-    )
-
-    print(
-        f" - x_weights: "
-        f"{dataset['x_weights'].shape}"
-    )
-
-    print(
-        f" - x_sources: "
-        f"{dataset['x_sources'].shape}"
-    )
-
-    print(
-        f" - x_targets: "
-        f"{dataset['x_targets'].shape}"
-    )
-
-    print(
-        f" - y_paths_indices: "
-        f"{dataset['y_paths_indices'].shape}"
-    )
-
-    print(
-        f" - node_order: "
-        f"{dataset['node_order'].shape}"
-    )
+    print(f" - node_order: {dataset['node_order'].shape}")
 
 
 def main():
@@ -483,7 +543,7 @@ def main():
     parser = argparse.ArgumentParser(
         description=(
             "Bộ sinh dataset Oracle "
-            "gán nhãn đường đi bằng Dijkstra"
+            "gán nhãn đường đi bằng Dijkstra (networkx)"
         )
     )
 
@@ -504,21 +564,21 @@ def main():
     parser.add_argument(
         "--snapshots",
         type=int,
-        default=50,
+        default=600,
         help="Số lượng snapshot",
     )
 
     parser.add_argument(
         "--step",
         type=int,
-        default=10,
+        default=20,
         help="Khoảng thời gian giữa các snapshot (giây)",
     )
 
     parser.add_argument(
         "--pairs",
         type=int,
-        default=5,
+        default=50,
         help="Số cặp source-target mỗi snapshot",
     )
 
@@ -530,10 +590,29 @@ def main():
     )
 
     parser.add_argument(
+        "--sat-select",
+        type=str,
+        default="random",
+        choices=["random", "first"],
+        help="Cách chọn vệ tinh: random (có seed) hoặc first (đầu file)",
+    )
+
+    parser.add_argument(
         "--min-elev",
         type=float,
         default=15.0,
         help="Góc ngẩng tối thiểu",
+    )
+
+    parser.add_argument(
+        "--start",
+        type=str,
+        default="tle",
+        help=(
+            "Mốc thời gian của snapshot đầu tiên: "
+            "'tle' (epoch của TLE, mặc định), 'now' (lúc chạy), "
+            "hoặc ISO 8601 UTC, ví dụ 2026-09-19T00:00:00"
+        ),
     )
 
     parser.add_argument(
@@ -586,6 +665,8 @@ def main():
         sample_sat_count=args.sats,
         min_elevation_deg=args.min_elev,
         seed=args.seed,
+        start_time=args.start,
+        sat_select=args.sat_select,
     )
 
     save_dataset_npz(

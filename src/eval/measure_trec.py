@@ -90,7 +90,7 @@ DAMAGE_RATIO = 0.95     # tỷ lệ liên kết bị ngắt ngẫu nhiên — R�
                          # trước deadline, thay vì multi-hop chưa sửa xong.
 DAMAGE_TIME = 10        # giây (time_index) khi damage xảy ra
 PING_NODE_A = 1
-PING_NODE_B = 20          # 2 vệ tinh liền kề (1-hop) — đã xác nhận hoạt động ổn định 100%
+PING_NODE_B = 2         # 2 vệ tinh liền kề (1-hop) — đã xác nhận hoạt động ổn định 100%
 PING_START = DAMAGE_TIME - 5   # bắt đầu ping trước damage 5 giây để có baseline
 PING_END = DAMAGE_TIME + 40    # ping tới 40 giây sau damage để chắc chắn bắt được lúc hồi phục
 
