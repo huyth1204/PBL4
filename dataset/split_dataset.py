@@ -6,10 +6,8 @@ Chạy (từ thư mục gốc dự án):
     python split_dataset.py --compare                # in bảng so sánh các cách chia
     python split_dataset.py --mode time              # chia theo khối thời gian thường
 
-Đầu ra, cạnh file vào (cùng khoá và cùng dtype với file gốc, chỉ ít dòng hơn):
+Đầu ra, cạnh file vào:
     train.npz  val.npz  test.npz  split_info.json
-
-Script chỉ cần numpy, không import gì từ dự án nên đặt ở đâu cũng chạy được.
 
 VÌ SAO KHÔNG XÁO NGẪU NHIÊN TỪNG SNAPSHOT
     Hai snapshot cách nhau 20 s có ~97% cạnh giống nhau. Nếu snapshot này vào train
