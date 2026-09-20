@@ -1,4 +1,18 @@
+"""
+dataset_npz.py — Loader cho định dạng .npz của oracle_labeler (bản mới).
 
+oracle_labeler xuất một file .npz dạng cột:
+    x_weights (M, N*N)  ma trận trọng số làm phẳng, -1 = không nối
+    x_sources (M, N)    one-hot nguồn
+    x_targets (M, N)    one-hot đích
+    y_paths_indices (M, L)  đường đi = chỉ số nút, -1 = đệm
+    snapshot_id (M,)    id ảnh chụp mạng (để tách train/val/test không rò rỉ)
+    node_order (N,)     roster nút cố định
+
+Loader này cắt mỗi đường đi thành mẫu next-hop và trả về đúng hợp đồng
+(condition, target, mask) mà mô hình khuếch tán cần — giống dataset.py cũ,
+chỉ khác nguồn đọc.
+"""
 
 from __future__ import annotations
 
@@ -60,10 +74,13 @@ except ImportError:
 
 
 class RoutingNpzDataset(_Dataset):
-    def __init__(self, x_norm, items, n_nodes):
+    def __init__(self, x_norm, items, n_nodes, rich=True):
         self.x_norm = x_norm
         self.items = items
         self.N = n_nodes
+        self.rich = rich
+        # cond_dim: rich thêm out_row(N) + in_col(N) + mask(N) so với bản gốc.
+        self.cond_dim = n_nodes * n_nodes + (5 if rich else 2) * n_nodes
 
     def __len__(self):
         return len(self.items)
@@ -71,15 +88,23 @@ class RoutingNpzDataset(_Dataset):
     def __getitem__(self, i):
         import torch
         snap, cur, dst, nxt, mask, _ = self.items[i]
-        cond = np.concatenate([self.x_norm[snap], _one_hot(cur, self.N), _one_hot(dst, self.N)])
+        N = self.N
+        xn = self.x_norm[snap]
+        parts = [xn, _one_hot(cur, N), _one_hot(dst, N)]
+        if self.rich:
+            W = xn.reshape(N, N)
+            # Đặc trưng cục bộ đưa thẳng vào: độ trễ các cạnh RA từ nút hiện tại
+            # (các lựa chọn), độ trễ các cạnh VÀO đích, và mặt nạ nút hợp lệ.
+            parts += [W[cur], W[:, dst], mask.astype(np.float32)]
+        cond = np.concatenate(parts)
         return {
             "condition": torch.from_numpy(cond.astype(np.float32)),
-            "target": torch.from_numpy(_one_hot(nxt, self.N)),
+            "target": torch.from_numpy(_one_hot(nxt, N)),
             "mask": torch.from_numpy(mask.astype(np.float32)),
         }
 
 
-def split_by_snapshot(x_norm, items, n_nodes, ratios=(0.7, 0.15, 0.15), seed=42):
+def split_by_snapshot(x_norm, items, n_nodes, ratios=(0.7, 0.15, 0.15), seed=42, rich=True):
     """Tách theo snapshot_id: cùng một ảnh chụp không lọt cả train lẫn test."""
     snaps = sorted({it[5] for it in items})
     rng = np.random.default_rng(seed)
@@ -91,4 +116,4 @@ def split_by_snapshot(x_norm, items, n_nodes, ratios=(0.7, 0.15, 0.15), seed=42)
     for it in items:
         key = "train" if it[5] in tr else "val" if it[5] in va else "test"
         buckets[key].append(it)
-    return {k: RoutingNpzDataset(x_norm, v, n_nodes) for k, v in buckets.items()}
+    return {k: RoutingNpzDataset(x_norm, v, n_nodes, rich=rich) for k, v in buckets.items()}

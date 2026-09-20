@@ -1,4 +1,9 @@
+"""
+diffusion.py — Mô hình khuếch tán có điều kiện sinh quyết định next-hop.
 
+condition: [x_chuẩn_hoá(N*N) || one-hot(hiện tại)(N) || one-hot(đích)(N)]
+target:    one-hot(next-hop)(N)
+"""
 
 from __future__ import annotations
 
@@ -54,21 +59,29 @@ class GaussianDiffusion(nn.Module):
         ab = self.alpha_bar[t][:, None]
         return torch.sqrt(ab) * y0 + torch.sqrt(1 - ab) * noise
 
-    def training_loss(self, cond, y0):
+    def training_loss(self, cond, y0, drop_prob=0.0):
         B = y0.shape[0]
+        if drop_prob > 0:  # CFG: thỉnh thoảng bỏ điều kiện (thay bằng 0) để học cả p(y) lẫn p(y|x)
+            keep = (torch.rand(B, device=y0.device) > drop_prob).float()[:, None]
+            cond = cond * keep
         t = torch.randint(0, self.T, (B,), device=y0.device)
         noise = torch.randn_like(y0)
         pred = self.net(self.q_sample(y0, t, noise), t, cond)
         return F.mse_loss(pred, noise)
 
     @torch.no_grad()
-    def sample(self, cond, mask, n_steps=30, clamp=1.0, neg_inf=-1e9):
+    def sample(self, cond, mask, n_steps=30, guidance=1.0, clamp=1.0, neg_inf=-1e9):
         B = cond.shape[0]
         y = torch.randn(B, self.N, device=cond.device)
         steps = torch.linspace(self.T - 1, 0, n_steps).long()
         for i, t in enumerate(steps):
             tb = torch.full((B,), int(t), device=cond.device, dtype=torch.long)
-            eps = self.net(y, tb, cond)
+            if guidance != 1.0:  # CFG: đẩy mẫu bám điều kiện mạnh hơn
+                eps_c = self.net(y, tb, cond)
+                eps_u = self.net(y, tb, torch.zeros_like(cond))
+                eps = eps_u + guidance * (eps_c - eps_u)
+            else:
+                eps = self.net(y, tb, cond)
             ab_t = self.alpha_bar[int(t)]
             # KẸP y0 dự đoán: chặn nổ số khi ᾱ_t nhỏ (√ᾱ ở mẫu ≈ 0).
             y0 = ((y - torch.sqrt(1 - ab_t) * eps) / torch.sqrt(ab_t)).clamp(-clamp, clamp)
