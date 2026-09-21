@@ -16,6 +16,7 @@ from skyfield.api import load
 from src.graph.graph_builder import (
     build_graph,
     extract_weight_matrix,
+    extract_adjacency_matrix,
     flatten_weight_matrix,
 )
 
@@ -217,15 +218,14 @@ def generate_dataset_snapshots(
         node: idx
         for idx, node in enumerate(global_node_order)
     }
-
     x_weights_list = []
+    x_adjacency_list = []  # THÊM DÒNG NÀY
+    x_positions_list = []  # THÊM DÒNG NÀY
     x_sources_list = []
     x_targets_list = []
     snapshot_ids = []
-
     y_paths_indices = []
     y_paths_text = []
-
     kept_snapshots = 0
 
     print(
@@ -306,7 +306,15 @@ def generate_dataset_snapshots(
             vec_W,
             dtype=np.float32,
         )
+        # Ma trận kề A (Giai đoạn 2/5) — dùng cho validity mask bên phía Nhật
+        A = extract_adjacency_matrix(G, global_node_order)
+        A_flat32 = A.flatten().astype(np.float32)
 
+        # Tọa độ (x, y, z) từng vệ tinh — trạm mặt đất chưa có tọa độ ECI, để 0
+        pos_array = np.zeros((N, 3), dtype=np.float32)
+        for node, idx in node_to_index.items():
+            if node in positions:  # positions: dict trả về từ satellite_positions_km()
+                pos_array[idx] = positions[node]
         connected_nodes = [
             node
             for node in global_node_order
@@ -389,7 +397,8 @@ def generate_dataset_snapshots(
         )
 
         for src, tgt, path in selected_pairs:
-
+            x_adjacency_list.append(A_flat32)
+            x_positions_list.append(pos_array)
             onehot_src = np.zeros(
                 N,
                 dtype=np.float32,
@@ -464,10 +473,17 @@ def generate_dataset_snapshots(
             i,
             :len(path)
         ] = path
-
     dataset = {
         "x_weights": np.asarray(
             x_weights_list,
+            dtype=np.float32,
+        ),
+        "x_adjacency": np.asarray(
+            x_adjacency_list,
+            dtype=np.float32,
+        ),
+        "x_positions": np.asarray(
+            x_positions_list,
             dtype=np.float32,
         ),
         "x_sources": np.asarray(
@@ -495,12 +511,26 @@ def generate_dataset_snapshots(
 
     return dataset
 
-
 def save_dataset_npz(
     dataset: dict[str, np.ndarray],
     output_path: Path,
 ) -> None:
-
+    output_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+    np.savez_compressed(
+        output_path,
+        x_weights=dataset["x_weights"],
+        x_adjacency=dataset["x_adjacency"],    # THÊM
+        x_positions=dataset["x_positions"],    # THÊM
+        x_sources=dataset["x_sources"],
+        x_targets=dataset["x_targets"],
+        y_paths_indices=dataset["y_paths_indices"],
+        y_paths_text=dataset["y_paths_text"],
+        snapshot_id=dataset["snapshot_id"],
+        node_order=dataset["node_order"],
+    )
     output_path.parent.mkdir(
         parents=True,
         exist_ok=True,
