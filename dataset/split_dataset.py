@@ -352,7 +352,7 @@ def main(argv=None):
         gs_src = np.isin(data["x_sources"][rows].argmax(1), gs_idx).mean() if len(rows) else 0
         comp[s] = (float(hops[rows].mean()) if len(rows) else 0.0, float(gs_src))
         print(f"{NAMES[s].capitalize():<8}{int((code == s).sum()):>10}{len(rows):>9,}{len(rows) / kept_total:>8.1%}")
-        extra = {k: data[k] for k in ("node_positions_km", "snapshot_times") if k in data}
+        extra = {k: data[k] for k in ("node_positions_km", "node_latlon_alt", "snapshot_times") if k in data}
         np.savez_compressed(
             outdir / f"{NAMES[s]}.npz",
             **{k: data[k][rows] for k in per_sample},

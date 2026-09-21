@@ -5,13 +5,12 @@ import random
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from skyfield.api import load, wgs84
+
 import networkx as nx
 import numpy as np
+from skyfield.api import load, wgs84
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-
-from skyfield.api import load
 
 from src.graph.graph_builder import (
     build_graph,
@@ -19,7 +18,6 @@ from src.graph.graph_builder import (
     extract_adjacency_matrix,
     flatten_weight_matrix,
 )
-
 from src.physics.tle_loader import (
     GroundStation,
     compute_gsl_links,
@@ -27,6 +25,9 @@ from src.physics.tle_loader import (
     load_tle,
     satellite_positions_km,
 )
+
+# Skyfield bản mới dùng subpoint_of, bản cũ dùng subpoint
+_subpoint = getattr(wgs84, "subpoint_of", None) or wgs84.subpoint
 
 
 # ---------------------------------------------------------------------------
@@ -219,8 +220,8 @@ def generate_dataset_snapshots(
         for idx, node in enumerate(global_node_order)
     }
     x_weights_list = []
-    x_adjacency_list = []  # THÊM DÒNG NÀY
-    x_positions_list = []  # THÊM DÒNG NÀY
+    x_adjacency_list = []
+    x_positions_list = []
     x_sources_list = []
     x_targets_list = []
     snapshot_ids = []
@@ -240,8 +241,13 @@ def generate_dataset_snapshots(
         f"({len(sample_sats)} satellites + "
         f"{len(ground_stations)} ground stations)"
     )
+
+    # Vị trí ECI (km) của từng node theo từng snapshot
     pos_all = np.full((num_snapshots, N, 3), np.nan, dtype=np.float32)
+    # Vĩ độ (độ), kinh độ (độ), độ cao (km) của từng node theo từng snapshot
+    latlon_all = np.full((num_snapshots, N, 3), np.nan, dtype=np.float32)
     snapshot_times = [""] * num_snapshots
+
     for k in range(num_snapshots):
 
         current_datetime = (
@@ -269,6 +275,30 @@ def generate_dataset_snapshots(
         for gs in ground_stations:
             obs = wgs84.latlon(gs.lat_deg, gs.lon_deg, elevation_m=gs.elevation_m)
             pos_all[k, node_to_index[gs.name]] = obs.at(t_k).position.km
+
+        # Lat/lon/alt của vệ tinh (tính từ vị trí tại thời điểm t_k)
+        for sat in sample_sats:
+            geo = sat.at(t_k)
+            sp = _subpoint(geo)
+            # subpoint_of trả về điểm trên mặt đất (elevation = 0),
+            # nên độ cao vệ tinh phải lấy từ height_of
+            if hasattr(wgs84, "height_of"):
+                alt_km = wgs84.height_of(geo).km
+            else:
+                alt_km = sp.elevation.km
+            latlon_all[k, node_to_index[sat.name]] = [
+                sp.latitude.degrees,
+                sp.longitude.degrees,
+                alt_km,
+            ]
+        # Lat/lon/alt của trạm mặt đất (cố định)
+        for gs in ground_stations:
+            latlon_all[k, node_to_index[gs.name]] = [
+                gs.lat_deg,
+                gs.lon_deg,
+                gs.elevation_m / 1000.0,
+            ]
+
         snapshot_times[k] = current_datetime.isoformat()
         isl_links = compute_isl_links(
             positions
@@ -480,8 +510,10 @@ def generate_dataset_snapshots(
             i,
             :len(path)
         ] = path
+
     dataset = {
         "node_positions_km": pos_all,
+        "node_latlon_alt": np.asarray(latlon_all, dtype=np.float32),
         "snapshot_times": np.asarray(snapshot_times, dtype=str),
         "x_weights": np.asarray(
             x_weights_list,
@@ -520,6 +552,7 @@ def generate_dataset_snapshots(
 
     return dataset
 
+
 def save_dataset_npz(
     dataset: dict[str, np.ndarray],
     output_path: Path,
@@ -542,10 +575,10 @@ def save_dataset_npz(
         node_order=dataset["node_order"],
         node_positions_km=dataset["node_positions_km"],
         snapshot_times=dataset["snapshot_times"],
+        node_latlon_alt=dataset["node_latlon_alt"],
     )
 
     sid = dataset["snapshot_id"]
-    # ... giữ nguyên các dòng print phía dưới như cũ
 
     print(
         "\n[Oracle Labeler] "
@@ -558,6 +591,7 @@ def save_dataset_npz(
     print(f" - x_sources: {dataset['x_sources'].shape}")
     print(f" - x_targets: {dataset['x_targets'].shape}")
     print(f" - y_paths_indices: {dataset['y_paths_indices'].shape}")
+    print(f" - node_latlon_alt: {dataset['node_latlon_alt'].shape}")
     print(
         f" - snapshot_id: {sid.shape} "
         f"(từ {int(sid.min())} đến {int(sid.max())}, "
