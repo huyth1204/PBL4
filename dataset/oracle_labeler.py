@@ -5,7 +5,7 @@ import random
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-
+from skyfield.api import load, wgs84
 import networkx as nx
 import numpy as np
 
@@ -240,7 +240,8 @@ def generate_dataset_snapshots(
         f"({len(sample_sats)} satellites + "
         f"{len(ground_stations)} ground stations)"
     )
-
+    pos_all = np.full((num_snapshots, N, 3), np.nan, dtype=np.float32)
+    snapshot_times = [""] * num_snapshots
     for k in range(num_snapshots):
 
         current_datetime = (
@@ -263,7 +264,12 @@ def generate_dataset_snapshots(
             sample_sats,
             t_k,
         )
-
+        for name, p in positions.items():
+            pos_all[k, node_to_index[name]] = p
+        for gs in ground_stations:
+            obs = wgs84.latlon(gs.lat_deg, gs.lon_deg, elevation_m=gs.elevation_m)
+            pos_all[k, node_to_index[gs.name]] = obs.at(t_k).position.km
+        snapshot_times[k] = current_datetime.isoformat()
         isl_links = compute_isl_links(
             positions
         )
@@ -398,7 +404,7 @@ def generate_dataset_snapshots(
 
         for src, tgt, path in selected_pairs:
             x_adjacency_list.append(A_flat32)
-            x_positions_list.append(pos_array)
+
             onehot_src = np.zeros(
                 N,
                 dtype=np.float32,
@@ -421,6 +427,7 @@ def generate_dataset_snapshots(
             )
 
             x_weights_list.append(vec_W32)
+            x_positions_list.append(pos_all[k])
             x_sources_list.append(onehot_src)
             x_targets_list.append(onehot_tgt)
             snapshot_ids.append(k)
@@ -474,6 +481,8 @@ def generate_dataset_snapshots(
             :len(path)
         ] = path
     dataset = {
+        "node_positions_km": pos_all,
+        "snapshot_times": np.asarray(snapshot_times, dtype=str),
         "x_weights": np.asarray(
             x_weights_list,
             dtype=np.float32,
@@ -519,35 +528,24 @@ def save_dataset_npz(
         parents=True,
         exist_ok=True,
     )
-    np.savez_compressed(
-        output_path,
-        x_weights=dataset["x_weights"],
-        x_adjacency=dataset["x_adjacency"],    # THÊM
-        x_positions=dataset["x_positions"],    # THÊM
-        x_sources=dataset["x_sources"],
-        x_targets=dataset["x_targets"],
-        y_paths_indices=dataset["y_paths_indices"],
-        y_paths_text=dataset["y_paths_text"],
-        snapshot_id=dataset["snapshot_id"],
-        node_order=dataset["node_order"],
-    )
-    output_path.parent.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
 
     np.savez_compressed(
         output_path,
         x_weights=dataset["x_weights"],
+        x_adjacency=dataset["x_adjacency"],
+        x_positions=dataset["x_positions"],
         x_sources=dataset["x_sources"],
         x_targets=dataset["x_targets"],
         y_paths_indices=dataset["y_paths_indices"],
         y_paths_text=dataset["y_paths_text"],
         snapshot_id=dataset["snapshot_id"],
         node_order=dataset["node_order"],
+        node_positions_km=dataset["node_positions_km"],
+        snapshot_times=dataset["snapshot_times"],
     )
 
     sid = dataset["snapshot_id"]
+    # ... giữ nguyên các dòng print phía dưới như cũ
 
     print(
         "\n[Oracle Labeler] "
