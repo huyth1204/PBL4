@@ -1,5 +1,5 @@
 {
- "input": "dataset\\oracle_full.npz",
+ "input": "dataset\\oracle_dataset_v2.npz",
  "mode": "phase",
  "ratios": [
   0.7,

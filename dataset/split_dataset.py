@@ -1,11 +1,12 @@
 """
-Chia oracle_dataset.npz thành train / val / test.
++ Chia oracle_dataset_v2.npz (output của oracle_labeler_sagsin.py) thành train / val / test.
 
-Chạy (từ thư mục gốc dự án):
-    python split_dataset.py                          # đọc dataset/oracle_dataset.npz
-    python split_dataset.py --compare                # in bảng so sánh các cách chia
-    python split_dataset.py --mode time              # chia theo khối thời gian thường
-
+  Chạy (từ thư mục gốc dự án):
+-     python split_dataset.py                          # đọc dataset/oracle_dataset.npz
++     python split_dataset.py                          # đọc dataset/oracle_dataset_v2.npz
+      python split_dataset.py --compare                # in bảng so sánh các cách chia
+      python split_dataset.py --mode time              # chia theo khối thời gian thường
++     python split_dataset.py --in dataset/oracle_full.npz   # chia file khác (vd ablation)
 Đầu ra, cạnh file vào:
     train.npz  val.npz  test.npz  split_info.json
 
@@ -241,7 +242,7 @@ def print_leak(name, s):
 # ----------------------------------------------------------------------------
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Chia oracle_dataset.npz thành train/val/test.")
-    ap.add_argument("--in", dest="inp", default="dataset/oracle_full.npz")
+    ap.add_argument("--in", dest="inp", default="dataset/oracle_dataset_v2.npz")
     ap.add_argument("--outdir", default=None, help="mặc định: thư mục của file vào")
     ap.add_argument("--mode", choices=["phase", "time"], default="phase")
     ap.add_argument("--ratios", type=float, nargs=3, default=(0.7, 0.15, 0.15))
