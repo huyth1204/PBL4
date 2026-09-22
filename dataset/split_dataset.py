@@ -47,24 +47,17 @@ def load_npz(path: Path) -> dict[str, np.ndarray]:
 def snapshot_edges(data: dict) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Trả về (ids, first_row, E):
-      ids       : các snapshot_id khác nhau, đã sắp xếp
-      first_row : chỉ số dòng đầu tiên của mỗi snapshot trong file
-      E         : (S, N*N) bool, cạnh nào tồn tại (x > 0, bỏ đường chéo)
-    Kiểm tra luôn: mọi mẫu cùng snapshot phải có cùng x_weights.
+      ids       : các snapshot_id khác nhau, đã sắp xếp — cũng chính là index tra vào W_snapshots
+      first_row : chỉ số dòng đầu tiên của mỗi snapshot trong file (cấp sample)
+      E         : (S, N*N) bool, cạnh nào tồn tại (W > 0, bỏ đường chéo)
     """
     sid = data["snapshot_id"]
     n = len(data["node_order"])
     ids, first = np.unique(sid, return_index=True)
 
-    row_of = np.full(int(ids.max()) + 1, -1, dtype=np.int64)
-    row_of[ids] = first
-    if not np.array_equal(data["x_weights"], data["x_weights"][row_of[sid]]):
-        raise ValueError("Có mẫu cùng snapshot_id nhưng khác x_weights.")
-
-    W = data["x_weights"][first].reshape(len(ids), n, n)
+    W = data["W_snapshots"][ids].reshape(len(ids), n, n)
     E = (W > 0) & ~np.eye(n, dtype=bool)
     return ids, first, E.reshape(len(ids), -1)
-
 
 def jaccard_matrix(E: np.ndarray) -> np.ndarray:
     F = E.astype(np.float32)
@@ -248,7 +241,7 @@ def print_leak(name, s):
 # ----------------------------------------------------------------------------
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Chia oracle_dataset.npz thành train/val/test.")
-    ap.add_argument("--in", dest="inp", default="dataset/oracle_dataset.npz")
+    ap.add_argument("--in", dest="inp", default="dataset/oracle_full.npz")
     ap.add_argument("--outdir", default=None, help="mặc định: thư mục của file vào")
     ap.add_argument("--mode", choices=["phase", "time"], default="phase")
     ap.add_argument("--ratios", type=float, nargs=3, default=(0.7, 0.15, 0.15))
@@ -262,7 +255,7 @@ def main(argv=None):
                          "về tỉ lệ nguồn=trạm và số hop (0 = tắt, dùng --seed)")
     ap.add_argument("--min-share", type=float, default=0.10,
                     help="val và test mỗi tập phải chiếm ít nhất tỉ lệ này số mẫu còn lại")
-    ap.add_argument("--gs-names", nargs="+", default=["Hanoi", "DaNang", "HoChiMinh"])
+    ap.add_argument("--gs-names", nargs="+", default=["Hanoi", "DaNang", "HoChiMinh", "HaiPhong", "CanTho"])
     ap.add_argument("-v", "--verbose", action="store_true", help="in thêm phần kiểm tra chi tiết")
     ap.add_argument("--compare", action="store_true", help="in bảng so sánh, không ghi file")
     a = ap.parse_args(argv)
@@ -352,10 +345,16 @@ def main(argv=None):
         gs_src = np.isin(data["x_sources"][rows].argmax(1), gs_idx).mean() if len(rows) else 0
         comp[s] = (float(hops[rows].mean()) if len(rows) else 0.0, float(gs_src))
         print(f"{NAMES[s].capitalize():<8}{int((code == s).sum()):>10}{len(rows):>9,}{len(rows) / kept_total:>8.1%}")
-        extra = {k: data[k] for k in ("node_positions_km", "node_latlon_alt", "snapshot_times") if k in data}
+        # Cắt W_snapshots theo đúng snapshot thuộc tập này, remap snapshot_id sang index cục bộ
+        split_snap_ids = np.array(sorted(ids[code == s]))
+        old_to_new = {int(old): new for new, old in enumerate(split_snap_ids)}
+        remapped_sid = np.array([old_to_new[int(sid)] for sid in data["snapshot_id"][rows]], dtype=np.int32)
+
+        extra = {k: data[k] for k in ("node_layer", "node_kind") if k in data}
         np.savez_compressed(
             outdir / f"{NAMES[s]}.npz",
-            **{k: data[k][rows] for k in per_sample},
+            **{k: (remapped_sid if k == "snapshot_id" else data[k][rows]) for k in per_sample},
+            W_snapshots=data["W_snapshots"][split_snap_ids],
             **extra,
             node_order=data["node_order"],
         )
