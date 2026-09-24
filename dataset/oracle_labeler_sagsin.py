@@ -275,7 +275,7 @@ def main():
     parser.add_argument("--snapshots", type=int, default=600)
     parser.add_argument("--step", type=int, default=20)
     parser.add_argument("--pairs", type=int, default=50)
-    parser.add_argument("--sats", type=int, default=150)
+    parser.add_argument("--sats", type=int, default=50)
     parser.add_argument("--sat-select", type=str, default="random", choices=["random", "first"])
     parser.add_argument("--min-elev", type=float, default=15.0)
     parser.add_argument("--start", type=str, default="tle")

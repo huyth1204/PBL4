@@ -1,6 +1,6 @@
 venv/
 .venv/
-dataset/*.npz
+
 __pycache__/
 *.pyc
 PBL4/
