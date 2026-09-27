@@ -1,0 +1,30 @@
+{
+ "73": {
+  "s_moi_lo": 0.10906732199994924,
+  "so_lo_moi_epoch": 247,
+  "s_moi_epoch": 26.939628533987463,
+  "epoch": 15,
+  "so_duong_train": 15750
+ },
+ "173": {
+  "s_moi_lo": 0.3307967685833925,
+  "so_lo_moi_epoch": 247,
+  "s_moi_epoch": 81.70680184009795,
+  "epoch": 12,
+  "so_duong_train": 15750
+ },
+ "273": {
+  "s_moi_lo": 0.6329264410001088,
+  "so_lo_moi_epoch": 279,
+  "s_moi_epoch": 176.58647703903034,
+  "epoch": 12,
+  "so_duong_train": 17850
+ },
+ "373": {
+  "s_moi_lo": 1.0966218944166333,
+  "so_lo_moi_epoch": 247,
+  "s_moi_epoch": 270.8656079209084,
+  "epoch": 8,
+  "so_duong_train": 15750
+ }
+}

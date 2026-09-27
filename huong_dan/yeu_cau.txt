@@ -1,0 +1,10 @@
+# Thư viện cần cho hướng dẫn (bổ sung cho requirements.txt của nhóm)
+numpy
+scipy
+torch
+matplotlib
+plotly
+skyfield
+sgp4
+requests
+pytest

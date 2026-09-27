@@ -1,0 +1,2218 @@
+{
+ "73": {
+  "0.0": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.018837671472425654,
+    "trung_toi_uu_%": 99.55,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.015509241215319491,
+    "trung_toi_uu_%": 99.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.08175674548110123,
+    "trung_toi_uu_%": 98.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666797
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.045597287873683,
+    "trung_toi_uu_%": 99.35,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 83.64999999999999,
+    "ms_moi_truy_van": 6.1231153184974225
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.030253445268058954,
+    "trung_toi_uu_%": 99.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 31.55,
+    "ms_moi_truy_van": 2.3773140111173383
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.004493676631724952,
+    "trung_toi_uu_%": 99.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 8.35,
+    "ms_moi_truy_van": 0.6823722561306416
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.045597287873683,
+    "trung_toi_uu_%": 99.35,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 83.64999999999999,
+    "ms_moi_truy_van": 6.1231153184974225
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.030253445268058954,
+    "trung_toi_uu_%": 99.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 31.55,
+    "ms_moi_truy_van": 2.3773140111173383
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.004493676631724952,
+    "trung_toi_uu_%": 99.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 6.4,
+    "ms_moi_truy_van": 0.5399094793106389
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0,
+    "mua_toan_vung_%": 82.40740740740742
+   }
+  },
+  "0.025": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.0266491400024762,
+    "trung_toi_uu_%": 95.3,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.027690137484327693,
+    "trung_toi_uu_%": 95.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.08992061195182544,
+    "trung_toi_uu_%": 98.85,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666797
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.08400590402736441,
+    "trung_toi_uu_%": 97.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 73.25,
+    "ms_moi_truy_van": 5.370837133484489
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.045501767017810835,
+    "trung_toi_uu_%": 96.19999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 31.25,
+    "ms_moi_truy_van": 2.3553966608373385
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.01626868135687687,
+    "trung_toi_uu_%": 96.14999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 8.7,
+    "ms_moi_truy_van": 0.7079424981239754
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.08400590402736441,
+    "trung_toi_uu_%": 97.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 73.25,
+    "ms_moi_truy_van": 5.370837133484489
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.045501767017810835,
+    "trung_toi_uu_%": 96.19999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 31.25,
+    "ms_moi_truy_van": 2.3553966608373385
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.016397738773434867,
+    "trung_toi_uu_%": 95.85,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 5.9,
+    "ms_moi_truy_van": 0.5033805621773051
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.001630492261971595,
+    "mua_toan_vung_%": 73.14814814814815
+   }
+  },
+  "0.05": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.11442953984138171,
+    "trung_toi_uu_%": 93.55000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.09521177031706429,
+    "trung_toi_uu_%": 93.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.08992061195182544,
+    "trung_toi_uu_%": 98.85,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666797
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.06045676616118101,
+    "trung_toi_uu_%": 98.3,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 80.55,
+    "ms_moi_truy_van": 5.898878551810875
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.07318725377882629,
+    "trung_toi_uu_%": 95.89999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 37.35,
+    "ms_moi_truy_van": 2.8010494498640126
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.10796060293804288,
+    "trung_toi_uu_%": 94.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 15.049999999999999,
+    "ms_moi_truy_van": 1.171859745717317
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.06045676616118101,
+    "trung_toi_uu_%": 98.3,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 80.55,
+    "ms_moi_truy_van": 5.898878551810875
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.07318725377882629,
+    "trung_toi_uu_%": 95.89999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 37.35,
+    "ms_moi_truy_van": 2.8010494498640126
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.11386154169044005,
+    "trung_toi_uu_%": 94.14999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 9.3,
+    "ms_moi_truy_van": 0.7517771986839761
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0033905502472953084,
+    "mua_toan_vung_%": 80.55555555555556
+   }
+  },
+  "0.075": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.360798903344687,
+    "trung_toi_uu_%": 89.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.24045684682250368,
+    "trung_toi_uu_%": 90.85,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.08781282575017002,
+    "trung_toi_uu_%": 98.85,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666797
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.10675235592906773,
+    "trung_toi_uu_%": 97.94999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 91.30000000000001,
+    "ms_moi_truy_van": 6.67647379112713
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.1403175844614566,
+    "trung_toi_uu_%": 96.44999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 75.44999999999999,
+    "ms_moi_truy_van": 5.542125912511736
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.14916996652943482,
+    "trung_toi_uu_%": 96.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 67.75,
+    "ms_moi_truy_van": 4.9795805886583935
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.15135689123894025,
+    "trung_toi_uu_%": 96.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 78.7,
+    "ms_moi_truy_van": 5.765059836207612
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.2606981230688348,
+    "trung_toi_uu_%": 92.80000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 34.650000000000006,
+    "ms_moi_truy_van": 2.6037932973440094
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.3088196744247256,
+    "trung_toi_uu_%": 91.05000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 11.3,
+    "ms_moi_truy_van": 0.8978928672173121
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.005437183500525884,
+    "mua_toan_vung_%": 79.62962962962963
+   }
+  },
+  "0.1": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.5627726794593357,
+    "trung_toi_uu_%": 87.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.43754276395254266,
+    "trung_toi_uu_%": 88.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.09612327284020239,
+    "trung_toi_uu_%": 98.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666797
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.09612327284020239,
+    "trung_toi_uu_%": 98.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.09612327284020239,
+    "trung_toi_uu_%": 98.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.09612327284020239,
+    "trung_toi_uu_%": 98.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.14462479227511693,
+    "trung_toi_uu_%": 97.35,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 88.95,
+    "ms_moi_truy_van": 6.506487855090553
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.2650204104626539,
+    "trung_toi_uu_%": 95.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 66.14999999999999,
+    "ms_moi_truy_van": 4.868547540372045
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.27882149955286195,
+    "trung_toi_uu_%": 94.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 60.300000000000004,
+    "ms_moi_truy_van": 4.441159209912039
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0061767321994086145,
+    "mua_toan_vung_%": 79.62962962962963
+   }
+  },
+  "0.15": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 1.190568352383039,
+    "trung_toi_uu_%": 83.35,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.5988780294337346,
+    "trung_toi_uu_%": 86.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.1332969549346572,
+    "trung_toi_uu_%": 98.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666797
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.1332969549346572,
+    "trung_toi_uu_%": 98.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.1332969549346572,
+    "trung_toi_uu_%": 98.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.1332969549346572,
+    "trung_toi_uu_%": 98.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.1332969549346572,
+    "trung_toi_uu_%": 98.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.1332969549346572,
+    "trung_toi_uu_%": 98.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.1332969549346572,
+    "trung_toi_uu_%": 98.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.010393936105135324,
+    "mua_toan_vung_%": 78.7037037037037
+   }
+  },
+  "0.2": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 1.8714108751765934,
+    "trung_toi_uu_%": 80.05000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.5622686936889352,
+    "trung_toi_uu_%": 86.44999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.22103558140744894,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666797
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.22103558140744894,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.22103558140744894,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.22103558140744894,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.22103558140744894,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.22103558140744894,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.22103558140744894,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.01398958696017302,
+    "mua_toan_vung_%": 78.7037037037037
+   }
+  },
+  "0.4": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 6.877276577657,
+    "trung_toi_uu_%": 66.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.626812759889475,
+    "trung_toi_uu_%": 86.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.07233934000396403
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.17358663205322244,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666797
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.17358663205322244,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.17358663205322244,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.17358663205322244,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.17358663205322244,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.17358663205322244,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.17358663205322244,
+    "trung_toi_uu_%": 98.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 7.305783426666795
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.030828372735081686,
+    "mua_toan_vung_%": 82.40740740740742
+   }
+  }
+ },
+ "173": {
+  "0.0": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.010263641040040739,
+    "trung_toi_uu_%": 99.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.01051300832536839,
+    "trung_toi_uu_%": 99.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.3714343728744538,
+    "trung_toi_uu_%": 94.94238727705661,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.29751912308853434,
+    "trung_toi_uu_%": 96.04383943061296,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 83.94999999999999,
+    "ms_moi_truy_van": 7.915136873327832
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.13112624630115732,
+    "trung_toi_uu_%": 97.94794794794794,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 34.55,
+    "ms_moi_truy_van": 3.3852312483984015
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.03292164808605236,
+    "trung_toi_uu_%": 99.49974974974975,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 8.4,
+    "ms_moi_truy_van": 0.9265432063747723
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.29751912308853434,
+    "trung_toi_uu_%": 96.04383943061296,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 83.94999999999999,
+    "ms_moi_truy_van": 7.915136873327832
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.13112624630115732,
+    "trung_toi_uu_%": 97.94794794794794,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 34.55,
+    "ms_moi_truy_van": 3.3852312483984015
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.006617495059515477,
+    "trung_toi_uu_%": 99.6498998998999,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 6.65,
+    "ms_moi_truy_van": 0.7620038536580858
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0,
+    "mua_toan_vung_%": 83.33333333333333
+   }
+  },
+  "0.025": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.06727919970703766,
+    "trung_toi_uu_%": 96.39999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.03575094365348974,
+    "trung_toi_uu_%": 96.94999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.3811582955041217,
+    "trung_toi_uu_%": 94.6946946946947,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.27258551137917664,
+    "trung_toi_uu_%": 95.34754754754755,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 72.5,
+    "ms_moi_truy_van": 6.854237763001189
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.16370553767106344,
+    "trung_toi_uu_%": 95.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 29.650000000000002,
+    "ms_moi_truy_van": 2.924521060791679
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.03686512699380984,
+    "trung_toi_uu_%": 97.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 6.6,
+    "ms_moi_truy_van": 0.7573027292947518
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.27258551137917664,
+    "trung_toi_uu_%": 95.34754754754755,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 72.5,
+    "ms_moi_truy_van": 6.854237763001189
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.16370553767106344,
+    "trung_toi_uu_%": 95.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 29.650000000000002,
+    "ms_moi_truy_van": 2.924521060791679
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.05401974518817099,
+    "trung_toi_uu_%": 96.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 4.35,
+    "ms_moi_truy_van": 0.5457521329447264
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0005741648160239303,
+    "mua_toan_vung_%": 72.91666666666667
+   }
+  },
+  "0.05": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.1790012777363259,
+    "trung_toi_uu_%": 93.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.16486657668783522,
+    "trung_toi_uu_%": 93.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.4301010815074804,
+    "trung_toi_uu_%": 94.54454454454455,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.34356186170030156,
+    "trung_toi_uu_%": 94.44444444444444,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 82.94999999999999,
+    "ms_moi_truy_van": 7.822481929194501
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.2294598708603317,
+    "trung_toi_uu_%": 94.64724724724724,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 40.900000000000006,
+    "ms_moi_truy_van": 3.9822740425418064
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.18805136469249817,
+    "trung_toi_uu_%": 93.94999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 11.1,
+    "ms_moi_truy_van": 1.1804039219948028
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.34356186170030156,
+    "trung_toi_uu_%": 94.44444444444444,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 82.94999999999999,
+    "ms_moi_truy_van": 7.822481929194501
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.2294598708603317,
+    "trung_toi_uu_%": 94.64724724724724,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 40.900000000000006,
+    "ms_moi_truy_van": 3.9822740425418064
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.18802842338657655,
+    "trung_toi_uu_%": 93.85,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 6.1,
+    "ms_moi_truy_van": 0.7102914856614129
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0011887090637083717,
+    "mua_toan_vung_%": 82.29166666666667
+   }
+  },
+  "0.075": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.5292891017818775,
+    "trung_toi_uu_%": 89.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.3759063935914426,
+    "trung_toi_uu_%": 90.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.4427016378760129,
+    "trung_toi_uu_%": 94.04404404404404,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.418417912341404,
+    "trung_toi_uu_%": 93.993993993994,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 90.6,
+    "ms_moi_truy_van": 8.531292251814484
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.4695572862232851,
+    "trung_toi_uu_%": 91.9961961961962,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 61.85,
+    "ms_moi_truy_van": 5.890984349874776
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.48208307585082366,
+    "trung_toi_uu_%": 91.5458958958959,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 55.099999999999994,
+    "ms_moi_truy_van": 5.2563325608247
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.4125272904450128,
+    "trung_toi_uu_%": 93.94394394394394,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 80.9,
+    "ms_moi_truy_van": 7.632539293721171
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.48339756998771577,
+    "trung_toi_uu_%": 91.04539539539539,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 34.5,
+    "ms_moi_truy_van": 3.3805301240350674
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.5119581053270679,
+    "trung_toi_uu_%": 89.79484484484485,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 9.25,
+    "ms_moi_truy_van": 1.0064623205514485
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0017399033704816839,
+    "mua_toan_vung_%": 80.20833333333333
+   }
+  },
+  "0.1": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.8403434635658371,
+    "trung_toi_uu_%": 85.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.5469311924261788,
+    "trung_toi_uu_%": 87.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.5032021425238185,
+    "trung_toi_uu_%": 94.04404404404404,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5032021425238185,
+    "trung_toi_uu_%": 94.04404404404404,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.5032021425238185,
+    "trung_toi_uu_%": 94.04404404404404,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.5032021425238185,
+    "trung_toi_uu_%": 94.04404404404404,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5214200133565328,
+    "trung_toi_uu_%": 93.69369369369369,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 90.2,
+    "ms_moi_truy_van": 8.49423027416115
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.5915590377231084,
+    "trung_toi_uu_%": 91.1961961961962,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 64.15,
+    "ms_moi_truy_van": 6.104637738634777
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.561691757653513,
+    "trung_toi_uu_%": 90.84619619619619,
+    "toi_dich_%": 99.95,
+    "sang_DM_%": 55.55,
+    "ms_moi_truy_van": 5.296044348141347
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.002439231776520529,
+    "mua_toan_vung_%": 78.125
+   }
+  },
+  "0.15": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 1.980413166932962,
+    "trung_toi_uu_%": 77.55000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 1.017100046068606,
+    "trung_toi_uu_%": 83.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.5547889750477282,
+    "trung_toi_uu_%": 93.23993332009364,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5547889750477282,
+    "trung_toi_uu_%": 93.23993332009364,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.5547889750477282,
+    "trung_toi_uu_%": 93.23993332009364,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.5547889750477282,
+    "trung_toi_uu_%": 93.23993332009364,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5547889750477282,
+    "trung_toi_uu_%": 93.23993332009364,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.5547889750477282,
+    "trung_toi_uu_%": 93.23993332009364,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.5547889750477282,
+    "trung_toi_uu_%": 93.23993332009364,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0036799671051294643,
+    "mua_toan_vung_%": 79.16666666666667
+   }
+  },
+  "0.2": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 3.7309844335376567,
+    "trung_toi_uu_%": 69.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 1.5454440848935178,
+    "trung_toi_uu_%": 81.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.8006673661564676,
+    "trung_toi_uu_%": 92.88923191728803,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.8006673661564676,
+    "trung_toi_uu_%": 92.88923191728803,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.8006673661564676,
+    "trung_toi_uu_%": 92.88923191728803,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.8006673661564676,
+    "trung_toi_uu_%": 92.88923191728803,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.8006673661564676,
+    "trung_toi_uu_%": 92.88923191728803,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.8006673661564676,
+    "trung_toi_uu_%": 92.88923191728803,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.8006673661564676,
+    "trung_toi_uu_%": 92.88923191728803,
+    "toi_dich_%": 99.85,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.005187670587537932,
+    "mua_toan_vung_%": 77.08333333333333
+   }
+  },
+  "0.4": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 17.307924291705397,
+    "trung_toi_uu_%": 52.1,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 3.2068731057191044,
+    "trung_toi_uu_%": 78.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.13675431333467714
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 1.8306768904810866,
+    "trung_toi_uu_%": 88.93893893893895,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.8306768904810866,
+    "trung_toi_uu_%": 88.93893893893895,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.8306768904810866,
+    "trung_toi_uu_%": 88.93893893893895,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.8306768904810866,
+    "trung_toi_uu_%": 88.93893893893895,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.8306768904810866,
+    "trung_toi_uu_%": 88.93893893893895,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.8306768904810866,
+    "trung_toi_uu_%": 88.93893893893895,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.8306768904810866,
+    "trung_toi_uu_%": 88.93893893893895,
+    "toi_dich_%": 99.9,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 9.402248726667798
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.012915829068067104,
+    "mua_toan_vung_%": 83.33333333333333
+   }
+  }
+ },
+ "273": {
+  "0.0": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.0516637937928337,
+    "trung_toi_uu_%": 98.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.041230590914608456,
+    "trung_toi_uu_%": 99.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.6652717112312274,
+    "trung_toi_uu_%": 91.3,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5904910418071623,
+    "trung_toi_uu_%": 92.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 83.94999999999999,
+    "ms_moi_truy_van": 9.727497186462935
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.25762511273322986,
+    "trung_toi_uu_%": 96.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 33.4,
+    "ms_moi_truy_van": 4.064271136444889
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.032847496262917275,
+    "trung_toi_uu_%": 99.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 6.800000000000001,
+    "ms_moi_truy_van": 0.9926082968841609
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5904910418071623,
+    "trung_toi_uu_%": 92.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 83.94999999999999,
+    "ms_moi_truy_van": 9.727497186462935
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.25762511273322986,
+    "trung_toi_uu_%": 96.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 33.4,
+    "ms_moi_truy_van": 4.064271136444889
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.01895306296230359,
+    "trung_toi_uu_%": 99.30000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 5.1,
+    "ms_moi_truy_van": 0.7962990176641143
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0,
+    "mua_toan_vung_%": 83.33333333333333
+   }
+  },
+  "0.025": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.07079338520550493,
+    "trung_toi_uu_%": 94.80000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.05236262058628682,
+    "trung_toi_uu_%": 94.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.66652916151358,
+    "trung_toi_uu_%": 91.30000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5051479226157625,
+    "trung_toi_uu_%": 92.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 72.5,
+    "ms_moi_truy_van": 8.429040453003077
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.24729794978389918,
+    "trung_toi_uu_%": 93.69999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 30.45,
+    "ms_moi_truy_van": 3.723616798974808
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.05393770890906069,
+    "trung_toi_uu_%": 95.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 5.25,
+    "ms_moi_truy_van": 0.8136204246541183
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5051479226157625,
+    "trung_toi_uu_%": 92.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 72.5,
+    "ms_moi_truy_van": 8.429040453003077
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.24729794978389918,
+    "trung_toi_uu_%": 93.69999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 30.45,
+    "ms_moi_truy_van": 3.723616798974808
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.07962758008145698,
+    "trung_toi_uu_%": 94.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 3.0,
+    "ms_moi_truy_van": 0.5537993198040567
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.00038808545774059286,
+    "mua_toan_vung_%": 72.91666666666667
+   }
+  },
+  "0.05": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.28144370955861575,
+    "trung_toi_uu_%": 90.55000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.24256381698382512,
+    "trung_toi_uu_%": 91.10000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.6953682572693225,
+    "trung_toi_uu_%": 91.05000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.6448436518250773,
+    "trung_toi_uu_%": 91.05000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 82.94999999999999,
+    "ms_moi_truy_van": 9.614094851662948
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.3633298866786987,
+    "trung_toi_uu_%": 91.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 39.349999999999994,
+    "ms_moi_truy_van": 4.751353613715052
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.30123733033415334,
+    "trung_toi_uu_%": 90.95,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 10.0,
+    "ms_moi_truy_van": 1.3621316460042485
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.6448436518250773,
+    "trung_toi_uu_%": 91.05000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 82.94999999999999,
+    "ms_moi_truy_van": 9.614094851662948
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.3633298866786987,
+    "trung_toi_uu_%": 91.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 39.349999999999994,
+    "ms_moi_truy_van": 4.751353613715052
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.266979042023479,
+    "trung_toi_uu_%": 91.05000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 5.5,
+    "ms_moi_truy_van": 0.8424894363041253
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0006205806312807375,
+    "mua_toan_vung_%": 82.29166666666667
+   }
+  },
+  "0.075": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.5956006495349655,
+    "trung_toi_uu_%": 87.55000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.4783704845473409,
+    "trung_toi_uu_%": 88.69999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.7045852147923881,
+    "trung_toi_uu_%": 90.85000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.6818429934537988,
+    "trung_toi_uu_%": 90.85000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 92.65,
+    "ms_moi_truy_van": 10.714097499222829
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.662146522713499,
+    "trung_toi_uu_%": 90.2,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 70.6,
+    "ms_moi_truy_van": 8.252458113133846
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.6047457689335332,
+    "trung_toi_uu_%": 90.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 62.3,
+    "ms_moi_truy_van": 7.294006926353619
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.6856829238216733,
+    "trung_toi_uu_%": 90.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 80.9,
+    "ms_moi_truy_van": 9.381620065322974
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.6598394910591736,
+    "trung_toi_uu_%": 88.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 34.9,
+    "ms_moi_truy_van": 4.237485206344931
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.5682743804624053,
+    "trung_toi_uu_%": 88.44999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 8.1,
+    "ms_moi_truy_van": 1.1427271574641966
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0010555859824150663,
+    "mua_toan_vung_%": 80.20833333333333
+   }
+  },
+  "0.1": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 1.1126984183188071,
+    "trung_toi_uu_%": 82.19999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.7651051869365446,
+    "trung_toi_uu_%": 85.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.7557264016681202,
+    "trung_toi_uu_%": 90.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.7557264016681202,
+    "trung_toi_uu_%": 90.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.7557264016681202,
+    "trung_toi_uu_%": 90.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.7557264016681202,
+    "trung_toi_uu_%": 90.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.8348979615166883,
+    "trung_toi_uu_%": 88.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 89.44999999999999,
+    "ms_moi_truy_van": 10.35121002786287
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.9259744633584575,
+    "trung_toi_uu_%": 86.69999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 65.35,
+    "ms_moi_truy_van": 7.658443768103938
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.9789102690324256,
+    "trung_toi_uu_%": 86.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 57.2,
+    "ms_moi_truy_van": 6.717313988313714
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0014093718044446404,
+    "mua_toan_vung_%": 78.125
+   }
+  },
+  "0.15": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 2.4132986266334555,
+    "trung_toi_uu_%": 71.9,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 1.4419219889473283,
+    "trung_toi_uu_%": 79.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.9177559530121613,
+    "trung_toi_uu_%": 89.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.9177559530121613,
+    "trung_toi_uu_%": 89.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.9177559530121613,
+    "trung_toi_uu_%": 89.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.9177559530121613,
+    "trung_toi_uu_%": 89.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.9177559530121613,
+    "trung_toi_uu_%": 89.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.9177559530121613,
+    "trung_toi_uu_%": 89.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.9177559530121613,
+    "trung_toi_uu_%": 89.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0020946904205616877,
+    "mua_toan_vung_%": 79.16666666666667
+   }
+  },
+  "0.2": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 4.175290074452619,
+    "trung_toi_uu_%": 64.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 1.998107276988101,
+    "trung_toi_uu_%": 76.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 1.1780850373473015,
+    "trung_toi_uu_%": 88.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.1780850373473015,
+    "trung_toi_uu_%": 88.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.1780850373473015,
+    "trung_toi_uu_%": 88.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.1780850373473015,
+    "trung_toi_uu_%": 88.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.1780850373473015,
+    "trung_toi_uu_%": 88.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.1780850373473015,
+    "trung_toi_uu_%": 88.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.1780850373473015,
+    "trung_toi_uu_%": 88.25,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.00285051854636416,
+    "mua_toan_vung_%": 77.08333333333333
+   }
+  },
+  "0.4": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 19.192065850815524,
+    "trung_toi_uu_%": 46.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 3.210347130990698,
+    "trung_toi_uu_%": 74.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.2073711800039746
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 1.7585472294017563,
+    "trung_toi_uu_%": 85.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.7585472294017563,
+    "trung_toi_uu_%": 85.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.7585472294017563,
+    "trung_toi_uu_%": 85.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.7585472294017563,
+    "trung_toi_uu_%": 85.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.7585472294017563,
+    "trung_toi_uu_%": 85.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.7585472294017563,
+    "trung_toi_uu_%": 85.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.7585472294017563,
+    "trung_toi_uu_%": 85.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 11.547604660002738
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.007568911827762436,
+    "mua_toan_vung_%": 83.33333333333333
+   }
+  }
+ },
+ "373": {
+  "0.0": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.009144498508831589,
+    "trung_toi_uu_%": 99.35,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.0077896410181281794,
+    "trung_toi_uu_%": 99.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.7836533711197049,
+    "trung_toi_uu_%": 88.45,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666192
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.6701008566314286,
+    "trung_toi_uu_%": 89.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 83.64999999999999,
+    "ms_moi_truy_van": 12.284876200265904
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.21026814663532178,
+    "trung_toi_uu_%": 95.94999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 31.25,
+    "ms_moi_truy_van": 5.0962466879142685
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.009625455090613855,
+    "trung_toi_uu_%": 99.2,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 5.5,
+    "ms_moi_truy_van": 1.3417600566977248
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.6701008566314286,
+    "trung_toi_uu_%": 89.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 83.64999999999999,
+    "ms_moi_truy_van": 12.284876200265904
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.21026814663532178,
+    "trung_toi_uu_%": 95.94999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 31.25,
+    "ms_moi_truy_van": 5.0962466879142685
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.008334565513585801,
+    "trung_toi_uu_%": 99.2,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 3.7,
+    "ms_moi_truy_van": 1.0793105057777332
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0,
+    "mua_toan_vung_%": 82.40740740740742
+   }
+  },
+  "0.025": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.0963964495119285,
+    "trung_toi_uu_%": 93.69999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.0894562461811006,
+    "trung_toi_uu_%": 93.94999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.7520626909674988,
+    "trung_toi_uu_%": 88.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666192
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5474394135374183,
+    "trung_toi_uu_%": 90.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 73.25,
+    "ms_moi_truy_van": 10.824643427999051
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.3115209688074003,
+    "trung_toi_uu_%": 92.05000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 32.699999999999996,
+    "ms_moi_truy_van": 5.307664381710929
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.08175216129708218,
+    "trung_toi_uu_%": 94.1,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 4.85,
+    "ms_moi_truy_van": 1.2469866077543945
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.5474394135374183,
+    "trung_toi_uu_%": 90.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 73.25,
+    "ms_moi_truy_van": 10.824643427999051
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.3115209688074003,
+    "trung_toi_uu_%": 92.05000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 32.699999999999996,
+    "ms_moi_truy_van": 5.307664381710929
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.08269515595936383,
+    "trung_toi_uu_%": 94.1,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 3.4000000000000004,
+    "ms_moi_truy_van": 1.0355689139577349
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.00022683835088521128,
+    "mua_toan_vung_%": 73.14814814814815
+   }
+  },
+  "0.05": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.2855796598719209,
+    "trung_toi_uu_%": 90.45,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.2849430750325226,
+    "trung_toi_uu_%": 90.55000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.7466235426161703,
+    "trung_toi_uu_%": 88.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666192
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.7150365615326137,
+    "trung_toi_uu_%": 88.55,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 80.55,
+    "ms_moi_truy_van": 11.849614508532515
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.47004954692945233,
+    "trung_toi_uu_%": 89.80000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 37.099999999999994,
+    "ms_moi_truy_van": 5.949207728404241
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.2940981639771749,
+    "trung_toi_uu_%": 90.60000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 8.5,
+    "ms_moi_truy_van": 1.7791759748977105
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.7150365615326137,
+    "trung_toi_uu_%": 88.55,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 80.55,
+    "ms_moi_truy_van": 11.849614508532515
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.47004954692945233,
+    "trung_toi_uu_%": 89.80000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 37.099999999999994,
+    "ms_moi_truy_van": 5.949207728404241
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.27873126111078506,
+    "trung_toi_uu_%": 90.7,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 4.5,
+    "ms_moi_truy_van": 1.1959547506310628
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0005161258373349515,
+    "mua_toan_vung_%": 80.55555555555556
+   }
+  },
+  "0.075": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 0.6293475410593459,
+    "trung_toi_uu_%": 86.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.5243261115233224,
+    "trung_toi_uu_%": 86.5,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.8220575816384397,
+    "trung_toi_uu_%": 87.95,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666192
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.811216836427576,
+    "trung_toi_uu_%": 87.85,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 88.1,
+    "ms_moi_truy_van": 12.909687338399317
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.8126147521953513,
+    "trung_toi_uu_%": 87.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 68.6,
+    "ms_moi_truy_van": 10.251915775088635
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.7897399691207454,
+    "trung_toi_uu_%": 87.65,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 62.85,
+    "ms_moi_truy_van": 9.41353526520533
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.7424292400313561,
+    "trung_toi_uu_%": 87.69999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 78.7,
+    "ms_moi_truy_van": 11.589861563465815
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.6605967219239943,
+    "trung_toi_uu_%": 87.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 33.55,
+    "ms_moi_truy_van": 5.431598891867591
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.5842673191646099,
+    "trung_toi_uu_%": 86.85,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 6.65,
+    "ms_moi_truy_van": 1.509436158674386
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0007589248162721055,
+    "mua_toan_vung_%": 79.62962962962963
+   }
+  },
+  "0.1": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 1.2150435292004431,
+    "trung_toi_uu_%": 79.85000000000001,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 0.903923958422169,
+    "trung_toi_uu_%": 82.29999999999998,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 0.8914884429158079,
+    "trung_toi_uu_%": 87.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666192
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.8914884429158079,
+    "trung_toi_uu_%": 87.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.8914884429158079,
+    "trung_toi_uu_%": 87.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 0.8914884429158079,
+    "trung_toi_uu_%": 87.05,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 0.9392047248702013,
+    "trung_toi_uu_%": 86.19999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 89.19999999999999,
+    "ms_moi_truy_van": 13.064135035466002
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 0.9872934561855331,
+    "trung_toi_uu_%": 84.1,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 68.6,
+    "ms_moi_truy_van": 10.256234422075284
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.001023208643339,
+    "trung_toi_uu_%": 83.94999999999999,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 62.25,
+    "ms_moi_truy_van": 9.33037072855198
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0011438044678810028,
+    "mua_toan_vung_%": 79.62962962962963
+   }
+  },
+  "0.15": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 2.849601826914096,
+    "trung_toi_uu_%": 71.6,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 1.7326353442149909,
+    "trung_toi_uu_%": 77.75,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 1.1409906728238894,
+    "trung_toi_uu_%": 86.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666192
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.1409906728238894,
+    "trung_toi_uu_%": 86.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.1409906728238894,
+    "trung_toi_uu_%": 86.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.1409906728238894,
+    "trung_toi_uu_%": 86.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.1409906728238894,
+    "trung_toi_uu_%": 86.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.1409906728238894,
+    "trung_toi_uu_%": 86.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.1409906728238894,
+    "trung_toi_uu_%": 86.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.0016254100669467952,
+    "mua_toan_vung_%": 78.7037037037037
+   }
+  },
+  "0.2": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 4.946133674371943,
+    "trung_toi_uu_%": 61.55,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 2.487248425512277,
+    "trung_toi_uu_%": 73.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 1.5538490985359914,
+    "trung_toi_uu_%": 84.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666192
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.5538490985359914,
+    "trung_toi_uu_%": 84.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.5538490985359914,
+    "trung_toi_uu_%": 84.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.5538490985359914,
+    "trung_toi_uu_%": 84.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 1.5538490985359914,
+    "trung_toi_uu_%": 84.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 1.5538490985359914,
+    "trung_toi_uu_%": 84.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 1.5538490985359914,
+    "trung_toi_uu_%": 84.4,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.002182697454317136,
+    "mua_toan_vung_%": 78.7037037037037
+   }
+  },
+  "0.4": {
+   "Dijkstra trên số đo": {
+    "tre_vuot_%": 30.724730215657402,
+    "trung_toi_uu_%": 36.0,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "Dijkstra khử nhiễu (biết σ từng liên kết)": {
+    "tre_vuot_%": 4.85467175519053,
+    "trung_toi_uu_%": 68.8,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 0.0,
+    "ms_moi_truy_van": 0.5398308733310841
+   },
+   "DM học với nhiễu": {
+    "tre_vuot_%": 2.697466050631938,
+    "trung_toi_uu_%": 81.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666192
+   },
+   "Chia đôi θ=0.075, quang đãng toàn vùng": {
+    "tre_vuot_%": 2.697466050631938,
+    "trung_toi_uu_%": 81.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.075, quang đãng dọc tuyến": {
+    "tre_vuot_%": 2.697466050631938,
+    "trung_toi_uu_%": 81.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.075, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 2.697466050631938,
+    "trung_toi_uu_%": 81.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, quang đãng toàn vùng": {
+    "tre_vuot_%": 2.697466050631938,
+    "trung_toi_uu_%": 81.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, quang đãng dọc tuyến": {
+    "tre_vuot_%": 2.697466050631938,
+    "trung_toi_uu_%": 81.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "Chia đôi θ=0.1, nhiễu dự báo dọc tuyến": {
+    "tre_vuot_%": 2.697466050631938,
+    "trung_toi_uu_%": 81.15,
+    "toi_dich_%": 100.0,
+    "sang_DM_%": 100.0,
+    "ms_moi_truy_van": 14.580530606666196
+   },
+   "_uoc_luong": {
+    "sai_so_sigma0_TB": 0.008056093311960501,
+    "mua_toan_vung_%": 82.40740740740742
+   }
+  }
+ }
+}
