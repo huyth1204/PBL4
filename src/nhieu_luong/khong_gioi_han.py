@@ -33,7 +33,7 @@ class MangDay:
         self.prop, self.C, self.rho0 = (np.asarray(a, float) for a in (prop, C, rho0))
         self.src, self.dst, self.lam = np.asarray(src, np.int64), np.asarray(dst, np.int64), np.asarray(lam, float)
         self.E, self.K = len(self.eu), len(self.lam)
-        self.eid = -np.ones((self.N, self.N), np.int64)
+        self.eid = -np.ones((self.N, self.N), np.int16)                      # E < 32768
         self.eid[self.eu, self.ev] = np.arange(self.E)
         self._csr = {}
 
