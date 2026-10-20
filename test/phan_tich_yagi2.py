@@ -77,9 +77,12 @@ def phan_tich():
 def ve(ra):
     if "k20_40" in ra:
         fig, axs = plt.subplots(1, 2, figsize=(11.5, 5.0), sharey=True)
-        lech = {"tuan_tu": (8, 5), "LS10_uv": (8, 5), "ML": (8, 5), "DM": (-8, 9), "DM_LSK": (8, -12),
-                "LSK1": (8, -5), "LSK10": (0, 16)}
+        lech_muc = {"vua": {"tuan_tu": (8, 5), "ML": (8, -13), "DM": (9, -2), "DM_LSK": (8, -12), "LSK1": (8, -5),
+                            "LSK10": (0, 16)},
+                    "nang": {"tuan_tu": (0, -18), "ML": (0, 16), "DM": (9, -6), "DM_LSK": (8, -12), "LSK1": (8, -5),
+                             "LSK10": (0, 16)}}
         for ax, muc in zip(axs, ("vua", "nang")):
+            lech = lech_muc[muc]
             r = ra["k20_40"][muc]
             for p in ("tuan_tu", "ML", "DM", "DM_LSK", "LSK1", "LSK10"):
                 g = r["gap_%"][p]
@@ -91,11 +94,11 @@ def ve(ra):
                             textcoords="offset points", fontsize=10, ha=ha, va="center")
             g = r["gap_%"]["LS10_uv"][0]
             ax.axhline(g, color=MAU["LS10_uv"], ls="--", lw=1.2)
-            ax.text(1.05, g, f" TKCB 10 lần trong 8 ứng viên: +{g:.2f}%".replace(".", ","), color="#7a6312",
-                    fontsize=9.5, va="bottom")
+            ax.text(2900, g, f"TKCB 10 lần trong 8 ứng viên: +{g:.2f}% ".replace(".", ","), color="#7a6312",
+                    fontsize=9.5, va="bottom", ha="right")
             ax.set_xscale("log")
             ax.set_yscale("symlog", linthresh=0.01)
-            ax.set_ylim(-0.007, 200)
+            ax.set_ylim(-0.007, 40)
             ax.set_xlim(1, 3000)
             ax.set_title(f"Tải {TEN_MUC[muc]}", loc="left")
             ax.set_xlabel("thời gian trung vị mỗi tình huống (ms, log)")
