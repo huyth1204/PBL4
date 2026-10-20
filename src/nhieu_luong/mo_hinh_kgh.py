@@ -24,7 +24,7 @@ from src.ngau_nhien.kich_ban import PKT, PROC
 from src.nhieu_luong import khong_gioi_han as kg
 from src.nhieu_luong.bai_toan import RHO_GAY
 
-N_DAC_TRUNG_TINH = 11
+N_DAC_TRUNG_TINH = 12
 N_DAC_TRUNG_DONG = 5
 
 
@@ -60,8 +60,17 @@ class TinhHuong2:
         self._y = y[self.row_c, self.row_e].astype(np.float32)
         return self._y
 
+    def gon(self):
+        """Chỉ giữ thứ cần cho huấn luyện (tiết kiệm bộ nhớ): đặc trưng tĩnh, nhãn, cấu trúc hàng."""
+        self.tinh()
+        self.y_nhan()
+        md = self.md
+        md.eid, md._csr = None, {}
+        self.mask = self.rc = self.x = self.nhan_tuyen = None
+        return self
+
     def tinh(self):
-        """Đặc trưng tĩnh của từng hàng (cặp, cạnh) [R, 11]."""
+        """Đặc trưng tĩnh của từng hàng (cặp, cạnh) [R, 12]."""
         if getattr(self, "_tinh", None) is not None:
             return self._tinh
         md, c, e = self.md, self.row_c, self.row_e
@@ -74,7 +83,8 @@ class TinhHuong2:
             md.prop[e] / 10, np.log(md.C[e] / 100), md.rho0[e], np.log(trong[e] / 10) / 3, np.log1p(d0[e] / 10),
             np.log1p(self.rc[c, e] / 5), (md.eu[e] == s).astype(float), (md.ev[e] == d).astype(float),
             np.log(self.Lam[c] / md.lam.sum()) / 3, self.n_c[c] / md.K,
-            np.clip(np.log(lam_tb[c] / trong[e]), -12, 4) / 4], 1).astype(np.float32)
+            np.clip(np.log(lam_tb[c] / trong[e]), -12, 4) / 4,
+            np.clip(np.log(self.Lam[c] / trong[e]), -12, 4) / 4], 1).astype(np.float32)
         self._tinh = tinh
         return tinh
 
@@ -216,9 +226,9 @@ def _day_du(th, v):
     return yhat
 
 
-def giai(net, th: TinhHuong2, kieu="dm", S=1, so_buoc=3, gamma=1.0, gen=None, rng=None, chi_tiet=False):
-    """Giải một tình huống. Trả (tuyến tốt nhất, chi phí, thời gian (s)). Thời gian dựng TinhHuong2 (tính hành lang)
-    phải được người gọi cộng thêm."""
+def giai(net, th: TinhHuong2, kieu="dm", S=1, so_buoc=3, cach="pr", gen=None, rng=None, chi_tiet=False):
+    """Giải một tình huống. cach: "pr" = chia luồng theo tỉ lệ các đường phân rã; "gan" = gán theo chi phí biên.
+    Trả (tuyến tốt nhất, chi phí, thời gian (s)). Thời gian dựng TinhHuong2 (tính hành lang) do người gọi cộng thêm."""
     t0 = time.perf_counter()
     md = th.md
     if kieu == "dm":
@@ -227,13 +237,13 @@ def giai(net, th: TinhHuong2, kieu="dm", S=1, so_buoc=3, gamma=1.0, gen=None, rn
         thu_tu = [None] * S
     else:
         lo = Lo2([th])
-        y1 = _day_du(th, ban_do_mot_lan(net, lo).numpy())
-        ys = [y1] * S
+        ys = [_day_du(th, ban_do_mot_lan(net, lo).numpy())] * S
         rng = rng or np.random.default_rng(0)
         thu_tu = [None] + [rng.permutation(md.K) for _ in range(S - 1)]
+    giai_ma = kg.dung_tuyen_phan_ra if cach == "pr" else kg.dung_tuyen_gan
     tot, gia, cac = None, np.inf, []
     for y, tt in zip(ys, thu_tu):
-        r = kg.dung_tuyen(md, thu_tu=tt, yhat=y, cap=th.cua, gamma=gamma)
+        r = giai_ma(md, y, th.cap, th.cua, th.mask, thu_tu=tt)
         c = md.chi_phi(r)
         cac.append(c)
         if c < gia:

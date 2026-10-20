@@ -4,8 +4,8 @@ huan_luyen_kgh.py — Huấn luyện DM hoặc Một-lần cho thí nghiệm 2 (
     python -m src.nhieu_luong.huan_luyen_kgh --kieu dm
     python -m src.nhieu_luong.huan_luyen_kgh --kieu mot_lan
 
-Nhãn = bản đồ cạnh của lời giải TKCB-KGH 10 lần. Chọn checkpoint theo khoảng cách chi phí trung bình tới nhãn trên 300
-tình huống val cố định (cấu hình theo dõi: S = 1, 3 bước, γ = 1 ms). Không dùng dữ liệu Yagi.
+Nhãn = bản đồ cạnh của lời giải TKCB-KGH 10 lần. Chọn checkpoint theo loss trên toàn bộ val (cố định hạt giống);
+theo dõi thêm khoảng cách chi phí tới nhãn trên 300 tình huống val (S = 1, 3 bước, dựng tuyến "pr"). Không dùng Yagi.
 Ghi results/yagi2/mo_hinh/<kiểu>.pt, <kiểu>_nhat_ky.json, <kiểu>.xong.
 """
 
@@ -31,15 +31,14 @@ RA = GOC / "results" / "yagi2" / "mo_hinh"
 MUC = ("nhe", "vua", "nang")
 
 
-def nap(tap):
+def nap(tap, gon=False):
     """Danh sách TinhHuong2 (mỗi snapshot × mỗi mức tải); hành lang tính một lần mỗi snapshot."""
     ds = []
     for f in sorted(glob.glob(str(GOC / "data" / "yagi2" / tap / "kb_*.pkl"))):
         for x in pickle.load(open(f, "rb")):
             th0 = TinhHuong2(x, MUC[0])
-            ds.append(th0)
-            for m in MUC[1:]:
-                ds.append(TinhHuong2(x, m, hl=(th0.mask, th0.rc), cap_cua=(th0.cap, th0.cua)))
+            bo = [th0] + [TinhHuong2(x, m, hl=(th0.mask, th0.rc), cap_cua=(th0.cap, th0.cua)) for m in MUC[1:]]
+            ds += [th.gon() for th in bo] if gon else bo
     return ds
 
 
@@ -51,7 +50,7 @@ def chia_lo(ds, B, rng):
 def danh_gia(net, kieu, ds, seed=0):
     net.eval()
     gen = torch.Generator().manual_seed(seed)
-    g = [giai(net, th, kieu, S=1, so_buoc=3, gamma=1.0, gen=gen)[1] / th.chi_phi_nhan - 1 for th in ds]
+    g = [giai(net, th, kieu, S=1, so_buoc=3, cach="pr", gen=gen)[1] / th.chi_phi_nhan - 1 for th in ds]
     net.train()
     return float(np.mean(g) * 100)
 
@@ -63,7 +62,7 @@ def main():
     ap.add_argument("--kieu", choices=["dm", "mot_lan"], required=True)
     ap.add_argument("--epochs", type=int, default=20)
     ap.add_argument("--B", type=int, default=48)
-    ap.add_argument("--H", type=int, default=32)
+    ap.add_argument("--H", type=int, default=64)
     ap.add_argument("--lr", type=float, default=2e-3)
     ap.add_argument("--luong-cpu", type=int, default=1)
     ap.add_argument("--seed", type=int, default=0)
@@ -73,7 +72,7 @@ def main():
     rng = np.random.default_rng(a.seed)
     RA.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
-    tr, va = nap("train"), nap("val")
+    tr, va = nap("train", gon=True), nap("val")
     va_nho = [va[i] for i in np.random.default_rng(99).choice(len(va), 300, replace=False)]
     print(f"{a.kieu}: train {len(tr)}, val {len(va)} tình huống (nạp {time.time() - t0:.0f} s)", flush=True)
     net = MangKGH(H=a.H)
@@ -105,11 +104,11 @@ def main():
                    "giay": time.time() - t0})
         print(f"  ep {ep + 1:2d}  loss {np.mean(L):.4f}  val {np.mean(Lv):.4f}  gap val {gap:.3f}%  ({time.time() - t0:.0f} s)",
               flush=True)
-        if gap < tot:
-            tot = gap
+        if np.mean(Lv) < tot:
+            tot = float(np.mean(Lv))
             torch.save({"state": net.state_dict(), "cau_hinh": net.cau_hinh, "epoch": ep + 1, "gap_val_%": gap},
                        RA / f"{a.kieu}.pt")
-        json.dump({"tham_so": vars(a), "nhat_ky": nk, "tot_nhat_gap_val_%": tot},
+        json.dump({"tham_so": vars(a), "nhat_ky": nk, "tot_nhat_loss_val": tot},
                   open(RA / f"{a.kieu}_nhat_ky.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     (RA / f"{a.kieu}.xong").write_text(time.strftime("%Y-%m-%d %H:%M:%S"))
     print("xong", a.kieu, flush=True)

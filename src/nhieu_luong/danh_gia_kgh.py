@@ -1,7 +1,7 @@
 """
 danh_gia_kgh.py — Chọn cấu hình trên val và chấm tập Yagi cho thí nghiệm 2 (results/yagi2/TIEU_CHI_2.md).
 
-    python -m src.nhieu_luong.danh_gia_kgh chon                    # chọn (S, số bước, γ) cho DM và γ cho Một-lần trên val
+    python -m src.nhieu_luong.danh_gia_kgh chon                    # chọn (S, số bước, cách dựng tuyến) trên val
     python -m src.nhieu_luong.danh_gia_kgh test --phan 0 --so-phan 2
 
 Thời gian đo trong CÙNG tiến trình, 1 luồng CPU, lần lượt từng phương pháp trên từng tình huống. Thời gian của DM và
@@ -27,7 +27,8 @@ from src.nhieu_luong.mo_hinh_kgh import Lo2, MangKGH, TinhHuong2, _day_du, ban_d
 
 GOC = Path(__file__).resolve().parents[2]
 KQ = GOC / "results" / "yagi2"
-S_LUOI, BUOC_LUOI, GAMMA_LUOI = (1, 2, 4), (2, 3, 5), (0.3, 1.0, 3.0)
+S_LUOI, BUOC_LUOI, CACH_LUOI = (1, 2, 4), (2, 3, 5), ("pr", "gan")
+GIAI_MA = {"pr": kg.dung_tuyen_phan_ra, "gan": kg.dung_tuyen_gan}
 
 
 def nap_mo_hinh(kieu):
@@ -45,11 +46,11 @@ def _thu_dm(net, th, S, n, gen):
     ys = [_day_du(th2, v.numpy()) for v in lo.tach(ban_do_dm(net, lo, n, gen))]
     t_mang = time.perf_counter() - t0
     gia, tg = {}, {}
-    for g in GAMMA_LUOI:
+    for g in CACH_LUOI:
         cs, ts = [], []
         for y in ys:
             s = time.perf_counter()
-            cs.append(th2.md.chi_phi(kg.dung_tuyen(th2.md, yhat=y, cap=th2.cua, gamma=g)))
+            cs.append(th2.md.chi_phi(GIAI_MA[g](th2.md, y, th2.cap, th2.cua, th2.mask)))
             ts.append(time.perf_counter() - s)
         gia[g], tg[g] = min(cs), t_mang + sum(ts)
     return gia, tg
@@ -75,27 +76,27 @@ def chon(phan=0, so_phan=1):
         if j % so_phan != phan or f.exists():
             continue
         gen = torch.Generator().manual_seed(0)
-        gap = {g: [] for g in GAMMA_LUOI}
-        tgs = {g: [] for g in GAMMA_LUOI}
+        gap = {g: [] for g in CACH_LUOI}
+        tgs = {g: [] for g in CACH_LUOI}
         for th in va:
             gia, tg = _thu_dm(net_dm, th, S, n, gen)
-            for g in GAMMA_LUOI:
+            for g in CACH_LUOI:
                 gap[g].append(gia[g] / th.chi_phi_nhan - 1)
                 tgs[g].append(tg[g])
         json.dump({str(g): {"gap_tb_%": float(np.mean(gap[g]) * 100), "tg_trung_vi_ms": float(np.median(tgs[g]) * 1e3)}
-                   for g in GAMMA_LUOI}, open(f, "w"), indent=1)
+                   for g in CACH_LUOI}, open(f, "w"), indent=1)
         print(S, n, json.load(open(f)), flush=True)
     # Một-lần: S lần dựng tuyến với S thứ tự luồng; tính sẵn cho mọi S, γ
     f = KQ / "chon_mot_lan.json"
     if phan == so_phan - 1 and not f.exists():
-        gap = {(S, g): [] for S in S_LUOI for g in GAMMA_LUOI}
+        gap = {(S, g): [] for S in S_LUOI for g in CACH_LUOI}
         for th in va:
             rng = np.random.default_rng(int(th.x["t"]))
             th2 = TinhHuong2(th.x, th.muc)
             y = _day_du(th2, ban_do_mot_lan(net_ml, Lo2([th2])).numpy())
             thu_tu = [None] + [rng.permutation(th2.md.K) for _ in range(max(S_LUOI) - 1)]
-            for g in GAMMA_LUOI:
-                cs = [th2.md.chi_phi(kg.dung_tuyen(th2.md, thu_tu=tt, yhat=y, cap=th2.cua, gamma=g)) for tt in thu_tu]
+            for g in CACH_LUOI:
+                cs = [th2.md.chi_phi(GIAI_MA[g](th2.md, y, th2.cap, th2.cua, th2.mask, thu_tu=tt)) for tt in thu_tu]
                 for S in S_LUOI:
                     gap[(S, g)].append(min(cs[:S]) / th.chi_phi_nhan - 1)
         json.dump({f"S{S}_g{g}": float(np.mean(v) * 100) for (S, g), v in gap.items()}, open(f, "w"), indent=1)
@@ -110,14 +111,14 @@ def tong_hop():
     if not f_moc.exists() or not (KQ / "chon_mot_lan.json").exists() or not all(f.exists() for f in tep.values()):
         return None
     han = json.load(open(f_moc))["trung_vi_ms"] / 10
-    bang = [(S, n, float(g), v["gap_tb_%"], v["tg_trung_vi_ms"]) for (S, n), f in tep.items()
+    bang = [(S, n, g, v["gap_tb_%"], v["tg_trung_vi_ms"]) for (S, n), f in tep.items()
             for g, v in json.load(open(f)).items()]
     dat = [b for b in bang if b[4] <= han]
     tot = min(dat or bang, key=lambda b: b[3])
     ml = json.load(open(KQ / "chon_mot_lan.json"))
-    g_ml = min(GAMMA_LUOI, key=lambda g: ml[f"S{tot[0]}_g{g}"])
-    ra = {"DM": {"S": tot[0], "so_buoc": tot[1], "gamma": tot[2], "gap_val_%": tot[3], "tg_val_ms": tot[4]},
-          "mot_lan": {"S": tot[0], "gamma": g_ml, "gap_val_%": ml[f"S{tot[0]}_g{g_ml}"]},
+    g_ml = min(CACH_LUOI, key=lambda g: ml[f"S{tot[0]}_g{g}"])
+    ra = {"DM": {"S": tot[0], "so_buoc": tot[1], "cach": tot[2], "gap_val_%": tot[3], "tg_val_ms": tot[4]},
+          "mot_lan": {"S": tot[0], "cach": g_ml, "gap_val_%": ml[f"S{tot[0]}_g{g_ml}"]},
           "han_thoi_gian_val_ms": han, "co_cau_hinh_dat_han": bool(dat), "bang": bang}
     json.dump(ra, open(KQ / "chon_cau_hinh.json", "w"), indent=1)
     print("chọn:", ra["DM"], ra["mot_lan"], "hạn", round(han, 2), "ms", flush=True)
@@ -154,7 +155,7 @@ def cham(ten_k, cfg, net_dm, net_ml, phan=0, so_phan=1):
                 s = time.perf_counter()
                 th = TinhHuong2(x, muc)
                 r_dm, c_dm, _ = giai(net_dm, th, "dm", S=cfg["DM"]["S"], so_buoc=cfg["DM"]["so_buoc"],
-                                     gamma=cfg["DM"]["gamma"], gen=gen)
+                                     cach=cfg["DM"]["cach"], gen=gen)
                 hang["tg_DM"], hang["DM"] = time.perf_counter() - s, c_dm
                 md = th.md
                 hang["qua_tai_DM"] = md.qua_tai(md.tai(r_dm))
@@ -166,7 +167,7 @@ def cham(ten_k, cfg, net_dm, net_ml, phan=0, so_phan=1):
                 # Một-lần
                 s = time.perf_counter()
                 th = TinhHuong2(x, muc)
-                _, c_ml, _ = giai(net_ml, th, "mot_lan", S=cfg["mot_lan"]["S"], gamma=cfg["mot_lan"]["gamma"],
+                _, c_ml, _ = giai(net_ml, th, "mot_lan", S=cfg["mot_lan"]["S"], cach=cfg["mot_lan"]["cach"],
                                   rng=np.random.default_rng(int(x["t"])))
                 hang["tg_ML"], hang["ML"] = time.perf_counter() - s, c_ml
                 # Dijkstra tuần tự, TKCB-KGH 1 lần, 10 lần (cùng tiến trình)

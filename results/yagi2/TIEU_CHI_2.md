@@ -65,3 +65,18 @@ Báo đủ cả 9 ô, kể cả khi DM không đạt.
   các lần sau thứ tự ngẫu nhiên). Tiêu chí C1–C5 giữ nguyên. Cũng trong lần đo này (chỉ đối chứng, val): so với
   TKCB-KGH 10 lần, Dijkstra tuần tự vượt 0,17 / 2,79 / 5,30% (nhẹ / vừa / nặng), TKCB-KGH 1 lần 0,001 / 0,11 / 0,28%,
   TKCB 10 lần trên 8 ứng viên 0,000 / 0,58 / 48,8%; nhãn không có phần nào nằm ngoài hành lang.
+- 20/10/2026 — **Đổi cách dựng tuyến (phát hiện trên val, trước khi chấm Yagi).** Kiểm tra trên 300 tình huống val với
+  bản đồ cạnh ĐÚNG (lấy từ nhãn): cách dựng tuyến đã chốt (Dijkstra tuần tự + γ·(−ln ŷ)) còn kém hơn Dijkstra tuần tự
+  thường — vượt mốc 1,37% khi γ = 0, 1,68% (γ = 0,3), 2,19% (γ = 1), 3,31% (γ = 3) — tức nó không dùng được cả một bản
+  đồ hoàn hảo, vì bản đồ cho biết TỈ LỆ nhu cầu của cả cặp trên mỗi cạnh chứ không cho biết luồng nào đi đường nào.
+  Thay bằng hai cách dựng tuyến từ bản đồ, đều do DM sinh tuyến: (pr) phân rã bản đồ của mỗi cặp thành tối đa 6 đường
+  (đường "chắc nhất" theo −ln ŷ trên hành lang, trọng số = ŷ nhỏ nhất trên đường, dừng khi < 0,02), rồi chia các luồng
+  theo tỉ lệ trọng số; (gan) cùng các đường đó nhưng mỗi luồng (lớn trước) chọn đường có chi phí biên nhỏ nhất với tải
+  hiện tại. Với bản đồ đúng: pr vượt mốc 0,021%, gan 0,91%. Cách dựng tuyến (pr / gan) được chọn trên val cùng với
+  S và số bước (thay cho γ, đã bỏ); Một-lần chọn cách dựng tuyến trên val với S của DM.
+- 20/10/2026 — **Công khai kết quả val của mô hình thử.** Một mô hình DM huấn luyện dở 5 epoch (H = 32, chọn checkpoint
+  theo cách dựng tuyến cũ) cho trên cùng 300 tình huống val: pr vượt mốc 11,8% (S = 1) / 6,4% (S = 4), gan 4,6% / 2,6%
+  (chủ yếu do tải nặng). Không có số nào trên tập Yagi.
+- 20/10/2026 — **Huấn luyện lại từ đầu** với: H = 64 (đo trên val, thời gian một bước khử nhiễu với S = 1 như H = 32:
+  1,3 ms), thêm đặc trưng log(Λ_c / dung lượng trống), chọn checkpoint theo loss val (không phụ thuộc cách dựng tuyến),
+  gọn bộ nhớ (lần trước tiến trình Một-lần bị hệ điều hành dừng vì hết bộ nhớ). 20 epoch cho cả hai mô hình.

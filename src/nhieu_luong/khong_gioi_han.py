@@ -225,3 +225,76 @@ def ban_do_nhan(m: MangDay, tuyen, cap, cua):
         y[cua[k], e] += m.lam[k]
     tong = np.bincount(cua, weights=m.lam, minlength=len(cap))
     return y / tong[:, None]
+
+
+def dung_tuyen_phan_ra(m: MangDay, yhat, cap, cua, mask, thu_tu=None, so_duong_max=6, nguong=0.02):
+    """Dựng tuyến từ bản đồ cạnh bằng PHÂN RÃ LUỒNG (sửa 20/10/2026, xem TIEU_CHI_2.md): với mỗi cặp nguồn – đích,
+    lặp tìm đường "chắc nhất" (Dijkstra theo −ln ŷ trên hành lang), trọng số đường = ŷ nhỏ nhất trên đường, trừ
+    trọng số đó khỏi các cạnh, tới khi trọng số < ngưỡng; rồi chia các luồng của cặp (lớn trước) cho các đường theo tỉ
+    lệ trọng số (mỗi luồng vào đường còn thiếu nhiều nhất). Không dùng trễ: tuyến hoàn toàn do bản đồ cạnh quyết định."""
+    thu_tu = np.argsort(-m.lam, kind="stable") if thu_tu is None else np.asarray(thu_tu)
+    tuyen = [None] * m.K
+    for c, (s, d) in enumerate(cap):
+        con = np.where(mask[c], np.maximum(yhat[c], 0.0), 0.0)
+        duong, w = [], []
+        for i in range(so_duong_max):
+            trong_so = np.where(mask[c], -np.log(np.maximum(con, 1e-4)), 1e6)
+            e = m.duong(s, d, trong_so)
+            if len(e) == 0:
+                break
+            b = float(con[e].min())
+            if i > 0 and b < nguong:
+                break
+            duong.append(e)
+            w.append(max(b, 1e-6))
+            con[e] -= b
+        muc_tieu = np.array(w) / sum(w) * m.lam[cua == c].sum()
+        da = np.zeros(len(duong))
+        for k in thu_tu[cua[thu_tu] == c]:
+            j = int(np.argmax(muc_tieu - da))
+            tuyen[k] = duong[j]
+            da[j] += m.lam[k]
+    return tuyen
+
+
+def phan_ra_duong(m: MangDay, y_c, mask_c, s, d, so_duong_max=6, nguong=0.02):
+    """Phân rã bản đồ cạnh của một cặp thành tối đa so_duong_max đường kèm trọng số."""
+    con = np.where(mask_c, np.maximum(y_c, 0.0), 0.0)
+    duong, w = [], []
+    for i in range(so_duong_max):
+        e = m.duong(s, d, np.where(mask_c, -np.log(np.maximum(con, 1e-4)), 1e6))
+        if len(e) == 0:
+            break
+        b = float(con[e].min())
+        if i > 0 and b < nguong:
+            break
+        if not any(len(e) == len(x) and np.array_equal(e, x) for x in duong):
+            duong.append(e)
+            w.append(max(b, 1e-6))
+        con[e] -= b
+    return duong, np.array(w)
+
+
+def dung_tuyen_gan(m: MangDay, yhat, cap, cua, mask, thu_tu=None, so_duong_max=6, nguong=0.02):
+    """Dựng tuyến: phân rã bản đồ cạnh của mỗi cặp thành các đường (DM tự sinh tuyến), rồi lần lượt từng luồng (lớn
+    trước) chọn trong các đường của cặp mình đường có chi phí biên Σ[f(F+λ) − f(F)] nhỏ nhất với tải hiện tại."""
+    thu_tu = np.argsort(-m.lam, kind="stable") if thu_tu is None else np.asarray(thu_tu)
+    ds = [phan_ra_duong(m, yhat[c], mask[c], s, d, so_duong_max, nguong)[0] for c, (s, d) in enumerate(cap)]
+    F = np.zeros(m.E)
+    tuyen = [None] * m.K
+    for k in thu_tu:
+        lk = m.lam[k]
+        tot, gia = None, np.inf
+        for e in ds[cua[k]]:
+            g = _bien(m, F, e, lk)
+            if g < gia:
+                tot, gia = e, g
+        tuyen[k] = tot
+        F[tot] += lk
+    return tuyen
+
+
+def _bien(m: MangDay, F, e, lk):
+    p, C, r = m.prop[e], m.C[e], m.rho0[e]
+    f = lambda x: x * (p + PKT / C * (1 + h_hang_doi(r + x / C)) + PROC)
+    return float((f(F[e] + lk) - f(F[e])).sum())
