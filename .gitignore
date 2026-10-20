@@ -18,3 +18,5 @@ huong_dan/ket_qua/
 data/yagi/
 logs/
 results/yagi/test_tho/
+data/yagi2/
+results/**/*.xong
