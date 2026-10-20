@@ -13,3 +13,8 @@ dataset/oracle_labeler.py
 
 # kết quả sinh ra khi chạy hướng dẫn
 huong_dan/ket_qua/
+
+# dữ liệu Yagi nhiều luồng sinh lại được bằng src/nhieu_luong/tao_du_lieu_nl.py
+data/yagi/
+logs/
+results/yagi/test_tho/

@@ -236,7 +236,8 @@ def sinh_kich_ban(g: MangGoc, tt: ThoiTiet, h0: int, seed: int, p: ThamSo = Tham
     quan_sat = {"R": R.astype(np.float32), "giong": giong_diem, "gust": gust.astype(np.float32),
                 "gio_vn": gio_vn.astype(np.float32), "J": J_diem.astype(np.float32),
                 "tai": L.astype(np.float32), "tat": tat, "su_co": su_co,
-                "ti_le_dut_mua": float(np.mean(dut[g.W > 0]))}
+                "ti_le_dut_mua": float(np.mean(dut[g.W > 0])),
+                "C2": C2.astype(np.float32), "rho": rho.astype(np.float32), "song": song}   # cho bài toán nhiều luồng
     return Wn, quan_sat
 
 
