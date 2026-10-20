@@ -57,3 +57,11 @@ Dự đoán trước: C5 chỉ có khả năng đạt ở tải nặng (ở tả
 Báo đủ cả 9 ô, kể cả khi DM không đạt.
 
 ## Thay đổi (ghi trước khi có bất kỳ kết quả nào)
+- 20/10/2026 — **Số mẫu S chọn trên val (trước khi huấn luyện).** Đo thời gian các đối chứng trên 6 kịch bản val
+  (87 tình huống, không phải Yagi, chưa có mô hình nào): Dijkstra tuần tự 2,5 ms, TKCB-KGH 1 lần 6,1 ms, TKCB-KGH 10 lần
+  68,6 ms (trung vị). Mỗi lần dựng tuyến tốn đúng bằng một lần Dijkstra tuần tự (≈ 1/27 của TKCB-KGH 10 lần), nên với
+  S = 4 mẫu, riêng phần dựng tuyến đã vượt 1/10 → C4 không thể đạt dù mạng nhanh đến đâu. Sửa: S cũng được chọn trên
+  val, cùng quy tắc như số bước và γ, trong {1, 2, 4}. Một-lần dùng đúng S đã chọn cho DM (lần đầu luồng lớn trước,
+  các lần sau thứ tự ngẫu nhiên). Tiêu chí C1–C5 giữ nguyên. Cũng trong lần đo này (chỉ đối chứng, val): so với
+  TKCB-KGH 10 lần, Dijkstra tuần tự vượt 0,17 / 2,79 / 5,30% (nhẹ / vừa / nặng), TKCB-KGH 1 lần 0,001 / 0,11 / 0,28%,
+  TKCB 10 lần trên 8 ứng viên 0,000 / 0,58 / 48,8%; nhãn không có phần nào nằm ngoài hành lang.
