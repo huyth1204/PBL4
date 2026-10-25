@@ -78,7 +78,23 @@ Kết quả (600 snapshot, `--mode phase`, 12 khối × 12 snapshot, chừa 3 bi
 
 Bỏ 147 snapshot ở biên. **Giao giữa ba tập = 0 snapshot** (kiểm trong
 `dataset/v3/split_info.json`). Test giống train: trung vị Jaccard 0.70 (chia ngẫu
-nhiên sẽ là 0.97). Mỗi tệp có `node_latlon_alt`, `link_stats`, `mo_rong=True`.
+nhiên sẽ là 0.97).
+
+`link_stats` **được chia theo tập** và cột `snapshot_id` đánh lại **0..S_tập−1**
+cho khớp `W_snapshots`, `node_latlon_alt` và `snapshot_id` của mẫu:
+
+| Tập | Snapshot | `link_stats` | Cột 0 | Cạnh trong `W_snapshots` |
+|---|---|---|---|---|
+| train | 357 | 154 646 | 0–356 | 154 646 ✓ |
+| val | 48 | 19 550 | 0–47 | 19 550 ✓ |
+| test | 48 | 20 144 | 0–47 | 20 144 ✓ |
+| tổng | 453 | 194 340 | — | — |
+
+Bảng gốc 253 856 − 194 340 = **59 516 dòng của 147 snapshot bị bỏ ở biên**.
+Tra `link_stats[link_stats[:,0] == k]` bằng index cục bộ là đúng; dùng chỉ số gốc
+0–599 sẽ lấy sai. Test `test_mang_mo_rong.py::test_v3_split_khong_ro_ri_link_stats`
+khoá hợp đồng này (số dòng = số liên kết dương trong `W_snapshots` của chính tập).
+
 
 Nếu `split_dataset.py` báo `Không biết cách chia các key sau (shape): ...` thì đó
 là key metadata mới do labeler thêm — khai báo tên nó vào `SHARED_KEYS` (hoặc

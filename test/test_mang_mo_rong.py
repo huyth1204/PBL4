@@ -124,6 +124,33 @@ def test_v3_co_hoang_sa_truong_sa_va_uav_dat_co_dinh():
         assert n in o, f"thiếu nút {n}"
 
 
+def test_v3_split_khong_ro_ri_link_stats():
+    """link_stats của từng tập phải lọc theo snapshot của tập và đánh lại cột 0.
+
+    Trước đây bảng bị chép nguyên 253.856 dòng vào cả 3 tập, nên tra bằng chỉ số
+    cục bộ sẽ lấy sai snapshot (và lộ thông tin liên kết của tập khác).
+    """
+    import json
+    d = ROOT / "dataset" / "v3"
+    if not (d / "split_info.json").exists():
+        raise BoQua("chưa có dataset/v3/split_info.json")
+    info = json.loads((d / "split_info.json").read_text(encoding="utf-8"))
+    for ten, snap_ids in info["snapshot_ids"].items():
+        f = np.load(d / f"{ten}.npz", allow_pickle=True)
+        ls, W = f["link_stats"], f["W_snapshots"]
+        assert len(ls) < 253856, f"{ten}: link_stats vẫn là cả bảng gốc ({len(ls)} dòng)"
+        # cột 0 phải là chỉ số cục bộ của tập này
+        assert ls[:, 0].min() >= 0 and ls[:, 0].max() < W.shape[0], \
+            f"{ten}: snapshot_id trong link_stats vượt {W.shape[0]} snapshot của tập"
+        # số dòng phải bằng số liên kết dương của W_snapshots (bỏ đường chéo)
+        so_canh = int((W >= 0).sum()) - W.shape[0] * W.shape[1]
+        assert len(ls) == so_canh, f"{ten}: {len(ls)} dòng link_stats != {so_canh} cạnh trong W"
+        # mỗi snapshot đều có mặt đúng số liên kết của nó
+        dem = np.bincount(ls[:, 0].astype(np.int64), minlength=W.shape[0])
+        assert (dem > 0).all(), f"{ten}: có snapshot không có dòng link_stats nào"
+        assert abs(int(dem.sum()) - len(ls)) == 0
+
+
 def _run():
     return chay_tests(globals(), "test_mang_mo_rong")
 

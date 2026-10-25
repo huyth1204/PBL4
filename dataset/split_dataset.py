@@ -454,7 +454,24 @@ def main(argv=None):
         extra = {k: data[k] for k in ("node_layer", "node_kind") if k in data}
         extra.update({k: data[k] for k in phan_loai["shared"]
                       if k not in ("node_order", "node_layer", "node_kind")})
-        extra.update({k: data[k] for k in phan_loai["per_link"]})
+        # Bảng per-link: lọc các dòng thuộc snapshot của tập này rồi đánh lại cột 0.
+        # Trước đây bị chép nguyên cả bảng -> rò thông tin giữa 3 tập và cột
+        # snapshot_id giữ chỉ số gốc (0..S-1) nên tra bằng index cục bộ là sai.
+        for k in phan_loai["per_link"]:
+            arr = data[k]
+            if arr.ndim < 2 or arr.shape[0] == 0:
+                extra[k] = arr
+                continue
+            row_sid = arr[:, 0].astype(np.int64)
+            if row_sid.min() < 0 or row_sid.max() >= len(code_of_row):
+                raise SystemExit(
+                    f"{NAMES[s]}: {k} có snapshot_id ngoài phạm vi "
+                    f"0..{len(code_of_row) - 1}; dữ liệu vào không nhất quán."
+                )
+            giu = bang_remap[row_sid] >= 0
+            arr = arr[giu].copy()
+            arr[:, 0] = bang_remap[row_sid[giu]]
+            extra[k] = arr
         np.savez_compressed(
             outdir / f"{NAMES[s]}.npz",
             **{k: (remapped_sid if k == "snapshot_id" else data[k][rows]) for k in per_sample},
