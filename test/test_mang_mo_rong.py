@@ -52,11 +52,11 @@ def test_cau_hinh_cu_van_ra_73_nut():
 
 
 def test_mo_rong_them_nut_va_giu_nguyen_khoi_cu():
-    """Bật mở rộng: +18 nút, và 73 nút cũ giữ nguyên thứ tự tuyệt đối."""
+    """Bật mở rộng: thêm nút, và 73 nút cũ giữ nguyên thứ tự tuyệt đối."""
     a0, g0 = _mang(False)
     a1, g1 = _mang(True)
-    assert len(g1) - len(g0) == len(EXTRA_GROUND_SITES) == 14   # 11 cũ + 3 ven biển Bắc
-    assert len(a1) - len(a0) == 2 + 5                 # 2 HAPS + 5 UAV đặt cố định
+    assert len(g1) - len(g0) == len(EXTRA_GROUND_SITES)
+    assert len(a1) - len(a0) == 2 + len(EXTRA_UAV_SITES)   # 2 HAPS + UAV đặt cố định
     old_air = [n for n in a1 if n in set(a0)]
     old_gnd = [n for n in g1 if n in set(g0)]
     assert old_air == a0 and old_gnd == g0, "thứ tự nút cũ bị xáo trộn"
@@ -69,7 +69,7 @@ def test_moi_nut_moi_deu_duoc_khai_bao_ngoai_CAC_TEN_CU():
     for n in air + gnd:
         assert (n in CAC_TEN_CU) == (khoa_sap_xep(n)[0] == 0), n
     moi = [n for n in air + gnd if khoa_sap_xep(n)[0] == 1]
-    assert len(moi) == len(EXTRA_GROUND_SITES) + 2 + len(EXTRA_UAV_SITES) == 21
+    assert len(moi) == len(EXTRA_GROUND_SITES) + 2 + len(EXTRA_UAV_SITES)
 
 
 def test_v3_giu_nguyen_chi_so_cua_73_nut_trong_v2():
@@ -81,7 +81,7 @@ def test_v3_giu_nguyen_chi_so_cua_73_nut_trong_v2():
     o2 = [str(x) for x in a["node_order"]]
     o3 = [str(x) for x in b["node_order"]]
     assert len(o2) == 73
-    # 73 nút cũ + 14 ground + 2 HAPS + 5 UAV đặt cố định; 50 vệ tinh thêm ở tầng space
+    # 73 nút cũ + ground mở rộng + 2 HAPS + UAV đặt cố định; vệ tinh thêm ở tầng space
     assert len(o3) == 73 + len(EXTRA_GROUND_SITES) + 2 + len(EXTRA_UAV_SITES)
     lech = [(i, n, o3.index(n)) for i, n in enumerate(o2) if o3.index(n) != i]
     assert not lech, f"nút cũ bị lệch chỉ số: {lech[:5]}"
@@ -111,7 +111,10 @@ def test_v3_co_toa_do_va_thong_tin_lien_ket():
     lat = b["node_latlon_alt"]
     n_node = len(b["node_order"])
     assert lat.shape == (600, n_node, 3)
-    assert n_node == 94, f"v3 phải có 94 nút (73 cũ + 16 ground/HAPS + 5 UAV), đang {n_node}"
+    # 73 nút cũ + ground mở rộng + 2 HAPS + UAV đặt cố định
+    kyen_vong = 73 + len(EXTRA_GROUND_SITES) + 2 + len(EXTRA_UAV_SITES)
+    assert n_node == kyen_vong, \
+        f"v3 phải có {kyen_vong} nút (73 cũ + ground + HAPS + UAV), đang {n_node}"
     assert np.isfinite(lat[:, :, :2]).all(), "tọa độ lat/lon không được NaN"
     cot = [str(x) for x in b["link_stat_cols"]]
     assert cot == ["snapshot_id", "u", "v", "distance_km", "elevation_deg",
@@ -189,6 +192,126 @@ def test_uav_ven_bien_bac_phu_duoc_hai_phong_va_quang_ninh():
         assert elev >= _UAV_GROUND.min_elev_deg, \
             f"{nut_ten}: góc nâng {elev:.2f}° < {_UAV_GROUND.min_elev_deg}° (cạnh sẽ không được tạo)"
         assert not blocked_by_earth(e_u, e_n), f"{nut_ten}: bị Trái Đất chắn"
+
+
+def test_tep_thoi_tiet_mo_rong_khop_tep_23_diem():
+    """Tệp thời tiết mở rộng phải chứa ĐÚNG dữ liệu của tệp 23 điểm.
+
+    Bẫy đã sập một lần: sinh lại `thoi_tiet_vn_mr.npz` bằng lệnh `tai --mo-rong`
+    mà QUÊN chạy `them-giong`. Hậu quả không báo lỗi:
+      - mất hẳn `cape` / `lifted_index` / `code_fc`  -> không khí quyển nào có giông;
+      - cột `code` chỉ còn mã ERA5, số giờ giông về 0 (tệp đúng có 8 343 ô-giờ);
+      - UAV không bao giờ hạ cánh vì giông, sét không bao giờ ngắt nút mặt đất;
+      - mọi số liệu trên mạng 94 nút thành KHÔNG SO SÁNH ĐƯỢC với kết quả cũ.
+
+    Test so theo TÊN điểm (không theo chỉ số cột), vì 3 trạm ven biển mới được
+    chèn vào giữa danh sách chứ không nối vào cuối.
+    """
+    import numpy as np
+    from src.ngau_nhien.thoi_tiet import GIONG
+
+    mr = ROOT / "data" / "thoi_tiet_vn_mr.npz"
+    goc = ROOT / "data" / "thoi_tiet_vn.npz"
+    if not mr.exists() or not goc.exists():
+        raise BoQua("thiếu tệp thời tiết, bỏ qua")
+    a = np.load(goc, allow_pickle=False)
+    b = np.load(mr, allow_pickle=False)
+    ten_a = [str(x) for x in a["site_names"]]
+    ten_b = [str(x) for x in b["site_names"]]
+    thieu = [n for n in ten_a if n not in ten_b]
+    assert not thieu, f"tệp mở rộng thiếu điểm: {thieu}"
+    idx = [ten_b.index(n) for n in ten_a]
+
+    assert np.array_equal(a["time_utc"], b["time_utc"]), "trục thời gian phải khớp tuyệt đối"
+
+    # 1) Bắt buộc có đủ bộ biến khí quyển mà nhánh ERA5 không có (do them-giong sinh).
+    #    `code_fc` không có trong tệp 23 điểm cũ nên chỉ kiểm khi tệp gốc có.
+    for k in ("cape", "lifted_index"):
+        assert k in b.keys(), \
+            f"tệp mở rộng THIẾU '{k}': quên chạy `them-giong --vao data/thoi_tiet_vn_mr.npz`"
+
+    # 2) 23 cột cũ phải giống TỪNG BIT (kể cả mã thời tiết) => hồi quy cũ vẫn đúng.
+    for k in ("cape", "code", "code_fc", "lifted_index", "precip", "gust"):
+        if k not in a.keys():
+            continue
+        assert np.array_equal(a[k], b[k][:, idx], equal_nan=True), \
+            f"cột '{k}' của 23 điểm cũ đã bị thay đổi so với tệp gốc"
+
+    # 3) Phải THẬT SỰ có giông, không chỉ có cột rỗng.
+    so_giong = int(np.isin(b["code"][:, idx], GIONG).sum())
+    assert so_giong > 0, \
+        "số ô-giờ giông trong 23 điểm = 0: 'code' chưa được đặt lại theo luật CAPE"
+
+
+def test_uav_dat_co_dinh_phu_duoc_it_nhat_mot_nut_mat_dat():
+    """Mỗi UAV đặt cố định phải phục vụ được ít nhất một nút mặt đất.
+
+    Bẫy đã sập một lần: `UAV-VinhBacBo` đặt ở 20.30/106.80 "giữa vịnh Bắc Bộ".
+    Nút gần nhất (Thái Bình) cách 51 km, xa hơn tầm với thật của luật UAV_GROUND
+    (~22.4 km như phân tích trong air_ground.UAV_DAT_ALT_M), nên UAV này chỉ nối
+    được HAPS và vệ tinh — nó hạ cánh khi có gió nhưng KHÔNG ảnh hưởng đường đi
+    của bất kỳ nút nào. Đã dời về đúng Bạch Long Vĩ.
+    """
+    from src.physics.air_ground import _UAV_GROUND, Node, elevation_deg, node_ecef_km
+
+    st = static_nodes(mo_rong=True)
+    mat_dat = [n for n in st if n.layer == "ground"]
+    for u in make_placed_uavs():
+        un = u.node_at(0.0)
+        e_u = node_ecef_km(un)
+        phu = [g.name for g in mat_dat
+               if float(np.linalg.norm(node_ecef_km(g) - e_u)) <= _UAV_GROUND.max_range_km
+               and elevation_deg(g, e_u) >= (_UAV_GROUND.min_elev_deg or 0.0)]
+        assert phu, (f"{u.name} ({u.center_lat_deg}, {u.center_lon_deg}) không phục vụ "
+                     f"nút mặt đất nào — chỉ nối được HAPS/vệ tinh")
+
+
+def test_bach_long_vi_co_ha_tang_cuu_nut():
+    """Bạch Long Vĩ là nơi giật mạnh nhất trong bão Yagi và từng cô lập 100%.
+
+    Nút này phải có ít nhất một liên kết cục bộ (UAV/HAPS), không chỉ vệ tinh.
+    """
+    from src.physics.air_ground import compute_local_links
+
+    st = static_nodes(mo_rong=True)
+    links = compute_local_links(st + [p.node_at(0.0) for p in make_placed_uavs()])
+    co = [l for l in links if l["exists"] and "BachLongVi" in (l["node_a"], l["node_b"])]
+    assert co, "BachLongVi không có liên kết cục bộ nào (chỉ còn đường vệ tinh)"
+    print("    BachLongVi nối cục bộ với: "
+          + ", ".join(sorted({l["node_b"] if l["node_a"] == "BachLongVi" else l["node_a"]
+                              for l in co})))
+
+
+def test_v3_do_cao_ve_tinh_hop_le():
+    """`node_latlon_alt` của vệ tinh phải là ĐỘ CAO QUỸ ĐẠO, không phải 0.
+
+    Bẫy đã sập một lần: code ghi `wgs84.subpoint_of(...).elevation.km`, luôn = 0.
+    Đó là độ cao ellipsoid tại điểm chiếu dưới chân vệ tinh, KHÔNG phải độ cao
+    quỹ đạo, nên cả 50 vệ tinh đều có alt = 0.0 mà không báo lỗi — trong khi
+    Starlink thật bay ở ~550 km. Bẫy thứ hai: TLE chứa cả vệ tinh đã rơi; chúng
+    cho độ cao ÂM (vd -2855 km) hoặc NaN, làm hỏng mọi tính hình học.
+    """
+    if not V3.exists():
+        raise BoQua("chưa có oracle_dataset_v3.npz")
+    b = np.load(V3, allow_pickle=True)
+    lop = [str(x) for x in b["node_layer"]]
+    alt = b["node_latlon_alt"]
+    i_sat = [i for i, l in enumerate(lop) if l == "space"]
+    assert i_sat, "v3 không có vệ tinh nào"
+    a = alt[:, i_sat, 2].ravel()
+    assert np.isfinite(a).all(), f"có {int((~np.isfinite(a)).sum())} độ cao vệ tinh NaN"
+    assert (a > 0).all(), f"có {int((a <= 0).sum())} độ cao vệ tinh <= 0 (min {a.min():.1f} km)"
+    # Starlink: quỹ đạo thấp ~300-600 km. Cho biên rộng nhưng phải loại được cả 0
+    # và các giá trị vô nghĩa, đồng thời bắt được nếu ai đó lại ghi subpoint.
+    assert 100.0 < float(np.median(a)) < 2000.0, \
+        f"trung vị độ cao vệ tinh {np.median(a):.1f} km không giống quỹ đạo thật"
+
+    # Nút mặt đất: độ cao nhỏ (km, tức vài trăm mét)
+    i_gnd = [i for i, l in enumerate(lop) if l == "ground"]
+    if i_gnd:
+        g = alt[:, i_gnd, 2]
+        assert np.isfinite(g).all()
+        assert (np.abs(g) < 10.0).all(), "độ cao nút mặt đất bất thường"
 
 
 def _run():

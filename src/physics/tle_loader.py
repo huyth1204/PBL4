@@ -40,9 +40,69 @@ class GroundStation:
 # ----------------------------------------------------------------------------
 # 1. Nạp dữ liệu quỹ đạo (TLE) -> danh sách EarthSatellite
 # ----------------------------------------------------------------------------
-def load_tle(source: str | Path) -> list[EarthSatellite]:
+def load_tle(source: str | Path, loc_hong: bool = True,
+             alt_min_km: float = 150.0, luc=None,
+             cac_moc=None, span_giay: float = 0.0,
+             buoc_giay: float = 20.0) -> list[EarthSatellite]:
+    """Nạp TLE. Mặc định LỌC BỎ vệ tinh đã rơi / TLE hỏng.
+
+    Tệp TLE công khai chứa cả vệ tinh đã ngừng hoạt động hoặc đang rơi. Propagate
+    TLE của chúng cho ra vị trí vô nghĩa: độ cao âm hàng nghìn km, NaN, hoặc bay
+    xa dần tới cả tỉ km.
+
+    Bằng chứng đo trên `data/tle/starlink.txt` (10 728 vệ tinh), thời điểm 8/2026:
+      - **674** vệ tinh cho độ cao ≤ 0 ở ít nhất một thời điểm, **264** cho NaN;
+      - lọc tại `now()` chỉ loại 140, vì nhiều vệ tinh còn "sống" hôm nay nhưng
+        đã rơi ở thời điểm khác;
+      - STARLINK-4390 là ví dụ điển hình: +308 km lúc epoch, **-207 km sau 30
+        ngày**, rồi +81 000 km, +639 000 km, +2 934 059 km... Vệ tinh đang rơi
+        có TLE suy giảm cực nhanh, nên kiểm ở MỘT thời điểm là không đủ.
+
+    Vì vậy phải kiểm trên **toàn bộ khoảng thời gian dataset sẽ dùng**: truyền
+    `luc` (mốc đầu) và `span_giay` (độ dài). Một vệ tinh chỉ được giữ khi độ cao
+    hợp lệ ở MỌI mốc kiểm tra.
+
+    Tham số:
+      loc_hong   : False để tắt lọc (tái lập hành vi cũ).
+      alt_min_km : ngưỡng độ cao tối thiểu. Starlink bay ở ~550 km; 150 km vẫn
+                   an toàn và chỉ loại vệ tinh thật sự đã rơi.
+      luc        : mốc bắt đầu (skyfield Time). Mặc định `now()`.
+      cac_moc    : danh sách Time cụ thể cần kiểm. Ưu tiên hơn `span_giay`.
+      span_giay  : độ dài khoảng thời gian cần kiểm, tính từ `luc`. 0 = chỉ `luc`.
+      buoc_giay  : bước giữa các mốc kiểm khi dùng `span_giay`.
+    """
     satellites = load.tle_file(str(source), ts=timescale())
-    return satellites
+    if not loc_hong:
+        return satellites
+    if cac_moc is not None:
+        moc = list(cac_moc)
+    else:
+        t = luc if luc is not None else timescale().now()
+        if span_giay <= 0:
+            moc = [t]
+        else:
+            so_moc = int(span_giay // buoc_giay) + 1
+            moc = [t + i * buoc_giay / 86400.0 for i in range(so_moc)]
+    tot = len(satellites)
+    giu = []
+    for sat in satellites:
+        tot_ok = True
+        for t in moc:
+            try:
+                r = sat.at(t).position.km
+                alt = float(np.linalg.norm(r)) - EARTH_RADIUS_KM
+            except Exception:
+                tot_ok = False
+                break
+            if not np.isfinite(alt) or alt < alt_min_km:
+                tot_ok = False
+                break
+        if tot_ok:
+            giu.append(sat)
+    if len(giu) != tot:
+        print(f"  TLE: loại {tot - len(giu)}/{tot} vệ tinh đã rơi/hỏng "
+              f"(kiểm {len(moc)} mốc, độ cao < {alt_min_km:.0f} km hoặc NaN)")
+    return giu
 
 
 # ----------------------------------------------------------------------------

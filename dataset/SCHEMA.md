@@ -143,10 +143,23 @@ trong `air_ground.py` không có luật ground↔ground, nên link mặt đất 
 python -m src.ngau_nhien.thoi_tiet tai --start 2024-01-01 --end 2025-12-31 \
     --out data/thoi_tiet_vn.npz
 
-# Tệp mở rộng 41 điểm (dùng cho mạng 94 nút) — tên tệp KHÁC, không ghi đè tệp trên
+# Tệp mở rộng 44 điểm (dùng cho mạng 101 nút) — tên tệp KHÁC, không ghi đè tệp trên
 python -m src.ngau_nhien.thoi_tiet tai --mo-rong --start 2024-01-01 --end 2025-12-31 \
     --out data/thoi_tiet_vn_mr.npz
+
+# BẮT BUỘC chạy tiếp bước này cho tệp vừa sinh:
+python -m src.ngau_nhien.thoi_tiet them-giong --vao data/thoi_tiet_vn_mr.npz
 ```
+
+> ⚠️ **Quên `them-giong` là lỗi câm, không báo lỗi.** Lệnh `tai` chỉ lấy ERA5
+> (mưa, gió giật, mã thời tiết) — **không có** `cape`/`lifted_index`/`code_fc`
+> và cột `code` không có mã giông 95/97. Hậu quả: UAV không bao giờ hạ cánh vì
+> giông, sét không bao giờ ngắt nút mặt đất, và mọi kết quả trên mạng lớn
+> **không so sánh được** với kết quả cũ. Tệp đúng có **8 343 ô-giờ giông** trong
+> 23 điểm cũ (2.24% số giờ theo luật CAPE).
+> Test `test_tep_thoi_tiet_mo_rong_khop_tep_23_diem` chặn đúng lỗi này: nó đòi
+> có `cape`/`lifted_index`, đòi 23 cột cũ giống **từng bit** (so theo *tên* điểm,
+> vì trạm mới chèn giữa chứ không nối cuối), và đòi số ô-giờ giông > 0.
 
 > ⚠️ **Khoảng thời gian thật của cả hai tệp là 2024-01-01 → 2025-12-31**
 > (17 544 giờ). Đừng chép lệnh cũ `--start 2023-01-01 --end 2024-12-31` ở bản
@@ -154,20 +167,37 @@ python -m src.ngau_nhien.thoi_tiet tai --mo-rong --start 2024-01-01 --end 2025-1
 > **ghi đè tệp 23 điểm**. Luôn dùng `--out data/thoi_tiet_vn_mr.npz` cho bản
 > mở rộng.
 
-Tệp thời tiết chứa 23 điểm (mặc định) hoặc 41 điểm (`--mo-rong`, thêm 14 ground
-+ 2 HAPS + 5 UAV đặt cố định). `kiem_tra_du_diem()` ném `ValueError` nếu cấu
-hình có điểm mà tệp thời tiết thiếu — chặn trường hợp nút mới lặng lẽ không có
-mưa/gió. Nguồn cấu hình duy nhất là `src/physics/sites.py`.
+> ⚠️ **Độ cao vệ tinh: hai bẫy cùng lúc.**
+> 1. `wgs84.subpoint_of(...).elevation.km` **luôn = 0**: đó là độ cao ellipsoid
+>    tại điểm chiếu dưới chân vệ tinh, không phải độ cao quỹ đạo. Bản v3 cũ có
+>    `alt = 0.0` cho cả 50 vệ tinh. Phải lấy `‖r‖ − R_earth` từ vector vị trí.
+> 2. Tệp TLE công khai chứa cả vệ tinh **đã rơi**: propagate chúng cho ra độ cao
+>    âm hàng nghìn km hoặc NaN. `load_tle()` lọc theo ngưỡng 150 km, nhưng phải
+>    kiểm trên **toàn bộ khoảng thời gian dataset**, không phải một mốc: lọc ở
+>    `now()` chỉ loại 140/10 728, và vệ tinh đang rơi (vd `STARLINK-4390`:
+>    +308 km lúc epoch, **−207 km sau 30 ngày**, rồi +81 000 km…) vẫn lọt.
+> Bản v3 hiện tại: độ cao vệ tinh **295–584 km**, trung vị 479 km, 0 âm, 0 NaN.
+> Test `test_v3_do_cao_ve_tinh_hop_le` khoá cả hai bẫy.
+
+Tệp thời tiết chứa 23 điểm (mặc định) hoặc 44 điểm (`--mo-rong`, thêm 14 ground
++ 2 HAPS + 12 UAV đặt cố định; 3 trạm ven biển Bắc được *chèn* chứ không nối
+cuối). `kiem_tra_du_diem()` ném `ValueError` nếu cấu hình có điểm mà tệp thời
+tiết thiếu — chặn trường hợp nút mới lặng lẽ không có mưa/gió. Nguồn cấu hình
+duy nhất là `src/physics/sites.py`.
 
 ## 5. Trạng thái UAV: `tat` và `ha_canh`
 
-> **Cảnh báo về nút cô lập (đo trên v3, 600 snapshot).** Một số nút không có
-> liên kết nào trong phần lớn thời gian: `LySon` 63%, `DaLat` 62%, `BachLongVi`
-> 61%, `ConDao`/`PhuQuoc` 60%, `SaPa` 29%. **Nhưng đây không phải vấn đề của
-> nút mới** — hai nút CŨ của mạng 73 là `BuonMaThuot` 63% và `CaMau` 60% cũng
-> y như vậy. Nguyên nhân là lỗ hổng phủ của cấu hình vệ tinh, đã tồn tại từ v2.
-> Hệ quả: thêm HAPS/UAV riêng cho Phú Quốc sẽ chữa sai chỗ; muốn giảm thì phải
-> sửa cấu hình vệ tinh và chấp nhận đổi cả v2.
+> **Nút cô lập đã được xử lý (đo lại trên v3, 600 snapshot): không còn nút nào.**
+> Bản v3 trước đây có 8 nút mất hết liên kết ~60% thời gian (`LySon` 63.2%,
+> `BuonMaThuot` 62.8%, `DaLat` 62.0%, `BachLongVi` 60.8%, `CaMau` 60.2%,
+> `ConDao` 59.8%, `PhuQuoc` 59.7%, `SaPa` 29.2%) vì chúng chỉ có đường vệ tinh.
+> Nguyên nhân là lỗ hổng phủ vệ tinh có từ v2, **không phải** lỗi của nút mới.
+>
+> Cách sửa: đặt UAV ngay trên từng nút (`UAV-LySon`, `UAV-BuonMaThuot`,
+> `UAV-DaLat`, `UAV-CaMau`, `UAV-ConDao`, `UAV-PhuQuoc`, `UAV-SaPa`,
+> `UAV-BachLongVi`) — khoảng cách ~2.5 km, góc nâng 90°, biên +85° so với ngưỡng
+> 5°. Không có ca nào sát ngưỡng nên không thể hỏng khi dịch toạ độ.
+> Kiểm lại sau khi sinh: **0 nút** mất hết liên kết quá 10% thời gian.
 
 `sinh_kich_ban()` (trong `src/ngau_nhien/kich_ban.py`) trả `quan_sat` có hai cờ
 liên quan tới UAV:
@@ -207,10 +237,17 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 > | `UAV-TruongSa` | TruongSa | 11.8 m/s | 0/72 giờ |
 > | `UAV-HaiPhong` | UAV-HaiPhong | **41.8 m/s** | **18/72 giờ** |
 > | `UAV-QuangYen` | UAV-QuangYen | **45.2 m/s** | **22/72 giờ** |
-> | `UAV-VinhBacBo` | UAV-VinhBacBo | **41.4 m/s** | **33/72 giờ** |
+> | `UAV-BachLongVi` | BachLongVi | **58.7 m/s** | **72/72 giờ** |
+>
+> `BachLongVi` là nơi giật mạnh **nhất** trong cả mạng (58.7 m/s, mưa 246 mm,
+> vượt ngưỡng 15 m/s **toàn bộ 24/24 giờ** ngày 7/9). Trước đây đảo này không có
+> hạ tầng nào nên UAV `UAV-VinhBacBo` cũ đặt ngoài khơi 20.30/106.80 không phủ
+> được nút nào (Thái Bình cách 51 km) — nó chỉ nối HAPS/vệ tinh, tức hạ cánh mà
+> **không ảnh hưởng đường đi của bất kỳ nút nào**. Đã dời về đúng Bạch Long Vĩ.
 >
 > Tức là mạng mở rộng **có** kích hoạt `ha_canh`, cả ở hải đảo (Hoàng Sa) lẫn
-> **đúng tâm bão** (Hải Phòng / Quảng Ninh), còn mạng 73 nút thì **không**.
+> **đúng tâm bão** (Hải Phòng / Quảng Ninh / Bạch Long Vĩ), còn mạng 73 nút thì
+> **không**.
 >
 > **Cụm ven biển Bắc (thêm sau khi có yêu cầu "chủ yếu ven biển Miền Bắc").**
 > `EXTRA_COASTAL_SITES` thêm 3 trạm Quảng Ninh / Thái Bình / Nam Định, và
@@ -218,15 +255,39 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 > bộ nút mở rộng là hải đảo xa, nên **không UAV nào ở gần tâm bão Yagi** — đúng
 > chỗ mà `ha_canh` cần để có ý nghĩa.
 >
-> | UAV | Vị trí | Phủ trong 25 km |
+> Thái Bình (30.7 m/s) và Nam Định (27.6 m/s) nằm ở **rìa** bão, không phải tâm:
+> chúng yếu hơn Hải Phòng (41.8), Quảng Ninh (47.8) và Bạch Long Vĩ (58.7) rõ rệt.
+> Đừng viết ba trạm này là "tâm bão".
+>
+> | UAV | Vị trí | Phủ (25 km, góc nâng ≥ 5°) |
 > |---|---|---|
 > | `UAV-HaiPhong` | 20.845, 106.688 | HaiPhong (0 km) |
 > | `UAV-QuangYen` | 20.870, 106.890 | HaiPhong (21.3 km), QuangNinh (21.8 km) |
-> | `UAV-VinhBacBo` | 20.300, 106.800 | ngoài khơi, tiếp cận từ biển |
+> | `UAV-BachLongVi` | 20.133, 107.724 | BachLongVi (2.5 km, góc nâng 90°) |
 >
-> `BachLongVi` (đảo, 60 km từ bờ) vẫn **cô lập toàn bộ 600/600 snapshot**: UAV chỉ
-> với 25 km, HAPS-North cách 213 km > 200 km. Đây là khoảng trống phủ sóng kế thừa
-> từ v2, không phải hồi quy.
+> **Độ cao UAV đặt cố định: `UAV_DAT_ALT_M = 2500.0` m** (không phải 2000 m).
+> Với ngưỡng `min_elev_deg = 5.0`, góc nâng ở CÙNG một vị trí chỉ phụ thuộc độ
+> cao UAV. Đo trên cặp Hải Phòng / Quảng Ninh (cùng cách `UAV-QuangYen` ~21 km):
+>
+> | Độ cao | Hải Phòng | Quảng Ninh | Biên so với 5° |
+> |---|---|---|---|
+> | 2000 m | 5.29° | 5.18° | +0.29° / **+0.18°** (quá mỏng) |
+> | **2500 m** | 6.63° | 6.49° | **+1.63° / +1.49°** |
+>
+> Quét lưới toạ độ ±0.12° quanh UAV-QuangYen cho thấy biên đối xứng tối đa chỉ
+> **+0.29°** ở 2000 m, nên dịch toạ độ là vô ích — độ cao mới là đòn bẩy đúng.
+> Truyền `make_placed_uavs(alt_m=2000.0)` để tái lập dataset sinh trước bản vá.
+>
+> **`max_range_km` KHÔNG BAO GIỜ chặn (cả UAV lẫn HAPS).** Ở 2000 m, góc nâng 5°
+> ứng với tầm **22.4 km** < 25 km; ở 20 km, góc nâng 10° ứng với tầm **108 km**
+> < 200 km. Nếu muốn `max_range_km` thật sự có hiệu lực thì phải **hạ
+> `min_elev_deg`**, không phải nâng `max_range_km`.
+>
+> **`HAPS-BienDong` không phủ nút nào** — đã đo, không phải lỗi. Do tầm thật
+> 108 km, nó không với tới Hoàng Sa (274 km) hay Trường Sa (>900 km), mà
+> Hoàng Sa ↔ Trường Sa cách nhau 906 km nên **không một HAPS đơn lẻ nào** phủ
+> được cả hai. Giữ nút làm trung kế Biển Đông; phủ đảo đã do `UAV-HoangSa` /
+> `UAV-TruongSa` đảm nhận.
 >
 > **Bẫy đã sập khi đặt `UAV-QuangYen` (ghi lại để khỏi lặp):** lần đầu đặt ở
 > 20.93/106.85 — cách Hải Phòng 19.4 km và Quảng Ninh **24.1 km**, đều dưới ngưỡng
@@ -249,36 +310,37 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 
 Tắt tách trạng thái: `ThamSo(uav_ha_canh=False)`.
 
-## 6. Hai tệp dataset: v2 (mốc 73 nút) và v3 (mạng mở rộng 94 nút)
+## 6. Hai tệp dataset: v2 (mốc 73 nút) và v3 (mạng mở rộng 101 nút)
 
 ```bash
 # Mốc hồi quy — TUYỆT ĐỐI không ghi đè
 python dataset/oracle_labeler_sagsin.py --out dataset/oracle_dataset_v2.npz
 
-# Mạng mở rộng (94 nút). Labeler từ chối ghi --mo-rong vào v2.
-python dataset/oracle_labeler_sagsin.py --mo-rong --out dataset/oracle_dataset_v3.npz
+# Mạng mở rộng (101 nút). Labeler từ chối ghi --mo-rong vào v2.
+python dataset/oracle_labeler_sagsin.py --mo-rong --infra space,haps,uav \
+    --out dataset/oracle_dataset_v3.npz
 ```
 
 | | v2 | v3 |
 |---|---|---|
-| Số nút | 73 | 94 |
-| Hình dạng `W_snapshots` | (600, 73, 73) | (600, 94, 94) |
-| `node_latlon_alt` | ✗ | ✓ (600, 94, 3) |
-| `link_stats` + `link_stat_cols` | ✗ | ✓ (267458, 8) |
+| Số nút | 73 | 101 |
+| Hình dạng `W_snapshots` | (600, 73, 73) | (600, 101, 101) |
+| `node_latlon_alt` | ✗ | ✓ (600, 101, 3) |
+| `link_stats` + `link_stat_cols` | ✗ | ✓ (284252, 8) |
 | `mo_rong` | ✗ | ✓ `[True]` |
 
-94 = 50 vệ tinh + 24 ground + 7 HAPS + 13 UAV (5 bay vòng + 8 đặt cố định).
+101 = 50 vệ tinh + 27 ground + 7 HAPS + 17 UAV (5 bay vòng + 12 đặt cố định).
 
 **Hai tệp dùng chung chỉ số cho 73 nút đầu**: `v3.node_order[:73] == v2.node_order`.
-`W_snapshots` của v3 hạn chế về 73 nút đó **trùng khớp tới sai số float32** — KHÔNG
-giống tuyệt đối từng bit. Số liệu thật: 14 304 / 3 197 400 ô lệch, chênh lệch lớn
-nhất **2.48e-05 ms**, không có ô nào lệch quá 1e-4. Nguyên nhân: ở v3 ma trận
-94×94 nên phép chuẩn hoá nội bộ float32 ra chữ số cuối khác so với 73×73. Đây là
-làm tròn, không phải lỗi logic — cạnh "không liên kết" (`W = -1`) khớp 100%.
-Vì vậy test dùng `np.allclose`, **không** dùng `array_equal`. Đừng viết trong báo
-cáo là "W giống hệt từng bit"; viết "trùng khớp tới sai số float32 (≤ 2.5e-5 ms)".
-Nhờ vậy model huấn luyện trên v2 vẫn chạy được trên v3 (chỉ cần bỏ 21 nút cuối),
-và ngược lại có thể so sánh trực tiếp hai mạng.
+`W_snapshots` của v3 hạn chế về 73 nút đó **trùng khớp tuyệt đối từng bit**:
+0 / 3 197 400 ô lệch (đã kiểm sau khi vá). Vì vậy model huấn luyện trên v2 vẫn
+chạy được trên v3 (chỉ cần bỏ 28 nút cuối), và ngược lại có thể so sánh trực
+tiếp hai mạng.
+
+> Bản v3 **trước** bản vá này có 14 304 / 3 197 400 ô lệch (tối đa 2.48e-05 ms)
+> do ma trận 94×94 chuẩn hoá float32 ra chữ số cuối khác 73×73. Bản hiện tại
+> khớp từng bit, nên có thể dùng `array_equal`. Test vẫn dùng `np.allclose` cho
+> an toàn nếu sau này mạng đổi kích thước.
 
 `link_stats` — một hàng cho mỗi liên kết mỗi snapshot, ghi **hai chiều** (`u→v`, `v→u`):
 

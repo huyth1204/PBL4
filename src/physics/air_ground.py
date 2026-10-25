@@ -117,6 +117,23 @@ class LocalLinkRule:
 _HAPS_GROUND = LocalLinkRule("HAPS_GROUND", 200.0, 10.0, 300.0, 0.005)
 _UAV_GROUND = LocalLinkRule("UAV_GROUND", 25.0, 5.0, 100.0, 0.01)
 
+# Độ cao UAV ĐẶT CỐ ĐỊNH (relay đứng yên ở một điểm) — khác `UAVPatrol.alt_m`
+# của UAV bay vòng (2000 m, giữ nguyên để không đổi mạng cũ).
+#
+# Vì sao 2500 m: khi `min_elev_deg` là tiêu chí chặn, góc nâng ở CÙNG một vị
+# trí đặt chỉ phụ thuộc độ cao UAV. Đo trên cặp Hải Phòng / Quảng Ninh (cùng
+# cách `UAV-QuangYen` ~21 km):
+#
+#   alt 2000 m -> 5.29° / 5.18°  biên +0.29° / +0.18°  (mỏng: dịch toạ độ vài
+#                                                      trăm mét là mất link)
+#   alt 2500 m -> 6.63° / 6.49°  biên +1.63° / +1.49°
+#
+# Ngoài ra `max_range_km = 25` của UAV_GROUND KHÔNG BAO GIỜ chặn: ở alt 2000 m,
+# góc nâng 5° ứng với tầm 22.4 km, tức tiêu chí chặt hơn đã bao trùm trong 25 km.
+# Nếu muốn `max_range_km` thật sự có hiệu lực thì phải hạ `min_elev_deg`, không
+# phải nâng `max_range_km`.
+UAV_DAT_ALT_M: float = 2500.0
+
 # Khoá là frozenset({kind_a, kind_b}). Cặp KHÔNG có trong bảng => không có link.
 # Ground<->Ground cố ý KHÔNG có: nếu thêm backbone cáp quang giữa các gateway,
 # Dijkstra sẽ luôn chọn cáp cho cặp gateway-gateway và nhãn trở nên tầm thường.
@@ -178,6 +195,7 @@ def compute_local_links(
 # Tái xuất các hằng số để code cũ (thoi_tiet.py, ...) import được như trước.
 __all__ = [
     "Node", "UAVPatrol", "static_nodes", "make_uav_patrols", "make_placed_uavs",
+    "UAV_DAT_ALT_M",
     "nodes_at", "compute_local_links", "LOCAL_RULES", "LocalLinkRule",
     "DEFAULT_GATEWAYS", "DEFAULT_USERS", "DEFAULT_HAPS", "DEFAULT_UAV_CENTERS", "HAPS_ALT_M",
 ]
@@ -273,12 +291,16 @@ def make_uav_patrols(seed: int, centers=DEFAULT_UAV_CENTERS) -> list[UAVPatrol]:
     ]
 
 
-def make_placed_uavs(sites=EXTRA_UAV_SITES, alt_m: float = 2000.0) -> list[UAVPatrol]:
+def make_placed_uavs(sites=EXTRA_UAV_SITES, alt_m: float = UAV_DAT_ALT_M) -> list[UAVPatrol]:
     """UAV ĐẶT CỐ ĐỊNH tại một vị trí (không bay vòng).
 
     Tách "vị trí đặt" khỏi "vòng tuần tra": dùng lại UAVPatrol với radius_km=0
     thì `node_at` trả về đúng tâm ở mọi thời điểm, nên không cần lớp mới và
     hành vi cũ (bay vòng) hoàn toàn không bị đụng.
+
+    `alt_m` mặc định là `UAV_DAT_ALT_M` (2500 m), KHÔNG phải 2000 m: xem chú
+    thích của hằng số đó. Truyền `alt_m=2000.0` nếu cần tái lập các bản dataset
+    sinh trước commit này (chúng dùng 2000 m).
     """
     return [UAVPatrol(name, lat, lon, radius_km=0.0, alt_m=alt_m)
             for name, lat, lon in sites]

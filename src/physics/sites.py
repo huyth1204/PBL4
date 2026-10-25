@@ -72,24 +72,33 @@ DEFAULT_UAV_CENTERS = [
 # ---------------------------------------------------------------------------
 # (tên, lat, lon, kind) — kind "gateway" (relay được) hoặc "user" (chỉ đầu/cuối)
 EXTRA_ISLAND_SITES = [
-    ("HoangSa", 16.8300, 112.3300, "gateway"),     # đảo Phú Lâm, quần đảo Hoàng Sa
-    ("TruongSa", 8.6400, 111.9200, "gateway"),     # quần đảo Trường Sa
-    ("ConDao", 8.6833, 106.6167, "user"),          # Côn Đảo, Bà Rịa - Vũng Tàu
-    ("PhuQuoc", 10.2289, 103.9640, "gateway"),     # Phú Quốc, Kiên Giang
-    ("LySon", 15.3800, 109.1170, "user"),          # Lý Sơn, Quảng Ngãi
-    ("BachLongVi", 20.1333, 107.7242, "user"),     # Bạch Long Vĩ, Hải Phòng
+    # Hoàng Sa / Trường Sa là "user", KHÔNG phải gateway: đảo không có hạ tầng
+    # nối ra ngoài, nên không được là đích hợp lệ của luồng khẩn cấp. Trước đây
+    # để "gateway" nên luồng khẩn cấp có thể chọn đích ra đảo — sai hiện thực.
+    ("HoangSa", 16.8300, 112.3300, "user"),         # đảo Phú Lâm, quần đảo Hoàng Sa
+    ("TruongSa", 8.6400, 111.9200, "user"),         # quần đảo Trường Sa
+    ("ConDao", 8.6833, 106.6167, "user"),           # Côn Đảo, Bà Rịa - Vũng Tàu
+    ("PhuQuoc", 10.2289, 103.9640, "user"),         # Phú Quốc, Kiên Giang
+    ("LySon", 15.3800, 109.1170, "user"),           # Lý Sơn, Quảng Ngãi
+    ("BachLongVi", 20.1333, 107.7242, "user"),      # Bạch Long Vĩ, Hải Phòng
 ]
 # Ven biển + đồng bằng Bắc Bộ: vùng bão Yagi đổ bộ và chịu ảnh hưởng nặng nhất.
 # Trước đây cấu hình mở rộng chỉ có nút hải đảo xa, nên không UAV nào ở gần tâm
 # bão => luật ha_canh không bao giờ kích hoạt trong Yagi (xem SCHEMA.md §5).
 EXTRA_COASTAL_SITES = [
     ("QuangNinh", 20.9500, 107.0800, "user"),      # Hạ Long, Quảng Ninh (bờ vịnh Bắc Bộ)
-    ("ThaiBinh", 20.4500, 106.3400, "user"),       # Thái Bình (bờ biển, tâm bão Yagi)
-    ("NamDinh", 20.4300, 106.1700, "user"),        # Nam Định (bờ biển)
+    # Thái Bình / Nam Định KHÔNG sát biển: trung tâm thành phố cách bờ ~20-30 km.
+    # Trong bão Yagi (7-9/9/2024) hai nút này chỉ ở RÌA bão: giật 30.7 và 27.6 m/s,
+    # mưa 217 và 175 mm — thấp hơn Bạch Long Vĩ (58.7 m/s) và Hải Phòng (41.8 m/s).
+    # Đừng gọi chúng là "tâm bão" khi viết báo cáo.
+    ("ThaiBinh", 20.4500, 106.3400, "user"),       # TP Thái Bình (đồng bằng, rìa bão)
+    ("NamDinh", 20.4300, 106.1700, "user"),        # TP Nam Định (đồng bằng, rìa bão)
 ]
 EXTRA_MOUNTAIN_SITES = [
     ("SaPa", 22.3364, 103.8438, "user"),           # Sa Pa, Lào Cai
-    ("DaLat", 11.9404, 108.4583, "gateway"),       # Đà Lạt, Lâm Đồng
+    # Đà Lạt là "user": đây là TP trên cao nguyên, không có hạ tầng nối ra ngoài
+    # mà mạng đang mô hình hoá; để gateway thì luồng khẩn cấp chọn đích vào đây.
+    ("DaLat", 11.9404, 108.4583, "user"),          # Đà Lạt, Lâm Đồng
     ("KonTum", 14.3497, 108.0000, "user"),         # Kon Tum, Tây Nguyên
 ]
 EXTRA_FLOOD_SITES = [
@@ -103,21 +112,48 @@ EXTRA_GROUND_SITES = (EXTRA_ISLAND_SITES + EXTRA_COASTAL_SITES
 # HAPS phủ thêm cho các vùng mới (chỉ bật khi mo_rong=True). HAPS đứng yên,
 # dùng làm phương án THAY THẾ UAV khi vùng có gió giật vượt ngưỡng.
 EXTRA_HAPS = [
-    ("HAPS-BienDong", 14.5, 111.5),   # phủ Biển Đông (Hoàng Sa / Trường Sa)
-    ("HAPS-BacTrungBo", 17.4, 106.9),  # phủ vùng lũ Quảng Bình - Quảng Trị
+    # HAPS-BienDong KHÔNG phủ nút nào — đây là sự thật đã đo, không phải lỗi.
+    # Ngưỡng góc nâng 10° của luật HAPS_GROUND giới hạn tầm phủ thật ở ~108 km
+    # (KHÔNG phải 200 km của max_range_km). Hoàng Sa cách 274 km, Trường Sa còn
+    # xa hơn 900 km, nên không một vị trí HAPS đơn lẻ nào phủ được cả hai. Giữ
+    # nút này làm trung kế Biển Đông (nối HAPS/HAPS và HAPS/UAV với các HAPS ven
+    # bờ). Nếu cần phủ đảo thì đặt HAPS riêng cách đảo < 108 km, hoặc dùng UAV
+    # (đã làm: UAV-HoangSa, UAV-TruongSa).
+    ("HAPS-BienDong", 14.5, 111.5),    # trung kế Biển Đông (không phủ nút mặt đất)
+    ("HAPS-BacTrungBo", 17.4, 106.9),  # phủ Quảng Bình / Quảng Trị
 ]
 
 # Vị trí đặt UAV TÙY CHỌN (đứng yên thay vì bay vòng). (tên, lat, lon)
 # Dùng khi cần UAV làm relay cố định tại một điểm, ví dụ phủ đảo.
-# Cụm ven biển Bắc đặt quanh Hải Phòng — nơi bão Yagi đổ bộ — để luật ha_canh
-# thật sự có dịp kích hoạt trên dữ liệu bão thật (xem SCHEMA.md §5).
+#
+# MỌI UAV đặt cố định luôn bay ở UAV_DAT_ALT_M. Đừng hạ xuống 2000 m: xem chú
+# thích của hằng số đó — biên góc ngẩng của cặp Hải Phòng/Quảng Ninh rất mỏng.
 EXTRA_UAV_SITES = [
     ("UAV-HoangSa", 16.8300, 112.3300),   # đảo Phú Lâm (khớp toạ độ nút HoangSa)
     ("UAV-TruongSa", 8.6400, 111.9200),
     ("UAV-HaiPhong", 20.8449, 106.6881),   # trên TP Hải Phòng (cách HaiPhong 0 km)
-    ("UAV-VinhBacBo", 20.3000, 106.8000),  # giữa vịnh Bắc Bộ, tiếp cận từ biển
-    ("UAV-QuangYen", 20.8700, 106.8900),   # cân bằng: Hải Phòng 21.3 km / Quảng Ninh
-                                           # 21.8 km, góc nâng đều >=5° (ngưỡng UAV_GROUND)
+    # Bạch Long Vĩ: trong bão Yagi đây là nơi giật mạnh NHẤT (58.7 m/s, mưa 246 mm)
+    # mà trước đó không có hạ tầng nào ngoài vệ tinh. Đặt UAV đúng trên đảo thì
+    # khoảng cách 2 km / góc nâng 90° — dư biên rất lớn, không phải ca sát ngưỡng.
+    ("UAV-BachLongVi", 20.1333, 107.7242),
+    # Cân bằng giữa Hải Phòng và Quảng Ninh (tâm bão thứ hai). Toạ độ 20.87/106.89
+    # là gần tối ưu cho biên góc ngẩng: ở UAV_DAT_ALT_M cho 6.63° và 6.49°
+    # (biên +1.63°/+1.49° so với ngưỡng 5°). Không dịch toạ độ thêm được nữa —
+    # quét lưới ±0.12° cho thấy biên đối xứng tối đa chỉ +0.29° ở alt 2000 m.
+    ("UAV-QuangYen", 20.8700, 106.8900),
+    # --- UAV cứu các nút từng mất hết liên kết 60% thời gian ---
+    # Trước đây 7 nút này chỉ có đường vệ tinh; khi vệ tinh khuất thì cô lập hoàn
+    # toàn (LySon 63.2%, BuonMaThuot 62.8%, DaLat 62.0%, CaMau 60.2%, ConDao
+    # 59.8%, PhuQuoc 59.7%, SaPa 29.2% số snapshot). Đặt UAV ngay trên nút:
+    # khoảng cách ~2.5 km, góc nâng 90°, biên +85° so với ngưỡng 5° — không phải
+    # ca sát ngưỡng, không thể hỏng khi dịch toạ độ.
+    ("UAV-LySon", 15.3800, 109.1170),          # Lý Sơn, Quảng Ngãi
+    ("UAV-BuonMaThuot", 12.6667, 108.0500),    # Buôn Ma Thuột, Đắk Lắk
+    ("UAV-DaLat", 11.9404, 108.4583),          # Đà Lạt, Lâm Đồng
+    ("UAV-CaMau", 9.1769, 105.1500),           # Cà Mau
+    ("UAV-ConDao", 8.6833, 106.6167),          # Côn Đảo
+    ("UAV-PhuQuoc", 10.2289, 103.9640),        # Phú Quốc
+    ("UAV-SaPa", 22.3364, 103.8438),           # Sa Pa, Lào Cai
 ]
 
 

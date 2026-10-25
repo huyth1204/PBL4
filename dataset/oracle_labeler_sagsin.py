@@ -58,6 +58,7 @@ from src.physics.air_ground import (  # noqa: E402
 )
 from src.physics.sites import khoa_sap_xep  # noqa: E402
 from src.physics.tle_loader import (  # noqa: E402
+    EARTH_RADIUS_KM,
     GroundStation,
     compute_gsl_links,
     compute_isl_links,
@@ -181,7 +182,16 @@ def generate_dataset_snapshots(
     rng_pairs = random.Random(seed + 1)
 
     ts = load.timescale()
-    satellites = load_tle(tle_path)
+    # Lọc vệ tinh đã rơi/hỏng trên TOÀN BỘ khoảng thời gian dataset, không phải
+    # một mốc: vệ tinh đang rơi (vd STARLINK-4390: +308 km lúc epoch, -207 km chỉ
+    # sau 30 ngày) có TLE suy giảm cực nhanh nên kiểm một lần là không đủ. TLE
+    # hỏng làm `node_latlon_alt` có độ cao âm/NaN và phá mọi tính hình học.
+    # `resolve_start_time` với "tle" lấy trung vị epoch — đúng mốc dataset sẽ dùng.
+    satellites_raw = load_tle(tle_path, loc_hong=False)
+    t_loc = resolve_start_time(ts, start_time, satellites_raw)
+    satellites = load_tle(tle_path, luc=t_loc,
+                          span_giay=(num_snapshots - 1) * time_step_seconds,
+                          buoc_giay=max(time_step_seconds * 20, 600))
     if len(satellites) == 0:
         raise ValueError("File TLE không chứa vệ tinh nào.")
 
@@ -274,6 +284,13 @@ def generate_dataset_snapshots(
         # --- Tọa độ (lat, lon, alt_km) theo snapshot: khôi phục node_latlon_alt
         # như v1 (600, 53, 3). Air/Ground lấy từ nodes_k; vệ tinh lấy subpoint
         # của skyfield (wgs84) tại thời điểm t_k.
+        #
+        # CẢNH BÁO đã sập một lần: `wgs84.subpoint_of(...).elevation.km` LUÔN
+        # bằng 0.0 cho vệ tinh. Subpoint chỉ cho biết điểm chiếu dưới chân vệ
+        # tinh nằm ở đâu TRÊN MẶT ellipsoid; "độ cao" của nó là độ cao ellipsoid
+        # tại điểm chiếu đó, không phải độ cao quỹ đạo. Bản dataset v3 sinh
+        # trước bản vá này có alt = 0 cho cả 50 vệ tinh. Độ cao thật phải lấy từ
+        # chính vector vị trí (đã có sẵn trong `positions`), nên dùng nó luôn.
         latlon_alt = np.full((N, 3), np.nan, dtype=np.float32)
         for n in nodes_k:
             latlon_alt[node_to_index[n.name]] = (n.lat_deg, n.lon_deg, n.alt_m / 1000.0)
@@ -282,7 +299,17 @@ def generate_dataset_snapshots(
             if i is None:
                 continue
             sp = wgs84.subpoint_of(sat.at(t_k))
-            latlon_alt[i] = (sp.latitude.degrees, sp.longitude.degrees, sp.elevation.km)
+            # `positions` đã tính ở trên: dict tên -> (x, y, z) km trong ECEF.
+            # |r| - bán kính xích đạo = độ cao quỹ đạo (km); sai khác do Trái Đất
+            # dẹt chỉ ~vài chục km trên 700 km, không đáng kể ở đây.
+            alt_km = float(np.linalg.norm(positions[sat.name])) - EARTH_RADIUS_KM
+            latlon_alt[i] = (sp.latitude.degrees, sp.longitude.degrees, alt_km)
+        _xau = [(s.name, float(latlon_alt[node_to_index[s.name], 2]))
+                for s in sample_sats if s.name in node_to_index
+                and latlon_alt[node_to_index[s.name], 2] <= 0.0]
+        if _xau:
+            print(f"  !! Cảnh báo (snap {k}): {len(_xau)} vệ tinh độ cao <= 0: "
+                  + ", ".join(f"{n}={a:.1f}" for n, a in _xau[:5]))
         latlon_alt_per_snapshot.append(latlon_alt)
 
         # --- Bảng liên kết: (snapshot, u, v, khoảng_cách_km, góc_ngẩng, băng thông,
