@@ -40,45 +40,47 @@ CAPE_GIONG, MUA_GIONG = 1000.0, 1.0   # luật dự phòng: CAPE ≥ 1000 J/kg v
 # thì nút mới lặng lẽ KHÔNG có mưa/gió. Từ nay chỉ còn một nguồn.
 if str(Path(__file__).resolve().parents[2]) not in sys.path:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from src.physics.sites import (  # noqa: E402
-    DEFAULT_GATEWAYS,
-    DEFAULT_HAPS,
-    DEFAULT_UAV_CENTERS,
-    DEFAULT_USERS,
-    EXTRA_GROUND_SITES,
-    EXTRA_HAPS,
-    EXTRA_UAV_SITES,
-)
+from src.physics.sites import cac_diem_thoi_tiet  # noqa: E402
 
 
 def cac_diem(mo_rong: bool = False):
-    """Tên và toạ độ các nút không phải vệ tinh (UAV lấy tâm vòng tuần tra).
+    """Tên và toạ độ các điểm có cột thời tiết (UAV lấy tâm vòng tuần tra).
 
     mo_rong=False: đúng 23 điểm cũ, GIỮ NGUYÊN thứ tự => tệp thời tiết cũ còn dùng được.
     mo_rong=True : nối thêm điểm mới vào cuối (đảo/núi/lũ, HAPS mới, UAV đặt cố định).
+
+    Thân hàm nằm ở `sites.cac_diem_thoi_tiet` để cả ba nơi (sinh tệp, kiểm tập
+    điểm, vẽ bản đồ) dùng đúng MỘT danh sách — lệch danh sách chính là lỗi đã
+    xảy ra: tệp có `UAV-VinhBacBo` (đã xoá khỏi cấu hình) mà thiếu 8 UAV mới.
     """
-    diem = [(n, la, lo) for n, la, lo in DEFAULT_GATEWAYS + DEFAULT_USERS + DEFAULT_HAPS + DEFAULT_UAV_CENTERS]
-    if mo_rong:
-        diem += [(n, la, lo) for n, la, lo, _ in EXTRA_GROUND_SITES]
-        diem += [(n, la, lo) for n, la, lo in EXTRA_HAPS]
-        diem += [(n, la, lo) for n, la, lo in EXTRA_UAV_SITES]
-    return diem
+    return cac_diem_thoi_tiet(mo_rong=mo_rong)
 
 
 def kiem_tra_du_diem(npz_path, mo_rong: bool = False):
-    """BẮT BUỘC: mọi điểm trong cấu hình phải có cột trong tệp thời tiết.
+    """BẮT BUỘC: tập điểm trong tệp thời tiết phải KHỚP ĐÚNG tập điểm của cấu hình.
 
-    Ném ValueError kèm danh sách điểm thiếu. Không có bước này, nút mới sẽ im
-    lặng không có thời tiết và model sẽ học trên dữ liệu khuyết mà không ai biết.
+    Kiểm hai chiều:
+      * thiếu -> nút lặng lẽ không có mưa/gió: `kich_ban.sinh_kich_ban()` bỏ qua
+        nút có `node_site < 0`, nên UAV đó KHÔNG BAO GIỜ hạ cánh vì giông/gió và
+        `tao_du_lieu` để đặc trưng thời tiết bằng 0.
+      * thừa -> cột chết. Nguy hiểm hơn vẻ ngoài: một tên đã bị xoá khỏi
+        `sites.py` (vd `UAV-VinhBacBo`) vẫn còn cột thì tệp vẫn "đủ điểm" nếu chỉ
+        kiểm một chiều, và người đọc tưởng UAV mới đã có thời tiết.
+
+    Ném ValueError kèm cả hai danh sách. Không có bước này, lệch cấu hình chỉ lộ
+    ra khi soi kết quả mô phỏng.
     """
     can = [n for n, _, _ in cac_diem(mo_rong=mo_rong)]
     with np.load(npz_path, allow_pickle=False) as d:
         co = [str(x) for x in d["site_names"]]
     thieu = [n for n in can if n not in set(co)]
-    if thieu:
+    thua = [n for n in co if n not in set(can)]
+    if thieu or thua:
         raise ValueError(
-            f"Tệp thời tiết '{npz_path}' thiếu {len(thieu)} điểm: {thieu}. "
-            f"Chạy lại 'thoi_tiet tai --mo-rong' (hoặc gia-lap) để bổ sung.")
+            f"Tệp thời tiết '{npz_path}' lệch với cấu hình (mo_rong={mo_rong}): "
+            f"{len(co)} điểm trong tệp, cấu hình cần {len(can)}. "
+            f"Thiếu {len(thieu)}: {thieu}. Thừa {len(thua)}: {thua}. "
+            f"Chạy lại 'thoi_tiet tai --mo-rong' rồi 'them-giong' để đủ điểm.")
     return co
 
 
@@ -145,6 +147,9 @@ def them_giong(vao: str, ra: str | None = None, chunk_days: int = 180, luat: str
     Giữ mã ERA5 gốc ở code_era5, mã dự báo ở code_fc."""
     ra = ra or vao
     d = dict(np.load(vao, allow_pickle=False))
+    # Chặn ngay tại đây: tệp vừa tải --mo-rong mà lệch cấu hình thì mọi bước sau
+    # (giông, mô phỏng) đều sai âm thầm.
+    kiem_tra_du_diem(vao, mo_rong=len(d["site_names"]) > 23)
     t = [str(x) for x in d["time_utc"]]
     times, c = _goi("https://historical-forecast-api.open-meteo.com/v1/forecast", d["lat"], d["lon"],
                     t[0][:10], t[-1][:10], ["weather_code", "cape", "lifted_index"], chunk_days)
@@ -221,9 +226,16 @@ def doc_thang(s: str | None):
 
 
 class ThoiTiet:
-    def __init__(self, path: str):
+    def __init__(self, path: str, mo_rong: bool | None = None, kiem_tra: bool = False):
+        """mo_rong=None: suy từ số điểm (23 -> hẹp, nhiều hơn -> mở rộng).
+
+        kiem_tra=True: bắt buộc tập điểm khớp cấu hình. Bật ở `kich_ban.py` (nơi
+        gán `node_site`) vì lệch ở đó làm UAV lặng lẽ không bao giờ hạ cánh.
+        """
         d = np.load(path, allow_pickle=False)
         self.names = [str(x) for x in d["site_names"]]
+        if kiem_tra:
+            kiem_tra_du_diem(path, mo_rong=len(self.names) > 23 if mo_rong is None else mo_rong)
         self.lat, self.lon = d["lat"].astype(float), d["lon"].astype(float)
         self.time_utc = d["time_utc"]
         self.precip, self.code, self.gust = d["precip"].astype(float), d["code"], d["gust"].astype(float)

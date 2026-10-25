@@ -162,6 +162,13 @@ def toa_do(data):
     """x của mỗi nút: vĩ độ thật cho nút mặt đất / trên không; vệ tinh lấy trung bình các nút nó nối tới."""
     tt = np.load(THOI_TIET, allow_pickle=True)
     vi_do = {str(n): float(la) for n, la in zip(tt["site_names"], tt["lat"])}
+    # UU TIEN sites.py (nguon cau hinh duy nhat), roi moi den tep thoi tiet.
+    # Truoc day ham lay tep thoi tiet (23 diem cua mang 73 nut) lam nguon chinh:
+    # nut mo rong nhu SaPa/UAV-SaPa khong co trong tep nen bi NOI SUY tu nut ke
+    # (SaPa ve o 18.80 thay vi 22.34) ma khong bao loi. Truyen mo_rong=True,
+    # va lap de toa do cau hinh THANG toa do tep.
+    from src.physics.sites import cac_diem_thoi_tiet
+    vi_do.update({n: float(la) for n, la, _ in cac_diem_thoi_tiet(mo_rong=True, chi_diem_cau_hinh=True)})
     ten = [str(x) for x in data.node_order]
     x = np.array([vi_do.get(t, np.nan) for t in ten])
     y = np.array([TANG[str(k)] for k in data.kind])

@@ -202,7 +202,7 @@ def test_tep_thoi_tiet_mo_rong_khop_tep_23_diem():
       - mất hẳn `cape` / `lifted_index` / `code_fc`  -> không khí quyển nào có giông;
       - cột `code` chỉ còn mã ERA5, số giờ giông về 0 (tệp đúng có 8 343 ô-giờ);
       - UAV không bao giờ hạ cánh vì giông, sét không bao giờ ngắt nút mặt đất;
-      - mọi số liệu trên mạng 94 nút thành KHÔNG SO SÁNH ĐƯỢC với kết quả cũ.
+      - mọi số liệu trên mạng mở rộng thành KHÔNG SO SÁNH ĐƯỢC với kết quả cũ.
 
     Test so theo TÊN điểm (không theo chỉ số cột), vì 3 trạm ven biển mới được
     chèn vào giữa danh sách chứ không nối vào cuối.
@@ -243,6 +243,72 @@ def test_tep_thoi_tiet_mo_rong_khop_tep_23_diem():
         "số ô-giờ giông trong 23 điểm = 0: 'code' chưa được đặt lại theo luật CAPE"
 
 
+def test_tep_thoi_tiet_mo_rong_phu_dung_moi_nut():
+    """Tệp thời tiết phải có ĐÚNG các điểm mà mạng cần — không thiếu, không thừa.
+
+    Bẫy đã sập một lần: `thoi_tiet_vn_mr.npz` có 44 điểm (còn `UAV-VinhBacBo` đã
+    xoá, thiếu 8 UAV mới) trong khi cấu hình cần 51. Hệ quả KHÔNG báo lỗi:
+    `MangGoc` gán `node_site = -1`, rồi `kich_ban.sinh_kich_ban()` `continue` qua
+    nút đó, nên 8 UAV — trong đó có `UAV-BachLongVi` (đảo giật 58.7 m/s trong
+    Yagi, lý do chính để thêm nó) — KHÔNG BAO GIỜ hạ cánh vì giông hay gió, và
+    `tao_du_lieu` để đặc trưng thời tiết của chúng bằng 0.
+
+    Test cũ chỉ so 23 cột cũ nên không bắt được. Test này đòi khớp ĐÚNG tập điểm.
+    """
+    from src.ngau_nhien.thoi_tiet import cac_diem
+
+    mr = ROOT / "data" / "thoi_tiet_vn_mr.npz"
+    if not mr.exists():
+        raise BoQua("thiếu data/thoi_tiet_vn_mr.npz, bỏ qua")
+    with np.load(mr, allow_pickle=False) as d:
+        co = [str(x) for x in d["site_names"]]
+    can = [n for n, _, _ in cac_diem(mo_rong=True)]
+    thieu = [n for n in can if n not in set(co)]
+    thua = [n for n in co if n not in set(can)]
+    assert not thieu, (
+        f"tệp thời tiết thiếu {len(thieu)} điểm mà mạng cần: {thieu}. "
+        f"Các nút này sẽ có node_site = -1 (không mưa, không gió, UAV không hạ cánh). "
+        f"Chạy lại 'thoi_tiet tai --mo-rong' rồi 'them-giong'.")
+    assert not thua, (
+        f"tệp thời tiết có {len(thua)} điểm không còn trong cấu hình: {thua}. "
+        f"Cột chết này che lỗi thiếu điểm nếu chỉ kiểm một chiều.")
+    assert len(can) == 51, f"cấu hình mở rộng phải có 51 điểm, đang {len(can)}"
+
+
+def test_uav_dat_co_dinh_khop_thoi_tiet_voi_nut_chu():
+    """UAV đặt đúng toạ độ một nút thì cột thời tiết phải TRÙNG KHÍT nút đó.
+
+    Đây là bất biến vật lý: cùng một chỗ thì cùng mưa, cùng gió, cùng giông.
+    Nếu lệch, tức là toạ độ hai bên đã trôi khỏi nhau (sửa một chỗ quên chỗ kia)
+    — và bản đồ/báo cáo sẽ nói UAV ở nơi nó không ở.
+    """
+    from src.ngau_nhien.thoi_tiet import cac_diem
+
+    mr = ROOT / "data" / "thoi_tiet_vn_mr.npz"
+    if not mr.exists():
+        raise BoQua("thiếu data/thoi_tiet_vn_mr.npz, bỏ qua")
+    toa_do = {n: (la, lo) for n, la, lo in cac_diem(mo_rong=True)}
+    cap_uav = [(u, h) for u, h in (
+        ("UAV-BachLongVi", "BachLongVi"), ("UAV-LySon", "LySon"),
+        ("UAV-BuonMaThuot", "BuonMaThuot"), ("UAV-DaLat", "DaLat"),
+        ("UAV-CaMau", "CaMau"), ("UAV-ConDao", "ConDao"),
+        ("UAV-PhuQuoc", "PhuQuoc"), ("UAV-SaPa", "SaPa"),
+        ("UAV-HoangSa", "HoangSa"), ("UAV-TruongSa", "TruongSa"),
+        ("UAV-HaiPhong", "HaiPhong")) if u in toa_do and h in toa_do]
+
+    with np.load(mr, allow_pickle=False) as d:
+        ten = [str(x) for x in d["site_names"]]
+        bien = [k for k in ("precip", "code", "gust", "cape", "code_fc") if k in d.keys()]
+        for u, h in cap_uav:
+            (la_u, lo_u), (la_h, lo_h) = toa_do[u], toa_do[h]
+            assert abs(la_u - la_h) < 1e-4 and abs(lo_u - lo_h) < 1e-4, \
+                f"{u} ({la_u}/{lo_u}) không còn trùng toạ độ {h} ({la_h}/{lo_h})"
+            iu, ih = ten.index(u), ten.index(h)
+            for k in bien:
+                assert np.array_equal(d[k][:, iu], d[k][:, ih], equal_nan=True), \
+                    f"cột '{k}' của {u} khác {h} dù cùng toạ độ"
+
+
 def test_uav_dat_co_dinh_phu_duoc_it_nhat_mot_nut_mat_dat():
     """Mỗi UAV đặt cố định phải phục vụ được ít nhất một nút mặt đất.
 
@@ -252,7 +318,7 @@ def test_uav_dat_co_dinh_phu_duoc_it_nhat_mot_nut_mat_dat():
     được HAPS và vệ tinh — nó hạ cánh khi có gió nhưng KHÔNG ảnh hưởng đường đi
     của bất kỳ nút nào. Đã dời về đúng Bạch Long Vĩ.
     """
-    from src.physics.air_ground import _UAV_GROUND, Node, elevation_deg, node_ecef_km
+    from src.physics.air_ground import _UAV_GROUND, elevation_deg, node_ecef_km
 
     st = static_nodes(mo_rong=True)
     mat_dat = [n for n in st if n.layer == "ground"]

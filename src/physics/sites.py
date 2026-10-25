@@ -182,6 +182,28 @@ def ground_sites(mo_rong: bool = False):
     return out
 
 
+def cac_diem_thoi_tiet(mo_rong: bool = False, chi_diem_cau_hinh: bool = False):
+    """Danh sách điểm (tên, lat, lon) có cột thời tiết, ĐÚNG THỨ TỰ cột trong tệp.
+
+    mo_rong=False: 23 điểm cũ (gateway, user, HAPS cũ, tâm UAV tuần tra).
+    mo_rong=True : nối thêm ground/HAPS/UAV đặt cố định vào CUỐI.
+
+    chi_diem_cau_hinh=True: bỏ 5 tâm UAV tuần tra — mạng chỉ chứa UAV đặt cố
+    định (`UAV-1`..`UAV-5` là tâm vòng bay, không phải nút). Dùng để đối chiếu
+    tập NÚT THẬT với tệp thời tiết. Đừng dùng cờ này để sinh tệp: 5 tâm vẫn cần
+    cột để UAV tuần tra có mưa/gió.
+    """
+    cap = len(DEFAULT_UAV_CENTERS) if chi_diem_cau_hinh else 0
+    diem = [(n, la, lo) for n, la, lo in DEFAULT_GATEWAYS + DEFAULT_USERS]
+    diem += [(n, la, lo) for n, la, lo in DEFAULT_HAPS]
+    diem += [(n, la, lo) for n, la, lo in DEFAULT_UAV_CENTERS[:len(DEFAULT_UAV_CENTERS) - cap]]
+    if mo_rong:
+        diem += [(n, la, lo) for n, la, lo, _ in EXTRA_GROUND_SITES]
+        diem += [(n, la, lo) for n, la, lo in EXTRA_HAPS]
+        diem += [(n, la, lo) for n, la, lo in EXTRA_UAV_SITES]
+    return diem
+
+
 # ---------------------------------------------------------------------------
 # Khóa sắp xếp GIỮ NGUYÊN THỨ TỰ CŨ khi thêm nút mới
 #

@@ -179,11 +179,33 @@ python -m src.ngau_nhien.thoi_tiet them-giong --vao data/thoi_tiet_vn_mr.npz
 > Bản v3 hiện tại: độ cao vệ tinh **295–584 km**, trung vị 479 km, 0 âm, 0 NaN.
 > Test `test_v3_do_cao_ve_tinh_hop_le` khoá cả hai bẫy.
 
-Tệp thời tiết chứa 23 điểm (mặc định) hoặc 44 điểm (`--mo-rong`, thêm 14 ground
-+ 2 HAPS + 12 UAV đặt cố định; 3 trạm ven biển Bắc được *chèn* chứ không nối
-cuối). `kiem_tra_du_diem()` ném `ValueError` nếu cấu hình có điểm mà tệp thời
-tiết thiếu — chặn trường hợp nút mới lặng lẽ không có mưa/gió. Nguồn cấu hình
-duy nhất là `src/physics/sites.py`.
+Tệp thời tiết chứa 23 điểm (mặc định) hoặc **51 điểm** (`--mo-rong`: thêm 14
+ground + 2 HAPS + 12 UAV đặt cố định vào cuối, cộng 5 tâm UAV tuần tra đã có từ
+trước). `kiem_tra_du_diem()` kiểm **hai chiều** — ném `ValueError` nếu tệp *thiếu*
+điểm cấu hình cần **hoặc** *thừa* điểm không còn trong cấu hình — và được gọi
+tự động ở `them_giong()` và `ThoiTiet(..., kiem_tra=True)` (dùng trong
+`tao_du_lieu.main`). Nguồn danh sách duy nhất là `src/physics/sites.py`
+(`cac_diem_thoi_tiet()`); `thoi_tiet.cac_diem()`, phần kiểm tra và phần vẽ bản
+đồ (`huong_dan/tien_ich.py`) đều đọc lại từ đó.
+
+> **Bẫy đã sập một lần — đọc kỹ trước khi sửa danh sách nút.** Tệp
+> `thoi_tiet_vn_mr.npz` từng có **44** điểm trong khi cấu hình cần **51**: còn sót
+> cột `UAV-VinhBacBo` (đã xoá khỏi `sites.py`) và thiếu 8 UAV mới
+> (`UAV-BachLongVi`, `UAV-LySon`, `UAV-BuonMaThuot`, `UAV-DaLat`, `UAV-CaMau`,
+> `UAV-ConDao`, `UAV-PhuQuoc`, `UAV-SaPa`).
+>
+> Hệ quả **không hề báo lỗi**: `MangGoc` gán `node_site = -1`, rồi
+> `sinh_kich_ban()` `continue` qua nút đó ⇒ 8 UAV **không bao giờ hạ cánh** vì
+> giông hay gió, và `tao_du_lieu` để đặc trưng thời tiết (`R`, `gust`, `J`) bằng
+> 0. `UAV-BachLongVi` — đảo giật 58.7 m/s trong Yagi, lý do chính để thêm nó —
+> nằm trong số đó. Đo được: ở `h0=2590` (cửa sổ có giông tại Bạch Long Vĩ),
+> `ha_canh` của UAV này là **540/600**; gán `node_site=-1` (đúng trạng thái lỗi)
+> thì thành **0/600**.
+>
+> Vì sao không ai phát hiện: test cũ chỉ so **23 cột cũ**, mà 23 cột đó vẫn đúng
+> từng bit. Nay có `test_tep_thoi_tiet_mo_rong_phu_dung_moi_nut` (so **đúng tập
+> điểm**, cả thiếu lẫn thừa) và `test_uav_dat_co_dinh_khop_thoi_tiet_voi_nut_chu`
+> (UAV đặt cùng toạ độ nút thì mọi cột thời tiết phải trùng khít).
 
 ## 5. Trạng thái UAV: `tat` và `ha_canh`
 
@@ -222,8 +244,9 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 >
 > Muốn thử `ha_canh` kích hoạt thật thì dùng **tệp thời tiết mở rộng**:
 > `python -m src.ngau_nhien.thoi_tiet tai --mo-rong --start 2024-01-01 --end 2025-12-31 --out data/thoi_tiet_vn_mr.npz`
-> rồi `them-giong --vao data/thoi_tiet_vn_mr.npz`. Tệp đó có đủ 41 điểm nên
-> `node_site` của 18 nút mới khác -1. Không tải được thì dùng `gia-lap --mo-rong`.
+> rồi `them-giong --vao data/thoi_tiet_vn_mr.npz`. Tệp đó có đủ **51 điểm** nên
+> `node_site` của toàn bộ 51 nút không phải vệ tinh đều khác -1 (chỉ 50 vệ tinh
+> không có cột thời tiết). Không tải được thì dùng `gia-lap --mo-rong`.
 >
 > **Kết quả trên `thoi_tiet_vn_mr.npz` (đã chạy):** 23 điểm của mạng 73 nút **giống
 > hệt từng bit** tệp cũ `thoi_tiet_vn.npz` (cùng 17 544 giờ ⇒ `test_hoi_quy_73.py`
@@ -240,7 +263,8 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 > | `UAV-BachLongVi` | BachLongVi | **58.7 m/s** | **72/72 giờ** |
 >
 > `BachLongVi` là nơi giật mạnh **nhất** trong cả mạng (58.7 m/s, mưa 246 mm,
-> vượt ngưỡng 15 m/s **toàn bộ 24/24 giờ** ngày 7/9). Trước đây đảo này không có
+> vượt ngưỡng 15 m/s **toàn bộ 24/24 giờ** ngày 7/9; 4 giờ trong đó có mã giông
+> 95, nên `ha_canh` bật cả 24/24 giờ). Trước đây đảo này không có
 > hạ tầng nào nên UAV `UAV-VinhBacBo` cũ đặt ngoài khơi 20.30/106.80 không phủ
 > được nút nào (Thái Bình cách 51 km) — nó chỉ nối HAPS/vệ tinh, tức hạ cánh mà
 > **không ảnh hưởng đường đi của bất kỳ nút nào**. Đã dời về đúng Bạch Long Vĩ.
