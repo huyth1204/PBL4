@@ -31,7 +31,15 @@ from src.nhieu_luong.bai_toan import tao_tinh_huong
 
 GOC = Path(__file__).resolve().parents[2]
 RA = GOC / "data" / "yagi"
+# CẤU HÌNH CỐ ĐỊNH của thí nghiệm đã báo kết quả: mạng 73 nút + 23 điểm thời tiết.
+# "73 nút" = 23 nút cũ (có thời tiết) + 50 vệ tinh LEO, KHÔNG phải 51+22. Muốn chạy
+# trên mạng mở rộng (oracle_dataset_v3, 101 nút / 51 điểm) thì phải đổi CẢ HAI tệp dưới
+# và ghi lại vào results/yagi/TIEU_CHI.md; số của hai cấu hình không được trộn chung bảng.
+RAW = GOC / "dataset" / "oracle_dataset_v2.npz"
+THOI_TIET = GOC / "data" / "thoi_tiet_vn.npz"
 NGAY_YAGI = ("2024-09-04", "2024-09-12")            # loại khỏi train / val (cả hai đầu)
+# Test = 16 kịch bản Yagi 07–08/9 (mỗi 3 giờ) × 30 snapshot; mỗi snapshot sinh đủ 3 mức
+# tải trong cùng tệp kb_*.pkl. Không lấy phần nào của Yagi làm val: val là ngày khác.
 SO_GIO_KB = 600 * 20 / 3600                          # một kịch bản dài 600 snapshot × 20 s
 CAU_HINH = {"train": dict(so_kb=600, so_snap=15, buoc=40, seed=11),
             "val": dict(so_kb=60, so_snap=15, buoc=40, seed=12)}
@@ -43,8 +51,8 @@ _g = _tt = _T = None
 def _khoi_tao():
     global _g, _tt, _T
     os.environ.setdefault("OMP_NUM_THREADS", "1")
-    raw = np.load(GOC / "dataset" / "oracle_dataset_v2.npz")
-    _tt = ThoiTiet(str(GOC / "data" / "thoi_tiet_vn.npz"))
+    raw = np.load(RAW)
+    _tt = ThoiTiet(str(THOI_TIET))
     _g = MangGoc(raw["W_snapshots"], raw["node_kind"], raw["node_order"], _tt)
     _T = [str(x) for x in _tt.time_utc]
 

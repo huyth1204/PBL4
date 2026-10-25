@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass
 
 import numpy as np
 
-from src.ngau_nhien.thoi_tiet import GIONG, ThoiTiet
+from src.ngau_nhien.thoi_tiet import GIONG, ThoiTiet, kiem_tra_du_diem, suy_mo_rong
 
 C_KM_MS = 300.0                       # quãng đường ánh sáng đi trong 1 ms
 PKT = 12.0                            # gói 1500 byte = 12 kbit → thời gian phục vụ 12/C ms
@@ -86,7 +86,19 @@ def _haversine(la1, lo1, la2, lo2):
 class MangGoc:
     """Tách W tất định của TV1 thành các thành phần cố định theo loại liên kết."""
 
-    def __init__(self, W: np.ndarray, kind, names, tt: ThoiTiet):
+    def __init__(self, W: np.ndarray, kind, names, tt: ThoiTiet, mo_rong: bool | None = None):
+        """mo_rong=None: suy từ số điểm của `tt` (23 -> mạng 73 nút, nhiều hơn -> mở rộng).
+
+        CHỐT CHẶN TẬP ĐIỂM THỜI TIẾT — đặt ở đây vì đúng dòng dưới là nơi sinh ra
+        lỗi âm thầm: nút không có cột thời tiết nhận `node_site = -1`, rồi
+        `sinh_kich_ban()` `continue` qua nó (UAV không bao giờ hạ cánh, đặc trưng
+        thời tiết bằng 0). Tệp `thoi_tiet_vn_mr.npz` từng có 44 điểm trong khi cấu
+        hình cần 51 và không nơi nào báo lỗi. Kiểm ở đây thì MỌI đường chạy đều bị
+        chặn, không phải nhớ bật `kiem_tra` ở từng script.
+        """
+        if mo_rong is None:
+            mo_rong = suy_mo_rong(len(tt.names))
+        kiem_tra_du_diem(tt.path, mo_rong=mo_rong)
         self.W = W.astype(np.float64)
         self.T, self.N = W.shape[0], W.shape[1]
         self.kind, self.names = [str(k) for k in kind], [str(n) for n in names]

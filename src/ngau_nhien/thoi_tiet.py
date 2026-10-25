@@ -84,6 +84,11 @@ def kiem_tra_du_diem(npz_path, mo_rong: bool = False):
     return co
 
 
+def suy_mo_rong(so_diem: int) -> bool:
+    """Tệp 23 điểm là mạng 73 nút (hẹp); tệp nhiều hơn là mạng mở rộng."""
+    return so_diem > len(cac_diem(mo_rong=False))
+
+
 
 def _goi(url, lat, lon, start, end, hourly, chunk_days=180, extra=None):
     """Gọi Open-Meteo theo từng khúc ngày cho nhiều điểm; trả (times, {biến: mảng [H,S]})."""
@@ -226,16 +231,21 @@ def doc_thang(s: str | None):
 
 
 class ThoiTiet:
-    def __init__(self, path: str, mo_rong: bool | None = None, kiem_tra: bool = False):
+    def __init__(self, path: str, mo_rong: bool | None = None, kiem_tra: bool = True):
         """mo_rong=None: suy từ số điểm (23 -> hẹp, nhiều hơn -> mở rộng).
 
-        kiem_tra=True: bắt buộc tập điểm khớp cấu hình. Bật ở `kich_ban.py` (nơi
-        gán `node_site`) vì lệch ở đó làm UAV lặng lẽ không bao giờ hạ cánh.
+        kiem_tra=True (mặc định): bắt buộc tập điểm khớp cấu hình NGAY khi đọc.
+        Lệch tập điểm làm `MangGoc` gán `node_site = -1`, rồi `sinh_kich_ban()`
+        bỏ qua nút đó — UAV lặng lẽ không bao giờ hạ cánh, đặc trưng thời tiết
+        bằng 0, không một dòng cảnh báo. `MangGoc` cũng tự kiểm (chốt chặn
+        chính, xem `src/ngau_nhien/kich_ban.py`), nên đường chạy nào dựng mạng
+        cũng bị chặn kể cả khi quên bật ở đây.
         """
         d = np.load(path, allow_pickle=False)
+        self.path = str(path)
         self.names = [str(x) for x in d["site_names"]]
         if kiem_tra:
-            kiem_tra_du_diem(path, mo_rong=len(self.names) > 23 if mo_rong is None else mo_rong)
+            kiem_tra_du_diem(self.path, mo_rong=suy_mo_rong(len(self.names)) if mo_rong is None else mo_rong)
         self.lat, self.lon = d["lat"].astype(float), d["lon"].astype(float)
         self.time_utc = d["time_utc"]
         self.precip, self.code, self.gust = d["precip"].astype(float), d["code"], d["gust"].astype(float)

@@ -93,3 +93,31 @@ Kết quả sẽ được báo đầy đủ cả khi DM không đạt.
 - Dự đoán trước: thời gian tìm kiếm cục bộ tăng ít nhất tỉ lệ thuận với K, thời gian DM tăng chậm hơn (tính song song
   theo mảng), nên tỉ lệ thời gian LS R = 10 / DM tăng theo K; khoảng cách của DM có thể tăng do không huấn luyện lại.
 - Báo đủ mọi ô (3 giá trị K × 3 mức tải), không chọn ô đẹp.
+
+## Ghi chú: định nghĩa "mạng 73 nút" vs "mạng mở rộng 101 nút"
+
+Ghi 25/10/2026, sau khi đã có kết quả. Không đổi tiêu chí nào ở trên; mục này chỉ
+nói rõ các kết quả nằm trên cấu hình nào, để không trộn hai cấu hình trong một bảng.
+
+- Toàn bộ dữ liệu Yagi của thí nghiệm này dựng từ `dataset/oracle_dataset_v2.npz`
+  (**73 nút**) và `data/thoi_tiet_vn.npz` (**23 điểm** thời tiết). "73 nút" không
+  phải 51+22: 73 = 23 nút cũ (có thời tiết) + 50 vệ tinh LEO. Mạng mở rộng
+  `oracle_dataset_v3.npz` thêm 14 điểm mặt đất, 12 UAV đặt cố định và 2 HAPS mới
+  ⇒ 101 nút; trong đó 51 nút có thời tiết, đúng bằng 23 + 14 + 12 + 2.
+- Vì vậy **8 UAV mới không có mặt** trong các kết quả Yagi đã báo (chúng chỉ xuất
+  hiện từ cấu hình mở rộng). Kết quả vẫn đúng như đã ghi, nhưng khi viết báo cáo
+  phải ghi rõ "trên mạng 73 nút", không được ngầm hiểu là mạng 101 nút.
+- **Yagi làm tập test, vậy test nằm ở đâu khi dùng cấu hình mở rộng.** Nếu chạy lại
+  toàn bộ trên 101 nút, quyết định là: giữ nguyên protocol — loại 2024-09-04 →
+  2024-09-12 khỏi train/val, 16 kịch bản Yagi (07–08/9, mỗi 3 giờ, 30 snapshot)
+  là test. Không cắt thêm ngày nào, và không lấy một phần Yagi làm val: val là
+  ngày khác (12 ngày, 15% số ngày), chọn checkpoint trên val, nên test Yagi vẫn
+  chưa từng được nhìn thấy khi chọn mô hình.
+- Hệ quả phải chấp nhận: tập test là 16 kịch bản × 30 snapshot × 3 mức tải. Khoảng
+  tin cậy 95% bootstrap theo 16 kịch bản, không theo 480 tình huống — đừng báo độ
+  phân tán nhỏ hơn thực tế. Tập test này cố định, mọi so sánh phải dùng đúng nó;
+  muốn thêm thí nghiệm thì thêm, không đổi tập test.
+- Chưa làm: chưa có dữ liệu train/val/test cho mạng 101 nút. `data/yagi/` đã bị
+  xoá; muốn có số cho cấu hình mở rộng thì phải chạy lại `tao_du_lieu_nl` trỏ vào
+  `oracle_dataset_v3.npz` + `thoi_tiet_vn_mr.npz` rồi huấn luyện lại. Chưa ai làm,
+  và không được trộn số của hai cấu hình trong cùng một bảng.

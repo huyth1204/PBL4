@@ -124,10 +124,9 @@ def main():
     ap.add_argument("--out-dir", required=True)
     a = ap.parse_args()
     raw = np.load(a.raw, allow_pickle=False)
-    # Chặn ở đây: MangGoc gán `node_site = -1` cho nút không có cột thời tiết, và
-    # kich_ban.sinh_kich_ban() lặng lẽ bỏ qua các nút đó (UAV không bao giờ hạ
-    # cánh vì giông/gió). Kiểm tập điểm khớp cấu hình trước khi sinh dữ liệu.
-    tt = ThoiTiet(a.thoi_tiet, kiem_tra=True)
+    # MangGoc tự kiểm tập điểm thời tiết khớp cấu hình (chốt chặn chính, ở đó mới
+    # sinh ra node_site = -1); ThoiTiet cũng kiểm ngay khi đọc tệp.
+    tt = ThoiTiet(a.thoi_tiet)
     g = MangGoc(raw["W_snapshots"], raw["node_kind"], raw["node_order"], tt)
     split = json.load(open(a.split, encoding="utf-8"))["snapshot_ids"]
     out = Path(a.out_dir)

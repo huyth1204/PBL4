@@ -384,5 +384,60 @@ def _run():
     return chay_tests(globals(), "test_mang_mo_rong")
 
 
+
+
+def test_mang_goc_chan_tep_thoi_tiet_lech():
+    """`MangGoc` phải tự chặn tệp thời tiết lệch — kể cả khi nơi gọi QUÊN bật kiểm.
+
+    Đây là chốt chặn chính vì `MangGoc` mới là nơi gán `node_site = -1`. Trước
+    đây việc kiểm nằm rải ở từng script (`tao_du_lieu.main` bật, còn
+    `khoang_loi`, `luat_chia_doi`, `phan_tich_nhieu_mua`, `huong_dan/buoc_7`,
+    `buoc_8` thì không) ⇒ đường chạy nào quên bật là lỗi âm thầm quay lại.
+
+    Test dựng bản tệp lỗi riêng (bỏ 8 UAV mới) thay vì dùng tệp thật, để không
+    ghi đè `data/thoi_tiet_vn_mr.npz`.
+    """
+    import tempfile
+    from src.ngau_nhien.kich_ban import MangGoc
+    from src.ngau_nhien.thoi_tiet import ThoiTiet
+
+    mr = ROOT / "data" / "thoi_tiet_vn_mr.npz"
+    if not mr.exists():
+        raise BoQua("thiếu data/thoi_tiet_vn_mr.npz, bỏ qua")
+    d = dict(np.load(mr, allow_pickle=False))
+    ten = [str(x) for x in d["site_names"]]
+    bo = {"UAV-BachLongVi", "UAV-LySon", "UAV-BuonMaThuot", "UAV-DaLat",
+          "UAV-CaMau", "UAV-ConDao", "UAV-PhuQuoc", "UAV-SaPa"}
+    giu = [k for k, n in enumerate(ten) if n not in bo]
+    assert len(giu) == len(ten) - 8, f"tệp đã khác giả định: {len(ten)} điểm"
+    loi = {k: (v[..., giu] if v.ndim == 2 else v[giu])
+           for k, v in d.items() if k in ("lat", "lon", "precip", "code", "gust",
+                                          "code_fc", "cape", "lifted_index", "code_era5")}
+    loi.update(time_utc=d["time_utc"], nguon=d["nguon"],
+               site_names=np.array([ten[k] for k in giu]))
+
+    voi = tempfile.TemporaryDirectory()
+    p = Path(voi.name) / "lech.npz"
+    np.savez(p, **loi)
+    try:
+        # kiem_tra=False ở ThoiTiet: mô phỏng đúng cảnh nơi gọi KHÔNG bật kiểm.
+        tt = ThoiTiet(str(p), kiem_tra=False)
+        try:
+            MangGoc(np.ones((1, 101, 101)) * 2.0, ["user"] * 101,
+                    [f"n{k}" for k in range(101)], tt)
+        except ValueError as e:
+            assert "UAV-BachLongVi" in str(e), f"lỗi không nêu tên điểm thiếu: {e}"
+        else:
+            raise AssertionError(
+                "MangGoc nhận tệp thiếu 8 điểm mà không báo lỗi: node_site sẽ = -1 "
+                "và 8 UAV lặng lẽ không bao giờ hạ cánh.")
+    finally:
+        voi.cleanup()
+
+    # Tệp đúng thì phải dựng được mạng (chốt chặn không được chặn nhầm).
+    tt_ok = ThoiTiet(str(mr))
+    MangGoc(np.ones((1, 101, 101)) * 2.0, ["user"] * 101,
+            [f"n{k}" for k in range(101)], tt_ok)
+
 if __name__ == "__main__":
     sys.exit(0 if _run() else 1)

@@ -183,10 +183,19 @@ Tệp thời tiết chứa 23 điểm (mặc định) hoặc **51 điểm** (`--
 ground + 2 HAPS + 12 UAV đặt cố định vào cuối, cộng 5 tâm UAV tuần tra đã có từ
 trước). `kiem_tra_du_diem()` kiểm **hai chiều** — ném `ValueError` nếu tệp *thiếu*
 điểm cấu hình cần **hoặc** *thừa* điểm không còn trong cấu hình — và được gọi
-tự động ở `them_giong()` và `ThoiTiet(..., kiem_tra=True)` (dùng trong
-`tao_du_lieu.main`). Nguồn danh sách duy nhất là `src/physics/sites.py`
+ở **ba** nơi: `them_giong()`, `ThoiTiet(...)` (mặc định `kiem_tra=True`, tức mọi
+lần đọc tệp) và **`MangGoc.__init__`** — chốt chặn chính, vì đúng chỗ đó mới gán
+`node_site = -1`. Kiểm ở `MangGoc` nghĩa là mọi đường chạy (kể cả
+`khoang_loi`, `luat_chia_doi`, `phan_tich_nhieu_mua`, `huong_dan/buoc_7`,
+`buoc_8`, `tao_du_lieu_nl`) đều bị chặn, không phải nhớ bật cờ ở từng script —
+trước đây chỉ `tao_du_lieu.main` bật nên đường nào quên là lỗi âm thầm quay lại.
+Nguồn danh sách duy nhất là `src/physics/sites.py`
 (`cac_diem_thoi_tiet()`); `thoi_tiet.cac_diem()`, phần kiểm tra và phần vẽ bản
 đồ (`huong_dan/tien_ich.py`) đều đọc lại từ đó.
+
+`MangGoc` tự suy `mo_rong` từ số điểm của `ThoiTiet` (`suy_mo_rong()`): tệp 23
+điểm ⇒ mạng 73 nút (hẹp), nhiều hơn ⇒ mở rộng. Tham số `mo_rong=` chỉ cần
+truyền khi muốn kiểm theo cấu hình khác với số điểm của tệp.
 
 > **Bẫy đã sập một lần — đọc kỹ trước khi sửa danh sách nút.** Tệp
 > `thoi_tiet_vn_mr.npz` từng có **44** điểm trong khi cấu hình cần **51**: còn sót
@@ -204,8 +213,11 @@ tự động ở `them_giong()` và `ThoiTiet(..., kiem_tra=True)` (dùng trong
 >
 > Vì sao không ai phát hiện: test cũ chỉ so **23 cột cũ**, mà 23 cột đó vẫn đúng
 > từng bit. Nay có `test_tep_thoi_tiet_mo_rong_phu_dung_moi_nut` (so **đúng tập
-> điểm**, cả thiếu lẫn thừa) và `test_uav_dat_co_dinh_khop_thoi_tiet_voi_nut_chu`
-> (UAV đặt cùng toạ độ nút thì mọi cột thời tiết phải trùng khít).
+> điểm**, cả thiếu lẫn thừa), `test_uav_dat_co_dinh_khop_thoi_tiet_voi_nut_chu`
+> (UAV đặt cùng toạ độ nút thì mọi cột thời tiết phải trùng khít) và
+> `test_mang_goc_chan_tep_thoi_tiet_lech` (khoá chính chốt chặn ở `MangGoc`: dựng
+> bản tệp thiếu 8 điểm rồi đòi `MangGoc` phải ném lỗi kể cả khi nơi gọi không bật
+> `kiem_tra`).
 
 ## 5. Trạng thái UAV: `tat` và `ha_canh`
 
