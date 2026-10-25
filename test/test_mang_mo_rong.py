@@ -22,6 +22,7 @@ from src.physics.sites import (  # noqa: E402
     DEFAULT_USERS,
     DEFAULT_UAV_CENTERS,
     EXTRA_GROUND_SITES,
+    EXTRA_UAV_SITES,
     khoa_sap_xep,
 )
 from test.tien_ich_test import BoQua, chay_tests, dung_utf8  # noqa: E402
@@ -50,12 +51,12 @@ def test_cau_hinh_cu_van_ra_73_nut():
     assert 50 + len(air) + len(gnd) == 73
 
 
-def test_mo_rong_them_15_nut_va_giu_nguyen_khoi_cu():
-    """Bật mở rộng: +15 nút, và 73 nút cũ giữ nguyên thứ tự tuyệt đối."""
+def test_mo_rong_them_nut_va_giu_nguyen_khoi_cu():
+    """Bật mở rộng: +18 nút, và 73 nút cũ giữ nguyên thứ tự tuyệt đối."""
     a0, g0 = _mang(False)
     a1, g1 = _mang(True)
-    assert len(g1) - len(g0) == len(EXTRA_GROUND_SITES) == 11
-    assert len(a1) - len(a0) == 4                     # 2 HAPS + 2 UAV đặt cố định
+    assert len(g1) - len(g0) == len(EXTRA_GROUND_SITES) == 14   # 11 cũ + 3 ven biển Bắc
+    assert len(a1) - len(a0) == 2 + 5                 # 2 HAPS + 5 UAV đặt cố định
     old_air = [n for n in a1 if n in set(a0)]
     old_gnd = [n for n in g1 if n in set(g0)]
     assert old_air == a0 and old_gnd == g0, "thứ tự nút cũ bị xáo trộn"
@@ -68,7 +69,7 @@ def test_moi_nut_moi_deu_duoc_khai_bao_ngoai_CAC_TEN_CU():
     for n in air + gnd:
         assert (n in CAC_TEN_CU) == (khoa_sap_xep(n)[0] == 0), n
     moi = [n for n in air + gnd if khoa_sap_xep(n)[0] == 1]
-    assert len(moi) == 15
+    assert len(moi) == len(EXTRA_GROUND_SITES) + 2 + len(EXTRA_UAV_SITES) == 21
 
 
 def test_v3_giu_nguyen_chi_so_cua_73_nut_trong_v2():
@@ -79,7 +80,9 @@ def test_v3_giu_nguyen_chi_so_cua_73_nut_trong_v2():
     b = np.load(V3, allow_pickle=True)
     o2 = [str(x) for x in a["node_order"]]
     o3 = [str(x) for x in b["node_order"]]
-    assert len(o2) == 73 and len(o3) == 88
+    assert len(o2) == 73
+    # 73 nút cũ + 14 ground + 2 HAPS + 5 UAV đặt cố định; 50 vệ tinh thêm ở tầng space
+    assert len(o3) == 73 + len(EXTRA_GROUND_SITES) + 2 + len(EXTRA_UAV_SITES)
     lech = [(i, n, o3.index(n)) for i, n in enumerate(o2) if o3.index(n) != i]
     assert not lech, f"nút cũ bị lệch chỉ số: {lech[:5]}"
 
@@ -106,7 +109,9 @@ def test_v3_co_toa_do_va_thong_tin_lien_ket():
         assert k in b.files, f"thiếu khóa {k}"
     assert bool(b["mo_rong"][0])
     lat = b["node_latlon_alt"]
-    assert lat.shape == (600, 88, 3)
+    n_node = len(b["node_order"])
+    assert lat.shape == (600, n_node, 3)
+    assert n_node == 94, f"v3 phải có 94 nút (73 cũ + 16 ground/HAPS + 5 UAV), đang {n_node}"
     assert np.isfinite(lat[:, :, :2]).all(), "tọa độ lat/lon không được NaN"
     cot = [str(x) for x in b["link_stat_cols"]]
     assert cot == ["snapshot_id", "u", "v", "distance_km", "elevation_deg",
@@ -149,6 +154,41 @@ def test_v3_split_khong_ro_ri_link_stats():
         dem = np.bincount(ls[:, 0].astype(np.int64), minlength=W.shape[0])
         assert (dem > 0).all(), f"{ten}: có snapshot không có dòng link_stats nào"
         assert abs(int(dem.sum()) - len(ls)) == 0
+
+
+def test_uav_ven_bien_bac_phu_duoc_hai_phong_va_quang_ninh():
+    """UAV đặt cố định phải thật sự nối được, không chỉ 'gần'.
+
+    Bẫy đã sập một lần: đặt UAV-QuangYen cách Quảng Ninh 24.1 km (< 25 km) nhưng
+    góc nâng chỉ 4.65° < ngưỡng 5° của luật UAV_GROUND, nên cạnh KHÔNG được tạo
+    và nút Quảng Ninh cô lập suốt 600/600 snapshot mà không báo lỗi.
+    Test này khoá cả hai điều kiện: khoảng cách và góc nâng.
+    """
+    from src.physics.air_ground import (
+        _UAV_GROUND,
+        Node,
+        blocked_by_earth,
+        elevation_deg,
+        node_ecef_km,
+    )
+    uav = make_placed_uavs()
+    for nut_ten, la, lo, kind in [("HaiPhong", 20.8449, 106.6881, "gateway"),
+                                  ("QuangNinh", 20.9500, 107.0800, "user")]:
+        nut = Node(nut_ten, "ground", kind, la, lo, 0.0,
+                   can_relay=(kind == "gateway"), endpoint=True)
+        # chọn UAV gần nhất
+        gan = min(uav, key=lambda u: (node_ecef_km(u.node_at(0.0))
+                                      - node_ecef_km(nut)).dot(
+                                          node_ecef_km(u.node_at(0.0)) - node_ecef_km(nut)))
+        un = gan.node_at(0.0)
+        e_n, e_u = node_ecef_km(nut), node_ecef_km(un)
+        dist = float(np.linalg.norm(e_u - e_n))
+        elev = elevation_deg(nut, e_u)
+        assert dist <= _UAV_GROUND.max_range_km, \
+            f"{nut_ten}: UAV gần nhất ({gan.name}) cách {dist:.1f} km > {_UAV_GROUND.max_range_km} km"
+        assert elev >= _UAV_GROUND.min_elev_deg, \
+            f"{nut_ten}: góc nâng {elev:.2f}° < {_UAV_GROUND.min_elev_deg}° (cạnh sẽ không được tạo)"
+        assert not blocked_by_earth(e_u, e_n), f"{nut_ten}: bị Trái Đất chắn"
 
 
 def _run():

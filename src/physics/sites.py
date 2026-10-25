@@ -72,12 +72,20 @@ DEFAULT_UAV_CENTERS = [
 # ---------------------------------------------------------------------------
 # (tên, lat, lon, kind) — kind "gateway" (relay được) hoặc "user" (chỉ đầu/cuối)
 EXTRA_ISLAND_SITES = [
-    ("HoangSa", 16.5000, 112.0000, "gateway"),     # quần đảo Hoàng Sa
+    ("HoangSa", 16.8300, 112.3300, "gateway"),     # đảo Phú Lâm, quần đảo Hoàng Sa
     ("TruongSa", 8.6400, 111.9200, "gateway"),     # quần đảo Trường Sa
     ("ConDao", 8.6833, 106.6167, "user"),          # Côn Đảo, Bà Rịa - Vũng Tàu
     ("PhuQuoc", 10.2289, 103.9640, "gateway"),     # Phú Quốc, Kiên Giang
     ("LySon", 15.3800, 109.1170, "user"),          # Lý Sơn, Quảng Ngãi
     ("BachLongVi", 20.1333, 107.7242, "user"),     # Bạch Long Vĩ, Hải Phòng
+]
+# Ven biển + đồng bằng Bắc Bộ: vùng bão Yagi đổ bộ và chịu ảnh hưởng nặng nhất.
+# Trước đây cấu hình mở rộng chỉ có nút hải đảo xa, nên không UAV nào ở gần tâm
+# bão => luật ha_canh không bao giờ kích hoạt trong Yagi (xem SCHEMA.md §5).
+EXTRA_COASTAL_SITES = [
+    ("QuangNinh", 20.9500, 107.0800, "user"),      # Hạ Long, Quảng Ninh (bờ vịnh Bắc Bộ)
+    ("ThaiBinh", 20.4500, 106.3400, "user"),       # Thái Bình (bờ biển, tâm bão Yagi)
+    ("NamDinh", 20.4300, 106.1700, "user"),        # Nam Định (bờ biển)
 ]
 EXTRA_MOUNTAIN_SITES = [
     ("SaPa", 22.3364, 103.8438, "user"),           # Sa Pa, Lào Cai
@@ -89,7 +97,8 @@ EXTRA_FLOOD_SITES = [
     ("QuangTri", 16.7500, 107.1900, "user"),       # Đông Hà, Quảng Trị (hay lũ)
 ]
 
-EXTRA_GROUND_SITES = EXTRA_ISLAND_SITES + EXTRA_MOUNTAIN_SITES + EXTRA_FLOOD_SITES
+EXTRA_GROUND_SITES = (EXTRA_ISLAND_SITES + EXTRA_COASTAL_SITES
+                      + EXTRA_MOUNTAIN_SITES + EXTRA_FLOOD_SITES)
 
 # HAPS phủ thêm cho các vùng mới (chỉ bật khi mo_rong=True). HAPS đứng yên,
 # dùng làm phương án THAY THẾ UAV khi vùng có gió giật vượt ngưỡng.
@@ -100,9 +109,15 @@ EXTRA_HAPS = [
 
 # Vị trí đặt UAV TÙY CHỌN (đứng yên thay vì bay vòng). (tên, lat, lon)
 # Dùng khi cần UAV làm relay cố định tại một điểm, ví dụ phủ đảo.
+# Cụm ven biển Bắc đặt quanh Hải Phòng — nơi bão Yagi đổ bộ — để luật ha_canh
+# thật sự có dịp kích hoạt trên dữ liệu bão thật (xem SCHEMA.md §5).
 EXTRA_UAV_SITES = [
-    ("UAV-HoangSa", 16.5000, 112.0000),
+    ("UAV-HoangSa", 16.8300, 112.3300),   # đảo Phú Lâm (khớp toạ độ nút HoangSa)
     ("UAV-TruongSa", 8.6400, 111.9200),
+    ("UAV-HaiPhong", 20.8449, 106.6881),   # trên TP Hải Phòng (cách HaiPhong 0 km)
+    ("UAV-VinhBacBo", 20.3000, 106.8000),  # giữa vịnh Bắc Bộ, tiếp cận từ biển
+    ("UAV-QuangYen", 20.8700, 106.8900),   # cân bằng: Hải Phòng 21.3 km / Quảng Ninh
+                                           # 21.8 km, góc nâng đều >=5° (ngưỡng UAV_GROUND)
 ]
 
 
