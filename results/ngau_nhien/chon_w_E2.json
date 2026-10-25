@@ -1,0 +1,65 @@
+{
+ "Dijkstra trên W đo được": {
+  "G_theo_kich_ban_%": {
+   "0": 845.3837575790741
+  },
+  "toi_dich_%": 100.0,
+  "G_%": 845.3837575790741,
+  "dut_%": 16.575192096597146,
+  "tre_them_khi_song_%": 9.20687760522477,
+  "trung_hau_kiem_%": NaN
+ },
+ "Dijkstra + lịch quỹ đạo (đối chứng mạnh)": {
+  "G_theo_kich_ban_%": {
+   "0": 24.450776838008714
+  },
+  "toi_dich_%": 100.0,
+  "G_%": 24.450776838008714,
+  "dut_%": 0.0,
+  "tre_them_khi_song_%": 31.262111491607204,
+  "trung_hau_kiem_%": NaN
+ },
+ "Nhãn (hậu kiểm trong phần mô hình thấy)": {
+  "G_theo_kich_ban_%": {
+   "0": 0.0
+  },
+  "toi_dich_%": 100.0,
+  "G_%": 0.0,
+  "dut_%": 0.0,
+  "tre_them_khi_song_%": 0.0,
+  "trung_hau_kiem_%": NaN
+ },
+ "DM guidance 1": {
+  "G_theo_kich_ban_%": {
+   "0": 10.701627766921028
+  },
+  "toi_dich_%": 99.74387120380534,
+  "G_%": 10.701627766921028,
+  "dut_%": 0.0,
+  "tre_them_khi_song_%": 14.005635421907128,
+  "trung_hau_kiem_%": 76.65568971825833,
+  "thoi_gian_s": 14.526278257369995
+ },
+ "DM guidance 2": {
+  "G_theo_kich_ban_%": {
+   "0": 10.55824279538351
+  },
+  "toi_dich_%": 99.89023051591658,
+  "G_%": 10.55824279538351,
+  "dut_%": 0.0,
+  "tre_them_khi_song_%": 13.531892449375462,
+  "trung_hau_kiem_%": 78.3388218075375,
+  "thoi_gian_s": 8.470245599746704
+ },
+ "DM guidance 3": {
+  "G_theo_kich_ban_%": {
+   "0": 9.679840138443097
+  },
+  "toi_dich_%": 99.74387120380534,
+  "G_%": 9.679840138443097,
+  "dut_%": 0.0,
+  "tre_them_khi_song_%": 12.267486293582758,
+  "trung_hau_kiem_%": 78.59495060373216,
+  "thoi_gian_s": 29.914982080459595
+ }
+}

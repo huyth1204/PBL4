@@ -20,6 +20,16 @@ from itertools import combinations
 
 import numpy as np
 
+from src.physics.sites import (
+    DEFAULT_GATEWAYS,
+    DEFAULT_HAPS,
+    DEFAULT_UAV_CENTERS,
+    DEFAULT_USERS,
+    EXTRA_HAPS,
+    EXTRA_UAV_SITES,
+    HAPS_ALT_M,
+    ground_sites,
+)
 from src.physics.tle_loader import GroundStation
 
 EARTH_RADIUS_KM = 6371.0
@@ -159,46 +169,57 @@ def compute_local_links(
 
 
 # ----------------------------------------------------------------------------
-# Cấu hình mặc định (Việt Nam) - chỉnh tại đây hoặc truyền danh sách riêng
+# Cấu hình (Việt Nam) — nguồn sự thật ở src/physics/sites.py
+#
+# `mo_rong=False` (mặc định) tái lập ĐÚNG cấu hình cũ: 13 ground + 5 HAPS
+# + 5 UAV = 23 nút không-vệ-tinh, giữ nguyên thứ tự để mạng 73 nút không đổi.
+# `mo_rong=True` nối thêm nút mới vào CUỐI, không xáo trộn nút cũ.
 # ----------------------------------------------------------------------------
-DEFAULT_GATEWAYS = [
-    ("Hanoi", 21.0285, 105.8542),
-    ("DaNang", 16.0544, 108.2022),
-    ("HoChiMinh", 10.7626, 106.6602),
-    ("HaiPhong", 20.8449, 106.6881),
-    ("CanTho", 10.0452, 105.7469),
-]
-DEFAULT_USERS = [
-    ("Vinh", 18.6796, 105.6813),
-    ("Hue", 16.4637, 107.5909),
-    ("NhaTrang", 12.2388, 109.1967),
-    ("QuyNhon", 13.7830, 109.2199),
-    ("BuonMaThuot", 12.6667, 108.0500),
-    ("CaMau", 9.1769, 105.1500),
-    ("LaoCai", 22.4833, 103.9750),
-    ("PleiKu", 13.9833, 108.0000),
-]
-HAPS_ALT_M = 20_000.0
-DEFAULT_HAPS = [
-    ("HAPS-North", 21.0, 105.9),
-    ("HAPS-Central", 16.3, 108.0),
-    ("HAPS-South", 10.9, 106.7),
-    ("HAPS-Highland", 13.9, 108.0),   # phủ Tây Nguyên
-    ("HAPS-Mekong", 10.0, 105.7),      # phủ ĐB sông Cửu Long
-]
-DEFAULT_UAV_CENTERS = [
-    ("UAV-1", 18.6796, 105.6813),   # quanh Vinh
-    ("UAV-2", 12.2388, 109.1967),   # quanh Nha Trang
-    ("UAV-3", 10.0452, 105.7469),   # quanh Cần Thơ
-    ("UAV-4", 22.4833, 103.9750),   # quanh Lào Cai
-    ("UAV-5", 13.7830, 109.2199),   # quanh Quy Nhơn
+# Tái xuất các hằng số để code cũ (thoi_tiet.py, ...) import được như trước.
+__all__ = [
+    "Node", "UAVPatrol", "static_nodes", "make_uav_patrols", "make_placed_uavs",
+    "nodes_at", "compute_local_links", "LOCAL_RULES", "LocalLinkRule",
+    "DEFAULT_GATEWAYS", "DEFAULT_USERS", "DEFAULT_HAPS", "DEFAULT_UAV_CENTERS", "HAPS_ALT_M",
 ]
 
+
+# Tên nút cũ (13 ground) — để phân biệt với nút mở rộng khi xếp thứ tự.
+_TEN_GROUND_CU = frozenset(n for n, *_ in DEFAULT_GATEWAYS + DEFAULT_USERS)
+
+
+def _la_them(name: str) -> bool:
+    """True nếu `name` không thuộc cấu hình ground cũ (tức là nút mở rộng)."""
+    return name not in _TEN_GROUND_CU
+
+
 def static_nodes(
-    gateways=DEFAULT_GATEWAYS,
-    users=DEFAULT_USERS,
-    haps=DEFAULT_HAPS,
+    gateways=None,
+    users=None,
+    haps=None,
+    mo_rong: bool = False,
 ) -> list[Node]:
+    """Nút đứng yên (ground + HAPS).
+
+    mo_rong=False: đúng cấu hình cũ (13 ground, 5 HAPS), thứ tự không đổi.
+    mo_rong=True : nối thêm ground mới (đảo/núi/lũ) rồi HAPS mới vào cuối.
+    Có thể truyền `gateways`/`users`/`haps` riêng để ghi đè hoàn toàn.
+    """
+    if gateways is None:
+        # Thứ tự hợp đồng: gateway cũ -> user cũ -> nút ground mới (nối đuôi).
+        # KHÔNG lọc gateway-rồi-user trên toàn bộ, vì sẽ kéo gateway mới lên
+        # trước user cũ, làm lệch vị trí nút cũ => phá mạng 73 nút.
+        gs = ground_sites(mo_rong=mo_rong)
+        cu_gw = [(n, la, lo) for n, la, lo, k in gs if k == "gateway" and not _la_them(n)]
+        cu_user = [(n, la, lo) for n, la, lo, k in gs if k == "user" and not _la_them(n)]
+        them = [(n, la, lo, k) for n, la, lo, k in gs if _la_them(n)]
+        gateways = cu_gw + [(n, la, lo) for n, la, lo, k in them if k == "gateway"]
+        users = cu_user + [(n, la, lo) for n, la, lo, k in them if k == "user"]
+    else:
+        gateways = list(gateways)
+        users = DEFAULT_USERS if users is None else users
+    if haps is None:
+        haps = list(DEFAULT_HAPS) + (list(EXTRA_HAPS) if mo_rong else [])
+
     nodes: list[Node] = []
     for name, lat, lon in gateways:
         nodes.append(Node(name, "ground", "gateway", lat, lon, 0.0, can_relay=True, endpoint=True))
@@ -225,12 +246,17 @@ class UAVPatrol:
     phase0_rad: float = 0.0
 
     def node_at(self, elapsed_s: float) -> Node:
-        omega = (self.speed_mps / 1000.0) / self.radius_km  # rad/s
-        theta = self.phase0_rad + omega * elapsed_s
-        dlat = self.radius_km * math.cos(theta) / 111.32
-        dlon = self.radius_km * math.sin(theta) / (
-            111.32 * math.cos(math.radians(self.center_lat_deg))
-        )
+        # radius_km = 0 => UAV ĐẶT CỐ ĐỊNH: luôn ở tâm, không chia cho 0,
+        # giữ nguyên phase0/speed để hồ sơ nút vẫn đầy đủ (không thêm lớp mới).
+        if self.radius_km <= 0.0:
+            dlat = dlon = 0.0
+        else:
+            omega = (self.speed_mps / 1000.0) / self.radius_km  # rad/s
+            theta = self.phase0_rad + omega * elapsed_s
+            dlat = self.radius_km * math.cos(theta) / 111.32
+            dlon = self.radius_km * math.sin(theta) / (
+                111.32 * math.cos(math.radians(self.center_lat_deg))
+            )
         return Node(
             self.name, "air", "uav",
             self.center_lat_deg + dlat, self.center_lon_deg + dlon, self.alt_m,
@@ -245,6 +271,17 @@ def make_uav_patrols(seed: int, centers=DEFAULT_UAV_CENTERS) -> list[UAVPatrol]:
         UAVPatrol(name, lat, lon, phase0_rad=float(rng.uniform(0.0, 2.0 * math.pi)))
         for name, lat, lon in centers
     ]
+
+
+def make_placed_uavs(sites=EXTRA_UAV_SITES, alt_m: float = 2000.0) -> list[UAVPatrol]:
+    """UAV ĐẶT CỐ ĐỊNH tại một vị trí (không bay vòng).
+
+    Tách "vị trí đặt" khỏi "vòng tuần tra": dùng lại UAVPatrol với radius_km=0
+    thì `node_at` trả về đúng tâm ở mọi thời điểm, nên không cần lớp mới và
+    hành vi cũ (bay vòng) hoàn toàn không bị đụng.
+    """
+    return [UAVPatrol(name, lat, lon, radius_km=0.0, alt_m=alt_m)
+            for name, lat, lon in sites]
 
 
 def nodes_at(elapsed_s: float, statics: list[Node], patrols: list[UAVPatrol]) -> list[Node]:

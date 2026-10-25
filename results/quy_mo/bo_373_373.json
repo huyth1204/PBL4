@@ -1,0 +1,90 @@
+{
+ "mang": {
+  "N": 373,
+  "so_ve_tinh": 350,
+  "canh_co_huong_TB": 16855.536666666667,
+  "bac_ra_TB": 45.18910634495085,
+  "ung_vien_moi_buoc_TB": 22.781591965222606,
+  "ung_vien_moi_buoc_max": 75,
+  "so_hop_TB": 2.470740740740741,
+  "duong_qua_ve_tinh_%": 69.4074074074074,
+  "lien_ket_doi_moi_buoc_%": 3.2633389989559842,
+  "tuoi_tho_lien_ket_TB_s": 1115.5219501433928,
+  "tuoi_tho_lien_ket_trung_vi_s": 720.0
+ },
+ "so_duong_test": 2700,
+ "phuong_phap": {
+  "Dijkstra": {
+   "ms_tung_duong_python": 0.0107780001599167,
+   "ms_tung_duong_scipy_C": 0.000970000201050425,
+   "con_song_sau_%": {
+    "1": 96.4074074074074,
+    "3": 88.77777777777777,
+    "9": 45.370370370370374,
+    "45": 27.458333333333336
+   }
+  },
+  "DM nhiều quy mô, bỏ 373": {
+   "so_tham_so": 107330,
+   "next_hop_%": 97.46664667965823,
+   "next_hop_ngau_nhien_%": 15.936302523784585,
+   "next_hop_tham_lam_%": 30.415230100434716,
+   "ms_moi_duong_theo_lo": 14.826519702962996,
+   "toi_dich_%": 100.0,
+   "tre_so_voi_toi_uu": 1.003086610102747,
+   "trong_10pct_%": 99.29629629629629,
+   "trung_duong_%": 93.55555555555556,
+   "ms_tung_duong": 0.0030139999580569565,
+   "con_song_sau_%": {
+    "1": 96.22222222222221,
+    "3": 88.44444444444444,
+    "9": 44.74074074074074,
+    "45": 26.666666666666668
+   },
+   "hong_lien_ket": {
+    "0.05": {
+     "toi_dich_%": 100.0,
+     "tre_so_voi_toi_uu": 1.0094447160854967,
+     "trong_10pct_%": 97.34177215189874,
+     "trung_duong_%": 89.36708860759494
+    },
+    "0.1": {
+     "toi_dich_%": 100.0,
+     "tre_so_voi_toi_uu": 1.0116207747709651,
+     "trong_10pct_%": 96.34760705289672,
+     "trung_duong_%": 88.66498740554157
+    },
+    "0.2": {
+     "toi_dich_%": 100.0,
+     "tre_so_voi_toi_uu": 1.0181234723760824,
+     "trong_10pct_%": 93.48659003831418,
+     "trung_duong_%": 83.65261813537676
+    },
+    "0.3": {
+     "toi_dich_%": 99.86842105263159,
+     "tre_so_voi_toi_uu": 1.0285871206664818,
+     "trong_10pct_%": 92.62187088274044,
+     "trung_duong_%": 82.5
+    }
+   }
+  }
+ },
+ "hong_lien_ket": {
+  "0.05": {
+   "duong_cu_con_dung_%": 84.81012658227847,
+   "so_duong": 790
+  },
+  "0.1": {
+   "duong_cu_con_dung_%": 81.48614609571788,
+   "so_duong": 794
+  },
+  "0.2": {
+   "duong_cu_con_dung_%": 60.15325670498084,
+   "so_duong": 783
+  },
+  "0.3": {
+   "duong_cu_con_dung_%": 46.71052631578947,
+   "so_duong": 760
+  }
+ }
+}

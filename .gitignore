@@ -7,3 +7,17 @@ PBL4/
 .idea/
 *.pt
 dataset/oracle_labeler.py
+# mô hình nhỏ (~0,4 MB) cần để chạy hướng dẫn
+!results/dmx0_4lop.pt
+!results/quy_mo/*.pt
+
+# kết quả sinh ra khi chạy hướng dẫn
+huong_dan/ket_qua/
+
+# dữ liệu Yagi nhiều luồng sinh lại được bằng src/nhieu_luong/tao_du_lieu_nl.py
+data/yagi/
+logs/
+results/yagi/test_tho/
+data/yagi2/
+results/**/*.xong
+results/yagi2/test_tho/

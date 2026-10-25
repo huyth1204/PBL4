@@ -1,14 +1,24 @@
 
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from itertools import combinations
 from pathlib import Path
 
 import numpy as np
 from skyfield.api import EarthSatellite, load, wgs84
+
+# `load.timescale()` đo được ~1.6 ms mỗi lần gọi (nó nạp lại bảng leap second).
+# Nạp một lần ở cấp module: cùng một timescale dùng cho mọi snapshot.
+_TS = None
+
+
+def timescale():
+    """Skyfield timescale dùng chung (nạp một lần, sau đó trả cache)."""
+    global _TS
+    if _TS is None:
+        _TS = load.timescale()
+    return _TS
 
 # ----------------------------------------------------------------------------
 # Hằng số vật lý / ngưỡng hệ thống
@@ -31,8 +41,7 @@ class GroundStation:
 # 1. Nạp dữ liệu quỹ đạo (TLE) -> danh sách EarthSatellite
 # ----------------------------------------------------------------------------
 def load_tle(source: str | Path) -> list[EarthSatellite]:
-    ts = load.timescale()
-    satellites = load.tle_file(str(source), ts=ts)
+    satellites = load.tle_file(str(source), ts=timescale())
     return satellites
 
 
@@ -77,7 +86,6 @@ def compute_gsl_links(
             "exists": True/False,
         }
     """
-    ts = load.timescale()
     links = []
 
     for gs in ground_stations:
@@ -109,6 +117,7 @@ def compute_gsl_links(
 def compute_isl_links(
     positions: dict[str, np.ndarray],
     max_range_km: float = MAX_ISL_RANGE_KM,
+    chi_co_lien_ket: bool = False,
 ) -> list[dict]:
     """
     Với mọi cặp vệ tinh, tính khoảng cách Euclidean trong không gian ECI.
@@ -121,6 +130,11 @@ def compute_isl_links(
             "distance_km": khoảng cách,
             "exists": True/False,
         }
+
+    chi_co_lien_ket=True: bỏ các bản ghi exists=False. Mỗi snapshot sinh ra
+    C(n,2) dict nhưng phần lớn là cặp quá xa (n=40 -> 780 dict, đa số là rác);
+    với 600 snapshot thì thành nửa triệu dict không dùng tới. Mặc định False
+    để giữ nguyên hành vi cũ cho mọi caller hiện có.
     """
     links = []
     names = list(positions.keys())
@@ -130,6 +144,8 @@ def compute_isl_links(
         pos_b = positions[name_b]
         distance_km = float(np.linalg.norm(pos_a - pos_b))
         exists = distance_km < max_range_km
+        if chi_co_lien_ket and not exists:
+            continue
 
         links.append(
             {
@@ -146,7 +162,7 @@ def compute_isl_links(
 # Demo / smoke test
 # ----------------------------------------------------------------------------
 def main():
-    ts = load.timescale()
+    ts = timescale()
     t = ts.now()  # snapshot τ_k = thời điểm hiện tại
 
     tle_path = Path("data/tle/starlink.txt")

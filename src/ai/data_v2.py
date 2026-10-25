@@ -46,16 +46,19 @@ class SagsinData:
         self.paths = [self.paths[i] for i in keep]
         self.n_steps = sum(len(p) - 1 for p in self.paths)
         self.lookahead = False     # bật: thêm "nút này có nối thẳng tới đích không, trễ bao nhiêu"
+        # đặc trưng nút theo snapshot (tuỳ chọn, ví dụ thời tiết / tải của bộ dữ liệu ngẫu nhiên)
+        self.node_extra = d["node_extra"].astype(np.float32) if "node_extra" in d.files else None
 
     def __len__(self):
         return len(self.paths)
 
     @property
     def f_in(self):
-        return self.static_feat.shape[1] + 3 + 2 * self.lookahead   # + bậc, trễ TB cạnh kề, cờ đích
+        extra = 0 if self.node_extra is None else self.node_extra.shape[-1]
+        return self.static_feat.shape[1] + 3 + 2 * self.lookahead + extra   # + bậc, trễ TB cạnh kề, cờ đích
 
 
-def node_features(W, static_feat, dst, drop=None, lookahead=False):
+def node_features(W, static_feat, dst, drop=None, lookahead=False, extra=None):
     """Đặc trưng nút cho một lô đồ thị. W (P,N,N), dst (P,). drop (P,) bool: bỏ cờ đích (CFG).
     lookahead: thêm cột W[:, dst] (nút j nối thẳng tới đích? trễ?) — tri thức định tuyến, không phải GNN."""
     P, N, _ = W.shape
@@ -76,6 +79,8 @@ def node_features(W, static_feat, dst, drop=None, lookahead=False):
             adj[drop] = 0.0
             dly[drop] = 0.0
         cols += [adj[..., None], dly[..., None]]
+    if extra is not None:
+        cols.append(extra)
     return np.concatenate(cols, -1).astype(np.float32)
 
 
@@ -90,14 +95,26 @@ def valid_mask(W_rows, dst, can_relay, visited=None):
     return m
 
 
-def make_batch(data, path_idx, drop_prob=0.0, rng=None):
-    """Lô gồm P đường đi -> đồ thị cấp đường + các bước next-hop."""
+def nhieu_nhan(W, sigma, rng):
+    """Nhiễu đo nhân tính W·(1+σz), cùng giá trị cho hai chiều của một liên kết, không để trễ âm. sigma (P,)."""
+    z = np.triu(rng.standard_normal(W.shape).astype(np.float32), 1)
+    z = z + np.transpose(z, (0, 2, 1))
+    s = np.asarray(sigma, np.float32).reshape(-1, 1, 1)
+    return np.where(W > 0, np.maximum(W * (1 + s * z), 0.05 * W), W).astype(np.float32)
+
+
+def make_batch(data, path_idx, drop_prob=0.0, rng=None, nhieu=0.0, nhieu_min=0.0):
+    """Lô gồm P đường đi -> đồ thị cấp đường + các bước next-hop.
+    nhieu > 0: mỗi đồ thị nhận nhiễu đo với σ ~ U(nhieu_min, nhieu); nhãn vẫn là đường tối ưu trên trễ thật."""
     rng = rng or np.random
     sids = data.sid[path_idx]
     W = data.W[sids]                                   # (P,N,N)
+    if nhieu > 0:
+        W = nhieu_nhan(W, rng.uniform(nhieu_min, nhieu, len(path_idx)), rng)
     dst = np.array([data.paths[i][-1] for i in path_idx])
     drop = rng.random(len(path_idx)) < drop_prob if drop_prob > 0 else None
-    X = node_features(W, data.static_feat, dst, drop, data.lookahead)
+    extra = None if data.node_extra is None else data.node_extra[sids]
+    X = node_features(W, data.static_feat, dst, drop, data.lookahead, extra)
 
     step_p, cur, nxt = [], [], []
     for p, i in enumerate(path_idx):
@@ -108,6 +125,6 @@ def make_batch(data, path_idx, drop_prob=0.0, rng=None):
     rows = W[step_p, cur]                              # (S,N)
     mask = valid_mask(rows, dst[step_p], data.can_relay)
     return {
-        "W": W, "X": X, "dst": dst, "drop": drop,
+        "W": W, "X": X, "dst": dst, "drop": drop, "extra": extra,
         "step_p": step_p, "cur": cur, "nxt": nxt, "rows": rows, "mask": mask,
     }

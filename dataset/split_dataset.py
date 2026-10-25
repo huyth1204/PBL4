@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -238,9 +239,80 @@ def print_leak(name, s):
 
 
 # ----------------------------------------------------------------------------
+# Phân loại key của npz: per-mẫu | per-snapshot | theo-liên-kết | dùng chung
+# ----------------------------------------------------------------------------
+# Trước đây code đoán bằng `v.shape[:1] == (n_samples,)`. Cách đó SAI theo hai chiều:
+#   - Bỏ mất dữ liệu thật: reach_stats [S,3] (S != n_samples) biến mất khỏi split;
+#     node_latlon_alt [S,N,3] và link_stats [E,8] cũng vậy.
+#   - Cắt sai: bảng per-snapshot/per-liên-kết tình cờ có shape[0] == n_samples
+#     thì bị cắt theo hàng mẫu.
+# Nay khai báo tường minh. Key lạ KHÔNG bị đoán: báo lỗi để người dùng phân loại.
+
+PER_SAMPLE_KEYS = {
+    "snapshot_id", "source_idx", "target_idx", "y_next", "y_paths_indices",
+    "x_sources", "x_targets", "W_snapshots_index", "reach_flag", "hop_count",
+    "y_paths_text",
+}
+SHARED_KEYS = {"node_order", "node_layer", "node_kind", "infra", "link_stat_cols",
+               "node_names", "layer_names", "meta", "seed"}
+# Bảng có chiều 0 KHÔNG phải số mẫu: mỗi snapshot / mỗi liên kết / mỗi quan hệ.
+PER_SNAPSHOT_KEYS = {"reach_stats", "snapshot_times", "node_latlon_alt", "positions"}
+PER_LINK_KEYS = {"link_stats"}
+# Bảng nút [N, ...] không theo thời gian -> không cắt.
+STATIC_NODE_KEYS = {"node_features", "node_coords"}
+# W_snapshots được cắt riêng theo snapshot (không đi qua 4 nhóm trên).
+DAC_BIET_KEYS = {"W_snapshots"}
+
+
+def classify_keys(data: dict, n_samples: int) -> dict[str, list[str]]:
+    """Chia key của npz vào 4 nhóm, kiểm tra nhất quán với n_samples.
+
+    Trả về {"per_sample", "per_snapshot", "per_link", "shared"}.
+    """
+    out = {k: [] for k in ("per_sample", "per_snapshot", "per_link", "shared")}
+    la = []
+    for k, v in data.items():
+        shape0 = getattr(v, "shape", (None,))[:1]
+        if k in PER_SAMPLE_KEYS:
+            if shape0 != (n_samples,):
+                raise SystemExit(
+                    f"Key '{k}' được khai báo là per-mẫu nhưng shape[0]={shape0[0]} != {n_samples}."
+                )
+            out["per_sample"].append(k)
+        elif k in PER_SNAPSHOT_KEYS:
+            out["per_snapshot"].append(k)
+        elif k in PER_LINK_KEYS:
+            out["per_link"].append(k)
+        elif k in SHARED_KEYS or k in STATIC_NODE_KEYS:
+            out["shared"].append(k)
+        elif k in DAC_BIET_KEYS:
+            continue  # xử lý riêng trong vòng ghi file
+        else:
+            la.append(f"{k} {getattr(v, 'shape', None)}")
+    if la:
+        raise SystemExit(
+            "Không biết cách chia các key sau (shape): " + ", ".join(la) + "\n"
+            "Hãy khai báo chúng vào PER_SAMPLE_KEYS / PER_SNAPSHOT_KEYS / PER_LINK_KEYS "
+            "/ SHARED_KEYS / STATIC_NODE_KEYS trong dataset/split_dataset.py.\n"
+            "Từ chối đoán bằng shape để không làm mất hoặc cắt sai dữ liệu."
+        )
+    return out
+
+
+# ----------------------------------------------------------------------------
 # main
 # ----------------------------------------------------------------------------
 def main(argv=None):
+    # Console Windows mặc định cp1252 => in tiếng Việt/khung bảng là UnicodeEncodeError.
+    # Ép stdout/stderr sang UTF-8 trước khi in bất cứ thứ gì.
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            try:
+                reconfigure(encoding="utf-8")
+            except (ValueError, OSError):
+                pass
+
     ap = argparse.ArgumentParser(description="Chia oracle_dataset.npz thành train/val/test.")
     ap.add_argument("--in", dest="inp", default="dataset/oracle_dataset_v2.npz")
     ap.add_argument("--outdir", default=None, help="mặc định: thư mục của file vào")
@@ -330,7 +402,8 @@ def main(argv=None):
     code_of_row = np.full(int(ids.max()) + 1, DROP, dtype=np.int8)
     code_of_row[ids] = code
     sample_code = code_of_row[data["snapshot_id"]]
-    per_sample = [k for k, v in data.items() if k != "node_order" and v.shape[:1] == (n_samples,)]
+    phan_loai = classify_keys(data, n_samples)
+    per_sample = phan_loai["per_sample"]
     kept_total = int((sample_code != DROP).sum())
 
     n_drop = int((code == DROP).sum())
@@ -348,13 +421,41 @@ def main(argv=None):
         print(f"{NAMES[s].capitalize():<8}{int((code == s).sum()):>10}{len(rows):>9,}{len(rows) / kept_total:>8.1%}")
         # Cắt W_snapshots theo đúng snapshot thuộc tập này, remap snapshot_id sang index cục bộ
         split_snap_ids = np.array(sorted(ids[code == s]))
-        old_to_new = {int(old): new for new, old in enumerate(split_snap_ids)}
-        remapped_sid = np.array([old_to_new[int(sid)] for sid in data["snapshot_id"][rows]], dtype=np.int32)
+        sid_row = data["snapshot_id"][rows].astype(np.int64)
+        if sid_row.size and int(sid_row.max()) >= len(code_of_row):
+            raise SystemExit(
+                f"snapshot_id lớn nhất ({int(sid_row.max())}) vượt bảng mã snapshot "
+                f"({len(code_of_row)}); dữ liệu vào không nhất quán."
+            )
+        # Tra theo bảng: KeyError chỉ xảy ra nếu một hàng trỏ tới snapshot đã bị bỏ.
+        bang_remap = np.full(len(code_of_row), -1, dtype=np.int32)
+        bang_remap[split_snap_ids] = np.arange(len(split_snap_ids), dtype=np.int32)
+        remapped_sid = bang_remap[sid_row]
+        if (remapped_sid < 0).any():
+            raise SystemExit(
+                f"{NAMES[s]}: có hàng mẫu trỏ tới snapshot không thuộc tập này (dữ liệu lệch)."
+            )
+
+        # Bảng per-snapshot: lọc theo snapshot của tập này (trước đây bị bỏ mất hoàn toàn)
+        per_snap = {}
+        for k in phan_loai["per_snapshot"]:
+            arr = data[k]
+            if arr.shape[0] > 0 and arr.shape[0] in (len(ids), int(ids.max()) + 1):
+                arr = arr[split_snap_ids]
+                if k == "reach_stats" and arr.size:
+                    # Cột 0 là snapshot_id -> remap về index cục bộ cho khớp `snapshot_id`
+                    arr = arr.copy()
+                    arr[:, 0] = bang_remap[arr[:, 0].astype(np.int64)]
+            per_snap[k] = arr
 
         extra = {k: data[k] for k in ("node_layer", "node_kind") if k in data}
+        extra.update({k: data[k] for k in phan_loai["shared"]
+                      if k not in ("node_order", "node_layer", "node_kind")})
+        extra.update({k: data[k] for k in phan_loai["per_link"]})
         np.savez_compressed(
             outdir / f"{NAMES[s]}.npz",
             **{k: (remapped_sid if k == "snapshot_id" else data[k][rows]) for k in per_sample},
+            **per_snap,
             W_snapshots=data["W_snapshots"][split_snap_ids],
             **extra,
             node_order=data["node_order"],

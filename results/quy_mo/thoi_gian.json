@@ -1,0 +1,30 @@
+{
+ "73": {
+  "ms_dijkstra_python": 0.07233934000396403,
+  "ms_dijkstra_C": 0.23667122666665819,
+  "ms_dm_tung_duong": 7.305783426666797,
+  "ms_dm_theo_lo": 0.9901553175003148,
+  "ms_softmax_tung_duong": 3.807633446667751,
+  "ms_softmax_theo_lo": 0.7273075558335526
+ },
+ "173": {
+  "ms_dijkstra_python": 0.13675431333467714,
+  "ms_dijkstra_C": 0.5126081133312255,
+  "ms_dm_tung_duong": 9.402248726667798,
+  "ms_dm_theo_lo": 2.367825767500259,
+  "ms_softmax_tung_duong": 6.139883853332624,
+  "ms_softmax_theo_lo": 2.006097263332928
+ },
+ "273": {
+  "ms_dijkstra_python": 0.2073711800039746,
+  "ms_dijkstra_C": 1.0172518133307071,
+  "ms_dm_tung_duong": 11.547604660002738,
+  "ms_dm_theo_lo": 6.095524144999824
+ },
+ "373": {
+  "ms_dijkstra_python": 0.5398308733310841,
+  "ms_dijkstra_C": 1.6728293400046823,
+  "ms_dm_tung_duong": 14.580530606666192,
+  "ms_dm_theo_lo": 10.003346778333555
+ }
+}

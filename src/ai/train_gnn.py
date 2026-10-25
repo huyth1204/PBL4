@@ -23,6 +23,17 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+
+# Console Windows mặc định cp1252 -> `--help` (và mọi dòng in tiếng Việt) sẽ
+# UnicodeEncodeError. Ép UTF-8 trước khi argparse in bất cứ thứ gì.
+for _stream in (sys.stdout, sys.stderr):
+    _reconfigure = getattr(_stream, "reconfigure", None)
+    if _reconfigure is not None:
+        try:
+            _reconfigure(encoding="utf-8")
+        except (ValueError, OSError):
+            pass
+
 from src.ai.data_v2 import SagsinData, make_batch, node_features, valid_mask  # noqa: E402
 from src.ai.gnn_classifier import GraphClassifier  # noqa: E402
 from src.ai.gnn_diffusion import GraphDiffusion  # noqa: E402
@@ -59,12 +70,12 @@ def to_t(b):
 
 
 @torch.no_grad()
-def encode_pair(model, W, static, dst):
-    """Mã hóa có đích (điều kiện) và không đích (cho CFG)."""
+def encode_pair(model, W, static, dst, extra=None):
+    """Mã hóa có đích (điều kiện) và không đích (cho CFG). extra: đặc trưng nút theo snapshot (nếu có)."""
     Wt = torch.from_numpy(W)
     la = getattr(model, "lookahead", False)
-    hc = model.enc(torch.from_numpy(node_features(W, static, dst, None, la)), Wt)
-    hu = model.enc(torch.from_numpy(node_features(W, static, dst, np.ones(len(dst), bool), la)), Wt)
+    hc = model.enc(torch.from_numpy(node_features(W, static, dst, None, la, extra)), Wt)
+    hu = model.enc(torch.from_numpy(node_features(W, static, dst, np.ones(len(dst), bool), la, extra)), Wt)
     return hc, hu
 
 
@@ -77,7 +88,7 @@ def eval_nexthop(model, data, guidances=(2.0,), max_paths=None, n_steps=20, bs=1
     total, rand, greedy = 0, 0.0, 0
     for s in range(0, len(idx), bs):
         b = make_batch(data, idx[s:s + bs])
-        hc, hu = encode_pair(model, b["W"], data.static_feat, b["dst"])
+        hc, hu = encode_pair(model, b["W"], data.static_feat, b["dst"], b["extra"])
         sp = torch.from_numpy(b["step_p"])
         args = (torch.from_numpy(b["cur"]), torch.from_numpy(b["dst"][b["step_p"]]),
                 torch.from_numpy(b["rows"]), torch.from_numpy(b["mask"]))
@@ -214,6 +225,10 @@ def main():
     ap.add_argument("--attn", action="store_true", help="attention giữa các ứng viên (diffusion2/classifier)")
     ap.add_argument("--lookahead", action="store_true", help="thêm đặc trưng nối thẳng tới đích")
     ap.add_argument("--t-power", type=float, default=1.0, help=">1: huấn luyện nghiêng về nhiễu cao (diffusion2)")
+    ap.add_argument("--nhieu", type=float, default=0.0,
+                    help="nhiễu đo nhân tính khi huấn luyện, vd 0.4 = trọng số ±40%% (0 = tắt)")
+    ap.add_argument("--nhieu-min", type=float, default=0.0,
+                    help="σ tối thiểu mỗi mẫu (chỉ dùng khi --nhieu > 0)")
     ap.add_argument("--nhieu-tuyen", type=float, default=0.0,
                     help=">0: nhãn nhiều tuyến — mỗi epoch chọn ngẫu nhiên 1 trong các tuyến có trễ <= (1+x) tối ưu")
     ap.add_argument("--k-tuyen", type=int, default=4, help="số tuyến gần tối ưu tối đa mỗi cặp (thuật toán Yen)")
@@ -261,7 +276,8 @@ def main():
             tr.paths = [a[rng.integers(len(a))] for a in alts]
         perm = rng.permutation(len(tr))
         for s in range(0, len(perm), args.batch):
-            b = to_t(make_batch(tr, perm[s:s + args.batch], args.drop, rng))
+            b = to_t(make_batch(tr, perm[s:s + args.batch], args.drop, rng,
+                                nhieu=args.nhieu, nhieu_min=args.nhieu_min))
             loss = model.training_loss(b)
             opt.zero_grad()
             loss.backward()
@@ -297,7 +313,8 @@ def main():
     def model_fn(part):
         W = te.W[te.sid[part]]
         dst = np.array([te.paths[i][-1] for i in part])
-        hc, hu = encode_pair(model, W, te.static_feat, dst)
+        extra = None if te.node_extra is None else te.node_extra[te.sid[part]]
+        hc, hu = encode_pair(model, W, te.static_feat, dst, extra)
         return model_chooser(model, hc, hu, w_best, args.ddim)
 
     roll_model, routes = eval_rollout(te, idx, model_fn)
