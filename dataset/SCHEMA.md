@@ -58,6 +58,34 @@ Giữ **nguyên** mọi khoá của v2 và **thêm**:
 | `packet_loss` | Tỉ lệ mất gói theo loại liên kết |
 | `exists` | Luôn `1` — bảng chỉ ghi liên kết đang tồn tại |
 
+### Bộ train/val/test cho v3 — `dataset/v3/`
+
+```bash
+python dataset/split_dataset.py --in dataset/oracle_dataset_v3.npz --outdir dataset/v3 -v
+```
+
+> ⚠️ **Phải có `--outdir dataset/v3`.** `split_dataset.py` luôn ghi tên cố định
+> `train.npz`, `val.npz`, `test.npz`, và mặc định ghi vào thư mục của file vào.
+> Bỏ `--outdir` mà trỏ `--in` vào v3 sẽ **ghi đè bộ của v2** ở `dataset/`.
+
+Kết quả (600 snapshot, `--mode phase`, 12 khối × 12 snapshot, chừa 3 biên):
+
+| Tập | Snapshot | Mẫu | Hop TB | Nguồn là trạm |
+|---|---|---|---|---|
+| train | 357 | 17 850 | 2.89 | 26.8% |
+| val | 48 | 2 400 | 2.86 | 27.4% |
+| test | 48 | 2 400 | 2.92 | 26.5% |
+
+Bỏ 147 snapshot ở biên. **Giao giữa ba tập = 0 snapshot** (kiểm trong
+`dataset/v3/split_info.json`). Test giống train: trung vị Jaccard 0.70 (chia ngẫu
+nhiên sẽ là 0.97). Mỗi tệp có `node_latlon_alt`, `link_stats`, `mo_rong=True`.
+
+Nếu `split_dataset.py` báo `Không biết cách chia các key sau (shape): ...` thì đó
+là key metadata mới do labeler thêm — khai báo tên nó vào `SHARED_KEYS` (hoặc
+`PER_SNAPSHOT_KEYS` / `PER_LINK_KEYS`) trong `split_dataset.py`. Script cố tình từ
+chối đoán để không làm mất hay cắt sai dữ liệu. (`mo_rong` đã được khai báo.)
+
+
 Chỉ liên kết `exists=True` được ghi; cặp không tồn tại đã thể hiện bằng `W = -1`.
 Mỗi liên kết vô hướng được ghi **hai hàng** (`u→v` và `v→u`) để tra cứu nhanh.
 
@@ -95,9 +123,20 @@ trong `air_ground.py` không có luật ground↔ground, nên link mặt đất 
 ## 4. Thời tiết theo nút (`src/ngau_nhien/thoi_tiet.py`)
 
 ```bash
-python -m src.ngau_nhien.thoi_tiet tai --start 2023-01-01 --end 2024-12-31 \
-    --out data/thoi_tiet_vn.npz --mo-rong
+# Tệp chuẩn 23 điểm (dùng cho mạng 73 nút)
+python -m src.ngau_nhien.thoi_tiet tai --start 2024-01-01 --end 2025-12-31 \
+    --out data/thoi_tiet_vn.npz
+
+# Tệp mở rộng 38 điểm (dùng cho mạng 88 nút) — tên tệp KHÁC, không ghi đè tệp trên
+python -m src.ngau_nhien.thoi_tiet tai --mo-rong --start 2024-01-01 --end 2025-12-31 \
+    --out data/thoi_tiet_vn_mr.npz
 ```
+
+> ⚠️ **Khoảng thời gian thật của cả hai tệp là 2024-01-01 → 2025-12-31**
+> (17 544 giờ). Đừng chép lệnh cũ `--start 2023-01-01 --end 2024-12-31` ở bản
+> tài liệu trước — nó vừa sai thời gian, vừa ghi vào `thoi_tiet_vn.npz` nên sẽ
+> **ghi đè tệp 23 điểm**. Luôn dùng `--out data/thoi_tiet_vn_mr.npz` cho bản
+> mở rộng.
 
 Tệp thời tiết chứa 23 điểm (mặc định) hoặc 38 điểm (`--mo-rong`, thêm 11 ground
 + 2 HAPS + 2 UAV đặt cố định). `kiem_tra_du_diem()` ném `ValueError` nếu cấu
@@ -105,6 +144,14 @@ hình có điểm mà tệp thời tiết thiếu — chặn trường hợp nú
 mưa/gió. Nguồn cấu hình duy nhất là `src/physics/sites.py`.
 
 ## 5. Trạng thái UAV: `tat` và `ha_canh`
+
+> **Cảnh báo về nút cô lập (đo trên v3, 600 snapshot).** Một số nút không có
+> liên kết nào trong phần lớn thời gian: `LySon` 63%, `DaLat` 62%, `BachLongVi`
+> 61%, `ConDao`/`PhuQuoc` 60%, `SaPa` 29%. **Nhưng đây không phải vấn đề của
+> nút mới** — hai nút CŨ của mạng 73 là `BuonMaThuot` 63% và `CaMau` 60% cũng
+> y như vậy. Nguyên nhân là lỗ hổng phủ của cấu hình vệ tinh, đã tồn tại từ v2.
+> Hệ quả: thêm HAPS/UAV riêng cho Phú Quốc sẽ chữa sai chỗ; muốn giảm thì phải
+> sửa cấu hình vệ tinh và chấp nhận đổi cả v2.
 
 `sinh_kich_ban()` (trong `src/ngau_nhien/kich_ban.py`) trả `quan_sat` có hai cờ
 liên quan tới UAV:

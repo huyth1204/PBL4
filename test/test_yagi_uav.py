@@ -2,16 +2,31 @@
 test_yagi_uav.py — Kiểm chứng luật gió giật UAV khi bão Yagi.
 
 BỐI CẢNH
-Trong bão Yagi (9/2024) gió giật 10 m vượt 15 m/s ở gần như MỌI điểm trong
-nhiều giờ liền. Luật cũ gộp "gió mạnh" vào cùng một cờ với "mất nút":
+Luật cũ gộp "gió mạnh" vào cùng một cờ với "mất nút":
     tat[:, uav] |= gust[:, s] > 15
-nên cả tầng UAV biến mất suốt cơn bão. Thực tế UAV chỉ HẠ CÁNH an toàn rồi
-cất cánh lại — đây là trạng thái chờ, khác hẳn nút hỏng.
+nên cả tầng UAV biến mất khi gió vượt ngưỡng. Thực tế UAV chỉ HẠ CÁNH an toàn
+rồi cất cánh lại — đây là trạng thái chờ, khác hẳn nút hỏng.
+
+SỐ LIỆU THẬT (đo trên data/thoi_tiet_vn_mr.npz, 120 giờ bão 6–10/9/2024)
+Gió giật cực đại: UAV-1 11.9, UAV-2 12.0, UAV-3 15.1, UAV-4 10.5, UAV-5 13.5 m/s
+  → 5 UAV cũ: đúng 1 giờ vượt 15 m/s (UAV-3). Trên mạng 73 nút, Yagi KHÔNG làm
+    UAV nào hạ cánh. Đừng viết "gió giật >15 m/s ở gần như mọi điểm" — sai.
+UAV-HoangSa 22.8 m/s → 26/120 giờ (22%) ; UAV-TruongSa 17.6 → 10/120 giờ (8%)
+  → chỉ hai UAV đặt ở biển mới thật sự vào ha_canh nhiều giờ.
+Lưu ý: không có UAV nào ở Hải Phòng (tâm bão đổ bộ).
+
+Giới hạn của test này: dùng gió TỔNG HỢP đồng đều 32 m/s
+(GIO_GIAT_BAO), KHÔNG dùng số liệu Yagi thật. Test chỉ kiểm chứng LOGIC của
+luật, không chứng minh hành vi trên bão thật — việc đó nằm ở SCHEMA.md §5.
 
 THAY ĐỔI
 Thêm cờ `ha_canh` (hạ cánh an toàn) là trạng thái RIÊNG, song song với `tat`.
 `tat` vẫn đặt để giữ nguyên hành vi cắt cạnh (hồi quy an toàn). Nhờ vậy model
 phân biệt được "UAV chờ gió lặng" với "nút hỏng".
+Hệ quả cần nói rõ trong báo cáo: vì `ha_canh` và `tat` bật CÙNG điều kiện, UAV
+vẫn bị cắt cạnh như cũ. `ha_canh` hiện chỉ là cờ nhãn cho model, chưa đổi topo
+mạng. Muốn UAV thật sự "treo chờ" thì phải bỏ `tat` cho UAV — việc đó sẽ đổi
+hành vi và phá hồi quy, nên để riêng một quyết định.
 
 Chạy:  venv\\Scripts\\python.exe test\\test_yagi_uav.py  [đường_dẫn oracle_dataset_v2.npz]
 """

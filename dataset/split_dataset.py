@@ -254,7 +254,10 @@ PER_SAMPLE_KEYS = {
     "y_paths_text",
 }
 SHARED_KEYS = {"node_order", "node_layer", "node_kind", "infra", "link_stat_cols",
-               "node_names", "layer_names", "meta", "seed"}
+               "node_names", "layer_names", "meta", "seed",
+               # cờ metadata do labeler ghi khi chạy --mo-rong (shape (1,), không theo
+               # mẫu/snapshot). Thiếu tên ở đây thì classify_keys sẽ từ chối cả file v3.
+               "mo_rong"}
 # Bảng có chiều 0 KHÔNG phải số mẫu: mỗi snapshot / mỗi liên kết / mỗi quan hệ.
 PER_SNAPSHOT_KEYS = {"reach_stats", "snapshot_times", "node_latlon_alt", "positions"}
 PER_LINK_KEYS = {"link_stats"}
