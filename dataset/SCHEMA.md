@@ -1,8 +1,10 @@
 # Schema dữ liệu SAGSIN
 
 Tài liệu này mô tả các tệp `.npz` do `dataset/oracle_labeler_sagsin.py` sinh ra.
-Có ba bản: **v2** (73 nút, mốc hồi quy — KHÔNG bao giờ ghi đè) và **v3** (mạng
-mở rộng, thêm nút đảo/núi/vùng lũ + trạng thái hạ cánh UAV).
+Có hai bản: **v2** (73 nút, mốc hồi quy — KHÔNG bao giờ ghi đè) và **v3** (174
+nút, mạng mở rộng: thêm nút đảo/núi/vùng lũ + trạng thái hạ cánh UAV). §7 mô tả
+bộ sinh TLE chòm **Walker-Delta** dùng khi muốn một chòm lý tưởng thay cho TLE
+Starlink thật.
 
 ## 1. Bản v2 — mốc hồi quy 73 nút
 
@@ -146,7 +148,7 @@ trong `air_ground.py` không có luật ground↔ground, nên link mặt đất 
 python -m src.ngau_nhien.thoi_tiet tai --start 2024-01-01 --end 2025-12-31 \
     --out data/thoi_tiet_vn.npz
 
-# Tệp mở rộng 44 điểm (dùng cho mạng 101 nút) — tên tệp KHÁC, không ghi đè tệp trên
+# Tệp mở rộng 74 điểm (dùng cho mạng 174 nút) — tên tệp KHÁC, không ghi đè tệp trên
 python -m src.ngau_nhien.thoi_tiet tai --mo-rong --start 2024-01-01 --end 2025-12-31 \
     --out data/thoi_tiet_vn_mr.npz
 
@@ -187,9 +189,10 @@ python -m src.ngau_nhien.thoi_tiet them-giong --vao data/thoi_tiet_vn_mr.npz
 > Bản v3 hiện tại: độ cao vệ tinh **295–584 km**, trung vị 479 km, 0 âm, 0 NaN.
 > Test `test_v3_do_cao_ve_tinh_hop_le` khoá cả hai bẫy.
 
-Tệp thời tiết chứa 23 điểm (mặc định) hoặc **70 điểm** (`--mo-rong`: thêm 15
+Tệp thời tiết chứa 23 điểm (mặc định) hoặc **74 điểm** (`--mo-rong`: thêm 15
 ground + 2 HAPS + 30 UAV đặt cố định vào cuối, cộng 5 tâm UAV tuần tra đã có từ
-trước). `kiem_tra_du_diem()` kiểm **hai chiều** — ném `ValueError` nếu tệp *thiếu*
+trước, và 4 trạm ven biển Bắc Bộ `VanDon` / `HaiHa` / `GiaoThuy` / `HaiHau`).
+`kiem_tra_du_diem()` kiểm **hai chiều** — ném `ValueError` nếu tệp *thiếu*
 điểm cấu hình cần **hoặc** *thừa* điểm không còn trong cấu hình — và được gọi
 ở **ba** nơi: `them_giong()`, `ThoiTiet(...)` (mặc định `kiem_tra=True`, tức mọi
 lần đọc tệp) và **`MangGoc.__init__`** — chốt chặn chính, vì đúng chỗ đó mới gán
@@ -206,10 +209,11 @@ Nguồn danh sách duy nhất là `src/physics/sites.py`
 truyền khi muốn kiểm theo cấu hình khác với số điểm của tệp.
 
 > **Bẫy đã sập một lần — đọc kỹ trước khi sửa danh sách nút.** Tệp
-> `thoi_tiet_vn_mr.npz` từng có **44** điểm trong khi cấu hình cần **51**: còn sót
-> cột `UAV-VinhBacBo` (đã xoá khỏi `sites.py`) và thiếu 8 UAV mới
+> `thoi_tiet_vn_mr.npz` từng có **44** điểm trong khi cấu hình cần **74**: còn sót
+> cột `UAV-VinhBacBo` (đã xoá khỏi `sites.py`) và thiếu các UAV/trạm mới
 > (`UAV-BachLongVi`, `UAV-LySon`, `UAV-BuonMaThuot`, `UAV-DaLat`, `UAV-CaMau`,
-> `UAV-ConDao`, `UAV-PhuQuoc`, `UAV-SaPa`).
+> `UAV-ConDao`, `UAV-PhuQuoc`, `UAV-SaPa`, 18 UAV ven biển, `ThanhHoa`, và 4 trạm
+> `VanDon` / `HaiHa` / `GiaoThuy` / `HaiHau`).
 >
 > Hệ quả **không hề báo lỗi**: `MangGoc` gán `node_site = -1`, rồi
 > `sinh_kich_ban()` `continue` qua nút đó ⇒ 8 UAV **không bao giờ hạ cánh** vì
@@ -264,8 +268,8 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 >
 > Muốn thử `ha_canh` kích hoạt thật thì dùng **tệp thời tiết mở rộng**:
 > `python -m src.ngau_nhien.thoi_tiet tai --mo-rong --start 2024-01-01 --end 2025-12-31 --out data/thoi_tiet_vn_mr.npz`
-> rồi `them-giong --vao data/thoi_tiet_vn_mr.npz`. Tệp đó có đủ **51 điểm** nên
-> `node_site` của toàn bộ 51 nút không phải vệ tinh đều khác -1 (chỉ 50 vệ tinh
+> rồi `them-giong --vao data/thoi_tiet_vn_mr.npz`. Tệp đó có đủ **74 điểm** nên
+> `node_site` của toàn bộ 74 nút không phải vệ tinh đều khác -1 (chỉ 100 vệ tinh
 > không có cột thời tiết). Không tải được thì dùng `gia-lap --mo-rong`.
 >
 > **Kết quả trên `thoi_tiet_vn_mr.npz` (đã chạy):** 23 điểm của mạng 73 nút **giống
@@ -329,11 +333,20 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 > Hóa chỉ ở rìa (giật 17.5 m/s, vừa qua ngưỡng 15 m/s 1–2 giờ, 0 giờ giông) —
 > đừng viết cả 18 UAV đều hạ cánh vì Yagi.
 >
-> Cập nhật tệp thời tiết sau khi thêm điểm KHÔNG cần tải lại 70 điểm: dùng
+> Cập nhật tệp thời tiết sau khi thêm điểm KHÔNG cần tải lại 74 điểm: dùng
 > `python dataset/cong_cu_bo_sung_thoi_tiet.py` — nó chỉ tải các cột thiếu, giữ
-> nguyên 51 cột cũ **từng bit**, rồi chạy luật CAPE (`them-giong`) cho cột mới.
+> nguyên các cột cũ **từng bit**, rồi chạy luật CAPE (`them-giong`) cho cột mới.
 > Bước giông hay bị `429 Minutely API request limit`; chạy lại bằng
 > `--chi-giong` để không phải tải lại precip/gust.
+>
+> ⚠️ **Công cụ này từng ghép THIẾU trường — lỗi câm, đã sửa.** `_ghep()` chỉ nối
+> `precip` / `code` / `gust` mà quên `cape` / `lifted_index` / `code_fc` /
+> `code_era5`, nên tệp ra có 7 trường nhưng **70 cột cho 4 trường đó và 74 cột
+> cho phần còn lại** — một tệp tự mâu thuẫn, đọc `.shape` vẫn "hợp lệ" nên không
+> ai thấy. Hệ quả nếu không sửa: 4 trạm mới (`VanDon`, `HaiHa`, `GiaoThuy`,
+> `HaiHau`) **không bao giờ có giông**, đúng loại lỗi mà `them-giong` được sinh
+> ra để chặn. Nay `_ghep()` nối đủ 7 trường 2-D + `nguon`, và
+> `kiem_tra_du_diem_dict()` đòi **mọi** trường 2-D có số cột == số điểm.
 >
 > **Cụm ven biển Bắc (bản đầu).**
 > `EXTRA_COASTAL_SITES` thêm 3 trạm Quảng Ninh / Thái Bình / Nam Định, và
@@ -396,35 +409,35 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 
 Tắt tách trạng thái: `ThamSo(uav_ha_canh=False)`.
 
-## 6. Hai tệp dataset: v2 (mốc 73 nút) và v3 (mạng mở rộng 170 nút)
+## 6. Hai tệp dataset: v2 (mốc 73 nút) và v3 (mạng mở rộng 174 nút)
 
 ```bash
 # Mốc hồi quy — TUYỆT ĐỐI không ghi đè
 python dataset/oracle_labeler_sagsin.py --out dataset/oracle_dataset_v2.npz
 
-# Mạng mở rộng (170 nút, 100 vệ tinh). Labeler từ chối ghi --mo-rong vào v2.
+# Mạng mở rộng (174 nút, 100 vệ tinh). Labeler từ chối ghi --mo-rong vào v2.
 python dataset/oracle_labeler_sagsin.py --mo-rong --sats 100 --infra space,haps,uav \
     --out dataset/oracle_dataset_v3.npz
 ```
 
 | | v2 | v3 |
 |---|---|---|
-| Số nút | 73 | **170** |
+| Số nút | 73 | **174** |
 | Số vệ tinh (`--sats`) | 50 | **100** |
-| Hình dạng `W_snapshots` | (600, 73, 73) | (600, 170, 170) |
-| `node_latlon_alt` | ✗ | ✓ (600, 170, 3) |
+| Hình dạng `W_snapshots` | (600, 73, 73) | (600, 174, 174) |
+| `node_latlon_alt` | ✗ | ✓ (600, 174, 3) |
 | `link_stats` + `link_stat_cols` | ✗ | ✓ (1 037 010, 8) |
 | `mo_rong` | ✗ | ✓ `[True]` |
 
-170 = 100 vệ tinh + 28 ground + 7 HAPS + 35 UAV (5 bay vòng + 30 đặt cố định).
-Thời gian sinh trên máy này: **~25 phút** cho 600 snapshot × 170 nút (bản 101 nút
-trước đó ~6 phút) — tăng theo bình phương số nút vì mỗi snapshot dựng ma trận
-đầy đủ rồi cắt cạnh.
+174 = 100 vệ tinh + 32 ground (27 `user` + 5 `gateway`) + 7 HAPS + 35 UAV
+(5 bay vòng + 30 đặt cố định). Thời gian sinh trên máy này: **~25 phút** cho 600
+snapshot × 174 nút (bản 101 nút trước đó ~6 phút) — tăng theo bình phương số nút
+vì mỗi snapshot dựng ma trận đầy đủ rồi cắt cạnh.
 
 > **Lịch sử kích thước:** 101 nút (50 vệ tinh + 27 ground + 7 HAPS + 17 UAV) là
 > bản trước khi thêm 18 UAV ven biển Bắc Bộ/Bắc Trung Bộ và nút `ThanhHoa`.
 > Tệp 101 nút cũ KHÔNG còn dùng được với `sites.py` hiện tại: `node_order` của nó
-> thiếu 19 UAV mới nên các test số nút (120/170) sẽ báo lệch. Nếu cần bản 101 nút
+> thiếu 19 UAV mới nên các test số nút (120/174) sẽ báo lệch. Nếu cần bản 101 nút
 > để so sánh lịch sử, sinh lại bằng `--sats 50` **sau khi** tạm bỏ 18 UAV — hoặc
 > đơn giản là so trên 73 nút đầu (phần chung với v2).
 
@@ -454,7 +467,7 @@ trước đó ~6 phút) — tăng theo bình phương số nút vì mỗi snapsh
 
 Số đo trên hai tệp (600 snapshot, 2024-01-01 → 2025-12-31):
 
-| | v2 (50 vệ tinh × 23 trạm) | v3 (100 × 70) |
+| | v2 (50 vệ tinh × 23 trạm) | v3 (100 × 74) |
 |---|---|---|
 | Giờ mỗi trạm thấy **ít nhất 1** vệ tinh | **38.1 %** | 68.7 % |
 | Giờ **không** thấy vệ tinh nào | **61.9 %** | 31.3 % |
@@ -502,4 +515,108 @@ Nguyên nhân gốc **không phải thời tiết**, mà là ngưỡng hình h�
 
 `u`/`v` là chỉ số trong `node_order`. `elevation_deg` chỉ có nghĩa với liên kết
 GSL/local (vệ tinh–mặt đất, air–ground).
+
+
+## 7. Tệp TLE chòm Walker-Delta (`dataset/sinh_tle_walker.py`)
+
+`data/tle/starlink.txt` là TLE **thật** nhưng trộn nhiều vỏ và nhiều thế hệ
+(550 / 540 / 570 km, nhiều mặt phẳng nghiêng) và có vệ tinh đã rơi. Dùng nó thì
+kết quả phụ thuộc "hôm đó tải về những con nào" — tái lập được, nhưng **không mô
+tả được một thiết kế chòm có chủ đích**.
+
+```bash
+# 256/16/1 @ 550 km, 53° (mặc định)
+python dataset/sinh_tle_walker.py
+
+# Tham số đầy đủ
+python dataset/sinh_tle_walker.py --tong 256 --mat-phang 16 --he-so-f 1 \
+    --cao-km 550 --nghieng-deg 53 --out data/tle/walker256.txt
+
+# Dùng chòm lý tưởng để sinh dataset
+python dataset/oracle_labeler_sagsin.py --mo-rong --sats 256 \
+    --tle data/tle/walker256.txt --out dataset/oracle_dataset_v4.npz
+```
+
+Mô hình Walker-Delta (i: T/P/F) — T vệ tinh chia đều P mặt phẳng, cùng độ nghiêng
+và cùng độ cao (quỹ đạo tròn):
+
+* RAAN mặt phẳng `p` = `p · 360°/P`
+* vị trí trong mặt phẳng, vệ tinh thứ `s` của mặt phẳng `p`:
+  `θ = s · 360°/(T/P) + p · F · 360°/T`
+
+Tệp hiện có `data/tle/walker256.txt`: **256 vệ tinh / 16 mặt phẳng / F=1**,
+550 km, 53°, epoch `26001.0` (2026-01-01T00:00Z), chu kỳ 95.650 phút
+(15.05490646 vòng/ngày).
+
+> Tệp sinh ra **KHÔNG phải dữ liệu thật**. Mọi kết quả dùng nó phải ghi rõ là
+> "chòm Walker lý tưởng", không được trộn lẫn với số liệu TLE Starlink thật.
+
+### 7.1 Đã sinh: `dataset/oracle_dataset_v4.npz` (74 MB)
+
+| | v3 (TLE Starlink thật) | **v4 (Walker lý tưởng)** |
+|---|---|---|
+| Số vệ tinh | 100 | **256** |
+| Tên vệ tinh | `STARLINK-xxxx` | **`SYN-PP-SS`** (100% Walker, 0 Starlink) |
+| Số nút | 174 | **330** (256 + 42 air + 32 ground) |
+| `W_snapshots` | (600, 174, 174) | **(600, 330, 330)** |
+| `node_latlon_alt` | (600, 174, 3) | **(600, 330, 3)** |
+| Mẫu | 30 000 | **30 000** |
+| Độ cao vệ tinh đo được | — | **550–562 km** (khớp 550 km ± J2) |
+| Tỉ lệ `W = -1` (không nối) | 94.2 % | **91.3 %** |
+
+Khác biệt duy nhất về cấu hình so với v3 là **số và loại vệ tinh**; 42 air + 32
+ground giữ nguyên nên cột thời tiết vẫn khớp 74 điểm.
+
+> ⚠️ **Chạy lại mất ~1,5 giờ.** Đo thực tế: 26,4 s cho 3 snapshot ⇒ ~8,8 s/snapshot
+> ⇒ ~92 phút cho 600 snapshot (CPU 3 700 s, RAM đỉnh ~900 MB). Chi phí đến từ
+> 67 lần Dijkstra mỗi snapshot (mỗi endpoint một nguồn) rồi chỉ dùng 50 cặp, cộng
+> O(N²) của `W`. Nếu cần sinh lại nhiều lần, có ba chỗ tối ưu rõ ràng: (1) chọn
+> 50 cặp trước rồi chỉ chạy Dijkstra cho từng cặp thay vì 67 lượt toàn đồ thị;
+> (2) dùng lại `positions` đã tính thay vì gọi `wgs84.subpoint_of(sat.at(t_k))`
+> thêm lần nữa trong vòng lặp 256 vệ tinh; (3) tránh `weight=w` dạng hàm Python
+> (networkx mất đường dẫn C và phải gọi callback cho từng cạnh) bằng cách dựng
+> đồ thị con đã bỏ cạnh rời node `can_relay=False`.
+
+> ⚠️ **`np.savez_compressed` chỉ ghi tệp MỘT LẦN ở cuối.** Trong suốt 1,5 giờ
+> chạy sẽ **không có tệp nào trên đĩa** — đây là hành vi đúng, không phải treo.
+> Đừng huỷ tiến trình vì "không thấy file". Muốn xem tiến độ thì đọc stdout
+> (script in mỗi 50 snapshot) hoặc theo dõi RAM tăng ~28 MB/phút.
+
+### 7.2 `test/test_chom_walker.py` khoá cả tệp TLE lẫn dataset v4
+
+Ngoài 5 test cho tệp TLE, `test_dataset_v4_dung_dung_chom_walker` kiểm
+v4 đúng là bản Walker: đủ 256 nút tên `SYN-`, tập tên khớp tệp TLE, **không lọt
+một tên Starlink nào**, 330 nút, `W` là (600, 330, 330) khớp `node_order`, và
+mọi nút không phải vệ tinh đều có cột thời tiết.
+
+Lý do cần: v3 và v4 giống nhau ở mọi thứ **trừ tên vệ tinh**. Chỉ cần quên
+`--tle data/tle/walker256.txt` là v4 lặng lẽ thành "v3 với 256 vệ tinh Starlink
+thật" — tên tệp vẫn nói Walker, kết quả so sánh sau đó hoàn toàn vô nghĩa.
+
+
+> ⚠️ **Hai bẫy của định dạng TLE — cả hai đều KHÔNG báo lỗi.**
+> 1. **Sai cột**: TLE là định dạng cột cố định (độ nghiêng ở 9–16, RAAN 18–25,
+>    độ lệch tâm 27–33, mean anomaly 44–51, mean motion 53–63). Lệch một cột thì
+>    `skyfield`/`sgp4` đọc ra **một quỹ đạo khác nhưng vẫn propagate trơn tru**.
+> 2. **Thiếu checksum**: `skyfield`/`sgp4` bỏ qua checksum nên tệp vẫn chạy, nhưng
+>    mọi công cụ TLE khác sẽ từ chối. Checksum = (tổng các chữ số + số dấu `-`)
+>    mod 10, tính trên 68 ký tự đầu.
+>
+> `test/test_chom_walker.py` khoá cả hai: đọc **lại** tệp đã ghi (không dùng lại
+> `make_tle`), kiểm 69 ký tự + checksum từng dòng, kiểm phần tử giống nhau trên
+> toàn chòm, kiểm RAAN/mean anomaly theo công thức Walker **viết độc lập**, rồi
+> propagate bằng SGP4 và so **hướng** với công thức đó.
+
+> ⚠️ **Đo góc phải đo trong hệ TEME, không phải GCRS.** TEME là hệ của chính phần
+> tử TLE. Đo trong GCRS (`.position` của skyfield) cộng thêm phép quay
+> precession/nutation **~0.23°** — nếu không biết điều này sẽ tưởng tệp hỏng. Đo
+> thực tế trên `walker256.txt`: **0.066° trung bình / 0.099° tối đa** trong TEME
+> (~12 km, do SGP4 coi phần tử TLE là giá trị trung bình rồi cộng dao động
+> short-period của J2); đo trong GCRS thì ra 0.30° / 0.45°. Ngưỡng test đặt
+> **0.30°** trong TEME — đủ chặt để bắt lỗi nhầm cột, không đỏ oan khi đổi phiên
+> bản thư viện.
+
+> ⚠️ **`Satrec.jdsatepoch` trên `sgp4 >= 2.0` ĐÃ chứa phần lẻ của ngày.** Cộng
+> thêm `jdsatepochF` lần nữa là lệch 2×fraction (đo được **43 km**). Cách skyfield
+> dùng — `rec.sgp4(t.whole, tai_fraction - leap/86400)` — mới là đúng.
 
