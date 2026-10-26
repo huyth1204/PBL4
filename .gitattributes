@@ -1,0 +1,7 @@
+# TLE là định dạng CỘT CỐ ĐỊNH: mỗi dòng đúng 69 ký tự (68 + checksum).
+# `core.autocrlf=true` trên Windows sẽ ghi ra CRLF => dòng 71 ký tự, và
+# `sgp4`/`skyfield` đọc các cột lệch đi mà KHÔNG báo lỗi. Vì vậy mọi tệp TLE
+# phải giữ nguyên LF trong repo và khi checkout.
+*.txt   text
+data/tle/*.txt  text eol=lf
+*.tle   text eol=lf
