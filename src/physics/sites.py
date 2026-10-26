@@ -99,6 +99,18 @@ EXTRA_COASTAL_SITES = [
     # thời tiết, và UAV chỉ nối được HAPS/vệ tinh, tức hạ cánh mà không ảnh hưởng
     # đường đi của bất kỳ nút nào (đúng bẫy của UAV-VinhBacBo cũ).
     ("ThanhHoa", 19.8000, 105.7800, "user"),       # TP Thanh Hóa (ven biển Bắc Trung Bộ)
+
+    # --- Nút chủ cho cụm UAV Quảng Ninh đặt ĐÚNG địa danh (xem EXTRA_UAV_SITES) ---
+    # Trước đây hai huyện này không có nút, nên UAV đặt ở đó bị "mồ côi": cách nút
+    # gần nhất (QuangNinh) 37–89 km, vượt max_range_km 25 km ⇒ không nối được mặt
+    # đất. Đó chính là lý do toạ độ UAV từng bị kéo 3.4–81.7 km về sát QuangNinh.
+    # Có nút thật thì giữ được cả địa danh lẫn liên kết mặt đất.
+    ("VanDon", 21.0667, 107.4167, "user"),         # TT Vân Đồn, huyện Vân Đồn (vịnh Bái Tử Long)
+    ("HaiHa", 21.4500, 107.7500, "user"),          # TT Quảng Hà, huyện Hải Hà (giáp biên giới)
+    # Nam Định: nút hiện có là TP Nam Định (20.43, 106.17) — cách Giao Thủy thật
+    # 27.6 km, quá max_range_km 25 km ⇒ UAV mồ côi. Thêm nút đặt tại huyện.
+    ("GiaoThuy", 20.2400, 106.4800, "user"),       # huyện Giao Thủy (VQG Xuân Thủy)
+    ("HaiHau", 20.2000, 106.3200, "user"),         # huyện Hải Hậu
 ]
 EXTRA_MOUNTAIN_SITES = [
     ("SaPa", 22.3364, 103.8438, "user"),           # Sa Pa, Lào Cai
@@ -166,29 +178,38 @@ EXTRA_UAV_SITES = [
     # (UAV hạ cánh) ngay TRÊN đường đi của luồng khẩn cấp — không chỉ ở hải đảo xa.
     #
     # Mỗi vệt có HAI tầng: tầng sát biển hạ cánh cùng lúc với trạm mặt đất;
-    # tầng phía trong (lùi vào đất liền ~17 km) vẫn bay được và giữ vai trò trung
-    # kế, nên nút mặt đất có đường đi lại qua không gian khi tổ ong mất.
-    # Vì vậy 18 vị trí này được xếp theo cặp (UAV sát biển, UAV phía trong) và
-    # test `test_mang_mo_rong.py::test_uav_ven_bien_bac_trung_bo_phu_khep_vet_bao`
-    # khoá cả ba bất biến: cách nút chủ ≤ 20 km, góc nâng ≥ 5°, và cặp song sinh
-    # chia đúng một nút chủ.
-    ("UAV-HonGai", 20.9800, 107.1900),      # sát Vịnh Hạ Long, hướng Quảng Ninh
-    ("UAV-BaiChay", 21.0400, 107.0400),     # Bãi Cháy, Quảng Ninh (lùi vào bờ vịnh)
-    ("UAV-VanDon", 21.0167, 107.1200),      # Vân Đồn, Quảng Ninh (trục ven biển)
-    ("UAV-HaiHa", 20.9900, 107.1350),       # Hải Hà, Quảng Ninh (ven biên giới, vệ tinh phủ thưa)
-    ("UAV-UongBi", 20.8900, 106.7700),      # Uông Bí, Quảng Ninh (giáp Hải Phòng)
-    ("UAV-SaVi", 20.9400, 106.8200),        # Sa Vi, Quảng Yên (cửa sông Bạch Đằng)
-    ("UAV-DoSon", 20.7950, 106.7250),       # Đồ Sơn, Hải Phòng (bán đảo ven biển)
-    ("UAV-ThuongLy", 20.8300, 106.7350),    # Thượng Lý, Hải Phòng (nội thành, tầng dự phòng)
-    ("UAV-CatBa", 20.8600, 107.0000),       # Cát Bà, Hải Phòng (đảo lớn nhất vịnh Bắc Bộ)
-    ("UAV-CatHai", 20.9000, 106.8500),      # Cát Hải, Hải Phòng (cửa vịnh)
-    ("UAV-TienLang", 20.8000, 106.7100),    # Tiên Lãng, Hải Phòng (cửa Thái Bình)
-    ("UAV-KienAn", 20.8100, 106.6500),      # Kiến An, Hải Phòng (tầng dự phòng phía trong)
-    ("UAV-ThaiThuy", 20.5300, 106.4500),    # Thái Thụy, Thái Bình (ven biển)
-    ("UAV-TienHai", 20.4000, 106.4000),     # Tiền Hải, Thái Bình (ven biển)
-    ("UAV-GiaoThuy", 20.3000, 106.2500),    # Giao Thủy, Nam Định (vườn quốc gia Xuân Thủy)
-    ("UAV-HaiHau", 20.3500, 106.3000),      # Hải Hậu, Nam Định (ven biển)
-    ("UAV-SamSon", 19.7700, 105.8500),      # Sầm Sơn, Thanh Hóa (ven biển)
+    # tầng phía trong (lùi vào đất liền) vẫn bay được và giữ vai trò trung kế,
+    # nên nút mặt đất có đường đi lại qua không gian khi tổ ong mất.
+    # Test `test_mang_mo_rong.py::test_uav_ven_bien_bac_trung_bo_phu_khep_vet_bao`
+    # khoá hai bất biến: cách nút chủ ≤ `_UAV_GROUND.max_range_km` (25 km, KHÔNG
+    # phải 20) với góc nâng ≥ 5°, và mỗi UAV phải có ít nhất một nút chủ.
+    # --- Toạ độ phải khớp ĐỊA DANH THẬT, không phải kéo về sát nút chủ. ---
+    # Bản trước đặt cả 4 UAV Quảng Ninh trong một cụm ~17 km (HonGai↔HaiHa 5.8 km,
+    # VanDon↔HaiHa 3.4 km) trong khi địa danh thật trải 88 km. Hệ quả đo được:
+    #   - ba UAV này dùng CHUNG một chuỗi gió giật (0/17544 bước khác nhau), tức
+    #     "3 điểm thời tiết mới" thực chất là 1;
+    #   - bản đồ/báo cáo ghi UAV ở nơi nó không ở (HaiHa lệch 81.7 km).
+    # Nguyên nhân là ràng buộc max_range_km=25 km, nên cách sửa là thêm NÚT CHỦ
+    # (VanDon, HaiHa trong EXTRA_COASTAL_SITES) chứ không bẻ toạ độ.
+    # Cũng đã bỏ ghi chú sai "Hải Hà vệ tinh phủ thưa": đo trên chòm 256 vệ tinh
+    # @15°, Hải Hà thật có min 5 vệ tinh khả dụng — phủ TỐT hơn Hạ Long (min 4).
+    ("UAV-HaiHa", 21.4500, 107.7500),       # TT Quảng Hà, Hải Hà — giáp biên giới Việt–Trung
+    ("UAV-VanDon", 21.0667, 107.4167),      # TT Vân Đồn (trước đây lệch 31.3 km về phía tây)
+    ("UAV-HonGai", 20.9516, 107.0852),      # TP Hạ Long (Hòn Gai) — trước đây lệch 11.3 km
+    ("UAV-BaiChay", 20.9640, 107.0360),     # phường Bãi Cháy, TP Hạ Long — lệch 8.5 km
+    ("UAV-UongBi", 21.0333, 106.7667),      # TP Uông Bí — lệch 15.9 km
+    ("UAV-SaVi", 20.9167, 106.8000),        # Sa Vi / Quảng Yên (cửa sông Bạch Đằng)
+    ("UAV-DoSon", 20.7167, 106.7833),       # bán đảo Đồ Sơn, Hải Phòng
+    ("UAV-ThuongLy", 20.8600, 106.6800),    # Thượng Lý, quận Hồng Bàng
+    ("UAV-CatBa", 20.7280, 107.0480),       # TT Cát Bà (đảo Cát Bà) — lệch 15.5 km
+    ("UAV-CatHai", 20.7900, 106.8900),      # huyện Cát Hải — lệch 12.9 km
+    ("UAV-TienLang", 20.7000, 106.6000),    # huyện Tiên Lãng — lệch 16.0 km
+    ("UAV-KienAn", 20.8000, 106.6300),      # quận Kiến An
+    ("UAV-ThaiThuy", 20.5500, 106.5500),    # huyện Thái Thụy, Thái Bình
+    ("UAV-TienHai", 20.3400, 106.5000),     # huyện Tiền Hải, Thái Bình
+    ("UAV-GiaoThuy", 20.2400, 106.4800),    # huyện Giao Thủy, Nam Định (VQG Xuân Thủy) — lệch 24.9 km
+    ("UAV-HaiHau", 20.2000, 106.3200),      # huyện Hải Hậu, Nam Định
+    ("UAV-SamSon", 19.7400, 105.9000),      # TP Sầm Sơn, Thanh Hóa
     ("UAV-Vinh", 18.6796, 105.6813),        # trùng toạ độ nút Vinh (đồng bằng ven biển)
 ]
 

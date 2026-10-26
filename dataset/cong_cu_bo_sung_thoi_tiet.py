@@ -44,15 +44,29 @@ from src.ngau_nhien.thoi_tiet import (cac_diem, kiem_tra_du_diem,  # noqa: E402
 
 
 def _ghep(a: dict, b: dict, ten_moi: list[str]) -> dict:
-    """Nối các cột của `b` (chỉ chứa điểm mới) vào `a`, theo đúng thứ tự `ten_moi`."""
+    """Nối các cột của `b` (chỉ chứa điểm mới) vào `a`, theo đúng thứ tự `ten_moi`.
+
+    CẢNH BÁO đã sập: hàm này từng chỉ nối `precip/code/gust`, nên sau khi thêm 4
+    điểm mới thì `cape/lifted_index/code_fc/code_era5` (do `them_giong` sinh cho
+    tệp tạm) bị BỎ MẤT. Kết quả là một tệp tự mâu thuẫn: `precip` có 74 cột còn
+    `cape` chỉ 70. Hậu quả không báo lỗi ở đây mà nổ ở nơi khác (`MangGoc` đọc
+    theo chỉ số cột của `site_names` ⇒ văng IndexError, hoặc tệ hơn là đọc nhầm
+    cột của điểm khác). Nay nối MỌI trường 2-D có mặt ở cả hai bên.
+    """
     idx = [list(b["site_names"]).index(n) for n in ten_moi]
     ra = {k: a[k] for k in a}
     ra["site_names"] = np.concatenate([a["site_names"], np.array(ten_moi)])
     for k in ("lat", "lon"):
         ra[k] = np.concatenate([a[k], b[k][idx]])
-    for k in ("precip", "code", "gust"):
-        ra[k] = np.concatenate([a[k], b[k][:, idx]], axis=1)
+    # Mọi biến khí quyển đều là (giờ × điểm). `code_era5` không có trong tệp cũ
+    # 23 điểm nên chỉ nối khi cả hai bên đều có.
+    for k in ("precip", "code", "gust", "cape", "lifted_index", "code_fc", "code_era5"):
+        if k in a and k in b and a[k].ndim == 2 and b[k].ndim == 2:
+            ra[k] = np.concatenate([a[k], b[k][:, idx]], axis=1)
+    if "nguon" in b:
+        ra["nguon"] = b["nguon"]
     return ra
+
 
 
 def bo_sung(vao: str, ra: str | None = None, giu_moc_giong: bool = True):
@@ -159,7 +173,15 @@ def bo_sung_giong(vao: str, ra: str | None = None):
 
 
 def kiem_tra_du_diem_dict(d: dict):
-    """`kiem_tra_du_diem` chỉ đọc tệp; ở đây kiểm trực tiếp trên dict trước khi ghi."""
+    """`kiem_tra_du_diem` chỉ đọc tệp; ở đây kiểm trực tiếp trên dict trước khi ghi.
+
+    Kiểm HAI thứ:
+      1) tập tên điểm khớp cấu hình (thiếu/thừa đều là lỗi);
+      2) SỐ CỘT của mọi trường (giờ × điểm) bằng đúng số điểm. Bất biến thứ hai
+         từng bị bỏ sót: `_ghep` chỉ nối `precip/code/gust` nên tệp lưu ra có
+         `precip` 74 cột nhưng `cape` 70 — tên điểm đủ nên bước 1 vẫn qua, còn
+         `MangGoc` thì đọc nhầm/ văng IndexError khi lấy `cape[:, i]`.
+    """
     from src.ngau_nhien.thoi_tiet import cac_diem as _can
     can = [n for n, _, _ in _can(mo_rong=True)]
     co = [str(x) for x in d["site_names"]]
@@ -167,6 +189,14 @@ def kiem_tra_du_diem_dict(d: dict):
     thua = [n for n in co if n not in set(can)]
     if thieu or thua:
         raise SystemExit(f"Tập điểm vẫn lệch: thiếu {thieu}, thừa {thua}")
+    S = len(co)
+    lech = {k: v.shape for k, v in d.items()
+            if getattr(v, "ndim", 0) == 2 and v.shape[1] != S}
+    if lech:
+        raise SystemExit(
+            f"Số cột của các trường không khớp số điểm ({S}): {lech}. "
+            f"Tệp sẽ tự mâu thuẫn — kiểm `_ghep` đã nối đủ mọi biến chưa.")
+
 
 
 if __name__ == "__main__":

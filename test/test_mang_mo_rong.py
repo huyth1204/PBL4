@@ -37,7 +37,7 @@ SO_VE_TINH_V2, SO_VE_TINH_V3 = 50, 100
 SO_NUT_V2 = SO_VE_TINH_V2 + len(DEFAULT_HAPS) + len(DEFAULT_UAV_CENTERS) \
     + len(DEFAULT_GATEWAYS) + len(DEFAULT_USERS)          # = 73
 SO_NUT_V3 = SO_VE_TINH_V3 + (SO_NUT_V2 - SO_VE_TINH_V2) \
-    + len(EXTRA_GROUND_SITES) + 2 + len(EXTRA_UAV_SITES)  # = 170
+    + len(EXTRA_GROUND_SITES) + 2 + len(EXTRA_UAV_SITES)  # = 174
 
 
 def _mang(mo_rong):
@@ -325,9 +325,11 @@ def test_tep_thoi_tiet_mo_rong_phu_dung_moi_nut():
         f"tệp thời tiết có {len(thua)} điểm không còn trong cấu hình: {thua}. "
         f"Cột chết này che lỗi thiếu điểm nếu chỉ kiểm một chiều.")
     # 51 điểm của bản trước (23 cũ + 15 ground + 2 HAPS + 11 UAV) + 18 UAV ven biển
-    # Bắc Bộ/Bắc Trung Bộ + 1 nút ThanhHoa. Con số này cố ý viết cứng: nó là bất
-    # biến giữa `sites.py` và tệp dữ liệu, sửa một chỗ mà quên chỗ kia là lỗi thật.
-    assert len(can) == 70, f"cấu hình mở rộng phải có 70 điểm, đang {len(can)}"
+    # Bắc Bộ/Bắc Trung Bộ + 1 nút ThanhHoa = 70. Nay + 4 nút chủ để cụm UAV Quảng
+    # Ninh/Nam Định đặt ĐÚNG địa danh mà vẫn nối được mặt đất (VanDon, HaiHa,
+    # GiaoThuy, HaiHau) = 74. Con số này cố ý viết cứng: nó là bất biến giữa
+    # `sites.py` và tệp dữ liệu, sửa một chỗ mà quên chỗ kia là lỗi thật.
+    assert len(can) == 74, f"cấu hình mở rộng phải có 74 điểm, đang {len(can)}"
 
 
 def test_uav_ven_bien_bac_trung_bo_phu_khep_vet_bao():
@@ -534,7 +536,11 @@ def test_mang_goc_chan_tep_thoi_tiet_lech():
           "UAV-CaMau", "UAV-ConDao", "UAV-PhuQuoc", "UAV-SaPa"}
     giu = [k for k, n in enumerate(ten) if n not in bo]
     assert len(giu) == len(ten) - 8, f"tệp đã khác giả định: {len(ten)} điểm"
-    loi = {k: (v[..., giu] if v.ndim == 2 else v[giu])
+    # `lat`/`lon` là vectơ 1-D theo ĐIỂM, các trường còn lại là 2-D (giờ × điểm).
+    # Cắt chung bằng `v[..., giu]` sẽ lấy chỉ số giờ cho vectơ 1-D và văng
+    # IndexError khi số điểm > số giờ... ở đây là > 70 cột: đúng cái bẫy gặp khi
+    # cấu hình mở rộng vượt 70 điểm (74 sau khi thêm 4 nút chủ).
+    loi = {k: (v[:, giu] if v.ndim == 2 else v[giu])
            for k, v in d.items() if k in ("lat", "lon", "precip", "code", "gust",
                                           "code_fc", "cape", "lifted_index", "code_era5")}
     loi.update(time_utc=d["time_utc"], nguon=d["nguon"],

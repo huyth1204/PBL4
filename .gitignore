@@ -21,3 +21,7 @@ results/yagi/test_tho/
 data/yagi2/
 results/**/*.xong
 results/yagi2/test_tho/
+
+# bản sao lưu tạm trước khi ghi đè dữ liệu lớn (giữ tại chỗ để đối chiếu hồi quy,
+# KHÔNG commit — sinh lại được bằng dataset/cong_cu_bo_sung_thoi_tiet.py)
+data/_backup_*.npz
