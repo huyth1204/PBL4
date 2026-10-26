@@ -187,8 +187,8 @@ python -m src.ngau_nhien.thoi_tiet them-giong --vao data/thoi_tiet_vn_mr.npz
 > Bản v3 hiện tại: độ cao vệ tinh **295–584 km**, trung vị 479 km, 0 âm, 0 NaN.
 > Test `test_v3_do_cao_ve_tinh_hop_le` khoá cả hai bẫy.
 
-Tệp thời tiết chứa 23 điểm (mặc định) hoặc **51 điểm** (`--mo-rong`: thêm 14
-ground + 2 HAPS + 12 UAV đặt cố định vào cuối, cộng 5 tâm UAV tuần tra đã có từ
+Tệp thời tiết chứa 23 điểm (mặc định) hoặc **70 điểm** (`--mo-rong`: thêm 15
+ground + 2 HAPS + 30 UAV đặt cố định vào cuối, cộng 5 tâm UAV tuần tra đã có từ
 trước). `kiem_tra_du_diem()` kiểm **hai chiều** — ném `ValueError` nếu tệp *thiếu*
 điểm cấu hình cần **hoặc** *thừa* điểm không còn trong cấu hình — và được gọi
 ở **ba** nơi: `them_giong()`, `ThoiTiet(...)` (mặc định `kiem_tra=True`, tức mọi
@@ -293,7 +293,49 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 > **đúng tâm bão** (Hải Phòng / Quảng Ninh / Bạch Long Vĩ), còn mạng 73 nút thì
 > **không**.
 >
-> **Cụm ven biển Bắc (thêm sau khi có yêu cầu "chủ yếu ven biển Miền Bắc").**
+> **Cụm VEN BIỂN BẮC BỘ + BẮC TRUNG BỘ — 18 UAV mới (yêu cầu: "chủ yếu ven biển
+> miền Bắc để train với bão Yagi").** Trước bản này, mạng mở rộng chỉ có 3 UAV
+> gần tâm bão (Hải Phòng, Quảng Yên, Bạch Long Vĩ); bờ biển từ Móng Cái tới Thanh
+> Hóa — đúng vệt Yagi quét qua — chỉ có **3 nút** (Quảng Ninh, Thái Bình, Nam
+> Định). Nay thêm 18 UAV đặt cố định chia 9 cặp, mỗi cặp gồm **một tầng sát biển**
+> (hạ cánh cùng lúc với trạm mặt đất) và **một tầng lùi vào bờ ~17 km** (vẫn bay
+> được, giữ vai trò trung kế khi tổ ong mất). Thêm nút `ThanhHoa` để cụm Bắc Trung
+> Bộ có nút chủ thật.
+>
+> | Cặp | UAV sát biển → nút chủ | UAV phía trong → nút chủ |
+> |---|---|---|
+> | Quảng Ninh | `UAV-HonGai` (12.2 km), `UAV-BaiChay` (11.1), `UAV-VanDon` (8.8), `UAV-HaiHa` (7.7) → `QuangNinh` | |
+> | Hải Phòng | `UAV-DoSon` (7.2), `UAV-CatHai` (18.1), `UAV-TienLang` (6.0) → `HaiPhong` | `UAV-UongBi` (10.2), `UAV-ThuongLy` (5.7), `UAV-KienAn` (6.1) → `HaiPhong`; `UAV-SaVi` (17.5), `UAV-CatBa` (13.2) → `QuangNinh` |
+> | Thái Bình / Nam Định | `UAV-ThaiThuy` (14.7), `UAV-TienHai` (8.7), `UAV-HaiHau` (12.1) → `ThaiBinh`; `UAV-GiaoThuy` (16.8) → `NamDinh` | |
+> | Bắc Trung Bộ | `UAV-SamSon` (8.4) → `ThanhHoa`; `UAV-Vinh` (2.5, 90°) → `Vinh` | |
+>
+> Mọi khoảng cách ≤ 18.1 km < tầm phủ thật 22.4 km và góc nâng ≥ 6.5° > 5°, nên
+> **0 UAV mồ côi**. Góc nâng là điều kiện dễ hỏng nhất (bẫy `UAV-QuangYen` cũ:
+> 24.1 km nhưng 4.65° ⇒ không có cạnh, và **không có dòng nào trong `link_stats`**
+> vì bảng chỉ ghi cặp `exists == 1`).
+> Test `test_uav_ven_bien_bac_trung_bo_phu_khep_vet_bao` khoá cả ba điều kiện.
+>
+> Số liệu Yagi thật trên các cột mới (7–8/9/2024, `thoi_tiet_vn_mr.npz`):
+>
+> | Điểm | Mưa max | Giật max | Giờ giông |
+> |---|---|---|---|
+> | `UAV-DoSon` | 48.2 mm/h | 45.9 m/s | 6 |
+> | `UAV-CatBa` | 24.5 mm/h | 51.5 m/s | 9 |
+> | `QuangNinh` | 15.8 mm/h | 47.8 m/s | 14 |
+> | `HaiPhong` | 44.7 mm/h | 41.8 m/s | 4 |
+> | `ThanhHoa` / `UAV-SamSon` | 9.7 / 8.1 mm/h | 16.1 / 17.5 m/s | 0 |
+>
+> Nghĩa là **cụm Quảng Ninh–Hải Phòng** thật sự vào `ha_canh` trong bão; Thanh
+> Hóa chỉ ở rìa (giật 17.5 m/s, vừa qua ngưỡng 15 m/s 1–2 giờ, 0 giờ giông) —
+> đừng viết cả 18 UAV đều hạ cánh vì Yagi.
+>
+> Cập nhật tệp thời tiết sau khi thêm điểm KHÔNG cần tải lại 70 điểm: dùng
+> `python dataset/cong_cu_bo_sung_thoi_tiet.py` — nó chỉ tải các cột thiếu, giữ
+> nguyên 51 cột cũ **từng bit**, rồi chạy luật CAPE (`them-giong`) cho cột mới.
+> Bước giông hay bị `429 Minutely API request limit`; chạy lại bằng
+> `--chi-giong` để không phải tải lại precip/gust.
+>
+> **Cụm ven biển Bắc (bản đầu).**
 > `EXTRA_COASTAL_SITES` thêm 3 trạm Quảng Ninh / Thái Bình / Nam Định, và
 > `EXTRA_UAV_SITES` thêm 3 UAV đặt cố định quanh Hải Phòng. Lý do: trước đó toàn
 > bộ nút mở rộng là hải đảo xa, nên **không UAV nào ở gần tâm bão Yagi** — đúng
@@ -354,32 +396,100 @@ Với UAV, cả hai cờ bật khi: có giông tại điểm UAV, **hoặc** gi�
 
 Tắt tách trạng thái: `ThamSo(uav_ha_canh=False)`.
 
-## 6. Hai tệp dataset: v2 (mốc 73 nút) và v3 (mạng mở rộng 101 nút)
+## 6. Hai tệp dataset: v2 (mốc 73 nút) và v3 (mạng mở rộng 170 nút)
 
 ```bash
 # Mốc hồi quy — TUYỆT ĐỐI không ghi đè
 python dataset/oracle_labeler_sagsin.py --out dataset/oracle_dataset_v2.npz
 
-# Mạng mở rộng (101 nút). Labeler từ chối ghi --mo-rong vào v2.
-python dataset/oracle_labeler_sagsin.py --mo-rong --infra space,haps,uav \
+# Mạng mở rộng (170 nút, 100 vệ tinh). Labeler từ chối ghi --mo-rong vào v2.
+python dataset/oracle_labeler_sagsin.py --mo-rong --sats 100 --infra space,haps,uav \
     --out dataset/oracle_dataset_v3.npz
 ```
 
 | | v2 | v3 |
 |---|---|---|
-| Số nút | 73 | 101 |
-| Hình dạng `W_snapshots` | (600, 73, 73) | (600, 101, 101) |
-| `node_latlon_alt` | ✗ | ✓ (600, 101, 3) |
-| `link_stats` + `link_stat_cols` | ✗ | ✓ (284252, 8) |
+| Số nút | 73 | **170** |
+| Số vệ tinh (`--sats`) | 50 | **100** |
+| Hình dạng `W_snapshots` | (600, 73, 73) | (600, 170, 170) |
+| `node_latlon_alt` | ✗ | ✓ (600, 170, 3) |
+| `link_stats` + `link_stat_cols` | ✗ | ✓ (1 037 010, 8) |
 | `mo_rong` | ✗ | ✓ `[True]` |
 
-101 = 50 vệ tinh + 27 ground + 7 HAPS + 17 UAV (5 bay vòng + 12 đặt cố định).
+170 = 100 vệ tinh + 28 ground + 7 HAPS + 35 UAV (5 bay vòng + 30 đặt cố định).
+Thời gian sinh trên máy này: **~25 phút** cho 600 snapshot × 170 nút (bản 101 nút
+trước đó ~6 phút) — tăng theo bình phương số nút vì mỗi snapshot dựng ma trận
+đầy đủ rồi cắt cạnh.
 
-**Hai tệp dùng chung chỉ số cho 73 nút đầu**: `v3.node_order[:73] == v2.node_order`.
-`W_snapshots` của v3 hạn chế về 73 nút đó **trùng khớp tuyệt đối từng bit**:
-0 / 3 197 400 ô lệch (đã kiểm sau khi vá). Vì vậy model huấn luyện trên v2 vẫn
-chạy được trên v3 (chỉ cần bỏ 28 nút cuối), và ngược lại có thể so sánh trực
-tiếp hai mạng.
+> **Lịch sử kích thước:** 101 nút (50 vệ tinh + 27 ground + 7 HAPS + 17 UAV) là
+> bản trước khi thêm 18 UAV ven biển Bắc Bộ/Bắc Trung Bộ và nút `ThanhHoa`.
+> Tệp 101 nút cũ KHÔNG còn dùng được với `sites.py` hiện tại: `node_order` của nó
+> thiếu 19 UAV mới nên các test số nút (120/170) sẽ báo lệch. Nếu cần bản 101 nút
+> để so sánh lịch sử, sinh lại bằng `--sats 50` **sau khi** tạm bỏ 18 UAV — hoặc
+> đơn giản là so trên 73 nút đầu (phần chung với v2).
+
+**Hai tệp dùng chung chỉ số cho 73 nút đầu**: khi v3 còn 101 nút
+(50 vệ tinh) thì `v3.node_order[:73] == v2.node_order` và `W_snapshots` hạn chế về
+73 nút đó **trùng khớp tuyệt đối từng bit** (0 / 3 197 400 ô lệch).
+
+> ⚠️ **Không còn đúng khi v3 dùng 100 vệ tinh.** `sat_names = sorted({...})` sort
+> TOÀN CỤC danh sách vệ tinh, nên tên của 50 vệ tinh cũ chen giữa các tên mới:
+> chỉ số tuyệt đối đổi (50/50 vệ tinh cũ vẫn còn mặt, `node_order[:73] != v2`).
+> Muốn so sánh hai bản phải tra **theo tên** (đó là cách các test hiện làm). Khi
+> so theo tên, đo được trên tệp hiện tại:
+>
+> | Cặp | Ô lệch / tổng |
+> |---|---|
+> | ground↔ground, ground↔UAV, ground↔HAPS, UAV↔UAV, UAV↔HAPS, HAPS↔HAPS | **0** / 1 584 400 |
+> | GSL (vệ tinh ↔ ground/UAV/HAPS) | 23 434 / 1 230 000 |
+> | ISL (vệ tinh ↔ vệ tinh) | 305 748 / 1 500 000 |
+>
+> Nghĩa là **mọi luật mặt đất/không lưu trùng tuyệt đối** (chúng chỉ phụ thuộc toạ
+> độ, độ cao, khoảng cách — không phụ thuộc TLE). Chỉ các cặp có vệ tinh đổi, vì
+> `sample_sats` lấy mẫu **độc lập** nên "mẫu 100 vệ tinh" không chứa nguyên "mẫu 50"
+> theo nghĩa thời điểm nhìn thấy: một số cặp GSL cũ mất, một số cặp mới có.
+> Hệ quả & cách xử lý: xem §6b.
+
+### 6b. Vì sao "không mưa nhưng vẫn dứt"
+
+Số đo trên hai tệp (600 snapshot, 2024-01-01 → 2025-12-31):
+
+| | v2 (50 vệ tinh × 23 trạm) | v3 (100 × 70) |
+|---|---|---|
+| Giờ mỗi trạm thấy **ít nhất 1** vệ tinh | **38.1 %** | 68.7 % |
+| Giờ **không** thấy vệ tinh nào | **61.9 %** | 31.3 % |
+| Giờ thấy ≥ 2 vệ tinh | 12.0 % | 32.3 % |
+| Cặp ISL / snapshot | 314 | 1 294 |
+
+Nguyên nhân gốc **không phải thời tiết**, mà là ngưỡng hình học:
+
+1. `MIN_ELEVATION_DEG = 25.0` (`src/physics/tle_loader.py`) — rất cao so với
+   Starlink thật (thường dùng 25° cho chất lượng, nhưng 10–15° vẫn có link). Ở
+   550 km, ngưỡng 25° giới hạn bán kính phủ xuống ~**520 km**, nên mỗi trạm chỉ
+   "thấy" 0.54 → 0.67 vệ tinh *trung bình*, và **62 % số giờ là 0**.
+2. Khi một trạm 0 vệ tinh và không có UAV/HAPS phủ (hoặc UAV đang `ha_canh` vì
+   gió), trạm đó cô lập — bất kể mưa. Trong `generate_dataset_snapshots`, mỗi
+   cặp endpoint không có `path` bị **`continue` im lặng** (`oracle_labeler_sagsin.py`
+   dòng 338–342): nó không vào `reachable_pairs`, nhãn biến mất, và từ góc nhìn
+   dữ liệu thì "đường bị đứt" dù trời tạnh.
+3. Vì vậy **`label[có nhãn]` phụ thuộc trực tiếp vào số vệ tinh**: đổi `--sats`
+   50 → 100 làm 31 % số giờ-thuộc-trạm được cứu, nhưng đồng thời **7 187 cặp GSL
+   cũ bị mất** (mẫu 50 ⊄ mẫu 100 theo *thời điểm nhìn thấy*). Hai bản **không so
+   sánh trực tiếp** được; muốn so phải cùng một mẫu vệ tinh (xem lưu ý dưới).
+
+**Cách sửa đúng tuỳ mục tiêu:**
+
+* Muốn bớt "dứt" vô cớ → **hạ `min-elev`** khi sinh (có cờ sẵn):
+  `--min-elev 15`. Ở 550 km, 15° phủ bán kính ~**880 km**, số vệ tinh thấy được
+  tăng ~3× và cặp GSL tăng tương ứng — không đụng gì tới mưa.
+* Muốn **giữ mẫu vệ tinh cũ** khi mở rộng → sinh v3 với cùng 50 vệ tinh rồi thêm
+  vệ tinh **nối đuôi** (cần sửa `sample_sats` để lấy mẫu lồng nhau thay vì
+  `rng_sat.sample` độc lập). Chưa làm: hiện `seed` không làm mẫu lồng nhau, nên
+  đổi `--sats` là đổi toàn bộ tập vệ tinh theo thời gian.
+* Muốn thấy rõ "dứt do mưa" → tách thống kê: đếm cặp mất đường **khi trời tạnh**
+  (`precip < 0.1` và `gust < 15`) — đó là các ca do hình học, không do mưa. Con
+  số này chính là bảng trên (31–62 % số giờ-trạm).
+
 
 > Bản v3 **trước** bản vá này có 14 304 / 3 197 400 ô lệch (tối đa 2.48e-05 ms)
 > do ma trận 94×94 chuẩn hoá float32 ra chữ số cuối khác 73×73. Bản hiện tại

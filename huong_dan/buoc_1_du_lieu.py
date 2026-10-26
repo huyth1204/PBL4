@@ -3,7 +3,13 @@ Bước 1 — Dữ liệu SAGSIN của TV1
 File dự án: dataset/oracle_labeler_sagsin.py (sinh dữ liệu), dataset/split_dataset.py (chia), src/ai/data_v2.py (đọc).
 Dữ liệu: dataset/test.npz — 54 snapshot, 2.700 truy vấn, 73 nút (50 vệ tinh, 5 HAPS, 5 UAV, 5 gateway, 8 người dùng).
 Sẽ thấy: mạng vẽ theo tầng với một đường tối ưu, độ trễ theo loại liên kết, số chặng của đường tối ưu, và bảng kiểm tra.
+
+Cờ tuỳ chọn (mặc định vẫn là tập hồi quy 73 nút ở trên):
+    python huong_dan/buoc_1_du_lieu.py --tep dataset/test_v3.npz
+    python huong_dan/buoc_1_du_lieu.py --tep dataset/test_v3.npz --sats 100
+--sats chỉ dùng để ghi chú thích số vệ tinh trên hình; số nút thật luôn đọc từ tệp.
 """
+import argparse
 import sys
 from pathlib import Path
 
@@ -11,16 +17,25 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from huong_dan.tien_ich import *  # noqa: E402,F403
 
 
-def chay():
+def _tham_so():
+    p = argparse.ArgumentParser(description="Bước 1 — dữ liệu SAGSIN")
+    p.add_argument("--tep", default=None, help="tệp npz cần xem (mặc định dataset/test.npz — mốc 73 nút)")
+    p.add_argument("--sats", type=int, default=50,
+                   help="số vệ tinh của tệp đó, chỉ để ghi chú thích hình (mặc định 50 = mạng 73 nút)")
+    return p.parse_args()
+
+
+def chay(tep=None, so_ve_tinh=50):
     from src.ai.data_v2 import SagsinData
     from src.ngau_nhien.kich_ban import loai_lien_ket
     from test.so_sanh_dijkstra_nhieu import dijkstra
-    d = SagsinData(GOC / "dataset" / "test.npz")
+    d = SagsinData(Path(tep) if tep is not None else GOC / "dataset" / "test.npz")
     i = next(k for k in range(len(d)) if len(d.paths[k]) >= 4)
     fig = plt.figure(figsize=(15, 4.8))
     ax = fig.add_axes([0.07, 0.2, 0.52, 0.72])
     ve_mang(d, d.sid[i], tuyen=[(d.paths[i], MAU["cam"], "Đường tối ưu (nhãn Dijkstra)")], ax=ax,
-            tieu_de=f"Mạng 73 nút, snapshot {d.sid[i]}: {int((d.W[d.sid[i]] > 0).sum() // 2)} liên kết")
+            tieu_de=f"Mạng {len(d.node_order)} nút ({so_ve_tinh} vệ tinh), snapshot {d.sid[i]}:"
+                    f" {int((d.W[d.sid[i]] > 0).sum() // 2)} liên kết")
     W = d.W[d.sid[i]]
     theo_loai = {}
     for u, v in zip(*np.nonzero(np.triu(W > 0, 1))):
@@ -62,4 +77,5 @@ def chay():
 
 
 if __name__ == "__main__":
-    hien_thi(chay, "Bước 1 — Dữ liệu TV1")
+    _a = _tham_so()
+    hien_thi(lambda: chay(_a.tep, _a.sats), "Bước 1 — Dữ liệu TV1")

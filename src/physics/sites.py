@@ -93,6 +93,12 @@ EXTRA_COASTAL_SITES = [
     # Đừng gọi chúng là "tâm bão" khi viết báo cáo.
     ("ThaiBinh", 20.4500, 106.3400, "user"),       # TP Thái Bình (đồng bằng, rìa bão)
     ("NamDinh", 20.4300, 106.1700, "user"),        # TP Nam Định (đồng bằng, rìa bão)
+    # Thanh Hóa: đô thị lớn nhất Bắc Trung Bộ, trước đây KHÔNG có trong mạng nên cả
+    # vệt ven biển từ Nam Định tới Nghệ An trống hạ tầng. Thêm nút này để cụm UAV
+    # Bắc Trung Bộ (UAV-SamSon) có nút chủ thật — không có nút thì không có cột
+    # thời tiết, và UAV chỉ nối được HAPS/vệ tinh, tức hạ cánh mà không ảnh hưởng
+    # đường đi của bất kỳ nút nào (đúng bẫy của UAV-VinhBacBo cũ).
+    ("ThanhHoa", 19.8000, 105.7800, "user"),       # TP Thanh Hóa (ven biển Bắc Trung Bộ)
 ]
 EXTRA_MOUNTAIN_SITES = [
     ("SaPa", 22.3364, 103.8438, "user"),           # Sa Pa, Lào Cai
@@ -154,6 +160,36 @@ EXTRA_UAV_SITES = [
     ("UAV-ConDao", 8.6833, 106.6167),          # Côn Đảo
     ("UAV-PhuQuoc", 10.2289, 103.9640),        # Phú Quốc
     ("UAV-SaPa", 22.3364, 103.8438),           # Sa Pa, Lào Cai
+    # --- Cụm VEN BIỂN BẮC BỘ + BẮC TRUNG BỘ: vệt bão Yagi 7–8/9/2024 ---
+    # Mục đích: đưa tầng không gian vào đúng CHỖ có giông/gió giật cực đoan của
+    # cơn bão, để dữ liệu huấn luyện có tình huống `tat` (cắt cạnh) và `ha_canh`
+    # (UAV hạ cánh) ngay TRÊN đường đi của luồng khẩn cấp — không chỉ ở hải đảo xa.
+    #
+    # Mỗi vệt có HAI tầng: tầng sát biển hạ cánh cùng lúc với trạm mặt đất;
+    # tầng phía trong (lùi vào đất liền ~17 km) vẫn bay được và giữ vai trò trung
+    # kế, nên nút mặt đất có đường đi lại qua không gian khi tổ ong mất.
+    # Vì vậy 18 vị trí này được xếp theo cặp (UAV sát biển, UAV phía trong) và
+    # test `test_mang_mo_rong.py::test_uav_ven_bien_bac_trung_bo_phu_khep_vet_bao`
+    # khoá cả ba bất biến: cách nút chủ ≤ 20 km, góc nâng ≥ 5°, và cặp song sinh
+    # chia đúng một nút chủ.
+    ("UAV-HonGai", 20.9800, 107.1900),      # sát Vịnh Hạ Long, hướng Quảng Ninh
+    ("UAV-BaiChay", 21.0400, 107.0400),     # Bãi Cháy, Quảng Ninh (lùi vào bờ vịnh)
+    ("UAV-VanDon", 21.0167, 107.1200),      # Vân Đồn, Quảng Ninh (trục ven biển)
+    ("UAV-HaiHa", 20.9900, 107.1350),       # Hải Hà, Quảng Ninh (ven biên giới, vệ tinh phủ thưa)
+    ("UAV-UongBi", 20.8900, 106.7700),      # Uông Bí, Quảng Ninh (giáp Hải Phòng)
+    ("UAV-SaVi", 20.9400, 106.8200),        # Sa Vi, Quảng Yên (cửa sông Bạch Đằng)
+    ("UAV-DoSon", 20.7950, 106.7250),       # Đồ Sơn, Hải Phòng (bán đảo ven biển)
+    ("UAV-ThuongLy", 20.8300, 106.7350),    # Thượng Lý, Hải Phòng (nội thành, tầng dự phòng)
+    ("UAV-CatBa", 20.8600, 107.0000),       # Cát Bà, Hải Phòng (đảo lớn nhất vịnh Bắc Bộ)
+    ("UAV-CatHai", 20.9000, 106.8500),      # Cát Hải, Hải Phòng (cửa vịnh)
+    ("UAV-TienLang", 20.8000, 106.7100),    # Tiên Lãng, Hải Phòng (cửa Thái Bình)
+    ("UAV-KienAn", 20.8100, 106.6500),      # Kiến An, Hải Phòng (tầng dự phòng phía trong)
+    ("UAV-ThaiThuy", 20.5300, 106.4500),    # Thái Thụy, Thái Bình (ven biển)
+    ("UAV-TienHai", 20.4000, 106.4000),     # Tiền Hải, Thái Bình (ven biển)
+    ("UAV-GiaoThuy", 20.3000, 106.2500),    # Giao Thủy, Nam Định (vườn quốc gia Xuân Thủy)
+    ("UAV-HaiHau", 20.3500, 106.3000),      # Hải Hậu, Nam Định (ven biển)
+    ("UAV-SamSon", 19.7700, 105.8500),      # Sầm Sơn, Thanh Hóa (ven biển)
+    ("UAV-Vinh", 18.6796, 105.6813),        # trùng toạ độ nút Vinh (đồng bằng ven biển)
 ]
 
 

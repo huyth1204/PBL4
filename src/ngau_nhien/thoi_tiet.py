@@ -180,14 +180,21 @@ def ap_luat_giong(d: dict, luat: str = "cape"):
     return g_cape, g_ma
 
 
-def them_giong(vao: str, ra: str | None = None, chunk_days: int = 180, luat: str = "cape"):
+def them_giong(vao: str, ra: str | None = None, chunk_days: int = 180, luat: str = "cape",
+               kiem_tra: bool = True):
     """Bổ sung CAPE, chỉ số nâng và mã thời tiết của mô hình dự báo lưu trữ vào tệp ERA5, rồi đặt giông theo luật.
-    Giữ mã ERA5 gốc ở code_era5, mã dự báo ở code_fc."""
+    Giữ mã ERA5 gốc ở code_era5, mã dự báo ở code_fc.
+
+    kiem_tra=False: bỏ chốt so tập điểm — chỉ dùng cho tệp TRUNG GIAN chứa một
+    phần điểm (vd `dataset/cong_cu_bo_sung_thoi_tiet.py` tải riêng các cột mới).
+    Tệp cuối vẫn bị chốt kiểm khi nối xong.
+    """
     ra = ra or vao
     d = dict(np.load(vao, allow_pickle=False))
     # Chặn ngay tại đây: tệp vừa tải --mo-rong mà lệch cấu hình thì mọi bước sau
     # (giông, mô phỏng) đều sai âm thầm.
-    kiem_tra_du_diem(vao, mo_rong=len(d["site_names"]) > 23)
+    if kiem_tra:
+        kiem_tra_du_diem(vao, mo_rong=len(d["site_names"]) > 23)
     t = [str(x) for x in d["time_utc"]]
     times, c = _goi("https://historical-forecast-api.open-meteo.com/v1/forecast", d["lat"], d["lon"],
                     t[0][:10], t[-1][:10], ["weather_code", "cape", "lifted_index"], chunk_days)
