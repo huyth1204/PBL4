@@ -211,6 +211,47 @@ def test_v3_split_khong_ro_ri_link_stats():
         assert abs(int(dem.sum()) - len(ls)) == 0
 
 
+def test_v4_split_ton_tai_va_khong_giao_snapshot():
+    """Bộ chia v4 phải nằm ở `dataset/v4/`, không đè bộ v2 ở `dataset/`.
+
+    Vì sao cần: `split_dataset.py` ghi tên cố định `train/val/test.npz`. Bỏ
+    `--outdir dataset/v4` thì nó ghi thẳng vào `dataset/`, xoá bộ v2 mà không
+    báo lỗi — và mọi con số của v2 trong báo cáo thành không tái lập được.
+
+    Khoá: 3 tập đều có, `split_info.json` trỏ đúng `oracle_dataset_v4.npz`,
+    N = 330 (không phải 174 của v2/v3), và giao snapshot giữa 3 tập = 0.
+    """
+    import itertools
+    import json
+
+    d = ROOT / "dataset" / "v4"
+    if not (d / "split_info.json").exists():
+        raise BoQua("chưa có dataset/v4/split_info.json")
+    info = json.loads((d / "split_info.json").read_text(encoding="utf-8"))
+
+    assert "oracle_dataset_v4.npz" in info["input"].replace("\\", "/"), \
+        f"bộ chia v4 lại sinh từ tệp khác: {info['input']}"
+
+    snap = info["snapshot_ids"]
+    for a, b in itertools.combinations(snap, 2):
+        chung = set(snap[a]) & set(snap[b])
+        assert not chung, f"{a} và {b} dùng chung {len(chung)} snapshot: {sorted(chung)[:5]}"
+
+    for ten in ("train", "val", "test"):
+        f = np.load(d / f"{ten}.npz", allow_pickle=True)
+        N = len(f["node_order"])
+        assert N == 330, f"{ten}.npz có {N} nút — v4 phải là 330 (v2/v3 là 174)"
+        W = f["W_snapshots"]
+        assert W.shape[1:] == (N, N), f"{ten}: W {W.shape} không khớp {N} nút"
+        assert int(f["snapshot_id"].max()) < W.shape[0], \
+            f"{ten}: snapshot_id của mẫu vượt {W.shape[0]} snapshot của tập"
+    # bộ v2 ở dataset/ KHÔNG được bị động vào
+    v2 = ROOT / "dataset" / "train.npz"
+    if v2.exists():
+        assert len(np.load(v2, allow_pickle=True)["node_order"]) != 330, \
+            "dataset/train.npz đã bị ghi đè bằng v4 — bộ v2 ở gốc dataset/ bị mất"
+
+
 def test_uav_ven_bien_bac_phu_duoc_hai_phong_va_quang_ninh():
     """UAV đặt cố định phải thật sự nối được, không chỉ 'gần'.
 

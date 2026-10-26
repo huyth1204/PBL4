@@ -582,7 +582,79 @@ ground giữ nguyên nên cột thời tiết vẫn khớp 74 điểm.
 > Đừng huỷ tiến trình vì "không thấy file". Muốn xem tiến độ thì đọc stdout
 > (script in mỗi 50 snapshot) hoặc theo dõi RAM tăng ~28 MB/phút.
 
-### 7.2 `test/test_chom_walker.py` khoá cả tệp TLE lẫn dataset v4
+### 7.2 Bộ train/val/test cho v4 — `dataset/v4/`
+
+```bash
+python dataset/split_dataset.py --in dataset/oracle_dataset_v4.npz --outdir dataset/v4 -v
+```
+
+> ⚠️ **Phải có `--outdir dataset/v4`.** Không có thì script ghi thẳng
+> `train.npz` / `val.npz` / `test.npz` vào `dataset/`, **xoá bộ v2** (đang được
+> dùng làm mốc hồi quy) mà không báo lỗi. `test_v4_split_ton_tai_va_khong_giao_snapshot`
+> khoá điều này: nó đỏ nếu `dataset/train.npz` bỗng có 330 nút.
+
+Đã chia (600 snapshot, `--mode phase`, 12 khối × 12 snapshot, chừa 3 ở mỗi biên,
+chu kỳ đo được **143 bước**):
+
+| Tập | Snapshot | Mẫu | Tỉ lệ | Hop TB | Nguồn là trạm | File | RAM khi nạp |
+|---|---|---|---|---|---|---|---|
+| train | 314 | 15 700 | 71.2 % | 2.46 | 7.6 % | 37.0 MB | **353 MB** |
+| val | 72 | 3 600 | 16.3 % | 2.46 | 7.7 % | 8.5 MB | **81 MB** |
+| test | 55 | 2 750 | 12.5 % | 2.46 | 7.7 % | 6.5 MB | **62 MB** |
+
+Bỏ 159/600 snapshot ở biên (còn 22 050 mẫu). **Giao snapshot giữa ba tập = 0**
+(kiểm trong `split_info.json`). Ba tập chênh nhau tối đa 0.1 hop / 0.2 điểm %
+nguồn-trạm. Test giống train: trung vị Jaccard **0.79** (chia ngẫu nhiên: 0.97).
+
+`link_stats` chia theo tập, cột 0 đánh lại `0..S_tập−1`, và **số dòng khớp đúng**
+số cạnh dương trong `W_snapshots`:
+
+| Tập | `link_stats` | Cột 0 | Cạnh trong W | Khớp |
+|---|---|---|---|---|
+| train | 2 867 510 | 0–313 | 2 867 510 | ✓ |
+| val | 657 050 | 0–71 | 657 050 | ✓ |
+| test | 502 344 | 0–54 | 502 344 | ✓ |
+
+> ⚠️ **`link_stats` là bảng float64 rất nặng: 175 MB / 40 MB / 31 MB.** Nó chỉ
+> là bảng tra cứu phụ, **không** dùng để train. Nếu code chỉ cần `W_snapshots` +
+> `x_*` + `y_*` thì **đừng** làm `d = np.load(...); {k: d[k] for k in d.files}`
+> như `load_npz()` của `split_dataset.py` — cách đó nạp cả 353 MB vào RAM, và
+> tệ hơn: **mỗi lần gọi `d["link_stats"]` là nạp lại toàn bộ 175 MB** vì
+> `NpzFile` không cache. Lấy thẳng key cần dùng:
+>
+> ```python
+> with np.load("dataset/v4/train.npz", allow_pickle=True) as f:
+>     W = f["W_snapshots"]        # 137 MB float32 — thứ duy nhất thật sự cần
+>     x = f["x_sources"], f["x_targets"]
+>     # bỏ qua f["link_stats"] hoàn toàn
+> ```
+>
+> Nếu buộc phải giữ `link_stats` trong RAM, ép `float32` được ngay (tiết kiệm
+> 50 %, còn ~87 MB) vì mọi cột đều vừa float32: `snapshot_id`/`u`/`v` là số
+> nguyên ≤ 599/329, `distance_km` ≤ 5000, `bandwidth_mbps` ≤ 1000.
+
+> ⚠️ **`elevation_deg` toàn `NaN` ở v4** (`min`/`max` đều `NaN`). Bảng vẫn đúng
+> ở 7 cột còn lại; cột góc nâng rỗng vì đường ISL không có khái niệm góc nâng và
+> GSL không được ghi kèm. Đừng dùng cột này để tính đặc trưng.
+
+> ⚠️ **Kích thước tệp và GitHub.** `oracle_dataset_v4.npz` = **70.7 MB**, vắt qua
+> ngưỡng cảnh báo 50 MB của GitHub và chỉ cách giới hạn cứng 100 MB một bước.
+> Bộ chia v4 thêm **52 MB** (file lớn nhất `train.npz` 37 MB — vẫn dưới 100 MB
+> nên đẩy được). `.git` lên khoảng **312 MB**. **Đừng sinh bản lớn hơn rồi
+> commit thẳng** — lúc đó phải chuyển sang Git LFS hoặc để ngoài repo
+> (`.gitignore`) và chỉ giữ script sinh.
+
+### 7.3 Checkpoint của mô hình cũ KHÔNG dùng lại được với v4
+
+`checkpoints_diffusion.pt` và mọi checkpoint huấn luyện trên v2/v3 đều vô dụng với
+v4 vì **N đổi 174 → 330**. Ma trận trọng số lớp đầu có chiều `[ẩn, 174·F]` và lớp
+cuối `[174², …]`/`[174, …]` tuy đúng tên nhưng sai shape ⇒ `load_state_dict` ném
+`RuntimeError: size mismatch` khi `strict=True`, còn `strict=False` thì **im lặng
+bỏ qua** các tensor đó và mô hình chạy với trọng số ngẫu nhiên ở lớp đầu/cuối —
+kết quả sẽ trông hợp lý mà hoàn toàn vô nghĩa. Phải huấn luyện lại từ đầu trên
+`dataset/v4/`, không "fine-tune tiếp".
+
+### 7.4 `test/test_chom_walker.py` khoá cả tệp TLE lẫn dataset v4
 
 Ngoài 5 test cho tệp TLE, `test_dataset_v4_dung_dung_chom_walker` kiểm
 v4 đúng là bản Walker: đủ 256 nút tên `SYN-`, tập tên khớp tệp TLE, **không lọt
