@@ -7,8 +7,10 @@
       python split_dataset.py --compare                # in bảng so sánh các cách chia
       python split_dataset.py --mode time              # chia theo khối thời gian thường
 +     python split_dataset.py --in dataset/oracle_full.npz   # chia file khác (vd ablation)
-Đầu ra, cạnh file vào:
+Đầu ra, cạnh file vào (hoặc trong --outdir):
     train.npz  val.npz  test.npz  split_info.json
+  --outdir được tạo nếu chưa có; nếu thư mục đó đã có split_info.json của một TỆP VÀO
+  KHÁC thì script từ chối ghi đè (tên kết quả cố định nên sẽ xoá bộ cũ).
 
 VÌ SAO KHÔNG XÁO NGẪU NHIÊN TỪNG SNAPSHOT
     Hai snapshot cách nhau 20 s có ~97% cạnh giống nhau. Nếu snapshot này vào train
@@ -303,6 +305,58 @@ def classify_keys(data: dict, n_samples: int) -> dict[str, list[str]]:
 
 
 # ----------------------------------------------------------------------------
+# Chốt chặn: đừng ghi đè bộ chia của một tệp khác
+# ----------------------------------------------------------------------------
+def nhan_dang(inp: Path) -> dict:
+    """Dấu nhận dạng dữ liệu vào: số mẫu, số nút, các mốc thời gian."""
+    with np.load(inp, allow_pickle=False) as d:
+        sid = d["snapshot_id"]
+        return {"n_samples": int(len(sid)), "n_nodes": int(len(d["node_order"])),
+                "input_snapshot_ids": np.unique(sid).tolist()}
+
+
+def kiem_tra_da_co(outdir: Path, inp: Path):
+    """Từ chối ghi đè train/val/test.npz ở `outdir` nếu chúng thuộc một TỆP VÀO KHÁC.
+
+    Bẫy: `--outdir` mặc định là thư mục của tệp vào, tên kết quả lại cố định. Trỏ
+    `--in dataset/oracle_dataset_v3.npz` mà quên `--outdir dataset/v3` sẽ ghi đè bộ
+    v2 đang nằm ở `dataset/` — không báo lỗi, và mọi mô hình huấn luyện trên bộ v2
+    sau đó thực chất học trên v3. Cùng tệp vào thì ghi đè bình thường.
+    """
+    info = outdir / "split_info.json"
+    if not info.exists():
+        return
+    try:
+        d = json.loads(info.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        print(f"CẢNH BÁO: {info} đọc không được ({e}); sẽ ghi đè.")
+        return
+    cu_in = d.get("input")
+    if cu_in is None:
+        print(f"CẢNH BÁO: {info} không ghi tệp vào gốc; coi như chia lại từ chính nó.")
+        return
+    if Path(cu_in).resolve() == inp.resolve():
+        return
+    now = nhan_dang(inp)
+    same = (now["n_samples"] == d.get("n_samples") and now["n_nodes"] == d.get("n_nodes")
+            and now["input_snapshot_ids"] == d.get("input_snapshot_ids"))
+    if same:
+        print(f"\nLưu ý: {info} trỏ {cu_in}, nhưng dữ liệu vào {inp.name} giống hệt "
+              "(cùng số mẫu/nút/snapshot) — coi là chia lại cùng bộ, ghi đè bình thường.\n")
+        return
+    so_snap_cu = sum(len(v) for v in d.get("snapshot_ids", {}).values()) if isinstance(d.get("snapshot_ids"), dict) else 0
+    raise SystemExit(
+        f"TỪ CHỐI GHI ĐÈ {outdir}\n"
+        f"  thư mục này đang chứa bộ chia của : {cu_in}\n"
+        f"    ({d.get('n_samples', 0):,} mẫu, {so_snap_cu or '?'} snapshot, {d.get('n_nodes', 0)} nút)\n"
+        f"  dữ liệu bạn đang chia            : {inp}\n"
+        f"    ({now['n_samples']:,} mẫu, {len(now['input_snapshot_ids'])} snapshot, {now['n_nodes']} nút)\n"
+        "Tên tệp kết quả là cố định (train/val/test.npz) nên ghi vào đây sẽ xoá bộ cũ.\n"
+        "  - Muốn giữ bộ cũ: thêm --outdir <thư mục riêng>, ví dụ --outdir dataset/v3.\n"
+        "  - Chắc chắn muốn thay: xoá split_info.json trong thư mục đó rồi chạy lại.")
+
+
+# ----------------------------------------------------------------------------
 # main
 # ----------------------------------------------------------------------------
 def main(argv=None):
@@ -318,7 +372,7 @@ def main(argv=None):
 
     ap = argparse.ArgumentParser(description="Chia oracle_dataset.npz thành train/val/test.")
     ap.add_argument("--in", dest="inp", default="dataset/oracle_dataset_v2.npz")
-    ap.add_argument("--outdir", default=None, help="mặc định: thư mục của file vào")
+    ap.add_argument("--outdir", default=None, help="mặc định: thư mục của file vào; tự tạo nếu chưa có")
     ap.add_argument("--mode", choices=["phase", "time"], default="phase")
     ap.add_argument("--ratios", type=float, nargs=3, default=(0.7, 0.15, 0.15))
     ap.add_argument("--block-size", type=int, default=None,
@@ -345,6 +399,11 @@ def main(argv=None):
     if not inp.exists():
         raise SystemExit(f"Không thấy {inp}. Dùng --in để chỉ đường dẫn.")
     outdir = Path(a.outdir) if a.outdir else inp.parent
+    # `--outdir` là thư mục kết quả, không phải tệp: tự tạo (trước đây không tạo nên lần
+    # chạy đầu tiên với thư mục mới chết ở bước ghi file).
+    outdir.mkdir(parents=True, exist_ok=True)
+    if not a.compare:
+        kiem_tra_da_co(outdir, inp)
 
     data = load_npz(inp)
     n_samples = len(data["snapshot_id"])
@@ -507,6 +566,10 @@ def main(argv=None):
 
     with open(outdir / "split_info.json", "w", encoding="utf-8") as f:
         json.dump({"input": str(inp), "mode": a.mode, "ratios": list(a.ratios), "seed": seed, "balance_score": score,
+                   # 3 khóa dưới để `kiem_tra_da_co` nhận ra bộ chia của cùng một dữ liệu
+                   # dù tệp vào bị chép đổi tên; thiếu chúng thì không phát hiện được ghi đè.
+                   "n_samples": int(n_samples), "n_nodes": int(n_nodes),
+                   "input_snapshot_ids": ids.tolist(),
                    "block_size": block, "gap": gap, "period": period,
                    "blocks": info["blocks"], "snapshot_ids": ids_by_split,
                    "dropped_snapshot_ids": ids[code == DROP].tolist()},

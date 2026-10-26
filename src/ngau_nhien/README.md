@@ -31,6 +31,21 @@ bash src/ngau_nhien/chay_tat_ca.sh                     # hoặc: bash src/ngau_n
 
 `dataset/oracle_dataset_v2.npz` và `dataset/split_info.json` là tệp của TV1 (600 snapshot liên tục, chia theo pha).
 
+### Cửa sổ thời tiết của `tao_du_lieu.py`
+
+Mặc định (`--chon-gio roi`) các cửa sổ ~6 giờ được **rải rời nhau** trên trục thời gian và
+**loại 04–12/9/2024** (bão Yagi). Bản cũ chọn độc lập từng kịch bản nên các cửa sổ chồng
+lên nhau và train/val/test dùng chung thời tiết. `meta.json` ghi `h0` từng tập và script
+tự kiểm 3 tập không chung giờ nào (in `Đã kiểm: cửa sổ thời tiết ... rời nhau`).
+
+| Cờ | Việc |
+|---|---|
+| `--chon-gio roi` | mặc định: rời nhau + loại ngày bão |
+| `--chon-gio theo-ngay` | chia train/val theo NGÀY rồi mới rải cửa sổ (luật của `tao_du_lieu_nl`) |
+| `--chon-gio doc-lap` | cách cũ, để tái lập số đã công bố |
+| `--ty-le-ngay-rong` | chia trục thời gian thành 3 đoạn train → val → test liền nhau |
+| `--ngay-loai D0:D1` | đổi khoảng ngày cấm; `--ngay-loai khong` để tắt |
+
 ## Đọc kết quả
 
 - `G ngây thơ`: Dijkstra trên W đo được thua tối ưu hậu kiểm bao nhiêu % (có phạt mỗi snapshot tuyến bị đứt).

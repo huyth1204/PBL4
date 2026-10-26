@@ -2,7 +2,11 @@
 thoi_tiet.py — Dữ liệu thời tiết theo giờ cho các điểm mặt đất / trên không của SAGSIN.
 
 Nguồn thật: Open-Meteo Historical Weather API (ERA5, miễn phí, không cần khoá).
-    python -m src.ngau_nhien.thoi_tiet tai --start 2023-01-01 --end 2024-12-31 --out data/thoi_tiet_vn.npz
+Khoảng ngày của hai tệp đang dùng là 2024-01-01 → 2025-12-31 (17 544 giờ). `--start`
+và `--end`/`--so-ngay` là BẮT BUỘC — KHÔNG có mặc định. Trước đây mặc định là
+2023-01-01 → 2024-12-31, nên chạy `tai` mà quên cờ sẽ ra tệp 17 520 giờ lệch hẳn
+một năm và GHI ĐÈ data/thoi_tiet_vn.npz (mất Yagi 7–8/9/2024, sai `--thang`).
+    python -m src.ngau_nhien.thoi_tiet tai --start 2024-01-01 --end 2025-12-31 --out data/thoi_tiet_vn.npz
 Thêm cờ --mo-rong để lấy cả các điểm mới (đảo/núi/lũ, HAPS mới, UAV đặt cố định):
     python -m src.ngau_nhien.thoi_tiet tai --mo-rong --start 2024-01-01 --end 2025-12-31 --out data/thoi_tiet_vn_mr.npz
 (23 điểm cũ giữ nguyên thứ tự và chỉ số cột, điểm mới nối vào cuối.)
@@ -117,6 +121,35 @@ def _goi(url, lat, lon, start, end, hourly, chunk_days=180, extra=None):
         a = b + timedelta(days=1)
         time.sleep(1.0)
     return times, {v: np.concatenate(x) for v, x in cols.items()}
+
+
+def kiem_tra_ghi_de(out: str, start: str, end: str, cho_phep: bool = False):
+    """Chặn ghi đè một tệp thời tiết đã có bằng khoảng ngày KHÁC (hoặc khác tập điểm).
+
+    Bẫy đã sập: mặc định cũ 2023-01-01 → 2024-12-31 của lệnh `tai` ghi thẳng vào
+    data/thoi_tiet_vn.npz, xoá mất khoảng 2024-01-01 → 2025-12-31 (17 544 giờ, có bão
+    Yagi 7–8/9/2024) mà không báo gì. Mọi kết quả phụ thuộc ngày sau đó đều sai âm thầm.
+    Cùng khoảng ngày thì ghi đè bình thường (đó là cách tải lại dữ liệu).
+    """
+    p = Path(out)
+    if not p.exists() or cho_phep:
+        return
+    try:
+        with np.load(p, allow_pickle=False) as d:
+            t = [str(x) for x in d["time_utc"]]
+            so_diem = int(len(d["site_names"])) if "site_names" in d.files else -1
+    except Exception as e:                                      # tệp hỏng / không phải tệp thời tiết
+        print(f"CẢNH BÁO: {out} đã có nhưng không đọc được ({e}); sẽ ghi đè.")
+        return
+    cu = (t[0][:10], t[-1][:10]) if t else (None, None)
+    if cu != (start, end):
+        raise SystemExit(
+            f"TỪ CHỐI GHI ĐÈ {out}\n"
+            f"  tệp đang có : {cu[0]} → {cu[1]} ({len(t)} giờ, {so_diem} điểm)\n"
+            f"  sắp ghi     : {start} → {end}\n"
+            "Ghi đè bằng khoảng khác sẽ làm sai mọi kết quả phụ thuộc ngày (Yagi, --thang).\n"
+            "  - Muốn giữ tệp cũ: dùng --out khác (vd data/thoi_tiet_vn_mr.npz).\n"
+            "  - Chắc chắn muốn thay: thêm --cho-ghi-de.")
 
 
 def tai_open_meteo(start: str, end: str, out: str, chunk_days: int = 180, mo_rong: bool = False):
@@ -275,9 +308,15 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="lenh", required=True)
     a = sub.add_parser("tai")
-    a.add_argument("--start", default="2023-01-01")
-    a.add_argument("--end", default="2024-12-31")
+    # KHÔNG đặt mặc định cho --start / --end: mặc định cũ (2023-01-01 → 2024-12-31)
+    # âm thầm sinh tệp lệch một năm và ghi đè data/thoi_tiet_vn.npz. Bắt buộc truyền.
+    ngay = a.add_mutually_exclusive_group(required=True)
+    ngay.add_argument("--end", help="ngày cuối, YYYY-MM-DD (dùng cùng --start)")
+    ngay.add_argument("--so-ngay", type=int, help="lấy --so-ngay ngày tính từ --start")
+    a.add_argument("--start", required=True, help="ngày đầu, YYYY-MM-DD (bắt buộc)")
     a.add_argument("--out", default="data/thoi_tiet_vn.npz")
+    a.add_argument("--cho-ghi-de", action="store_true",
+                   help="cho phép ghi đè tệp đã có bằng một khoảng thời gian khác khoảng của tệp")
     a.add_argument("--mo-rong", action="store_true",
                    help="tải cả điểm mới (đảo/núi/lũ, HAPS mới, UAV đặt cố định); 23 điểm cũ giữ nguyên chỉ số")
     b = sub.add_parser("gia-lap")
@@ -296,7 +335,16 @@ if __name__ == "__main__":
     c.add_argument("path")
     args = ap.parse_args()
     if args.lenh == "tai":
-        tai_open_meteo(args.start, args.end, args.out, mo_rong=args.mo_rong)
+        if args.so_ngay is not None:
+            if args.so_ngay < 1:
+                ap.error("--so-ngay phải >= 1")
+            end = (datetime.fromisoformat(args.start) + timedelta(days=args.so_ngay - 1)).date().isoformat()
+        else:
+            end = args.end
+        if datetime.fromisoformat(end) < datetime.fromisoformat(args.start):
+            ap.error(f"--end ({end}) phải >= --start ({args.start})")
+        kiem_tra_ghi_de(args.out, args.start, end, args.cho_ghi_de)
+        tai_open_meteo(args.start, end, args.out, mo_rong=args.mo_rong)
     elif args.lenh == "them-giong":
         them_giong(args.vao, args.ra, luat=args.luat)
     elif args.lenh == "dat-giong":

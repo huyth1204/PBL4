@@ -67,6 +67,9 @@ python dataset/split_dataset.py --in dataset/oracle_dataset_v3.npz --outdir data
 > ⚠️ **Phải có `--outdir dataset/v3`.** `split_dataset.py` luôn ghi tên cố định
 > `train.npz`, `val.npz`, `test.npz`, và mặc định ghi vào thư mục của file vào.
 > Bỏ `--outdir` mà trỏ `--in` vào v3 sẽ **ghi đè bộ của v2** ở `dataset/`.
+> Từ nay script **tự tạo** `--outdir` nếu chưa có và **từ chối** ghi đè khi
+> `split_info.json` trong đó ghi một tệp vào khác (muốn thay thật thì xoá
+> `split_info.json` rồi chạy lại).
 
 Kết quả (600 snapshot, `--mode phase`, 12 khối × 12 snapshot, chừa 3 biên):
 
@@ -150,6 +153,11 @@ python -m src.ngau_nhien.thoi_tiet tai --mo-rong --start 2024-01-01 --end 2025-1
 # BẮT BUỘC chạy tiếp bước này cho tệp vừa sinh:
 python -m src.ngau_nhien.thoi_tiet them-giong --vao data/thoi_tiet_vn_mr.npz
 ```
+
+> `--start` và (`--end` hoặc `--so-ngay`) là **bắt buộc** — không còn mặc định
+> `2023-01-01 → 2024-12-31` (khoảng đó không có bão Yagi và dài 17 520 giờ thay vì
+> 17 544). Ghi đè một tệp đã có bằng khoảng ngày khác bị chặn; muốn thay thật thì
+> thêm `--cho-ghi-de`.
 
 > ⚠️ **Quên `them-giong` là lỗi câm, không báo lỗi.** Lệnh `tai` chỉ lấy ERA5
 > (mưa, gió giật, mã thời tiết) — **không có** `cape`/`lifted_index`/`code_fc`
