@@ -75,27 +75,39 @@ python dataset/split_dataset.py --in dataset/oracle_dataset_v3.npz --outdir data
 
 Kết quả (600 snapshot, `--mode phase`, 12 khối × 12 snapshot, chừa 3 biên):
 
-| Tập | Snapshot | Mẫu | Hop TB | Nguồn là trạm |
-|---|---|---|---|---|
-| train | 357 | 17 850 | 2.89 | 26.8% |
-| val | 48 | 2 400 | 2.86 | 27.4% |
-| test | 48 | 2 400 | 2.92 | 26.5% |
+| Tập | Snapshot | Mẫu |
+|---|---|---|
+| train | 315 | 15 750 |
+| val | 72 | 3 600 |
+| test | 54 | 2 700 |
 
-Bỏ 147 snapshot ở biên. **Giao giữa ba tập = 0 snapshot** (kiểm trong
-`dataset/v3/split_info.json`). Test giống train: trung vị Jaccard 0.70 (chia ngẫu
-nhiên sẽ là 0.97).
+Bỏ 159 snapshot ở biên. **Giao giữa ba tập = 0 snapshot** (kiểm trong
+`dataset/v3/split_info.json`).
+
+> ⚠️ **Số ở đây đọc trực tiếp từ `W_snapshots.shape[0]` của từng tệp, kiểm ngày
+> 26/10/2026.** Bản SCHEMA trước ghi `357 / 48 / 48` cho bảng này và
+> `321 / 48 / 54` cho bảng `link_stats` bên dưới — **không con số nào khớp tệp
+> trên đĩa**. Cùng tham số split trên cùng 600 snapshot thì v2 (73 nút) và v3
+> (174 nút) buộc phải ra **cùng số snapshot**, và thực tế cả hai đều ra
+> 315/72/54 (`dataset/split_info.json` vs `dataset/v3/split_info.json`).
+> Đừng chép tay: đọc lại bằng
+> `np.load(f"dataset/v3/{t}.npz", allow_pickle=False)["W_snapshots"].shape[0]`.
 
 `link_stats` **được chia theo tập** và cột `snapshot_id` đánh lại **0..S_tập−1**
 cho khớp `W_snapshots`, `node_latlon_alt` và `snapshot_id` của mẫu:
 
 | Tập | Snapshot | `link_stats` | Cột 0 | Cạnh trong `W_snapshots` |
 |---|---|---|---|---|
-| train | 321 | 146 974 | 0–320 | 146 974 ✓ |
-| val | 48 | 20 848 | 0–47 | 20 848 ✓ |
-| test | 54 | 23 496 | 0–53 | 23 496 ✓ |
-| tổng | 423 | 191 318 | — | — |
+| train | 315 | 534 858 | 0–314 | 534 858 ✓ |
+| val | 72 | 123 966 | 0–71 | 123 966 ✓ |
+| test | 54 | 90 666 | 0–53 | 90 666 ✓ |
+| tổng | 441 | 749 490 | — | — |
 
-Bảng gốc 267 458 − 191 318 = **76 140 dòng của 177 snapshot bị bỏ ở biên**.
+Bảng gốc 1 018 890 − 749 490 = **269 400 dòng của 159 snapshot bị bỏ ở biên**.
+
+> Đừng lấy `146 974` (số cũ trong SCHEMA) làm mốc: nó nhỏ hơn ~3.6 lần số thật.
+> Mỗi liên kết vô hướng ghi **2 hàng** (`u→v`, `v→u`) nên mạng 174 nút sinh
+> ~1 900 hàng/snapshot, không phải ~460.
 Tra `link_stats[link_stats[:,0] == k]` bằng index cục bộ là đúng; dùng chỉ số gốc
 0–599 sẽ lấy sai. Test `test_mang_mo_rong.py::test_v3_split_khong_ro_ri_link_stats`
 khoá hợp đồng này (số dòng = số liên kết dương trong `W_snapshots` của chính tập).
@@ -664,6 +676,144 @@ mọi nút không phải vệ tinh đều có cột thời tiết.
 Lý do cần: v3 và v4 giống nhau ở mọi thứ **trừ tên vệ tinh**. Chỉ cần quên
 `--tle data/tle/walker256.txt` là v4 lặng lẽ thành "v3 với 256 vệ tinh Starlink
 thật" — tên tệp vẫn nói Walker, kết quả so sánh sau đó hoàn toàn vô nghĩa.
+
+### 7.5 v5 — 150 vệ tinh Starlink THẬT được chọn để phủ Việt Nam
+
+v3 lấy `--sats 100 --sat-select random`, tức mẫu đều trên **toàn cầu**. Đo trên
+`W_snapshots` của chính v3: mỗi snapshot chỉ có trung bình **2.72/100** vệ tinh nối
+được xuống trạm (min 0, max 7), trong khi mạng có tới 67 endpoint. Nghĩa là phần
+lớn thời gian mạng gần như mất hết GSL và nhãn chỉ còn phụ thuộc HAPS/UAV — bài
+toán mất hẳn ý nghĩa "định tuyến qua vệ tinh". v5 thay bằng tập vệ tinh **chọn có
+chủ đích để phủ Việt Nam**, vẫn là TLE thật.
+
+```bash
+# 1. Lọc TLE thật -> 150 vệ tinh phủ VN (~10 phút: tính góc nâng cho 10 728 vệ tinh)
+python dataset/chon_ve_tinh_phu_vn.py --so-ve-tinh 150 \
+    --out data/tle/starlink_vn150.txt
+
+# 2. Sinh dataset (N = 150 + 42 air + 32 ground = 224)
+python dataset/oracle_labeler_sagsin.py --mo-rong --sats 150 --sat-select first \
+    --tle data/tle/starlink_vn150.txt --out dataset/oracle_dataset_v5.npz
+
+# 3. Chia tập — PHẢI có --outdir riêng, xem cảnh báo ở §"Bộ train/val/test cho v3"
+python dataset/split_dataset.py --in dataset/oracle_dataset_v5.npz --outdir dataset/v5 -v
+```
+
+`--sat-select first` là **bắt buộc**: tệp đã đúng 150 vệ tinh và script ghi ra
+theo thứ tự điểm phủ giảm dần, nên `first` giữ nguyên đúng tập đó; để mặc định
+`random` sẽ xáo lại và mất toàn bộ công chọn.
+
+#### Cách chọn và các bẫy đo được
+
+Số "nối được" = số vệ tinh có góc nâng ≥ 15° xuống một trong các điểm đại diện
+(Hà Nội / Đà Nẵng / TP.HCM / Côn Đảo), **lấy max trên các điểm**:
+
+| Cách chọn vệ tinh | Nối được TB/snapshot | Snapshot có ≥1 | Snapshot có ≥5 |
+|---|---|---|---|
+| random 100 (cấu hình của v3) | 1.80 | 87.8 % | 4.7 % |
+| random 150 | 2.36 | 89.8 % | 7.0 % |
+| góc nâng cao nhất ở t0 (150) | 4.01 | **11.2 %** | 9.0 % |
+| tham lam trộn mọi epoch (sai mốc — xem dưới) | 9.50 ở mốc toàn tệp → **0.69 ở mốc labeler** | 106/600 | — |
+| **nhóm epoch + tham lam (dùng thật)** | **6.55** | **98.8 %** | **67.3 %** |
+
+> ⚠️ **Bẫy 1 — "chọn vệ tinh đang bay trên đầu Việt Nam" là cách SAI.** Nó cho
+> 150 vệ tinh đều nằm trong vài mặt phẳng gần nhau; chúng rời Việt Nam gần như
+> đồng thời và sau đó mạng **trống hoàn toàn** — chỉ 11.2 % snapshot còn ít nhất
+> một vệ tinh, **tệ hơn cả random**. Phải xếp hạng theo *số snapshot mà vệ tinh
+> đó nối được xuống VN trong suốt 600 snapshot*, không theo vị trí tức thời.
+
+> ⚠️ **Bẫy 2 (tốn cả một lần sinh dataset 25 phút) — mốc thời gian của labeler
+> KHÔNG phải mốc của toàn tệp TLE.** `oracle_labeler_sagsin.py` dòng 200 gọi
+> `resolve_start_time(ts, "tle", sample_sats)` — median epoch của **chính tập vệ
+> tinh được truyền vào**, tức tệp 150 con đã lọc, không phải 10 728 con. Hai mốc
+> lệch nhau **~5 giờ**; LEO 550 km quay 15.3 vòng/ngày nên 5 giờ là gần 4 vòng và
+> toàn bộ hình học đổi. Hệ quả đo được: tối ưu 9.50 cặp/snapshot ở mốc toàn tệp →
+> dataset thật chỉ có **0.69** cặp/snapshot, 494/600 snapshot **không có vệ tinh
+> nào** nối được. Con số bạn in ra để khoe và con số nằm trong dataset là hai con
+> số khác nhau. **Luôn đánh giá ở mốc labeler.**
+>
+> Nhưng `t_start` lại phụ thuộc chính tập được chọn (median của nó), nên không
+> thể "tính đúng mốc rồi chọn" một lần, và lặp thì **không hội tụ** (đo được:
+> vòng 2 nhảy mốc −5.67 h → +1.30 h, mỗi lần chọn lại làm median dịch tiếp).
+>
+> **Lối ra đang dùng: chọn 150 vệ tinh CÙNG MỘT EPOCH đến giây.** Khi mọi epoch
+> trong tập trùng nhau thì median = đúng epoch đó, **bất kể chọn con nào**, nên
+> mốc labeler cố định và tính trước được. Tệp TLE thật có **585 vệ tinh cùng
+> epoch `2026-08-31 04:00:01.998`** — đủ cho 150. Đổi lại độ phủ tối đa giảm từ
+> 9.50 (không tưởng) xuống 6.55 (thật). Script `assert` mốc labeler bằng mốc đã
+> tối ưu (sai <1 s) nên không thể lặng lẽ quay lại bẫy này.
+
+Script còn áp `--tran-nghieng 0.55`: tối ưu thuần tuý dồn hết vệ tinh vào vỏ 43°
+(vỏ thấp nhất, phủ nhiệt đới tốt nhất), không giống chòm Starlink thật
+(43/53/70/97°). Đặt trần 55 % mỗi nhóm nghiêng chỉ mất chút ít độ phủ, đổi lại
+phân bố thành **16×43° + 81×53° + 52×70° + 1×98°**.
+
+#### Kết quả đo được
+
+Bảng dưới đo **trên hai tệp `.npz` thật, cùng một cách đếm** (script `_so_v3_v5.py`):
+
+| | v3 (100 vệ tinh random) | **v5 (150 vệ tinh phủ VN)** |
+|---|---|---|
+| N nút / vệ tinh | 174 / 100 | **224 / 150** |
+| Vệ tinh có ≥1 GSL mỗi snapshot | 2.72 | **8.34** |
+| Snapshot có ≥1 vệ tinh có GSL | 97.0 % (18 trống) | **99.5 %** (3 trống) |
+| Snapshot có ≥5 vệ tinh có GSL | 9.8 % | **80.5 %** |
+| Cặp endpoint reachable (gộp 600 snapshot) | 2 072 934 / 2 653 200 = **78.13 %** | 2 530 244 / 2 653 200 = **95.37 %** |
+
+Chia tập (`dataset/v5/`): **train 294 / val 48 / test 54 snapshot** (14 700 / 2 400 /
+2 700 mẫu), bỏ 204 snapshot ở biên, ba tập **không giao snapshot nào**
+(`giao = 0 0 0`, xác nhận trên `split_info.json`). Chênh lệch hop TB giữa ba tập
+chỉ 0.01 (2.49 / 2.48 / 2.49).
+
+Tổng endpoint-pair là 2 653 200 ở cả hai bản (67 endpoint × 66 × 600 snapshot), nên
+so trực tiếp được dù N khác nhau. Tăng **+17.2 điểm phần trăm**.
+
+> ⚠️ Đừng lẫn hai cách đếm "vệ tinh nối được":
+>
+> * **8.34** = số vệ tinh có ≥1 GSL **tới bất kỳ nút nào** trong `W_snapshots`
+>   (ground gateway, HAPS, UAV…) — đo trên W, đúng thứ mà bài toán dùng.
+> * **6.55** = số vệ tinh có góc nâng ≥ 15° xuống **4 điểm Việt Nam** — chỉ là
+>   proxy để xếp hạng vệ tinh lúc chọn. Số này **thấp hơn** 8.34 vì bỏ sót các
+>   vệ tinh chỉ nối được tới HAPS/UAV hoặc gateway ngoài 4 điểm đó.
+>
+> Cả hai đều đo được trên v5 và khớp giữa script chọn với dataset (6.55 / 98.8 %
+> / 67.3 % — xác nhận lại sau khi sinh). Không dùng con số nào để suy ra con số kia.
+
+Vì sao v3 đã 78 % mà vẫn cần v5: 78 % là **trung bình gộp**, nhưng phân bố rất
+lệch — 145/600 snapshot của v3 **không đủ 5 vệ tinh** có GSL (9.8 %), và trung
+bình chỉ 2.72 vệ tinh, tức gần như mọi đường đi buộc phải qua **cùng một vệ tinh
+duy nhất**. v5 có 80.5 % snapshot đủ ≥5 vệ tinh (TB 8.34), nên mới thật sự có
+không gian định tuyến để học.
+
+> ⚠️ **`data/tle/starlink_vn150.txt` là TLE THẬT, không phải chòm lý tưởng.** Khác
+> hẳn `data/tle/walker256.txt` (v4, chòm Walker sinh giả). Đừng gọi v5 là "chòm
+> mô phỏng" trong báo cáo — nó là tập con **có chủ đích** của Starlink thật.
+> Hai dòng TLE được chép **nguyên văn** từ `data/tle/starlink.txt`: `sgp4.Satrec`
+> không giữ `line1`/`line2`, dựng lại từ phần tử số sẽ sai checksum và làm tròn
+> mất trường kiểu `3.27350-4`.
+
+> ⚠️ **t0 của labeler lấy median epoch trên CHÍNH tập truyền vào — đây là bẫy đã
+> làm hỏng một lần sinh dataset.** `resolve_start_time(ts, "tle", sample_sats)`
+> nhận danh sách đã lọc, nên median của tệp 150 con lệch **5.67 giờ** so với
+> median toàn tệp 10 728 con. LEO 550 km quay 15.3 vòng/ngày ⇒ 5.67 giờ ≈ 3.6
+> vòng ⇒ hình học đổi hoàn toàn: độ phủ rơi từ **9.50 → 0.69** cặp/snapshot,
+> 494/600 snapshot không còn vệ tinh nào nối được. Cách chữa **không phải** lấy
+> median toàn tệp (labeler không dùng số đó) và cũng **không phải** lặp
+> chọn→đọc mốc→chọn lại (không hội tụ: vòng 2 nhảy −5.67 h → +1.30 h), mà là
+> **chỉ chọn trong một nhóm vệ tinh cùng epoch đến giây** — khi đó median = epoch
+> chung bất kể chọn con nào. Script assert mốc labeler khớp mốc đã tối ưu (<1 s)
+> trước khi ghi tệp; `test_tle_vn150_la_starlink_that_va_phu_viet_nam` kiểm lại
+> lần nữa (cùng 1 epoch + độ phủ ≥ 95 % snapshot).
+
+> ⚠️ **Checkpoint của v2/v3/v4 đều KHÔNG dùng được với v5** (N 174/330 → 224) —
+> cùng lý do ở §7.3.
+
+> ℹ️ v5 phụ thuộc **thời điểm tải TLE**: tập ứng viên là nhóm epoch lớn nhất trong
+> `data/tle/starlink.txt` (hiện 585/10 728 vệ tinh cùng epoch
+> `2026-08-31 04:00:01.998`). Tải lại tệp TLE mới rồi chạy lại script sẽ ra **tập
+> vệ tinh khác** và dataset khác. Muốn tái lập thì phải giữ đúng tệp TLE gốc và
+> đúng `data/tle/starlink_vn150.txt`.
+
 
 
 > ⚠️ **Hai bẫy của định dạng TLE — cả hai đều KHÔNG báo lỗi.**

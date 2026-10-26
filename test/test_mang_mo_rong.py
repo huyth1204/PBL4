@@ -187,28 +187,44 @@ def test_v3_co_hoang_sa_truong_sa_va_uav_dat_co_dinh():
 def test_v3_split_khong_ro_ri_link_stats():
     """link_stats của từng tập phải lọc theo snapshot của tập và đánh lại cột 0.
 
-    Trước đây bảng bị chép nguyên 253.856 dòng vào cả 3 tập, nên tra bằng chỉ số
+    Trước đây bảng bị chép nguyên cả bảng gốc vào cả 3 tập, nên tra bằng chỉ số
     cục bộ sẽ lấy sai snapshot (và lộ thông tin liên kết của tập khác).
+
+    Ngưỡng "nhỏ hơn bảng gốc" đọc TRỰC TIẾP từ `oracle_dataset_v3.npz` thay vì
+    viết cứng: bản trước viết cứng `253856`, trong khi bảng gốc thật có
+    **1 018 890 dòng** — ngưỡng cũ ở dưới cả số dòng của một tập nên test đỏ
+    vĩnh viễn dù dữ liệu đúng.
     """
     import json
     d = ROOT / "dataset" / "v3"
     if not (d / "split_info.json").exists():
         raise BoQua("chưa có dataset/v3/split_info.json")
+    goc = ROOT / "dataset" / "oracle_dataset_v3.npz"
+    if not goc.exists():
+        raise BoQua("chưa có dataset/oracle_dataset_v3.npz để so số dòng gốc")
+    n_goc = len(np.load(goc, allow_pickle=True)["link_stats"])
     info = json.loads((d / "split_info.json").read_text(encoding="utf-8"))
+    tong = 0
     for ten, snap_ids in info["snapshot_ids"].items():
         f = np.load(d / f"{ten}.npz", allow_pickle=True)
         ls, W = f["link_stats"], f["W_snapshots"]
-        assert len(ls) < 253856, f"{ten}: link_stats vẫn là cả bảng gốc ({len(ls)} dòng)"
+        tong += len(ls)
+        assert len(ls) < n_goc, \
+            f"{ten}: link_stats vẫn là cả bảng gốc ({len(ls)} / {n_goc} dòng)"
         # cột 0 phải là chỉ số cục bộ của tập này
         assert ls[:, 0].min() >= 0 and ls[:, 0].max() < W.shape[0], \
             f"{ten}: snapshot_id trong link_stats vượt {W.shape[0]} snapshot của tập"
-        # số dòng phải bằng số liên kết dương của W_snapshots (bỏ đường chéo)
+        # số dòng phải bằng số liên kết dương của W_snapshots (bỏ đường chéo).
+        # `W = -1` là KHÔNG có liên kết, `W = 0` mới là liên kết trễ 0 — nên dùng
+        # `>= 0`, không phải `> 0`. Đã đối chiếu: 534 858 khớp từng dòng.
         so_canh = int((W >= 0).sum()) - W.shape[0] * W.shape[1]
         assert len(ls) == so_canh, f"{ten}: {len(ls)} dòng link_stats != {so_canh} cạnh trong W"
         # mỗi snapshot đều có mặt đúng số liên kết của nó
         dem = np.bincount(ls[:, 0].astype(np.int64), minlength=W.shape[0])
         assert (dem > 0).all(), f"{ten}: có snapshot không có dòng link_stats nào"
         assert abs(int(dem.sum()) - len(ls)) == 0
+    # ba tập không được chồng lấn: tổng phải nhỏ hơn bảng gốc đúng phần bị bỏ
+    assert tong < n_goc, f"tổng 3 tập {tong} không nhỏ hơn bảng gốc {n_goc}"
 
 
 def test_v4_split_ton_tai_va_khong_giao_snapshot():
@@ -250,6 +266,84 @@ def test_v4_split_ton_tai_va_khong_giao_snapshot():
     if v2.exists():
         assert len(np.load(v2, allow_pickle=True)["node_order"]) != 330, \
             "dataset/train.npz đã bị ghi đè bằng v4 — bộ v2 ở gốc dataset/ bị mất"
+
+
+
+def test_tle_vn150_la_starlink_that_va_phu_viet_nam():
+    """`data/tle/starlink_vn150.txt` phải là tập con THẬT của Starlink, và phải
+    thật sự phủ Việt Nam — không chỉ "được đặt tên là phủ Việt Nam".
+
+    Bẫy đã đo: chọn 150 vệ tinh đang có góc nâng cao nhất ở mốc t0 cho ra tập
+    **tệ hơn cả random** (chỉ 11.2 % snapshot còn vệ tinh, vì cả cụm cùng rời
+    Việt Nam một lúc). Test này khoá kết quả *đo được*, không khoá cách làm:
+    nếu ai đó thay bằng chiến lược khác mà độ phủ tụt thì test đỏ ngay.
+    """
+    from dataset.chon_ve_tinh_phu_vn import DIEM_VN, _doc_tle_theo_ten, tinh_goc_nang
+    from skyfield.api import load
+
+    tep = ROOT / "data" / "tle" / "starlink_vn150.txt"
+    if not tep.exists():
+        raise BoQua(
+            "chưa có data/tle/starlink_vn150.txt — chạy:\n"
+            "  python dataset/chon_ve_tinh_phu_vn.py --so-ve-tinh 150")
+
+    bo = _doc_tle_theo_ten(tep)
+    assert len(bo) == 150, f"tệp phải có 150 vệ tinh, đang {len(bo)}"
+
+    # Tên phải là Starlink THẬT, không lẫn SYN- của chòm Walker (v4).
+    assert all(t.startswith("STARLINK") for t in bo), \
+        f"có tên không phải Starlink: {[t for t in bo if not t.startswith('STARLINK')][:5]}"
+
+    # Phải là tập CON của tệp TLE gốc, và 2 dòng TLE trùng TỪNG KÝ TỰ (chép
+    # nguyên văn — dựng lại từ Satrec sẽ sai checksum).
+    goc = _doc_tle_theo_ten(ROOT / "data" / "tle" / "starlink.txt")
+    for ten, d1, d2 in bo.values():
+        assert ten in goc, f"{ten} không có trong data/tle/starlink.txt"
+        assert (d1, d2) == (goc[ten][1], goc[ten][2]), \
+            f"{ten}: hai dòng TLE bị sửa so với tệp gốc — sẽ hỏng checksum"
+
+    # Checksum: (tổng chữ số + số dấu '-') mod 10 trên 68 ký tự đầu.
+    for ten, d1, d2 in bo.values():
+        for d in (d1, d2):
+            assert len(d) == 69, f"{ten}: dòng TLE dài {len(d)}, phải 69"
+            tong = sum(int(c) for c in d[:68] if c.isdigit()) + d[:68].count("-")
+            assert d[68] == str(tong % 10), f"{ten}: sai checksum ở '{d[:20]}...'"
+
+    # Độ phủ: mọi vệ tinh phải nối được xuống VN ít nhất vài % thời gian, và
+    # tập phải phủ gần như mọi snapshot.
+    sats = load.tle_file(str(tep))
+    assert len(sats) == 150, f"skyfield đọc được {len(sats)}/150 vệ tinh"
+    ts = load.timescale()
+    # Mốc PHẢI là median epoch của CHÍNH 150 vệ tinh này — đúng như
+    # `resolve_start_time(ts, "tle", sample_sats)` ở `oracle_labeler_sagsin.py`
+    # dòng 200. Đo ở mốc khác (median toàn tệp 10 728 epoch) thì con số không
+    # liên quan gì tới dataset thật: cùng một tập cho 9.50 cặp/snapshot ở mốc
+    # toàn tệp nhưng chỉ 0.69 ở mốc labeler, vì hai mốc lệch ~5 giờ.
+    t0 = ts.tt_jd(float(np.median([s.epoch.tt for s in sats])))
+    mocs = ts.tt_jd(t0.tt + np.arange(600) * 20 / 86400.0)
+    noi_duoc = tinh_goc_nang(sats, mocs) >= 15.0
+
+    moi_snap = noi_duoc.sum(1)
+    ti_le_co = (moi_snap >= 1).mean()
+    assert ti_le_co >= 0.95, (
+        f"chỉ {ti_le_co * 100:.1f} % snapshot có ít nhất 1 vệ tinh nối được — "
+        f"tập này không phủ Việt Nam (ngưỡng 95 %)")
+    assert moi_snap.mean() >= 6.0, (
+        f"trung bình {moi_snap.mean():.2f} vệ tinh nối được/snapshot, kỳ vọng ≥6 "
+        f"(đo được 6.55 với nhóm epoch 585 vệ tinh)")
+
+    # Mốc labeler phải TÍNH TRƯỚC ĐƯỢC: mọi epoch trong tập phải trùng nhau đến
+    # giây để median không phụ thuộc vào việc chọn con nào. Không có tính chất
+    # này thì script chọn và labeler chạy ở hai mốc khác nhau (đúng lỗi đã sập).
+    giay = np.round(np.array([s.epoch.tt for s in sats]) * 86400).astype(np.int64)
+    assert len(np.unique(giay)) == 1, (
+        f"tập có {len(np.unique(giay))} epoch khác nhau — median (và do đó mốc "
+        f"labeler) sẽ phụ thuộc kết quả chọn, không tái lập được")
+
+    print(f"    150 vệ tinh thật, cùng 1 epoch | {moi_snap.mean():.2f} nối được/snapshot"
+          f" | {ti_le_co * 100:.1f} % snapshot có ≥1 | "
+          f"{(moi_snap >= 5).mean() * 100:.1f} % có ≥5 | "
+          f"mỗi vệ tinh phủ TB {noi_duoc.mean(0).mean() * 100:.1f} % thời gian")
 
 
 def test_uav_ven_bien_bac_phu_duoc_hai_phong_va_quang_ninh():
