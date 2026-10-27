@@ -1,5 +1,9 @@
 # Bảng tra bão mạnh và ma trận rủi ro online
 
+**Dữ liệu đã được lưu trong repo:** [data/bao_manh](../data/bao_manh/README.md)
+gồm 10 tệp thời tiết, danh mục, bảng tra đã học, số đếm, metadata và SHA-256.
+Clone/pull là có thể nạp bảng; không cần chạy lại các lệnh sinh dữ liệu bên dưới.
+
 Pipeline `storm-lookup-v1` triển khai bảng 3.000 ô trong tài liệu
 `Du_lieu_bao_manh.docx` của Huy. Bảng học từ sự cố **mô phỏng** với thời tiết
 74 điểm và mạng nền v5, không phải xác suất đứt liên kết được đo ngoài thực địa.
@@ -26,6 +30,9 @@ vệ tinh nối trở lại một UAV đang được biết là hạ cánh.
 Hình học tương lai từ quỹ đạo là đầu vào dự báo cho phép. Thời tiết và trạng thái
 nút tương lai chỉ được dùng để tạo nhãn/chấm điểm. Hàm online chạy được với lịch
 sử thời tiết bị cắt ngay tại `o`; không nhận mạng thực tế tương lai.
+
+Nút đã tắt tại `o` bị chặn. Nút còn hoạt động tại `o` nhưng tắt sau đó, kể cả
+trong lúc giữ tuyến `[t,t+3]`, vẫn tạo nhãn đứt: đây chính là rủi ro cần dự đoán.
 
 ## Đặc trưng và làm trơn
 
@@ -97,6 +104,19 @@ chính xác bộ 81 đó. `danh_muc.json` lưu giờ, nguồn và hash của t�
   Tắt xung đột ngẫu nhiên và biến động tải, nên không tái sử dụng số đếm cũ
   14.274.022 mẫu trong tài liệu. Các tham số chính xác nằm trong `meta.json`.
 
+**Phạm vi áp dụng:** trường `applicability` trong `meta.json` yêu cầu
+`xung_dot=False, tai=False`, cùng các tham số, hình học, tuổi thông tin và horizon
+đã ghi. Khi bật xung đột hoặc tải động trong thí nghiệm định tuyến, cần đếm/học
+lại theo cấu hình đó trước khi coi xác suất là đã hiệu chuẩn cho thí nghiệm.
+Trong bộ mô phỏng hiện tại, tải chủ yếu đổi trọng số/độ trễ; nhãn sống chỉ kiểm
+tra `Wn > 0`, không phải xác suất vi phạm SLA hay nghẽn mạng. Không diễn giải
+bảng này là dự báo mọi dạng thất bại do tải.
+
+Số 81 kịch bản và 14.274.022 mẫu trong bản DOCX cũ đã hết hạn: lần đếm hiện tại
+dùng danh mục 75 cửa sổ công khai, chặn UAV đã tắt trong dự báo, tắt xung đột/tải
+động và lọc mốc đủ lịch sử. Không có đủ đầu ra cũ để tách riêng đóng góp của từng
+thay đổi vào chênh lệch số mẫu. Bản DOCX cập nhật nằm trong `data/bao_manh/`.
+
 Các tệp bảng: `dem.npz` chứa số lần sống/tổng theo cơn và ô; `bang_tra.npz`
 chứa xác suất và hỗ trợ học; `validation.json` chứa điểm từng cơn;
 `meta.json` chứa seed, split, cấu hình và hash. `dem.npz` được ghi từng cơn;
@@ -107,7 +127,7 @@ chỉ coi lần chạy hoàn tất khi có `meta.json`.
 ```python
 from src.ngau_nhien.ma_tran_rui_ro import nap_bang, ma_tran_online
 
-bang = nap_bang('/workspace/pbl4-data/bang-tra-bao/bang_tra.npz')
+bang = nap_bang('data/bao_manh/bang_tra/bang_tra.npz')
 o = t - 9
 past = {k: q[k][:o+1] for k in ('R', 'gust', 'giong', 'tat')}
 r = ma_tran_online(bang, g, Wn[o], past, t, tuoi=9, delta=3)
@@ -154,3 +174,17 @@ Hình học v5 dùng TLE 2026 kết hợp thời tiết 2024–2025: đây là t
 không tái dựng mạng lịch sử. Giới hạn kiểm tra che khuất Trái Đất của ISL trong
 v5 vẫn còn. Thời tiết lưới, gió gần mặt đất, giông suy từ proxy và các ngưỡng hỏng
 là giả định mô phỏng; bảng chưa được hiệu chuẩn bằng sự cố liên kết ngoài thực địa.
+
+## Các thí nghiệm tiếp theo chưa thực hiện trong bản phát hành này
+
+- Chọn prior trên validation rồi học lại cả 10 cơn: cần lưu riêng bảng cuối và
+  bảng dùng chấm validation. Điểm validation hiện tại thuộc bảng 7 cơn, không
+  được gán cho bảng học lại trên 10 cơn.
+- Báo cáo theo băng tần/gió/giông và bootstrap theo cơn; không bootstrap từng
+  cạnh như mẫu độc lập. Hiện validation chỉ có 3 cơn, nên suy luận bất định còn hạn chế.
+- Kiểm tra đơn điệu theo mưa ở 20/28 GHz khi giữ cố định các chiều khác; phân
+  biệt ô thiếu mẫu và hiệu ứng chỉ chọn cạnh còn sống với vi phạm mô hình vật lý.
+- Đánh giá Yagi nhiều cửa sổ và seed; chưa dùng Yagi để chọn prior.
+- So sánh có/không Matmo trước khi bỏ. Matmo hiện đóng góp 684.006 mẫu, trong đó
+  4.800 mẫu không sống suốt cửa sổ; một giờ đạt tiêu chí bão không có nghĩa là
+  không đóng góp dữ liệu. Giữ nguyên split hiện tại để bảo toàn kết quả đã công bố.

@@ -22,6 +22,19 @@ DEFAULT_VAL = ('prapiroon_2024', 'trami_2024', 'kalmaegi_2025')
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def pham_vi_ap_dung():
+    """Hợp đồng sử dụng bảng; parameters trong manifest vẫn là cấu hình đầy đủ."""
+    return {
+        'scope': 'weather_only_with_fixed_background_load',
+        'required_flags': {'xung_dot': False, 'tai': False},
+        'parameter_matching': 'Match parameters, geometry, observation age and horizon in meta.json.',
+        'distribution_shift': 'Recount and refit before claiming calibrated risk with conflicts or dynamic load enabled.',
+        'target': 'Link availability at decision t and throughout t+1..t+delta; not an SLA or congestion-failure probability.',
+        'node_shutdown': 'Known-off nodes at observation are blocked; shutdowns after observation may cause a failure label.',
+        'prior_selection': 'Fixed prior=20; not selected on validation; table fits storm_split.train only.',
+    }
+
+
 def o_dac_trung(g, q, observed_at, history=45):
     """Đọc duy nhất t_obs và t_obs−15phút; có đủ lịch sử mới tạo đặc trưng."""
     if observed_at < history:
@@ -136,6 +149,7 @@ def run(catalog, raw, split, out, tuoi=9, delta=3, stride=3, muc='khắc nghiệ
     params = ThamSo(**{**MUC[muc], 'xung_dot': False, 'tai': False})
     successes = np.zeros((len(storms), NCELLS), np.int64); counts = np.zeros_like(successes)
     config = {'schema': 'storm-lookup-v1', 'tuoi': tuoi, 'delta': delta, 'dt_seconds': 20, 'history_steps': 45,
+              'applicability': pham_vi_ap_dung(),
               'muc': muc, 'parameters': tham_so_dict(params), 'stride': stride, 'snapshots_used': ids.tolist(),
               'raw_sha256': sha256(raw), 'split_sha256': sha256(split), 'catalog_sha256': sha256(catalog),
               'storm_split': {'train': [s for s in names if s not in val_names], 'val': list(val_names)},
