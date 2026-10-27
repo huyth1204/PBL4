@@ -115,7 +115,7 @@ bảng này là dự báo mọi dạng thất bại do tải.
 Số 81 kịch bản và 14.274.022 mẫu trong bản DOCX cũ đã hết hạn: lần đếm hiện tại
 dùng danh mục 75 cửa sổ công khai, chặn UAV đã tắt trong dự báo, tắt xung đột/tải
 động và lọc mốc đủ lịch sử. Không có đủ đầu ra cũ để tách riêng đóng góp của từng
-thay đổi vào chênh lệch số mẫu. Bản DOCX cập nhật nằm trong `data/bao_manh/`.
+thay đổi vào chênh lệch số mẫu. Hướng dẫn hiện hành được lưu trong tài liệu Markdown này.
 
 Các tệp bảng: `dem.npz` chứa số lần sống/tổng theo cơn và ô; `bang_tra.npz`
 chứa xác suất và hỗ trợ học; `validation.json` chứa điểm từng cơn;

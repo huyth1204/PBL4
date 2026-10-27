@@ -13,7 +13,6 @@ Các đường dẫn ví dụ dưới đây tính từ thư mục gốc repo.
 | `bang_tra/meta.json` | Cấu hình, seed, split và hash các đầu vào/bảng |
 | `bang_tra/validation.json` | Điểm validation theo cơn và gộp |
 | `SHA256SUMS` | SHA-256 cho toàn bộ tệp dữ liệu và metadata trong bộ này |
-| `Du_lieu_bao_manh.docx` | Tài liệu nhóm đã cập nhật theo code, số đếm và CLI hiện tại |
 
 ## Nạp bảng
 
