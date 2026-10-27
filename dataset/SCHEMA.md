@@ -1,5 +1,11 @@
 # Schema dữ liệu SAGSIN
 
+**Bộ bão mạnh và ma trận rủi ro:** xem [BAO_RUI_RO.md](BAO_RUI_RO.md).
+Đây là schema `bao-rui-ro-v1` riêng, giữ các truy vấn không còn đường đi và lưu
+`risk_edge_oracle[S,N,N]` cùng số mẫu Monte Carlo. Không thay thế hoặc ghi đè
+các bộ nhãn định tuyến v2–v5 bên dưới; trường `_oracle` là nhãn hậu kiểm, không
+phải đầu vào dự báo online.
+
 Tài liệu này mô tả các tệp `.npz` do `dataset/oracle_labeler_sagsin.py` sinh ra.
 Có hai bản: **v2** (73 nút, mốc hồi quy — KHÔNG bao giờ ghi đè) và **v3** (174
 nút, mạng mở rộng: thêm nút đảo/núi/vùng lũ + trạng thái hạ cánh UAV). §7 mô tả
