@@ -199,11 +199,67 @@ là giả định mô phỏng; bảng chưa được hiệu chuẩn bằng sự 
 - Chọn prior trên validation rồi học lại cả 10 cơn: cần lưu riêng bảng cuối và
   bảng dùng chấm validation. Điểm validation hiện tại thuộc bảng 7 cơn, không
   được gán cho bảng học lại trên 10 cơn.
-- Báo cáo theo băng tần/gió/giông và bootstrap theo cơn; không bootstrap từng
-  cạnh như mẫu độc lập. Hiện validation chỉ có 3 cơn, nên suy luận bất định còn hạn chế.
+- Bổ sung báo cáo theo mức gió và đánh giá bất định khi có thêm cơn. Báo cáo
+  theo băng tần/giông đã có ở mục dưới; không bootstrap từng cạnh như mẫu độc
+  lập. Hiện validation chỉ có 3 cơn, nên không báo khoảng tin cậy.
 - Kiểm tra đơn điệu theo mưa ở 20/28 GHz khi giữ cố định các chiều khác; phân
   biệt ô thiếu mẫu và hiệu ứng chỉ chọn cạnh còn sống với vi phạm mô hình vật lý.
 - Đánh giá Yagi nhiều cửa sổ và seed; chưa dùng Yagi để chọn prior.
 - So sánh có/không Matmo trước khi bỏ. Matmo hiện đóng góp 684.006 mẫu, trong đó
   4.800 mẫu không sống suốt cửa sổ; một giờ đạt tiêu chí bão không có nghĩa là
   không đóng góp dữ liệu. Giữ nguyên split hiện tại để bảo toàn kết quả đã công bố.
+
+## Báo cáo validation từ số đếm
+
+`bao_cao_validation(dem, bang, val_names)` trong `src/ngau_nhien/bao_cao_rui_ro.py`
+nhận đường dẫn NPZ hoặc dictionary đã đọc. Nó không sinh mô phỏng, không đổi
+bảng và không dùng val để học baseline hay phân mức hỗ trợ. Lệnh tái lập có
+trong [README dữ liệu](../data/bao_manh/README.md).
+
+`metrics(p_song, song, n, p_baseline=...)` giữ API cũ và bốn khóa
+`samples`, `survival_rate`, `brier`, `log_loss`; bổ sung `failures`,
+`failure_rate`, `brier_baseline`, `bss`, `auprc`, `auprc_baseline`.
+Lõi `metrics_rui_ro(risk, failures, n, p_baseline=...)` dùng số đếm theo nhóm,
+không bung thành từng cạnh. `p_baseline` là xác suất **sống** học từ train;
+nếu không truyền, `brier_baseline`/`bss` là `null`, không tự fit bằng nhãn chấm.
+
+Baseline cố định là `(sum(song_train)+1)/(sum(n_train)+2)`, giống baseline cũ,
+dùng chung cho mọi nhóm; `bss = 1 - brier/brier_baseline`. AUPRC là average
+precision cho **ca đứt**, sắp `1-p_song` giảm dần, gộp đồng điểm thành một ngưỡng
+rồi cộng `precision × Δrecall`. Baseline AUPRC là prevalence đứt của nhóm được
+chấm, không phải xác suất được học lại từ val. Đây không phải PR-AUC nội suy
+hình thang. Chỉ clip xác suất khi tính log-loss, để baseline Brier hoàn hảo vẫn
+bằng 0. Không có ca đứt thì AUPRC `null`; baseline Brier=0 thì BSS `null`;
+nhóm rỗng có số mẫu/số đứt 0 và các tỷ lệ/chỉ số `null`. JSON không chứa NaN.
+
+Kết quả trên ba cơn val: **5.673.610 mẫu, 11.063 ca đứt**, tỷ lệ đứt
+**0,194990%**; BSS **0,202794**, AUPRC **0,286847** (baseline AUPRC
+**0,00194990**). Các xác suất/tỷ lệ trong JSON dùng thang 0–1, riêng
+`failure_share_percent` dùng thang 0–100.
+
+| Băng | Mẫu val | Ca đứt | BSS | AUPRC |
+|---|---:|---:|---:|---:|
+| 0 — không suy hao mưa | 4.843.232 | 0 | null | null |
+| 5 GHz | 206.288 | 995 | 0,057451 | 0,082119 |
+| 12 GHz | 540.268 | 5.310 | 0,188121 | 0,269040 |
+| 20 GHz | 46.926 | 2.076 | 0,230646 | 0,357780 |
+| 28 GHz | 36.896 | 2.682 | 0,253185 | 0,326164 |
+
+| Hỗ trợ từ n_train | Ô có mẫu val | Mẫu val | Ca đứt | % trên 11.063 ca đứt val | Ít mẫu |
+|---|---:|---:|---:|---:|---|
+| n=0 | 13 | 130 | 26 | 0,2350% | Có |
+| 0<n<10 | 3 | 15 | 6 | 0,0542% | Có |
+| 10≤n<1000 | 136 | 17.881 | 2.138 | 19,3257% | Không |
+| n≥1000 | 130 | 5.655.584 | 8.893 | 80,3851% | Không |
+
+Các mức hỗ trợ là phân hoạch của cả 3.000 ô; `cells` đếm mọi ô trong nhóm,
+`cells_with_validation` chỉ đếm ô có mẫu val. Tổng mẫu/ca đứt các mức bằng tổng
+gộp. Ngưỡng `mau_it` là dưới 1.000 mẫu val **hoặc** dưới 30 ca đứt; báo cáo
+đặt BSS/AUPRC của cả lookup và baseline thành `null` ở các nhóm này, nhưng
+vẫn giữ số đếm, tỷ lệ và baseline prevalence để đọc được mức độ hỗ trợ.
+
+Giông mặt đất trên **val** có 5.662 mẫu và 2.264 ca đứt, chiếm **20,4646% tổng
+ca đứt val**. Không nhầm tỷ lệ này với 48,44% tính trên cả 10 cơn trong báo cáo
+thống kê trước. Báo cáo giữ kết quả riêng từng cơn, không bootstrap theo cạnh
+và không đưa ra khoảng tin cậy từ chỉ ba cơn. `ghi_chu` nhắc đây là số liệu
+mô phỏng và bảng học bằng `n_train`, không phải số quan sát ngoài thực địa.

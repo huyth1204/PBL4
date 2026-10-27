@@ -11,7 +11,7 @@ Các đường dẫn ví dụ dưới đây tính từ thư mục gốc repo.
 | `bang_tra/bang_tra.npz` | Bảng 3.000 ô đã học, xác suất sống và số mẫu hỗ trợ |
 | `bang_tra/dem.npz` | Số mẫu/tổng số lần sống theo từng cơn và ô |
 | `bang_tra/meta.json` | Cấu hình, seed, split và hash các đầu vào/bảng |
-| `bang_tra/validation.json` | Điểm validation theo cơn và gộp |
+| `bang_tra/validation.json` | Chỉ số gộp/theo cơn, băng tần, hỗ trợ train và giông mặt đất |
 | `SHA256SUMS` | SHA-256 cho toàn bộ tệp dữ liệu và metadata trong bộ này |
 
 ## Nạp bảng
@@ -67,6 +67,31 @@ python -m src.ngau_nhien.ma_tran_rui_ro \
   --catalog data/bao_manh/danh_muc.json \
   --out /tmp/pbl4-bang-tra-rebuild
 ```
+
+Chỉ tạo lại **báo cáo từ số đếm**, không sinh mô phỏng hoặc học lại bảng:
+
+```bash
+python -m src.ngau_nhien.bao_cao_rui_ro \
+  --dem data/bao_manh/bang_tra/dem.npz \
+  --bang data/bao_manh/bang_tra/bang_tra.npz \
+  --out data/bao_manh/bang_tra/validation.json
+```
+
+Lệnh này chỉ ghi tệp `--out`; khi thay báo cáo đã commit phải cập nhật SHA-256
+của nó trong `SHA256SUMS`. `meta.json` không tham chiếu báo cáo nên không đổi.
+
+`validation.json` giữ các khóa cũ `<cơn>/pooled.lookup` và
+`constant_train_baseline`, bổ sung BSS, AUPRC, số ca đứt và các phân nhóm.
+Baseline Brier là cùng một xác suất sống cố định học từ **toàn bộ train** cho
+mọi nhóm; baseline AUPRC là tỷ lệ đứt trong **nhóm đang báo cáo**. AUPRC tính cho
+lớp đứt, gộp đồng điểm và cộng precision × phần tăng recall.
+
+Nhóm dưới 1.000 mẫu val **hoặc** dưới 30 ca đứt có `mau_it=true`, BSS/AUPRC
+để `null`. Các trường `denominators` mô tả mẫu số; `failure_share_percent` chia
+cho tổng **11.063 ca đứt trên ba cơn val** trong bản hiện tại. Hỗ trợ dùng
+`n_train`, không dùng số mẫu val. Không bootstrap theo cạnh hoặc báo khoảng
+tin cậy từ ba cơn này. Xem bảng kết quả trong
+[hướng dẫn](../../dataset/BANG_TRA_RUI_RO.md#báo-cáo-validation-từ-số-đếm).
 
 `source_path` trong danh mục ghi đường dẫn ở máy tạo dữ liệu để lưu nguồn gốc;
 không cần có thư mục `/workspace` trên máy người dùng. Bộ đếm tìm tệp thời tiết

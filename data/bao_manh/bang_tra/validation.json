@@ -1,58 +1,543 @@
 {
   "prapiroon_2024": {
+    "cells": 3000,
+    "cells_with_validation": 267,
+    "samples": 2125464,
+    "failures": 5335,
+    "failure_share_percent": 48.223809093374314,
+    "failure_share_denominator": 11063,
+    "mau_it": false,
     "lookup": {
       "samples": 2125464,
+      "failures": 5335,
       "survival_rate": 0.9974899598393574,
-      "brier": 0.002031997947035553,
-      "log_loss": 0.008459998998687771
+      "failure_rate": 0.0025100401606425703,
+      "brier": 0.0020319979470354676,
+      "log_loss": 0.008459998998687728,
+      "brier_baseline": 0.0025038082931524543,
+      "bss": 0.18843708897654754,
+      "auprc": 0.2684822772276399,
+      "auprc_baseline": 0.0025100401606425703
     },
     "constant_train_baseline": {
       "samples": 2125464,
+      "failures": 5335,
       "survival_rate": 0.9974899598393574,
-      "brier": 0.0025038082931524543,
-      "log_loss": 0.017548431284651705
+      "failure_rate": 0.0025100401606425703,
+      "brier": 0.002503808293152454,
+      "log_loss": 0.017548431284651705,
+      "brier_baseline": 0.0025038082931524543,
+      "bss": 2.220446049250313e-16,
+      "auprc": 0.0025100401606425703,
+      "auprc_baseline": 0.0025100401606425703
     }
   },
   "trami_2024": {
+    "cells": 3000,
+    "cells_with_validation": 216,
+    "samples": 2116650,
+    "failures": 4258,
+    "failure_share_percent": 38.48865587996023,
+    "failure_share_denominator": 11063,
+    "mau_it": false,
     "lookup": {
       "samples": 2116650,
+      "failures": 4258,
       "survival_rate": 0.9979883306167765,
-      "brier": 0.0015656288864110207,
-      "log_loss": 0.006294340210901771
+      "failure_rate": 0.00201166938322349,
+      "brier": 0.0015656288864109348,
+      "log_loss": 0.006294340210901727,
+      "brier_baseline": 0.0020082001238143463,
+      "bss": 0.22038203869980755,
+      "auprc": 0.3230916614332827,
+      "auprc_baseline": 0.00201166938322349
     },
     "constant_train_baseline": {
       "samples": 2116650,
+      "failures": 4258,
       "survival_rate": 0.9979883306167765,
-      "brier": 0.002008200123814346,
-      "log_loss": 0.014615249722834657
+      "failure_rate": 0.00201166938322349,
+      "brier": 0.0020082001238143463,
+      "log_loss": 0.014615249722834657,
+      "brier_baseline": 0.0020082001238143463,
+      "bss": 0.0,
+      "auprc": 0.00201166938322349,
+      "auprc_baseline": 0.00201166938322349
     }
   },
   "kalmaegi_2025": {
+    "cells": 3000,
+    "cells_with_validation": 208,
+    "samples": 1431496,
+    "failures": 1470,
+    "failure_share_percent": 13.287535026665461,
+    "failure_share_denominator": 11063,
+    "mau_it": false,
     "lookup": {
       "samples": 1431496,
+      "failures": 1470,
       "survival_rate": 0.998973102265043,
-      "brier": 0.0008190868687959371,
-      "log_loss": 0.003169093188878632
+      "failure_rate": 0.001026897734956996,
+      "brier": 0.0008190868687958525,
+      "log_loss": 0.0031690931888785894,
+      "brier_baseline": 0.0010288873391824792,
+      "bss": 0.20391005156436992,
+      "auprc": 0.30381199678847853,
+      "auprc_baseline": 0.001026897734956996
     },
     "constant_train_baseline": {
       "samples": 1431496,
+      "failures": 1470,
       "survival_rate": 0.998973102265043,
+      "failure_rate": 0.001026897734956996,
       "brier": 0.0010288873391824792,
-      "log_loss": 0.008819335973127557
+      "log_loss": 0.008819335973127555,
+      "brier_baseline": 0.0010288873391824792,
+      "bss": 0.0,
+      "auprc": 0.001026897734956996,
+      "auprc_baseline": 0.001026897734956996
     }
   },
   "pooled": {
+    "cells": 3000,
+    "cells_with_validation": 282,
+    "samples": 5673610,
+    "failures": 11063,
+    "failure_share_percent": 100.0,
+    "failure_share_denominator": 11063,
+    "mau_it": false,
     "lookup": {
       "samples": 5673610,
+      "failures": 11063,
       "survival_rate": 0.9980500950893699,
-      "brier": 0.001551983030778247,
-      "log_loss": 0.006317121328864541
+      "failure_rate": 0.0019499049106300927,
+      "brier": 0.0015519830307781618,
+      "log_loss": 0.006317121328864498,
+      "brier_baseline": 0.0019467780289020545,
+      "bss": 0.20279404855752847,
+      "auprc": 0.28684658827004983,
+      "auprc_baseline": 0.0019499049106300927
     },
     "constant_train_baseline": {
       "samples": 5673610,
+      "failures": 11063,
       "survival_rate": 0.9980500950893699,
-      "brier": 0.0019467780289020545,
-      "log_loss": 0.014251732397191052
+      "failure_rate": 0.0019499049106300927,
+      "brier": 0.0019467780289020547,
+      "log_loss": 0.014251732397191054,
+      "brier_baseline": 0.0019467780289020545,
+      "bss": -2.220446049250313e-16,
+      "auprc": 0.0019499049106300927,
+      "auprc_baseline": 0.0019499049106300927
     }
-  }
+  },
+  "by_band": {
+    "0": {
+      "cells": 600,
+      "cells_with_validation": 1,
+      "samples": 4843232,
+      "failures": 0,
+      "failure_share_percent": 0.0,
+      "failure_share_denominator": 11063,
+      "mau_it": true,
+      "lookup": {
+        "samples": 4843232,
+        "failures": 0,
+        "survival_rate": 1.0,
+        "failure_rate": 0.0,
+        "brier": 0.0,
+        "log_loss": 1.0000000050000001e-08,
+        "brier_baseline": 7.681984496285423e-06,
+        "bss": null,
+        "auprc": null,
+        "auprc_baseline": 0.0
+      },
+      "constant_train_baseline": {
+        "samples": 4843232,
+        "failures": 0,
+        "survival_rate": 1.0,
+        "failure_rate": 0.0,
+        "brier": 7.681984496285423e-06,
+        "log_loss": 0.0027754874199554798,
+        "brier_baseline": 7.681984496285423e-06,
+        "bss": null,
+        "auprc": null,
+        "auprc_baseline": 0.0
+      }
+    },
+    "5": {
+      "cells": 600,
+      "cells_with_validation": 88,
+      "samples": 206288,
+      "failures": 995,
+      "failure_share_percent": 8.993943776552472,
+      "failure_share_denominator": 11063,
+      "mau_it": false,
+      "lookup": {
+        "samples": 206288,
+        "failures": 995,
+        "survival_rate": 0.9951766462421469,
+        "failure_rate": 0.004823353757853099,
+        "brier": 0.004528285941056818,
+        "log_loss": 0.028409453014010645,
+        "brier_baseline": 0.004804298548531879,
+        "bss": 0.05745117725029936,
+        "auprc": 0.08211861082811873,
+        "auprc_baseline": 0.004823353757853099
+      },
+      "constant_train_baseline": {
+        "samples": 206288,
+        "failures": 995,
+        "survival_rate": 0.9951766462421469,
+        "failure_rate": 0.004823353757853099,
+        "brier": 0.004804298548531878,
+        "log_loss": 0.031163532926802708,
+        "brier_baseline": 0.004804298548531879,
+        "bss": 2.220446049250313e-16,
+        "auprc": 0.004823353757853099,
+        "auprc_baseline": 0.004823353757853099
+      }
+    },
+    "12": {
+      "cells": 600,
+      "cells_with_validation": 123,
+      "samples": 540268,
+      "failures": 5310,
+      "failure_share_percent": 47.99783060652626,
+      "failure_share_denominator": 11063,
+      "mau_it": false,
+      "lookup": {
+        "samples": 540268,
+        "failures": 5310,
+        "survival_rate": 0.9901715444927333,
+        "failure_rate": 0.009828455507266763,
+        "brier": 0.007941516755154114,
+        "log_loss": 0.034144272132069,
+        "brier_baseline": 0.009781655624370124,
+        "bss": 0.188121412149439,
+        "auprc": 0.26903966423392767,
+        "auprc_baseline": 0.009828455507266763
+      },
+      "constant_train_baseline": {
+        "samples": 540268,
+        "failures": 5310,
+        "survival_rate": 0.9901715444927333,
+        "failure_rate": 0.009828455507266763,
+        "brier": 0.009781655624370124,
+        "log_loss": 0.06062126365978519,
+        "brier_baseline": 0.009781655624370124,
+        "bss": 0.0,
+        "auprc": 0.009828455507266763,
+        "auprc_baseline": 0.009828455507266763
+      }
+    },
+    "20": {
+      "cells": 600,
+      "cells_with_validation": 41,
+      "samples": 46926,
+      "failures": 2076,
+      "failure_share_percent": 18.765253547862244,
+      "failure_share_denominator": 11063,
+      "mau_it": false,
+      "lookup": {
+        "samples": 46926,
+        "failures": 2076,
+        "survival_rate": 0.9557601329753228,
+        "failure_rate": 0.04423986702467715,
+        "brier": 0.033853356481264835,
+        "log_loss": 0.10837782664570161,
+        "brier_baseline": 0.044002315099640345,
+        "bss": 0.2306460147697652,
+        "auprc": 0.3577795101774301,
+        "auprc_baseline": 0.04423986702467715
+      },
+      "constant_train_baseline": {
+        "samples": 46926,
+        "failures": 2076,
+        "survival_rate": 0.9557601329753228,
+        "failure_rate": 0.04423986702467715,
+        "brier": 0.044002315099640345,
+        "log_loss": 0.2631510313594085,
+        "brier_baseline": 0.044002315099640345,
+        "bss": 0.0,
+        "auprc": 0.04423986702467715,
+        "auprc_baseline": 0.04423986702467715
+      }
+    },
+    "28": {
+      "cells": 600,
+      "cells_with_validation": 29,
+      "samples": 36896,
+      "failures": 2682,
+      "failure_share_percent": 24.242972069059025,
+      "failure_share_denominator": 11063,
+      "mau_it": false,
+      "lookup": {
+        "samples": 36896,
+        "failures": 2682,
+        "survival_rate": 0.9273091934084996,
+        "failure_rate": 0.07269080659150043,
+        "brier": 0.053991365257239826,
+        "log_loss": 0.17474819919664958,
+        "brier_baseline": 0.0722955431811201,
+        "bss": 0.2531854263550286,
+        "auprc": 0.32616425065765237,
+        "auprc_baseline": 0.07269080659150043
+      },
+      "constant_train_baseline": {
+        "samples": 36896,
+        "failures": 2682,
+        "survival_rate": 0.9273091934084996,
+        "failure_rate": 0.07269080659150043,
+        "brier": 0.07229554318112011,
+        "log_loss": 0.4306001979938368,
+        "brier_baseline": 0.0722955431811201,
+        "bss": -2.220446049250313e-16,
+        "auprc": 0.07269080659150043,
+        "auprc_baseline": 0.07269080659150043
+      }
+    }
+  },
+  "by_support": {
+    "n=0": {
+      "cells": 2649,
+      "cells_with_validation": 13,
+      "samples": 130,
+      "failures": 26,
+      "failure_share_percent": 0.23501762632197415,
+      "failure_share_denominator": 11063,
+      "mau_it": true,
+      "lookup": {
+        "samples": 130,
+        "failures": 26,
+        "survival_rate": 0.8,
+        "failure_rate": 0.2,
+        "brier": 0.08963652308083976,
+        "log_loss": 0.2908219430430553,
+        "brier_baseline": 0.1988990262582198,
+        "bss": null,
+        "auprc": null,
+        "auprc_baseline": 0.2
+      },
+      "constant_train_baseline": {
+        "samples": 130,
+        "failures": 26,
+        "survival_rate": 0.8,
+        "failure_rate": 0.2,
+        "brier": 0.19889902625821979,
+        "log_loss": 1.1798836545589508,
+        "brier_baseline": 0.1988990262582198,
+        "bss": null,
+        "auprc": null,
+        "auprc_baseline": 0.2
+      }
+    },
+    "0<n<10": {
+      "cells": 26,
+      "cells_with_validation": 3,
+      "samples": 15,
+      "failures": 6,
+      "failure_share_percent": 0.054234836843532495,
+      "failure_share_denominator": 11063,
+      "mau_it": true,
+      "lookup": {
+        "samples": 15,
+        "failures": 6,
+        "survival_rate": 0.6,
+        "failure_rate": 0.4,
+        "brier": 0.15977478497621114,
+        "log_loss": 0.4597754372818565,
+        "brier_baseline": 0.3977903705319433,
+        "bss": null,
+        "auprc": null,
+        "auprc_baseline": 0.4
+      },
+      "constant_train_baseline": {
+        "samples": 15,
+        "failures": 6,
+        "survival_rate": 0.6,
+        "failure_rate": 0.4,
+        "brier": 0.3977903705319433,
+        "log_loss": 2.356991821697946,
+        "brier_baseline": 0.3977903705319433,
+        "bss": null,
+        "auprc": null,
+        "auprc_baseline": 0.4
+      }
+    },
+    "10<=n<1000": {
+      "cells": 195,
+      "cells_with_validation": 136,
+      "samples": 17881,
+      "failures": 2138,
+      "failure_share_percent": 19.32568019524541,
+      "failure_share_denominator": 11063,
+      "mau_it": false,
+      "lookup": {
+        "samples": 17881,
+        "failures": 2138,
+        "survival_rate": 0.8804317431910967,
+        "failure_rate": 0.1195682568089033,
+        "brier": 0.0853316174376157,
+        "log_loss": 0.2814202377901932,
+        "brier_baseline": 0.11891313863043913,
+        "bss": 0.2824037913689993,
+        "auprc": 0.39012083984518525,
+        "auprc_baseline": 0.1195682568089033
+      },
+      "constant_train_baseline": {
+        "samples": 17881,
+        "failures": 2138,
+        "survival_rate": 0.8804317431910967,
+        "failure_rate": 0.1195682568089033,
+        "brier": 0.11891313863043915,
+        "log_loss": 0.7064993455216199,
+        "brier_baseline": 0.11891313863043913,
+        "bss": -2.220446049250313e-16,
+        "auprc": 0.1195682568089033,
+        "auprc_baseline": 0.1195682568089033
+      }
+    },
+    "n>=1000": {
+      "cells": 130,
+      "cells_with_validation": 130,
+      "samples": 5655584,
+      "failures": 8893,
+      "failure_share_percent": 80.38506734158908,
+      "failure_share_denominator": 11063,
+      "mau_it": false,
+      "lookup": {
+        "samples": 5655584,
+        "failures": 8893,
+        "survival_rate": 0.9984275717591676,
+        "failure_rate": 0.0015724282408324233,
+        "brier": 0.0012846564425665198,
+        "log_loss": 0.005439598101023278,
+        "brier_baseline": 0.00157139381746192,
+        "bss": 0.18247327417803638,
+        "auprc": 0.2551409302361888,
+        "auprc_baseline": 0.0015724282408324233
+      },
+      "constant_train_baseline": {
+        "samples": 5655584,
+        "failures": 8893,
+        "survival_rate": 0.9984275717591676,
+        "failure_rate": 0.0015724282408324233,
+        "brier": 0.0015713938174619201,
+        "log_loss": 0.012030078042574721,
+        "brier_baseline": 0.00157139381746192,
+        "bss": -2.220446049250313e-16,
+        "auprc": 0.0015724282408324233,
+        "auprc_baseline": 0.0015724282408324233
+      }
+    }
+  },
+  "by_ground_thunder": {
+    "no": {
+      "cells": 1500,
+      "cells_with_validation": 227,
+      "samples": 5667948,
+      "failures": 8799,
+      "failure_share_percent": 79.5353882310404,
+      "failure_share_denominator": 11063,
+      "mau_it": false,
+      "lookup": {
+        "samples": 5667948,
+        "failures": 8799,
+        "survival_rate": 0.9984475863222457,
+        "failure_rate": 0.0015524136777542773,
+        "brier": 0.0013047403833580929,
+        "log_loss": 0.005632831341102403,
+        "brier_baseline": 0.0015514902006836015,
+        "bss": 0.15904052582271433,
+        "auprc": 0.24105597795327696,
+        "auprc_baseline": 0.0015524136777542773
+      },
+      "constant_train_baseline": {
+        "samples": 5667948,
+        "failures": 8799,
+        "survival_rate": 0.9984475863222457,
+        "failure_rate": 0.0015524136777542773,
+        "brier": 0.0015514902006836015,
+        "log_loss": 0.0119122815142697,
+        "brier_baseline": 0.0015514902006836015,
+        "bss": 0.0,
+        "auprc": 0.0015524136777542773,
+        "auprc_baseline": 0.0015524136777542773
+      }
+    },
+    "yes": {
+      "cells": 1500,
+      "cells_with_validation": 55,
+      "samples": 5662,
+      "failures": 2264,
+      "failure_share_percent": 20.464611768959596,
+      "failure_share_denominator": 11063,
+      "mau_it": false,
+      "lookup": {
+        "samples": 5662,
+        "failures": 2264,
+        "survival_rate": 0.6001412928293889,
+        "failure_rate": 0.3998587071706111,
+        "brier": 0.24905436186498606,
+        "log_loss": 0.6913259640622069,
+        "brier_baseline": 0.39764986092807636,
+        "bss": 0.3736842726822104,
+        "auprc": 0.3911626109564661,
+        "auprc_baseline": 0.3998587071706111
+      },
+      "constant_train_baseline": {
+        "samples": 5662,
+        "failures": 2264,
+        "survival_rate": 0.6001412928293889,
+        "failure_rate": 0.3998587071706111,
+        "brier": 0.3976498609280763,
+        "log_loss": 2.356160236980787,
+        "brier_baseline": 0.39764986092807636,
+        "bss": 1.1102230246251565e-16,
+        "auprc": 0.3998587071706111,
+        "auprc_baseline": 0.3998587071706111
+      }
+    }
+  },
+  "schema": "storm-validation-v2",
+  "baseline": {
+    "p_survival": 0.9972283606843088,
+    "source": "all train storms; (sum(song_train)+1)/(sum(n_train)+2)",
+    "train_storms": [
+      "soulik_2024",
+      "wutip_2025",
+      "wipha_2025",
+      "kajiki_2025",
+      "nongfa_2025",
+      "bualoi_2025",
+      "matmo_2025"
+    ],
+    "validation_storms": [
+      "prapiroon_2024",
+      "trami_2024",
+      "kalmaegi_2025"
+    ]
+  },
+  "denominators": {
+    "survival_rate": "survivals / samples in the reported group",
+    "failure_rate": "failures / samples in the reported group",
+    "auprc_baseline": "failure_rate in the reported group (descriptive prevalence, not a fitted model)",
+    "failure_share_percent": "100 * group failures / failures pooled over the listed validation storms",
+    "bss": "1 - group Brier / group Brier of the same global train constant baseline",
+    "cells": "number of schema cells in group (including cells with zero validation samples)",
+    "cells_with_validation": "number of cells in group with validation n > 0",
+    "support": "n_train per cell, never validation n"
+  },
+  "small_sample_rule": {
+    "min_samples": 1000,
+    "min_failures": 30,
+    "rule": "mau_it when either threshold is not met; bss and auprc are null"
+  },
+  "ghi_chu": [
+    "Dữ liệu mô phỏng; bảng học bằng n_train, không phải số quan sát sự cố ngoài thực địa.",
+    "AUPRC là average precision của lớp đứt: gộp đồng điểm, cộng precision × phần tăng recall; không nội suy hình thang.",
+    "Chỉ có 3 cơn val trong bộ đã công bố: báo riêng từng cơn, không bootstrap theo cạnh và không báo khoảng tin cậy.",
+    "Không có mẫu: các tỷ lệ/chỉ số là null. Không có ca đứt: AUPRC null. Baseline Brier=0: BSS null."
+  ]
 }

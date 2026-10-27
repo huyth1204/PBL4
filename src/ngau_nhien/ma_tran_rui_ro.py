@@ -167,16 +167,65 @@ def nap_bang(path, *, tham_so):
     return bang
 
 
-def metrics(p, s, n):
-    # float32 rounds 1-1e-8 back to 1, making log-loss NaN on certain successes.
-    p, s, n = (np.asarray(v, dtype=np.float64) for v in (p, s, n))
+def metrics_rui_ro(risk, failures, n, *, p_baseline=None):
+    """Chỉ số theo nhóm (điểm rủi ro, số đứt, số mẫu), không bung từng mẫu.
+
+    AUPRC là average precision cho lớp đứt, gộp đồng điểm trước khi tính recall.
+    p_baseline là xác suất SỐNG cố định học từ train; không suy ra từ nhóm chấm.
+    """
+    risk, failures, n = (np.asarray(v, dtype=np.float64) for v in (risk, failures, n))
+    if risk.shape != failures.shape or risk.shape != n.shape:
+        raise ValueError('Điểm/số đứt/số mẫu phải cùng kích thước')
+    if (not all(np.isfinite(v).all() for v in (risk, failures, n))
+            or np.any((risk < 0) | (risk > 1))
+            or np.any((failures < 0) | (failures > n))
+            or np.any(n != np.floor(n)) or np.any(failures != np.floor(failures))):
+        raise ValueError('Điểm phải trong [0,1], số đếm nguyên không âm và hữu hạn')
+    if p_baseline is not None:
+        if np.ndim(p_baseline) != 0 or not np.isfinite(p_baseline) or not 0 <= p_baseline <= 1:
+            raise ValueError('p_baseline phải là xác suất sống cố định trong [0,1]')
+        p_baseline = float(p_baseline)
+    risk, failures, n = (v.ravel() for v in (risk, failures, n))
     total = float(n.sum())
+    if not np.isfinite(total):
+        raise ValueError('Tổng số mẫu không hữu hạn')
     if not total:
-        return {'samples': 0, 'brier': None, 'log_loss': None}
-    p = np.clip(p, 1e-8, 1 - 1e-8)
-    return {'samples': int(total), 'survival_rate': float(s.sum() / total),
-            'brier': float((s * (1-p)**2 + (n-s)*p**2).sum()/total),
-            'log_loss': float(-(s*np.log(p)+(n-s)*np.log1p(-p)).sum()/total)}
+        return dict(samples=0, failures=0, survival_rate=None, failure_rate=None,
+                    brier=None, log_loss=None, brier_baseline=None, bss=None,
+                    auprc=None, auprc_baseline=None)
+    failed = float(failures.sum()); survived = n - failures
+    w_fail, w_survive = failures/total, survived/total
+    brier = float((w_fail*(1-risk)**2 + w_survive*risk**2).sum())
+    # Chỉ clip log-loss; Brier phải bằng 0 thật khi dự đoán hoàn hảo.
+    log_risk = np.clip(risk, 1e-8, 1-1e-8)
+    log_loss = float(-(w_fail*np.log(log_risk) + w_survive*np.log1p(-log_risk)).sum())
+    bb = None if p_baseline is None else float(
+        (failed/total)*p_baseline**2 + ((total-failed)/total)*(1-p_baseline)**2)
+    bss = None if bb is None or bb == 0 else 1-brier/bb
+    if bss is not None and not np.isfinite(bss):
+        bss = None
+    ap = None
+    if failed:
+        present = n > 0
+        order = np.argsort(-risk[present], kind='stable')
+        scores = risk[present][order]
+        # Một ngưỡng cho toàn bộ nhóm có điểm bằng nhau, không phụ thuộc thứ tự.
+        ends = np.r_[np.flatnonzero(scores[:-1] != scores[1:]), len(scores)-1]
+        cum_failed = np.cumsum(failures[present][order])[ends]
+        cum_n = np.cumsum(n[present][order])[ends]
+        ap = float(np.sum((cum_failed/cum_n)*np.diff(np.r_[0, cum_failed]))/failed)
+    return dict(samples=int(total), failures=int(failed), survival_rate=(total-failed)/total,
+                failure_rate=failed/total, brier=brier, log_loss=log_loss,
+                brier_baseline=bb, bss=bss,
+                auprc=ap, auprc_baseline=failed/total)
+
+
+def metrics(p, s, n, *, p_baseline=None):
+    """API cũ theo xác suất sống/số sống; các khóa cũ được giữ nguyên."""
+    p, s, n = (np.asarray(v, dtype=np.float64) for v in (p, s, n))
+    if p.shape != s.shape or p.shape != n.shape:
+        raise ValueError('Xác suất/số sống/số mẫu phải cùng kích thước')
+    return metrics_rui_ro(1-p, n-s, n, p_baseline=p_baseline)
 
 
 def run(catalog, raw, split, out, tuoi=9, delta=3, stride=3, muc='khắc nghiệt', val_names=DEFAULT_VAL):
@@ -247,15 +296,9 @@ def run(catalog, raw, split, out, tuoi=9, delta=3, stride=3, muc='khắc nghiệ
     bang.update(tuoi=tuoi, delta=delta,
                 contract_json=json.dumps(hop_dong_bang(config), ensure_ascii=False, sort_keys=True))
     np.savez_compressed(out/'bang_tra.npz', **{k: np.asarray(v) for k,v in bang.items()})
-    tr = [i for i,s in enumerate(names) if s not in val_names]
-    global_p = (successes[tr].sum()+1)/(counts[tr].sum()+2)
-    validation = {name: {'lookup': metrics(bang['p_song'], successes[i], counts[i]),
-                         'constant_train_baseline': metrics(np.full(NCELLS, global_p), successes[i], counts[i])}
-                  for i,name in enumerate(names) if name in val_names}
-    vi = [i for i,s in enumerate(names) if s in val_names]
-    validation['pooled'] = {'lookup': metrics(bang['p_song'], successes[vi].sum(0), counts[vi].sum(0)),
-                            'constant_train_baseline': metrics(np.full(NCELLS,global_p),successes[vi].sum(0),counts[vi].sum(0))}
-    (out/'validation.json').write_text(json.dumps(validation, ensure_ascii=False, indent=2), encoding='utf-8')
+    from src.ngau_nhien.bao_cao_rui_ro import bao_cao_validation
+    validation = bao_cao_validation({'song': successes, 'n': counts, 'ten_bao': names}, bang, val_names)
+    (out/'validation.json').write_text(json.dumps(validation, ensure_ascii=False, indent=2, allow_nan=False), encoding='utf-8')
     config['samples'] = int(counts.sum()); config['table_sha256'] = sha256(out/'bang_tra.npz')
     config['limitations'] = ['Correlated directed edges and overlapping scenarios are not independent samples.',
                              'Fixed v5 geometry retains pre-existing ISL limitations; weather is gridded model data.',

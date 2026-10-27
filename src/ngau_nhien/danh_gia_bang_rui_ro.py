@@ -42,20 +42,20 @@ def danh_gia(table_dir, out, raw=ROOT/'dataset/oracle_dataset_v5.npz',
     arrays.update(target_survives_oracle=np.stack(ys),base_snapshot_id=ids,node_order=names)
     valid=arrays['valid'];p=1-arrays['risk_edge'][valid];y=arrays['target_survives_oracle'][valid]
     gp=float((b['song_train'].sum()+1)/(b['n_train'].sum()+2))
-    score={'lookup':metrics(p,y.astype(int),np.ones(len(y))),
-           'constant_train_baseline':metrics(np.full(len(y),gp),y.astype(int),np.ones(len(y))),
-           'assume_forecast_edges_survive':metrics(np.ones(len(y)),y.astype(int),np.ones(len(y))),
+    score={'lookup':metrics(p,y.astype(int),np.ones(len(y)),p_baseline=gp),
+           'constant_train_baseline':metrics(np.full(len(y),gp),y.astype(int),np.ones(len(y)),p_baseline=gp),
+           'assume_forecast_edges_survive':metrics(np.ones(len(y)),y.astype(int),np.ones(len(y)),p_baseline=gp),
            'by_band':{}}
     bands=np.unravel_index(arrays['cell_id'][valid],SHAPE)[0]
     for i,name in enumerate(['no_rain_band','5GHz','12GHz','20GHz','28GHz']):
-        m=bands==i;score['by_band'][name]=metrics(p[m],y[m].astype(int),np.ones(m.sum()))
+        m=bands==i;score['by_band'][name]=metrics(p[m],y[m].astype(int),np.ones(m.sum()),p_baseline=gp)
     score.update(start_utc=start,seed=seed,matrix_shape=list(arrays['risk_edge'].shape),
                  table_sha256=sha256(table_dir/'bang_tra.npz'),weather_sha256=sha256(weather),
                  scope='One Yagi window, v5 test geometry snapshots. Evaluation only; no refit.',
                  unknown_band_edges=int(((arrays['support_level']==0)&valid).sum()))
     out.mkdir(parents=True,exist_ok=True)
     np.savez_compressed(out/'matrices.npz',**arrays)
-    (out/'evaluation.json').write_text(json.dumps(score,ensure_ascii=False,indent=2),encoding='utf-8')
+    (out/'evaluation.json').write_text(json.dumps(score,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf-8')
     return score
 
 
