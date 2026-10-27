@@ -125,12 +125,17 @@ chỉ coi lần chạy hoàn tất khi có `meta.json`.
 ## Sử dụng cho model và visualization
 
 ```python
+import json
+from src.ngau_nhien.kich_ban import ThamSo
 from src.ngau_nhien.ma_tran_rui_ro import nap_bang, ma_tran_online
 
-bang = nap_bang('data/bao_manh/bang_tra/bang_tra.npz')
+with open('data/bao_manh/bang_tra/meta.json', encoding='utf-8') as f:
+    meta = json.load(f)
+p = ThamSo(**meta['parameters'])  # chính cấu hình truyền cho sinh_kich_ban
+bang = nap_bang('data/bao_manh/bang_tra/bang_tra.npz', tham_so=p)
 o = t - 9
 past = {k: q[k][:o+1] for k in ('R', 'gust', 'giong', 'tat')}
-r = ma_tran_online(bang, g, Wn[o], past, t, tuoi=9, delta=3)
+r = ma_tran_online(bang, g, Wn[o], past, t, tuoi=9, delta=3, tham_so=p)
 # Nhật: chỉ tạo graph từ r['valid']; gắn risk_edge, support vào cạnh.
 # Trung: vẽ màu risk_edge trên valid; tô riêng ô thiếu mẫu/support thấp.
 ```
@@ -139,6 +144,14 @@ r = ma_tran_online(bang, g, Wn[o], past, t, tuoi=9, delta=3)
 ma trận `[N,N]`: `risk_edge`, `valid`, `cell_id`, `support`, `support_level`,
 `W_forecast`. Thứ tự nút theo v5. Đổi tuổi thông tin hoặc horizon khác với bảng
 sẽ báo lỗi, cần học lại cho cấu hình đó.
+
+Cả hai hàm bắt buộc nhận `tham_so` của kịch bản thật. `nap_bang` đối chiếu hash,
+hợp đồng cấu hình `contract_json` trong NPZ và `meta.json`; `ma_tran_online`
+kiểm tra lại toàn bộ `ThamSo` với hợp đồng nhúng và `applicability` ở mỗi lần
+gọi. Thiếu metadata/hợp đồng hoặc lệch cấu hình thì dừng, không chỉ cảnh báo.
+API không suy ra cấu hình từ ma trận quan sát: người gọi phải truyền đúng đối
+tượng đã dùng để mô phỏng. Bản NPZ cũ thiếu hợp đồng cần thay bằng bản mới cùng
+metadata trong repo. Thêm hợp đồng không đổi xác suất hoặc số đếm.
 
 Bộ đánh giá Yagi xuất `matrices.npz` với các ma trận xếp theo thời gian và
 `base_snapshot_id`, `node_order`. Trường `target_survives_oracle` là nhãn hậu
@@ -158,6 +171,12 @@ không gồm hiện tại), không ghép trực tiếp nhãn với bảng này (
 5.673.610 validation. Chỉ **351/3.000 ô** có mẫu train. Một số tổ hợp đặc trưng
 không thể xuất hiện do loại liên kết; số ô trống không đồng nghĩa tất cả đều
 cần bổ sung dữ liệu. Các cửa sổ chồng lấn và hai chiều cạnh có tương quan.
+
+Trên cả 10 cơn có **364 ô** có mẫu. Hai nhóm gió UAV >15 m/s và giông UAV=True
+đều không có mẫu sau khi loại nút đã tắt tại quan sát; đây là các trạng thái
+rỗng do cách chọn ứng viên, không phải mất dữ liệu. Xem
+[thống kê bão và giông](BAO_MANH_THONG_KE.md) cùng lưu ý cho GNN trong
+[README dữ liệu](../data/bao_manh/README.md).
 
 Brier validation: **0,001552**, so với **0,001947** khi dùng một xác suất sống
 cố định học từ train (càng thấp càng tốt). Tỷ lệ sống validation là 99,805%,

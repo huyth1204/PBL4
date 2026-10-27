@@ -18,7 +18,8 @@ def danh_gia(table_dir, out, raw=ROOT/'dataset/oracle_dataset_v5.npz',
     meta=json.loads((table_dir/'meta.json').read_text(encoding='utf-8'))
     if sha256(table_dir/'bang_tra.npz') != meta['table_sha256'] or sha256(raw) != meta['raw_sha256'] or sha256(split) != meta['split_sha256']:
         raise ValueError('Bảng/raw/split không khớp manifest')
-    b=nap_bang(table_dir/'bang_tra.npz');age,delta=int(b['tuoi']),int(b['delta'])
+    params=ThamSo(**meta['parameters'])
+    b=nap_bang(table_dir/'bang_tra.npz', tham_so=params);age,delta=int(b['tuoi']),int(b['delta'])
     with np.load(raw,allow_pickle=False) as z:
         W,kinds,names=z['W_snapshots'],z['node_kind'],z['node_order']
     tt=ThoiTiet(weather);starts=np.flatnonzero(tt.time_utc.astype(str)==start)
@@ -26,7 +27,7 @@ def danh_gia(table_dir, out, raw=ROOT/'dataset/oracle_dataset_v5.npz',
     h0=int(starts[0]);end=h0+int(np.floor((len(W)-1)*20/3600))+1
     if end>=tt.H:raise ValueError('Không đủ weather cho kịch bản')
     g=MangGoc(W,kinds,names,tt)
-    wn,q=sinh_kich_ban(g,tt,h0,seed,ThamSo(**meta['parameters']))
+    wn,q=sinh_kich_ban(g,tt,h0,seed,params)
     ids=np.array(json.loads(Path(split).read_text(encoding='utf-8'))['snapshot_ids']['test'])
     ids=ids[(ids>=age+45)&(ids+delta<len(W))]
     if not len(ids):raise ValueError('Không có mốc test đủ lịch sử/cửa sổ')
@@ -35,7 +36,7 @@ def danh_gia(table_dir, out, raw=ROOT/'dataset/oracle_dataset_v5.npz',
         # Cắt q ngay tại quan sát để chốt việc không nhìn trước tương lai trong runtime.
         o=int(t-age)
         past={k:q[k][:o+1] for k in ('R','gust','giong','tat')}
-        rows.append(ma_tran_online(b,g,wn[o],past,int(t),age,delta))
+        rows.append(ma_tran_online(b,g,wn[o],past,int(t),age,delta,tham_so=params))
         ys.append((wn[t:t+delta+1]>0).all(0))
     arrays={k:np.stack([r[k] for r in rows]) for k in rows[0]}
     arrays.update(target_survives_oracle=np.stack(ys),base_snapshot_id=ids,node_order=names)

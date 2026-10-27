@@ -35,6 +35,48 @@ def pham_vi_ap_dung():
     }
 
 
+def hop_dong_bang(meta):
+    """Phần metadata nhúng trong NPZ, không chứa hash của chính NPZ."""
+    keys = ('schema', 'parameters', 'applicability', 'tuoi', 'delta', 'dt_seconds')
+    if not all(k in meta for k in keys):
+        raise ValueError('Thiếu metadata cấu hình/phạm vi của bảng; cần bản xuất có hợp đồng')
+    return {k: meta[k] for k in keys}
+
+
+def kiem_tra_cau_hinh(tham_so, meta):
+    """Báo lỗi nếu ThamSo thực tế khác cấu hình đếm; không tự sửa cấu hình."""
+    if not isinstance(tham_so, ThamSo):
+        raise TypeError('tham_so phải là ThamSo thực tế truyền cho sinh_kich_ban')
+    contract = hop_dong_bang(meta)
+    expected = contract['parameters']
+    actual = tham_so_dict(tham_so)
+    if contract['schema'] != 'storm-lookup-v1' or not isinstance(expected, dict):
+        raise ValueError('Schema/cấu hình bảng không được hỗ trợ')
+    app = contract['applicability']
+    if (not isinstance(app, dict) or app.get('scope') != 'weather_only_with_fixed_background_load'
+            or app.get('required_flags') != {'xung_dot': False, 'tai': False}):
+        raise ValueError('applicability thiếu hoặc không thuộc phạm vi được hỗ trợ')
+    bad = [k for k in sorted(set(expected) | set(actual)) if expected.get(k) != actual.get(k)]
+    bad += [k for k, v in app['required_flags'].items() if actual[k] != v or expected.get(k) != v]
+    if contract['dt_seconds'] != actual['dt_s'] or actual['dt_s'] != 20:
+        bad.append('dt_seconds/dt_s')
+    if bad:
+        raise ValueError('Cấu hình khác bảng ở: ' + ', '.join(sorted(set(bad))) + '; cần đếm/học lại')
+
+
+def _hop_dong_nhung(bang):
+    try:
+        contract = json.loads(str(np.asarray(bang['contract_json']).item()))
+    except (KeyError, ValueError, TypeError) as exc:
+        raise ValueError('Bảng thiếu/hỏng contract_json; cần dùng bản xuất mới có cấu hình') from exc
+    if not isinstance(contract, dict):
+        raise ValueError('contract_json phải là object')
+    contract = hop_dong_bang(contract)
+    if any(k not in bang or int(bang[k]) != contract[k] for k in ('tuoi', 'delta')):
+        raise ValueError('Tuổi thông tin/horizon không khớp hợp đồng nhúng')
+    return contract
+
+
 def o_dac_trung(g, q, observed_at, history=45):
     """Đọc duy nhất t_obs và t_obs−15phút; có đủ lịch sử mới tạo đặc trưng."""
     if observed_at < history:
@@ -85,12 +127,13 @@ def hoc_bang(song, n, names, val_names=DEFAULT_VAL, prior=20.0):
             'train_storms': [v for v, keep in zip(names, tr) if keep], 'val_storms': val_names, 'prior': prior}
 
 
-def ma_tran_online(bang, g, W_observed, q_observed, decision_at, tuoi=9, delta=3):
+def ma_tran_online(bang, g, W_observed, q_observed, decision_at, tuoi=9, delta=3, *, tham_so):
     """W_observed và q_observed chỉ cần lịch sử đến t−tuoi; không nhận W thực tương lai.
 
     Trả risk[N,N], mask cạnh hợp lệ, support số mẫu ô, cấp fallback và W dự báo.
     Cạnh không dùng được: NaN. Cấp 0: băng chưa từng thấy, prior 0.5, không coi là đã học.
     """
+    kiem_tra_cau_hinh(tham_so, _hop_dong_nhung(bang))
     if tuoi < 0:
         raise ValueError('tuoi phải >= 0')
     if 'tuoi' in bang and (int(bang['tuoi']) != tuoi or int(bang['delta']) != delta):
@@ -110,9 +153,18 @@ def ma_tran_online(bang, g, W_observed, q_observed, decision_at, tuoi=9, delta=3
     return {'risk_edge': risk, 'valid': mask, 'cell_id': cells, 'support': support, 'support_level': level, 'W_forecast': Wq}
 
 
-def nap_bang(path):
+def nap_bang(path, *, tham_so):
+    """Bắt buộc sidecar meta.json, hash đúng, hợp đồng nhúng khớp và cấu hình thật."""
+    path = Path(path)
+    meta = json.loads(path.with_name('meta.json').read_text(encoding='utf-8'))
+    kiem_tra_cau_hinh(tham_so, meta)
+    if sha256(path) != meta.get('table_sha256'):
+        raise ValueError('Hash bảng không khớp meta.json')
     with np.load(path, allow_pickle=False) as z:
-        return {k: z[k] for k in z.files}
+        bang = {k: z[k] for k in z.files}
+    if _hop_dong_nhung(bang) != hop_dong_bang(meta):
+        raise ValueError('Cấu hình nhúng trong bảng không khớp meta.json')
+    return bang
 
 
 def metrics(p, s, n):
@@ -192,7 +244,8 @@ def run(catalog, raw, split, out, tuoi=9, delta=3, stride=3, muc='khắc nghiệ
         # Checkpoint số đếm, chưa tuyên bố hoàn tất cho tới khi có meta.json.
         np.savez_compressed(out/'dem.npz', song=successes, n=counts, ten_bao=np.array(names))
     bang = hoc_bang(successes, counts, names, val_names)
-    bang.update(tuoi=tuoi, delta=delta)
+    bang.update(tuoi=tuoi, delta=delta,
+                contract_json=json.dumps(hop_dong_bang(config), ensure_ascii=False, sort_keys=True))
     np.savez_compressed(out/'bang_tra.npz', **{k: np.asarray(v) for k,v in bang.items()})
     tr = [i for i,s in enumerate(names) if s not in val_names]
     global_p = (successes[tr].sum()+1)/(counts[tr].sum()+2)
