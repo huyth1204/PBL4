@@ -38,6 +38,7 @@ from src.ngau_nhien.khoang_loi import MUC, chi_phi, dijkstra
 from src.ngau_nhien.kich_ban import MangGoc, ThamSo, sinh_kich_ban
 from src.nhieu_luong.tao_du_lieu_nl import NGAY_YAGI     # dùng CHUNG một định nghĩa khoảng ngày bão
 from src.ngau_nhien.thoi_tiet import ThoiTiet, doc_thang
+from src.ngau_nhien.du_bao import du_bao_quy_dao
 
 
 def dac_trung_nut(g, q, t):
@@ -192,14 +193,11 @@ def tao_tap(g, tt, raw, ids, n_kb, delta, tuoi, dau_vao, muc, seed0, rng, luu_cu
         for t in sorted(ids):
             if t + delta >= g.T or t - tuoi < 0:
                 continue
-            Wo, Go = Wn[t - tuoi], g.W[t - tuoi]                 # thứ bộ định tuyến thấy
+            Wo = Wn[t - tuoi]                                  # thứ bộ định tuyến thấy
             win = Wn[t + 1:t + 1 + delta]
             song = (Wn[t] > 0) & (win > 0).all(0)
             Wm = np.where(song, win.mean(0), 0.0)                # hậu kiểm (tham chiếu)
-            wg = g.W[t + 1:t + 1 + delta]
-            with np.errstate(divide="ignore", invalid="ignore"):
-                he_so = np.where(Go > 0, np.where(Wo > 0, Wo / Go, 0.0), 1.0)
-            Wq = np.where((g.W[t] > 0) & (wg > 0).all(0), wg.mean(0), 0.0) * he_so
+            Wq = du_bao_quy_dao(g.W, Wo, t - tuoi, t, delta, q['tat'][t - tuoi])
             W_in = Wq if dau_vao == "quy_dao" else Wo
             Wl = np.where(W_in > 0, Wm, 0.0)                     # nhãn: hậu kiểm trong các liên kết mô hình thấy
             li = len(W_list)

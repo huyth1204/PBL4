@@ -1,5 +1,9 @@
 # Dữ liệu bão mạnh và ma trận rủi ro đứt tuyến — v1
 
+Để dùng **bảng tra học từ nhiều cơn bão làm đầu vào online**, xem
+[BANG_TRA_RUI_RO.md](BANG_TRA_RUI_RO.md). Tài liệu hiện tại mô tả nhãn ensemble
+hậu kiểm; hai bộ có định nghĩa cửa sổ khác nhau.
+
 Đầu vào: mạng nền v5 (224 nút), thời tiết mở rộng 74 điểm. Tệp `oracle_dataset_v5.npz` chỉ là mạng nền; lệnh dưới tạo **bộ đánh giá Yagi** có tác động mưa, gió/giông. Giữ nguyên mọi bộ train/val/test cũ.
 
 ## Sinh dữ liệu

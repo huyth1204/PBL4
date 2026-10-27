@@ -27,6 +27,7 @@ import numpy as np
 
 from src.ngau_nhien.kich_ban import MangGoc, ThamSo, sinh_kich_ban, tham_so_dict
 from src.ngau_nhien.thoi_tiet import ThoiTiet, doc_thang
+from src.ngau_nhien.du_bao import du_bao_quy_dao
 
 CAU_HINH = {
     "tất định (như TV1)": dict(mua=False, giong=False, xung_dot=False, tai=False),
@@ -73,7 +74,7 @@ def chi_phi(win, r, D_hong):
     return float(c.mean()), bool(not song.all())
 
 
-def danh_gia(Wn, Wg, truy_van, deltas, tuois, can_relay, D_hong):
+def danh_gia(Wn, Wg, truy_van, deltas, tuois, can_relay, D_hong, tat=None):
     """tuoi = độ cũ của thông tin (snapshot): bộ định tuyến ở t chỉ thấy W_{t−tuoi}."""
     T = len(Wn)
     theo_t = defaultdict(list)
@@ -84,20 +85,16 @@ def danh_gia(Wn, Wg, truy_van, deltas, tuois, can_relay, D_hong):
         for a in tuois:
             if t - a < 0:
                 continue
-            W0, G0 = Wn[t - a], Wg[t - a]
+            W0 = Wn[t - a]
             ngay_tho = [dijkstra(W0, s, d, can_relay) for s, d, _ in qs]
-            with np.errstate(divide="ignore", invalid="ignore"):
-                # phần ngẫu nhiên giữ nguyên như lúc đo; liên kết chưa có lúc đo theo quỹ đạo thì hệ số 1;
-                # liên kết có theo quỹ đạo nhưng lúc đo đang đứt vì ngẫu nhiên thì coi như còn đứt
-                he_so = np.where(G0 > 0, np.where(W0 > 0, W0 / G0, 0.0), 1.0)
             for D in deltas:
                 if t + D >= T:
                     continue
                 win = Wn[t + 1:t + 1 + D]
                 # tuyến lập tại t nên mọi liên kết phải có tại t và sống suốt cửa sổ
                 Wm = np.where((Wn[t] > 0) & (win > 0).all(0), win.mean(0), 0.0)
-                wg = Wg[t + 1:t + 1 + D]
-                Wq = np.where((Wg[t] > 0) & (wg > 0).all(0), wg.mean(0), 0.0) * he_so
+                off = np.zeros(len(W0), bool) if tat is None else tat[t - a]
+                Wq = du_bao_quy_dao(Wg, W0, t - a, t, D, off)
                 o = out[(a, D)]
                 for (s, d, nhan), rn in zip(qs, ngay_tho):
                     rh = dijkstra(Wm, s, d, can_relay)
@@ -137,7 +134,7 @@ def _chay(job):
     ten, muc, h0, seed, truy_van, deltas, tuois, D_hong = job
     p = ThamSo(**CAU_HINH[ten], **MUC[muc])
     Wn, qs = sinh_kich_ban(_G["g"], _G["tt"], h0, seed, p)
-    kq = danh_gia(Wn, _G["g"].W, truy_van, deltas, tuois, _G["can_relay"], D_hong)
+    kq = danh_gia(Wn, _G["g"].W, truy_van, deltas, tuois, _G["can_relay"], D_hong, tat=qs['tat'])
     return ten, muc, h0, kq, len(qs["su_co"]), qs["ti_le_dut_mua"]
 
 

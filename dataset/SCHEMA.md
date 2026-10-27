@@ -1,5 +1,9 @@
 # Schema dữ liệu SAGSIN
 
+**Bảng tra bão mạnh dùng online:** xem [BANG_TRA_RUI_RO.md](BANG_TRA_RUI_RO.md).
+Học 3.000 ô theo cơn bão, xuất `risk_edge[N,N]` cùng `valid` và số mẫu hỗ trợ;
+chỉ đọc thời tiết đã quan sát, giữ Yagi riêng để đánh giá.
+
 **Bộ bão mạnh và ma trận rủi ro:** xem [BAO_RUI_RO.md](BAO_RUI_RO.md).
 Đây là schema `bao-rui-ro-v1` riêng, giữ các truy vấn không còn đường đi và lưu
 `risk_edge_oracle[S,N,N]` cùng số mẫu Monte Carlo. Không thay thế hoặc ghi đè
