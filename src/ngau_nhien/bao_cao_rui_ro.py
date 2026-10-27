@@ -5,6 +5,19 @@ from pathlib import Path
 import numpy as np
 from src.ngau_nhien.ma_tran_rui_ro import SHAPE, NCELLS, metrics
 
+SMALL_SAMPLE_RULE = {'min_samples': 1000, 'min_failures': 30,
+                     'rule': 'mau_it when either threshold is not met; bss and auprc are null'}
+
+
+def metrics_nhom(p, s, n, *, p_baseline):
+    """Cùng quy tắc công bố cho validation, Yagi và ablation."""
+    row = metrics(p, s, n, p_baseline=p_baseline)
+    row['mau_it'] = (row['samples'] < SMALL_SAMPLE_RULE['min_samples']
+                     or row['failures'] < SMALL_SAMPLE_RULE['min_failures'])
+    if row['mau_it']:
+        row['bss'] = row['auprc'] = None
+    return row
+
 
 def _read(value):
     if isinstance(value, (str, Path)):
@@ -47,17 +60,13 @@ def bao_cao_validation(dem, bang, val_names=None):
     all_cells = np.ones(NCELLS, dtype=bool)
 
     def group(ss, nn, mask=all_cells):
-        a = metrics(p[mask], ss[mask], nn[mask], p_baseline=gp)
-        baseline = metrics(np.full(mask.sum(), gp), ss[mask], nn[mask], p_baseline=gp)
-        low = a['samples'] < 1000 or a['failures'] < 30
-        if low:
-            for row in (a, baseline):
-                row['bss'] = row['auprc'] = None
+        a = metrics_nhom(p[mask], ss[mask], nn[mask], p_baseline=gp)
+        baseline = metrics_nhom(np.full(mask.sum(), gp), ss[mask], nn[mask], p_baseline=gp)
         return {'cells': int(mask.sum()), 'cells_with_validation': int(np.count_nonzero(nn[mask])),
                 'samples': a['samples'], 'failures': a['failures'],
                 'failure_share_percent': None if total_failures == 0 else 100*a['failures']/total_failures,
                 'failure_share_denominator': total_failures,
-                'mau_it': low, 'lookup': a, 'constant_train_baseline': baseline}
+                'mau_it': a['mau_it'], 'lookup': a, 'constant_train_baseline': baseline}
 
     report = {name: group(s[names.index(name)], n[names.index(name)]) for name in val_names}
     report['pooled'] = group(sv, nv)
@@ -80,8 +89,7 @@ def bao_cao_validation(dem, bang, val_names=None):
         'cells_with_validation': 'number of cells in group with validation n > 0',
         'support': 'n_train per cell, never validation n',
     }
-    report['small_sample_rule'] = {'min_samples': 1000, 'min_failures': 30,
-                                    'rule': 'mau_it when either threshold is not met; bss and auprc are null'}
+    report['small_sample_rule'] = dict(SMALL_SAMPLE_RULE)
     report['ghi_chu'] = [
         'Dữ liệu mô phỏng; bảng học bằng n_train, không phải số quan sát sự cố ngoài thực địa.',
         'AUPRC là average precision của lớp đứt: gộp đồng điểm, cộng precision × phần tăng recall; không nội suy hình thang.',

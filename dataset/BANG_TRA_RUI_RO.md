@@ -263,3 +263,36 @@ ca đứt val**. Không nhầm tỷ lệ này với 48,44% tính trên cả 10 c
 thống kê trước. Báo cáo giữ kết quả riêng từng cơn, không bootstrap theo cạnh
 và không đưa ra khoảng tin cậy từ chỉ ba cơn. `ghi_chu` nhắc đây là số liệu
 mô phỏng và bảng học bằng `n_train`, không phải số quan sát ngoài thực địa.
+
+Quy tắc ít mẫu cũng áp dụng cho `evaluation.json` của Yagi qua cùng hàm
+`metrics_nhom`. Trong cửa sổ/seed hiện tại, nhóm không suy hao mưa (0 ca đứt)
+và 5 GHz (0 ca đứt) có `mau_it=true`, BSS/AUPRC `null`. 12 GHz có 94 ca đứt
+đạt ngưỡng và BSS khoảng 0,047, nhưng ngưỡng chỉ là quy tắc trình bày, không
+chứng minh đủ quan sát độc lập. Báo cáo một cửa sổ được lưu ở
+`data/bao_manh/yagi/evaluation.json`; chưa kết luận khả năng tổng quát trên Yagi.
+
+## Ablation giông mặt đất trên bảng tra
+
+Đã chạy ablation đặc trưng, giữ cùng 7 cơn train/3 cơn val, prior=20, nhãn và
+cạnh được chấm. Gộp số sống/số mẫu **train** qua trục giông mặt đất trước khi
+làm trơn, rồi chấm bảng 5 chiều trên cùng 3.000 ô val. Cách này bỏ thông tin
+giông mặt đất khỏi dự đoán, không tắt sự kiện giông/sét trong mô phỏng.
+
+| Chỉ số val gộp | Đủ 6 chiều | Bỏ giông mặt đất |
+|---|---:|---:|
+| Brier | 0,00155198 | 0,00169144 |
+| Log-loss | 0,00631712 | 0,00776495 |
+| BSS | 0,202794 | 0,131160 |
+| AUPRC | 0,286847 | 0,212169 |
+
+Brier tăng và BSS/AUPRC giảm ở cả ba cơn val. Đây là bằng chứng đặc trưng giông
+có đóng góp dự báo cho bảng trong mô phỏng này; chưa phải ablation GNN hoặc
+bằng chứng tác động nhân quả/ngoài thực địa. Bảng gốc và metadata giữ nguyên.
+JSON chi tiết, số đếm, kết quả từng cơn và lệnh tái lập có trong
+[README dữ liệu](../data/bao_manh/README.md#ablation-đặc-trưng-giông-mặt-đất).
+Phân nhóm hỗ trợ trong hai báo cáo cố ý dùng cùng số mẫu của 3.000 ô train gốc
+để so sánh cùng tập mẫu, không đại diện hỗ trợ của 1.500 nhóm sau gộp.
+
+Các test hồi quy báo cáo so float đệ quy với `rel=1e-9, abs=1e-15` để chấp nhận
+sai số làm tròn giữa phiên bản NumPy; số đếm nguyên, khóa, boolean và cấu trúc
+vẫn được so chính xác.

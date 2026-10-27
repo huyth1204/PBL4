@@ -6,6 +6,29 @@ from src.ngau_nhien.ma_tran_rui_ro import NCELLS, hoc_bang, metrics, metrics_rui
 from src.ngau_nhien.bao_cao_rui_ro import bao_cao_validation
 
 
+def assert_report_close(actual, expected):
+    """Float có dung sai qua phiên bản NumPy; cấu trúc và số đếm vẫn chính xác."""
+    if isinstance(expected, dict):
+        assert isinstance(actual, dict) and actual.keys() == expected.keys()
+        for key in expected:assert_report_close(actual[key], expected[key])
+    elif isinstance(expected, list):
+        assert isinstance(actual, list) and len(actual) == len(expected)
+        for a,e in zip(actual,expected):assert_report_close(a,e)
+    elif isinstance(expected, float):
+        assert actual == pytest.approx(expected, rel=1e-9, abs=1e-15)
+    else:
+        assert type(actual) is type(expected)
+        assert actual == expected
+
+
+def test_report_comparison_tolerates_roundoff_but_not_count_changes():
+    expected={'nested':[{'log_loss':.006317121328864498,'samples':5673610,'mau_it':False,'bss':None}]}
+    actual=json.loads(json.dumps(expected));actual['nested'][0]['log_loss']+=1e-17
+    assert_report_close(actual,expected)
+    actual['nested'][0]['samples']+=1
+    with pytest.raises(AssertionError):assert_report_close(actual,expected)
+
+
 def test_hand_calculated_bss_and_tied_average_precision():
     # Ở ngưỡng .9: 3/4 đứt, recall=3/4. Ở .2: 4/10 đứt, recall=1.
     # AP=(3/4)*(3/4)+(4/10)*(1/4)=53/80; Brier=.168, baseline=.24.
@@ -116,4 +139,23 @@ def test_committed_validation_regression():
     assert r['by_support']['n=0']['samples']==130
     assert r['by_band']['5']['lookup']['bss']==pytest.approx(.06,abs=.005)
     assert r['by_band']['28']['lookup']['bss']==pytest.approx(.25,abs=.005)
-    assert r==json.loads((folder/'validation.json').read_text())
+    assert_report_close(r,json.loads((folder/'validation.json').read_text()))
+
+
+def test_yagi_uses_same_small_sample_rule_for_band_reports():
+    from src.ngau_nhien.danh_gia_bang_rui_ro import cham_ma_tran
+    from src.ngau_nhien.ma_tran_rui_ro import SHAPE
+    sizes=[169148,2058,13874];failures=[0,0,94]
+    arrays={'valid':np.ones(sum(sizes),bool), 'risk_edge':np.full(sum(sizes),.01),
+            'target_survives_oracle':np.concatenate([np.arange(n)>=f for n,f in zip(sizes,failures)]),
+            'cell_id':np.concatenate([np.full(n,np.ravel_multi_index((b,0,0,0,0,0),SHAPE)) for b,n in enumerate(sizes)])}
+    score=cham_ma_tran(arrays,{'song_train':np.array([9900]),'n_train':np.array([10000])})
+    for name in ['no_rain_band','5GHz','20GHz','28GHz']:
+        g=score['by_band'][name]
+        assert g['mau_it'] and g['bss'] is None and g['auprc'] is None
+    g=score['by_band']['12GHz']
+    assert not g['mau_it'] and g['failures']==94 and g['bss'] is not None
+    assert score['small_sample_rule']==bao_cao_validation(
+        Path(__file__).resolve().parents[1]/'data/bao_manh/bang_tra/dem.npz',
+        Path(__file__).resolve().parents[1]/'data/bao_manh/bang_tra/bang_tra.npz')['small_sample_rule']
+    json.dumps(score,allow_nan=False)

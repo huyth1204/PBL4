@@ -12,6 +12,8 @@ Các đường dẫn ví dụ dưới đây tính từ thư mục gốc repo.
 | `bang_tra/dem.npz` | Số mẫu/tổng số lần sống theo từng cơn và ô |
 | `bang_tra/meta.json` | Cấu hình, seed, split và hash các đầu vào/bảng |
 | `bang_tra/validation.json` | Chỉ số gộp/theo cơn, băng tần, hỗ trợ train và giông mặt đất |
+| `bang_tra/ablation_giong_mat_dat.json` | So sánh có/bỏ đặc trưng giông mặt đất trên cùng val |
+| `yagi/evaluation.json` | Báo cáo một cửa sổ/seed Yagi, áp dụng cùng quy tắc ít mẫu |
 | `SHA256SUMS` | SHA-256 cho toàn bộ tệp dữ liệu và metadata trong bộ này |
 
 ## Nạp bảng
@@ -92,6 +94,32 @@ cho tổng **11.063 ca đứt trên ba cơn val** trong bản hiện tại. Hỗ
 `n_train`, không dùng số mẫu val. Không bootstrap theo cạnh hoặc báo khoảng
 tin cậy từ ba cơn này. Xem bảng kết quả trong
 [hướng dẫn](../../dataset/BANG_TRA_RUI_RO.md#báo-cáo-validation-từ-số-đếm).
+
+Yagi cũng dùng `metrics_nhom`: nhóm không suy hao mưa và 5 GHz không có ca
+đứt nên BSS/AUPRC là `null`, `mau_it=true`. Nhóm 12 GHz có 94 ca đứt đạt ngưỡng,
+nhưng vẫn chỉ là kết quả của **một cửa sổ, một seed**, các cạnh tương quan;
+không coi `mau_it=false` là đủ bằng chứng để kết luận cho toàn bão Yagi.
+
+## Ablation đặc trưng giông mặt đất
+
+```bash
+python -m src.ngau_nhien.ablation_giong \
+  --dem data/bao_manh/bang_tra/dem.npz \
+  --bang data/bao_manh/bang_tra/bang_tra.npz \
+  --out data/bao_manh/bang_tra/ablation_giong_mat_dat.json
+```
+
+Gộp hai giá trị giông mặt đất trong **số đếm train**, giữ năm trục còn lại,
+prior=20, split và nhãn val. Chấm trên cùng mẫu, không tắt giông trong mô phỏng
+và không thay bảng triển khai. Đây là ablation bảng tra, chưa phải thí nghiệm
+GNN. BSS giảm **0,202794 → 0,131160**, AUPRC giảm **0,286847 → 0,212169**;
+Brier tăng **0,001552 → 0,001691**. Chi tiết từng cơn nằm trong JSON.
+
+Phân nhóm hỗ trợ của cả hai báo cáo vẫn theo 3.000 ô train gốc để so sánh cùng
+tập mẫu, không phải số mẫu của 1.500 nhóm sau gộp. Chênh lệch phản ánh đóng góp
+dự báo của đặc trưng trong mô phỏng này; không suy ra tác động nhân quả hay
+khẳng định GNN học tắt. Chưa chọn prior, chưa học lại cả 10 cơn, chưa chạy thêm
+cửa sổ/seed Yagi và chưa bổ sung phân nhóm theo gió.
 
 `source_path` trong danh mục ghi đường dẫn ở máy tạo dữ liệu để lưu nguồn gốc;
 không cần có thư mục `/workspace` trên máy người dùng. Bộ đếm tìm tệp thời tiết

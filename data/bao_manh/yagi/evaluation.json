@@ -1,0 +1,132 @@
+{
+  "lookup": {
+    "samples": 187888,
+    "failures": 294,
+    "survival_rate": 0.998435238014136,
+    "failure_rate": 0.001564761985863919,
+    "brier": 0.0012961318684045226,
+    "log_loss": 0.004859270088377315,
+    "brier_baseline": 0.0015637700586807652,
+    "bss": 0.1711493251776599,
+    "auprc": 0.30196401915751364,
+    "auprc_baseline": 0.001564761985863919,
+    "mau_it": false
+  },
+  "constant_train_baseline": {
+    "samples": 187888,
+    "failures": 294,
+    "survival_rate": 0.998435238014136,
+    "failure_rate": 0.001564761985863919,
+    "brier": 0.0015637700586807644,
+    "log_loss": 0.011984957985900744,
+    "brier_baseline": 0.0015637700586807652,
+    "bss": 5.551115123125783e-16,
+    "auprc": 0.001564761985863919,
+    "auprc_baseline": 0.001564761985863919,
+    "mau_it": false
+  },
+  "assume_forecast_edges_survive": {
+    "samples": 187888,
+    "failures": 294,
+    "survival_rate": 0.998435238014136,
+    "failure_rate": 0.001564761985863919,
+    "brier": 0.0015647619858639187,
+    "log_loss": 0.02882399096622458,
+    "brier_baseline": 0.0015637700586807652,
+    "bss": -0.0006343177998882066,
+    "auprc": 0.001564761985863919,
+    "auprc_baseline": 0.001564761985863919,
+    "mau_it": false
+  },
+  "by_band": {
+    "no_rain_band": {
+      "samples": 169148,
+      "failures": 0,
+      "survival_rate": 1.0,
+      "failure_rate": 0.0,
+      "brier": 0.0,
+      "log_loss": 1.000000005e-08,
+      "brier_baseline": 7.681984496285423e-06,
+      "bss": null,
+      "auprc": null,
+      "auprc_baseline": 0.0,
+      "mau_it": true
+    },
+    "5GHz": {
+      "samples": 2058,
+      "failures": 0,
+      "survival_rate": 1.0,
+      "failure_rate": 0.0,
+      "brier": 0.0001656926605753659,
+      "log_loss": 0.008856354675485291,
+      "brier_baseline": 7.681984496285423e-06,
+      "bss": null,
+      "auprc": null,
+      "auprc_baseline": 0.0,
+      "mau_it": true
+    },
+    "12GHz": {
+      "samples": 13874,
+      "failures": 94,
+      "survival_rate": 0.9932247369179761,
+      "failure_rate": 0.0067752630820239294,
+      "brier": 0.006428239553741391,
+      "log_loss": 0.029236968317964802,
+      "brier_baseline": 0.006745387895455637,
+      "bss": 0.04701706508648795,
+      "auprc": 0.11092724516559026,
+      "auprc_baseline": 0.0067752630820239294,
+      "mau_it": false
+    },
+    "20GHz": {
+      "samples": 1598,
+      "failures": 94,
+      "survival_rate": 0.9411764705882353,
+      "failure_rate": 0.058823529411764705,
+      "brier": 0.0468484073903684,
+      "log_loss": 0.15401211529842337,
+      "brier_baseline": 0.058505136182650255,
+      "bss": 0.19924282811495564,
+      "auprc": 0.40103717682247225,
+      "auprc_baseline": 0.058823529411764705,
+      "mau_it": false
+    },
+    "28GHz": {
+      "samples": 1210,
+      "failures": 106,
+      "survival_rate": 0.912396694214876,
+      "failure_rate": 0.08760330578512397,
+      "brier": 0.06540287472471748,
+      "log_loss": 0.2008474465062442,
+      "brier_baseline": 0.08712537823662311,
+      "bss": 0.2493246394054056,
+      "auprc": 0.32634268526593563,
+      "auprc_baseline": 0.08760330578512397,
+      "mau_it": false
+    }
+  },
+  "start_utc": "2024-09-07T06:00",
+  "seed": 2026,
+  "matrix_shape": [
+    48,
+    224,
+    224
+  ],
+  "table_sha256": "a554970dff9998d68484911cbfe0792053407ed38febd1f48b2172cd6ac60e45",
+  "weather_sha256": "814e8887cc90c37ba0ff061876f5e61ad2e483cf0a51d48b97871b0df62c7f72",
+  "scope": "One Yagi window, v5 test geometry snapshots. Evaluation only; no refit.",
+  "unknown_band_edges": 0,
+  "small_sample_rule": {
+    "min_samples": 1000,
+    "min_failures": 30,
+    "rule": "mau_it when either threshold is not met; bss and auprc are null"
+  },
+  "ghi_chu": [
+    "Dữ liệu mô phỏng từ một cửa sổ và một seed; chưa phải kết luận cho toàn đợt Yagi.",
+    "mau_it=False chỉ có nghĩa đạt ngưỡng 1000 mẫu/30 ca đứt; các cạnh vẫn tương quan, không phải số quan sát độc lập.",
+    "Cần nhiều cửa sổ và seed trước khi kết luận; không báo khoảng tin cậy theo cạnh.",
+    "failure_rate và baseline AUPRC chia cho số mẫu trong chính nhóm được báo cáo."
+  ],
+  "report_method": "Rescored saved matrices with the shared small-sample rule; no new simulation.",
+  "matrices_sha256": "0c160d49d34ac635f8be99ad270e1741dab5a8cbefb82fd3f2bc2bfc8e67be78"
+}

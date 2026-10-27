@@ -5,8 +5,29 @@ from pathlib import Path
 import numpy as np
 from src.ngau_nhien.kich_ban import MangGoc, ThamSo, sinh_kich_ban
 from src.ngau_nhien.thoi_tiet import ThoiTiet
-from src.ngau_nhien.ma_tran_rui_ro import ROOT, SHAPE, nap_bang, ma_tran_online, metrics
+from src.ngau_nhien.ma_tran_rui_ro import ROOT, SHAPE, nap_bang, ma_tran_online
+from src.ngau_nhien.bao_cao_rui_ro import metrics_nhom, SMALL_SAMPLE_RULE
 from src.ngau_nhien.tao_du_lieu_bao import sha256
+
+
+def cham_ma_tran(arrays, bang):
+    """Chấm ma trận đã có, dùng chung ngưỡng ít mẫu với validation."""
+    valid=arrays['valid'];p=1-arrays['risk_edge'][valid];y=arrays['target_survives_oracle'][valid]
+    gp=float((bang['song_train'].sum()+1)/(bang['n_train'].sum()+2))
+    score={'lookup':metrics_nhom(p,y.astype(int),np.ones(len(y)),p_baseline=gp),
+           'constant_train_baseline':metrics_nhom(np.full(len(y),gp),y.astype(int),np.ones(len(y)),p_baseline=gp),
+           'assume_forecast_edges_survive':metrics_nhom(np.ones(len(y)),y.astype(int),np.ones(len(y)),p_baseline=gp),
+           'by_band':{}, 'small_sample_rule':dict(SMALL_SAMPLE_RULE),
+           'ghi_chu':[
+               'Dữ liệu mô phỏng từ một cửa sổ và một seed; chưa phải kết luận cho toàn đợt Yagi.',
+               'mau_it=False chỉ có nghĩa đạt ngưỡng 1000 mẫu/30 ca đứt; các cạnh vẫn tương quan, không phải số quan sát độc lập.',
+               'Cần nhiều cửa sổ và seed trước khi kết luận; không báo khoảng tin cậy theo cạnh.',
+               'failure_rate và baseline AUPRC chia cho số mẫu trong chính nhóm được báo cáo.',
+           ]}
+    bands=np.unravel_index(arrays['cell_id'][valid],SHAPE)[0]
+    for i,name in enumerate(['no_rain_band','5GHz','12GHz','20GHz','28GHz']):
+        m=bands==i;score['by_band'][name]=metrics_nhom(p[m],y[m].astype(int),np.ones(m.sum()),p_baseline=gp)
+    return score
 
 
 def danh_gia(table_dir, out, raw=ROOT/'dataset/oracle_dataset_v5.npz',
@@ -40,19 +61,11 @@ def danh_gia(table_dir, out, raw=ROOT/'dataset/oracle_dataset_v5.npz',
         ys.append((wn[t:t+delta+1]>0).all(0))
     arrays={k:np.stack([r[k] for r in rows]) for k in rows[0]}
     arrays.update(target_survives_oracle=np.stack(ys),base_snapshot_id=ids,node_order=names)
-    valid=arrays['valid'];p=1-arrays['risk_edge'][valid];y=arrays['target_survives_oracle'][valid]
-    gp=float((b['song_train'].sum()+1)/(b['n_train'].sum()+2))
-    score={'lookup':metrics(p,y.astype(int),np.ones(len(y)),p_baseline=gp),
-           'constant_train_baseline':metrics(np.full(len(y),gp),y.astype(int),np.ones(len(y)),p_baseline=gp),
-           'assume_forecast_edges_survive':metrics(np.ones(len(y)),y.astype(int),np.ones(len(y)),p_baseline=gp),
-           'by_band':{}}
-    bands=np.unravel_index(arrays['cell_id'][valid],SHAPE)[0]
-    for i,name in enumerate(['no_rain_band','5GHz','12GHz','20GHz','28GHz']):
-        m=bands==i;score['by_band'][name]=metrics(p[m],y[m].astype(int),np.ones(m.sum()),p_baseline=gp)
+    score=cham_ma_tran(arrays,b)
     score.update(start_utc=start,seed=seed,matrix_shape=list(arrays['risk_edge'].shape),
                  table_sha256=sha256(table_dir/'bang_tra.npz'),weather_sha256=sha256(weather),
                  scope='One Yagi window, v5 test geometry snapshots. Evaluation only; no refit.',
-                 unknown_band_edges=int(((arrays['support_level']==0)&valid).sum()))
+                 unknown_band_edges=int(((arrays['support_level']==0)&arrays['valid']).sum()))
     out.mkdir(parents=True,exist_ok=True)
     np.savez_compressed(out/'matrices.npz',**arrays)
     (out/'evaluation.json').write_text(json.dumps(score,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf-8')
