@@ -103,20 +103,20 @@ def o_dac_trung(g, q, observed_at, history=45):
                                  (tg[:, None] | tg[None, :]).astype(int)), SHAPE)
 
 
-def hoc_bang(song, n, names, val_names=DEFAULT_VAL, prior=20.0):
-    """Làm trơn ô -> băng×mưa -> băng; tuyệt đối không lấy số đếm validation."""
+def _kiem_tra_dem(song, n, names, prior):
     song, n = np.asarray(song), np.asarray(n)
-    names = list(map(str, names)); val_names = list(val_names)
-    if len(set(names)) != len(names) or any('yagi' in s.lower() for s in names):
+    names = list(map(str, names))
+    if not names or len(set(names)) != len(names) or any('yagi' in s.lower() for s in names):
         raise ValueError('Danh sách cơn phải duy nhất và không có Yagi')
-    if not val_names or not set(val_names) <= set(names) or len(set(val_names)) != len(val_names):
-        raise ValueError('Cần danh sách val hợp lệ, không trùng')
-    tr = np.array([s not in val_names for s in names])
-    if not tr.any() or song.shape != n.shape or n.shape != (len(names), NCELLS):
+    if song.shape != n.shape or n.shape != (len(names), NCELLS):
         raise ValueError('Số đếm/split không hợp lệ')
     if not np.isfinite(song).all() or not np.isfinite(n).all() or np.any(song < 0) or np.any(song > n) or not np.isfinite(prior) or prior <= 0:
         raise ValueError('Số đếm hoặc prior không hợp lệ')
-    s, count = song[tr].sum(0).reshape(SHAPE), n[tr].sum(0).reshape(SHAPE)
+    return song, n, names
+
+
+def _hoc_tu_tong(s, count, train_names, val_names, prior):
+    s, count = s.reshape(SHAPE), count.reshape(SHAPE)
     sb, nb = s.sum((1, 2, 3, 4, 5)), count.sum((1, 2, 3, 4, 5))
     pband = (sb + 1) / (nb + 2)
     sbr, nbr = s.sum((2, 3, 4, 5)), count.sum((2, 3, 4, 5))
@@ -124,7 +124,26 @@ def hoc_bang(song, n, names, val_names=DEFAULT_VAL, prior=20.0):
     p = (s + prior * pbr[:, :, None, None, None, None]) / (count + prior)
     return {'p_song': p.reshape(-1), 'n_train': count.reshape(-1), 'song_train': s.reshape(-1),
             'n_band': nb, 'n_band_rain': nbr,
-            'train_storms': [v for v, keep in zip(names, tr) if keep], 'val_storms': val_names, 'prior': prior}
+            'train_storms': train_names, 'val_storms': val_names, 'prior': prior}
+
+
+def hoc_bang(song, n, names, val_names=DEFAULT_VAL, prior=20.0):
+    """Làm trơn ô -> băng×mưa -> băng; tuyệt đối không lấy số đếm validation."""
+    song, n, names = _kiem_tra_dem(song, n, names, prior)
+    val_names = list(val_names)
+    if not val_names or not set(val_names) <= set(names) or len(set(val_names)) != len(val_names):
+        raise ValueError('Cần danh sách val hợp lệ, không trùng')
+    tr = np.array([s not in val_names for s in names])
+    if not tr.any():
+        raise ValueError('Phải có cơn train ngoài validation')
+    return _hoc_tu_tong(song[tr].sum(0), n[tr].sum(0),
+                       [v for v, keep in zip(names, tr) if keep], val_names, prior)
+
+
+def hoc_bang_tat_ca(song, n, names, *, prior):
+    """Refit sau khi chốt prior. Không còn val độc lập trong các cơn được fit."""
+    song, n, names = _kiem_tra_dem(song, n, names, prior)
+    return _hoc_tu_tong(song.sum(0), n.sum(0), names, [], prior)
 
 
 def ma_tran_online(bang, g, W_observed, q_observed, decision_at, tuoi=9, delta=3, *, tham_so):

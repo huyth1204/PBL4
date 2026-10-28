@@ -1,0 +1,939 @@
+{
+  "schema": "storm-prior-selection-v1",
+  "prior_grid": [
+    0.1,
+    0.5,
+    1.0,
+    2.0,
+    5.0,
+    10.0,
+    20.0,
+    50.0,
+    100.0,
+    200.0,
+    500.0,
+    1000.0,
+    2000.0,
+    5000.0,
+    10000.0
+  ],
+  "criterion": "minimize arithmetic mean of per-storm validation Brier; equal weight per storm",
+  "tie_break": "largest prior within rtol=1e-12, atol=1e-15 of minimum",
+  "selection_split": {
+    "train": [
+      "soulik_2024",
+      "wutip_2025",
+      "wipha_2025",
+      "kajiki_2025",
+      "nongfa_2025",
+      "bualoi_2025",
+      "matmo_2025"
+    ],
+    "val": [
+      "prapiroon_2024",
+      "trami_2024",
+      "kalmaegi_2025"
+    ]
+  },
+  "selected_prior": 200.0,
+  "selected_mean_storm_brier": 0.0014678669825837814,
+  "boundary_winner": false,
+  "candidates": [
+    {
+      "prior": 0.1,
+      "mean_storm_brier": 0.0014772626614183353,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015572277689316744,
+        "log_loss": 0.006354713287252459,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20009998787076866,
+        "auprc": 0.2857252013416628,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0020411791763862907,
+          "log_loss": 0.008527084373413102,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.1847701830972387,
+          "auprc": 0.267372885753851,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.001568265293789267,
+          "log_loss": 0.006313433245473775,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.2190692176581851,
+          "auprc": 0.32014750478056225,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008223435140794486,
+          "log_loss": 0.0031902467865814873,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.20074484079777255,
+          "auprc": 0.30550985302086536,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 0.5,
+      "mean_storm_brier": 0.0014770544823194916,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.001557006930429306,
+        "log_loss": 0.006346637405741375,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20021342581751445,
+        "auprc": 0.28581007624720034,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.002040800987243389,
+          "log_loss": 0.008513457918552646,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.18492122866408012,
+          "auprc": 0.26732253911197795,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015681244820440745,
+          "log_loss": 0.006308664753357089,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.21913933604107072,
+          "auprc": 0.32039127769104925,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.000822237977671011,
+          "log_loss": 0.003185521915532046,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.20084741413541463,
+          "auprc": 0.30585220970476745,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 1.0,
+      "mean_storm_brier": 0.0014768091666645538,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015567470081961966,
+        "log_loss": 0.006342672941790104,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20034693987471597,
+        "auprc": 0.28565338332008927,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0020403549185826235,
+          "log_loss": 0.008506555156252777,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.18509938474016052,
+          "auprc": 0.2673039099213549,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.001567961548063867,
+          "log_loss": 0.006306462994140415,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.21922047037538095,
+          "auprc": 0.3204055279159386,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008221110333471714,
+          "log_loss": 0.0031833138088355065,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.2009707943336202,
+          "auprc": 0.3061006924830707,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 2.0,
+      "mean_storm_brier": 0.001476360175898859,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.001556272135686162,
+        "log_loss": 0.006338135624016977,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20059086727834619,
+        "auprc": 0.2856771875422179,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.002039535897222494,
+          "log_loss": 0.00849845941924714,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.1854264949915202,
+          "auprc": 0.2673163338812056,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015676730270145509,
+          "log_loss": 0.006304081553430485,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.21936414183814734,
+          "auprc": 0.32044740020774437,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008218716034595318,
+          "log_loss": 0.003180872239000052,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.20120350191833003,
+          "auprc": 0.3062167974831479,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 5.0,
+      "mean_storm_brier": 0.0014752561217110816,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015551093615876138,
+        "log_loss": 0.006330884842503954,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.2011881485714806,
+        "auprc": 0.2857145142567677,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0020375036856138734,
+          "log_loss": 0.008485222558666424,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.18623814323718602,
+          "auprc": 0.26738140908229363,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015670228236049615,
+          "log_loss": 0.006300542311399466,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.21968791604863513,
+          "auprc": 0.3206834758249285,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008212418559144098,
+          "log_loss": 0.0031770215127543545,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.20181556848882787,
+          "auprc": 0.3047701473135786,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 10.0,
+      "mean_storm_brier": 0.0014739247163643437,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015537185801058617,
+        "log_loss": 0.006324338256647214,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20190255024496595,
+        "auprc": 0.286040938415616,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.002035038686688606,
+          "log_loss": 0.008473160002643119,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.18722264310165593,
+          "auprc": 0.2680268207842102,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015663479139294537,
+          "log_loss": 0.006297549245437843,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.22002399295028674,
+          "auprc": 0.3216622120200334,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008203875484749713,
+          "log_loss": 0.0031734106236289425,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.20264589014495515,
+          "auprc": 0.3045424335327684,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 20.0,
+      "mean_storm_brier": 0.0014722379007474182,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015519830307781618,
+        "log_loss": 0.006317121328864498,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20279404855752847,
+        "auprc": 0.28684658827004983,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0020319979470354676,
+          "log_loss": 0.008459998998687728,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.18843708897654754,
+          "auprc": 0.2684822772276399,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015656288864109348,
+          "log_loss": 0.006294340210901727,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.22038203869980755,
+          "auprc": 0.3230916614332827,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008190868687958525,
+          "log_loss": 0.0031690931888785894,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.20391005156436992,
+          "auprc": 0.30381199678847853,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 50.0,
+      "mean_storm_brier": 0.0014698868547509956,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015496490695198865,
+        "log_loss": 0.0063077077483933985,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20399293267457974,
+        "auprc": 0.2866250643337374,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0020283055293095144,
+          "log_loss": 0.008443587803210752,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.18991180959954868,
+          "auprc": 0.268052272163956,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015647779428697279,
+          "log_loss": 0.006289975904385698,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.22080577313300265,
+          "auprc": 0.32258825920501605,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008165770920737439,
+          "log_loss": 0.003162603565626967,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.2063493630677099,
+          "auprc": 0.3043936726336933,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 100.0,
+      "mean_storm_brier": 0.0014683836842100731,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015482513162730506,
+        "log_loss": 0.006302316926093775,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20471091552937104,
+        "auprc": 0.2866287950782669,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0020266141801380142,
+          "log_loss": 0.008435031528405385,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.19058732025111325,
+          "auprc": 0.266588679550666,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015643383092297145,
+          "log_loss": 0.00628719760250176,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.22102469237058264,
+          "auprc": 0.3243785741344253,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008141985632624907,
+          "log_loss": 0.0031580498144800472,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.2086611116145849,
+          "auprc": 0.30275297876105134,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 200.0,
+      "mean_storm_brier": 0.0014678669825837814,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.00154792176903036,
+        "log_loss": 0.006301498204362205,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20488019381266687,
+        "auprc": 0.2852478988582921,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.002026840596263962,
+          "log_loss": 0.008434607600326145,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.19049689155233185,
+          "auprc": 0.26432380304118624,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.001564618714592592,
+          "log_loss": 0.006286757483715765,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.220885062181563,
+          "auprc": 0.32304086295021306,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008121416368947901,
+          "log_loss": 0.0031560850960986714,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.21066028712133655,
+          "auprc": 0.3004241014866079,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 500.0,
+      "mean_storm_brier": 0.0014723559478290935,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.001552866628540113,
+        "log_loss": 0.006318321096060655,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.20234017156239437,
+        "auprc": 0.2836216813424943,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.002034644461861664,
+          "log_loss": 0.00846158887912548,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.18738009318600157,
+          "auprc": 0.26212868642079007,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015695252961547145,
+          "log_loss": 0.006298901169378403,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.21844178897191735,
+          "auprc": 0.32576731218328925,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008128980854709017,
+          "log_loss": 0.0031647437703453867,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.2099250768147226,
+          "auprc": 0.286414658343753,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 1000.0,
+      "mean_storm_brier": 0.0014839532206112696,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015651836921746875,
+        "log_loss": 0.006358023824078825,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.19601327478643205,
+        "auprc": 0.27896750235951356,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0020514452401967295,
+          "log_loss": 0.008519031066055437,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.18067000344749673,
+          "auprc": 0.25590283961206234,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0015818125543074018,
+          "log_loss": 0.006332518246360797,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.2123232462993131,
+          "auprc": 0.32759045183347457,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008186018673296779,
+          "log_loss": 0.003187105626973341,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.204381435988791,
+          "auprc": 0.2840405158795667,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 2000.0,
+      "mean_storm_brier": 0.0015056483406514958,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0015881497243307886,
+        "log_loss": 0.006435542306762692,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.18421633039156782,
+        "auprc": 0.27322045657943145,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0020811213654471665,
+          "log_loss": 0.00862329269309271,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.1688176083054258,
+          "auprc": 0.25044092300934684,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0016059481438859078,
+          "log_loss": 0.00640645340933905,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.2003047281783884,
+          "auprc": 0.3189549459987308,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008298755126214131,
+          "log_loss": 0.0032302146827953276,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.19342431283020212,
+          "auprc": 0.2679736637639063,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 5000.0,
+      "mean_storm_brier": 0.0015505764114266563,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.001635629815393933,
+        "log_loss": 0.006618309851682097,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.15982726786967238,
+        "auprc": 0.25867627392702736,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.002140608178782557,
+          "log_loss": 0.008854200084608738,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.14505907475552182,
+          "auprc": 0.23592067984734558,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0016572629049074533,
+          "log_loss": 0.006595136955864202,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.17475211496368592,
+          "auprc": 0.2982028844460242,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008538581505899587,
+          "log_loss": 0.0033327573331251178,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.17011501835720233,
+          "auprc": 0.2422730620975865,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    },
+    {
+      "prior": 10000.0,
+      "mean_storm_brier": 0.0015934324128246819,
+      "pooled": {
+        "samples": 5673610,
+        "failures": 11063,
+        "survival_rate": 0.9980500950893699,
+        "failure_rate": 0.0019499049106300927,
+        "brier": 0.0016807777948100444,
+        "log_loss": 0.006829039891103686,
+        "brier_baseline": 0.0019467780289020545,
+        "bss": 0.13663613937641828,
+        "auprc": 0.23498139031296578,
+        "auprc_baseline": 0.0019499049106300927,
+        "mau_it": false
+      },
+      "by_storm": {
+        "prapiroon_2024": {
+          "samples": 2125464,
+          "failures": 5335,
+          "survival_rate": 0.9974899598393574,
+          "failure_rate": 0.0025100401606425703,
+          "brier": 0.0021964492036342423,
+          "log_loss": 0.009110774460269934,
+          "brier_baseline": 0.0025038082931524543,
+          "bss": 0.1227566385009562,
+          "auprc": 0.21589136226066682,
+          "auprc_baseline": 0.0025100401606425703,
+          "mau_it": false
+        },
+        "trami_2024": {
+          "samples": 2116650,
+          "failures": 4258,
+          "survival_rate": 0.9979883306167765,
+          "failure_rate": 0.00201166938322349,
+          "brier": 0.0017059462073897636,
+          "log_loss": 0.0068178451866433565,
+          "brier_baseline": 0.0020082001238143463,
+          "bss": 0.1505098584749044,
+          "auprc": 0.27209665178174786,
+          "auprc_baseline": 0.00201166938322349,
+          "mau_it": false
+        },
+        "kalmaegi_2025": {
+          "samples": 1431496,
+          "failures": 1470,
+          "survival_rate": 0.998973102265043,
+          "failure_rate": 0.001026897734956996,
+          "brier": 0.0008779018274500394,
+          "log_loss": 0.0034577070944193673,
+          "brier_baseline": 0.0010288873391824792,
+          "bss": 0.14674639873827977,
+          "auprc": 0.20883832231505256,
+          "auprc_baseline": 0.001026897734956996,
+          "mau_it": false
+        }
+      }
+    }
+  ],
+  "final_fit_storms": [
+    "prapiroon_2024",
+    "soulik_2024",
+    "trami_2024",
+    "wutip_2025",
+    "wipha_2025",
+    "kajiki_2025",
+    "nongfa_2025",
+    "bualoi_2025",
+    "matmo_2025",
+    "kalmaegi_2025"
+  ],
+  "final_fit_samples": 26088602,
+  "final_occupied_cells": 364,
+  "ghi_chu": [
+    "Lưới và tiêu chí được chốt trước khi chấm; không dùng Yagi để chọn prior hoặc fit.",
+    "Điểm val dùng để chọn siêu tham số, không phải ước lượng test độc lập sau chọn.",
+    "Điểm trong candidates/chon_prior/validation.json chỉ thuộc bảng fit trên train của bước chọn.",
+    "Bảng cuối đã fit cả các cơn val; không gán điểm val của bảng chọn cho bảng cuối.",
+    "Nếu thắng ở biên, chỉ kết luận tốt nhất trên lưới này; không tuyên bố tối ưu toàn cục."
+  ],
+  "sources": {
+    "source_counts_sha256": "d89f74bb20d7561c1b5a6c2a60a7635ce6b566abc2b9524d4c494e58a7f3659f",
+    "source_meta_sha256": "e6a0ca361ad58b543ed28e8ff816f4e2d52c17bac22e723204b577d2f347a504",
+    "source_table_sha256": "a554970dff9998d68484911cbfe0792053407ed38febd1f48b2172cd6ac60e45"
+  }
+}

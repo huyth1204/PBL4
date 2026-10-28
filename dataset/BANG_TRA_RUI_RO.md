@@ -4,6 +4,11 @@
 gồm 10 tệp thời tiết, danh mục, bảng tra đã học, số đếm, metadata và SHA-256.
 Clone/pull là có thể nạp bảng; không cần chạy lại các lệnh sinh dữ liệu bên dưới.
 
+**Bảng cuối dùng online:** `data/bao_manh/bang_tra_cuoi/`, prior=200 được chọn
+trên val rồi fit cả 10 cơn. Bảng 7 cơn prior=20 và các điểm val/ablation/Yagi
+bên dưới được giữ như mốc đối chiếu; không phải điểm đánh giá của bảng cuối.
+Quy trình và kết quả chọn prior nằm ở cuối tài liệu.
+
 Pipeline `storm-lookup-v1` triển khai bảng 3.000 ô trong tài liệu
 `Du_lieu_bao_manh.docx` của Huy. Bảng học từ sự cố **mô phỏng** với thời tiết
 74 điểm và mạng nền v5, không phải xác suất đứt liên kết được đo ngoài thực địa.
@@ -53,11 +58,12 @@ Chỉ số đếm **train** tham gia học. Với `s` lần sống và `n` mẫu
 
 ```text
 p_band = (s_band + 1) / (n_band + 2)
-p_band_rain = (s_band_rain + 20*p_band) / (n_band_rain + 20)
-p_cell = (s_cell + 20*p_band_rain) / (n_cell + 20)
+p_band_rain = (s_band_rain + prior*p_band) / (n_band_rain + prior)
+p_cell = (s_cell + prior*p_band_rain) / (n_cell + prior)
 ```
 
-Số 20 là tham số làm trơn cố định, chưa tối ưu trên Yagi. `support` là số mẫu
+Prior=20 ở bảng đối chứng; prior=200 ở bảng cuối sau chọn trên val. Không dùng
+Yagi để chọn. `support` là số mẫu
 ở ô chi tiết; `support_level` cho biết mức có dữ liệu: 3=ô, 2=băng×mưa,
 1=băng, 0=chưa thấy băng (prior 0,5), -1=cạnh không hợp lệ. Mức hỗ trợ không
 phải khoảng tin cậy và số mẫu không phải số quan sát độc lập.
@@ -129,10 +135,10 @@ import json
 from src.ngau_nhien.kich_ban import ThamSo
 from src.ngau_nhien.ma_tran_rui_ro import nap_bang, ma_tran_online
 
-with open('data/bao_manh/bang_tra/meta.json', encoding='utf-8') as f:
+with open('data/bao_manh/bang_tra_cuoi/meta.json', encoding='utf-8') as f:
     meta = json.load(f)
 p = ThamSo(**meta['parameters'])  # chính cấu hình truyền cho sinh_kich_ban
-bang = nap_bang('data/bao_manh/bang_tra/bang_tra.npz', tham_so=p)
+bang = nap_bang('data/bao_manh/bang_tra_cuoi/bang_tra.npz', tham_so=p)
 o = t - 9
 past = {k: q[k][:o+1] for k in ('R', 'gust', 'giong', 'tat')}
 r = ma_tran_online(bang, g, Wn[o], past, t, tuoi=9, delta=3, tham_so=p)
@@ -196,9 +202,6 @@ là giả định mô phỏng; bảng chưa được hiệu chuẩn bằng sự 
 
 ## Các thí nghiệm tiếp theo chưa thực hiện trong bản phát hành này
 
-- Chọn prior trên validation rồi học lại cả 10 cơn: cần lưu riêng bảng cuối và
-  bảng dùng chấm validation. Điểm validation hiện tại thuộc bảng 7 cơn, không
-  được gán cho bảng học lại trên 10 cơn.
 - Bổ sung báo cáo theo mức gió và đánh giá bất định khi có thêm cơn. Báo cáo
   theo băng tần/giông đã có ở mục dưới; không bootstrap từng cạnh như mẫu độc
   lập. Hiện validation chỉ có 3 cơn, nên không báo khoảng tin cậy.
@@ -296,3 +299,31 @@ Phân nhóm hỗ trợ trong hai báo cáo cố ý dùng cùng số mẫu của 
 Các test hồi quy báo cáo so float đệ quy với `rel=1e-9, abs=1e-15` để chấp nhận
 sai số làm tròn giữa phiên bản NumPy; số đếm nguyên, khóa, boolean và cấu trúc
 vẫn được so chính xác.
+
+## Chọn prior trên val và refit cả 10 cơn
+
+Đã thực hiện bằng `src/ngau_nhien/chon_prior.py`, hoàn toàn từ số đếm có sẵn.
+Lưới cố định: 0,1; 0,5; 1; 2; 5; 10; 20; 50; 100; 200; 500; 1.000; 2.000;
+5.000; 10.000. Tiêu chí là Brier trung bình của Prapiroon/Trami/Kalmaegi, mỗi
+cơn một trọng số. AUPRC/log-loss là chỉ số đối chiếu; không đổi tiêu chí theo
+kết quả. Nếu hòa trong `rtol=1e-12, atol=1e-15` thì chọn prior lớn hơn.
+
+**Chọn prior=200**, không ở biên lưới. Brier trung bình theo cơn giảm từ
+0,00147224 (prior=20) xuống 0,00146787; Brier gộp từ 0,00155198 xuống
+0,00154792, BSS từ 0,202794 lên 0,204880. AUPRC giảm nhẹ từ 0,286847 xuống
+0,285248. Chênh lệch nhỏ và val đã dùng để chọn siêu tham số, không phải test
+độc lập. Bảng 7 cơn với prior đã chọn và báo cáo lưu riêng tại
+`data/bao_manh/bang_tra_cuoi/chon_prior/`.
+
+Sau khi chốt prior, bảng cuối học từ **26.088.602 mẫu của cả 10 cơn**, có
+**364 ô có mẫu**; lưu ở `data/bao_manh/bang_tra_cuoi/`. `n_train` lúc này là
+toàn bộ số đếm fit, `train_storms` có 10 cơn và `val_storms` rỗng.
+`bao_cao_validation` từ chối coi các cơn đã fit là val. Không có điểm val hoặc
+điểm Yagi mới cho bảng cuối trong lần cập nhật này.
+
+`selection.json` lưu đầy đủ điểm từng ứng viên/từng cơn, split chọn và hash
+nguồn. Metadata từng bảng ghi `fit_stage`, `selected_prior`, `fit_samples`,
+`selection_split` và `evaluation_status`. Hợp đồng nhúng NPZ được cập nhật theo
+từng giai đoạn; loader và hàm online vẫn kiểm cấu hình như trước. Bảng gốc,
+nhãn, quỹ đạo và các báo cáo đối chứng không đổi. Lệnh tái lập và cách dùng ở
+[README](../data/bao_manh/README.md#chọn-prior-và-học-lại-cả-10-cơn).
