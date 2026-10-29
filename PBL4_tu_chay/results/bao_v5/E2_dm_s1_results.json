@@ -1,0 +1,112 @@
+{
+  "tag": "E2_dm_s1",
+  "args": {
+    "data_dir": "data/bao_v5_E2",
+    "epochs": 12,
+    "hidden": 64,
+    "layers": 4,
+    "batch": 64,
+    "lr": 0.002,
+    "drop": 0.15,
+    "ddim": 2,
+    "eval_every": 3,
+    "head": "diffusion2",
+    "param": "x0ce",
+    "self_cond": false,
+    "attn": false,
+    "lookahead": false,
+    "t_power": 1.0,
+    "nhieu": 0.0,
+    "nhieu_min": 0.0,
+    "nhieu_tuyen": 0.0,
+    "k_tuyen": 4,
+    "tag": "E2_dm_s1",
+    "out_dir": "results/bao_v5",
+    "threads": 2,
+    "seed": 1,
+    "chi_danh_gia": false
+  },
+  "guidance": 1.0,
+  "val_nexthop": {
+    "1.0": 0.7838636363636363,
+    "2.0": 0.7570454545454546,
+    "3.0": 0.7129545454545455,
+    "4.0": 0.6813636363636364
+  },
+  "test_nexthop": {
+    "mo_hinh": 0.8482838093670261,
+    "ngau_nhien": 0.16334857722347876,
+    "tham_lam": 0.19550580294674458,
+    "theo_guidance": {
+      "1.0": 0.8482838093670261,
+      "2.0": 0.8110461766400526,
+      "3.0": 0.7480121820725986,
+      "4.0": 0.7152687463988806
+    }
+  },
+  "test_rollout": {
+    "mo_hinh": {
+      "ty_le_toi_dich": 0.9999574087482431,
+      "tre_so_voi_dijkstra_TB": 1.0608934850400156,
+      "tre_so_voi_dijkstra_trung_vi": 1.0,
+      "trong_10pct_toi_uu": 0.8959877331970355,
+      "trung_khop_duong_oracle": 0.6672345500234252,
+      "chon_dung_tang": 0.9239713774597496,
+      "chenh_so_hop_TB": -0.06593406593406594,
+      "theo_kieu_tuyen": {
+        "qua_ve_tinh": {
+          "so_duong": 17870,
+          "toi_dich": 0.9999440402909905,
+          "tre_TB": 1.0832985917094944
+        },
+        "chi_tang_khong_mat_dat": {
+          "so_duong": 5609,
+          "toi_dich": 1.0,
+          "tre_TB": 0.9895159041740993
+        }
+      }
+    },
+    "tham_lam": {
+      "ty_le_toi_dich": 0.08292516717066314,
+      "tre_so_voi_dijkstra_TB": 1.8869048353521487,
+      "tre_so_voi_dijkstra_trung_vi": 1.3774166232775644,
+      "trong_10pct_toi_uu": 0.41191576784797124,
+      "trung_khop_duong_oracle": 0.023254823459261467,
+      "chon_dung_tang": 0.9121725731895224,
+      "chenh_so_hop_TB": 2.794555726759117,
+      "theo_kieu_tuyen": {
+        "qua_ve_tinh": {
+          "so_duong": 17870,
+          "toi_dich": 0.058198097369893675,
+          "tre_TB": 2.074562382514224
+        },
+        "chi_tang_khong_mat_dat": {
+          "so_duong": 5609,
+          "toi_dich": 0.16170440363701194,
+          "tre_TB": 1.6717296985841679
+        }
+      }
+    },
+    "ngau_nhien": {
+      "ty_le_toi_dich": 0.059329613697346566,
+      "tre_so_voi_dijkstra_TB": 5.264368252582293,
+      "tre_so_voi_dijkstra_trung_vi": 2.357737674376845,
+      "trong_10pct_toi_uu": 0.2505384063173008,
+      "trung_khop_duong_oracle": 0.0097959879040845,
+      "chon_dung_tang": 0.8018664752333095,
+      "chenh_so_hop_TB": 2.9583632447954056,
+      "theo_kieu_tuyen": {
+        "qua_ve_tinh": {
+          "so_duong": 17870,
+          "toi_dich": 0.04482372691662003,
+          "tre_TB": 4.840195445602695
+        },
+        "chi_tang_khong_mat_dat": {
+          "so_duong": 5609,
+          "toi_dich": 0.1055446603672669,
+          "tre_TB": 5.838291256620567
+        }
+      }
+    }
+  }
+}

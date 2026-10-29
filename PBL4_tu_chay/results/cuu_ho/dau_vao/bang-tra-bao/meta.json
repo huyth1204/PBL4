@@ -1,0 +1,539 @@
+{
+  "schema": "storm-lookup-v1",
+  "tuoi": 9,
+  "delta": 3,
+  "dt_seconds": 20,
+  "history_steps": 45,
+  "muc": "khắc nghiệt",
+  "parameters": {
+    "mua": true,
+    "giong": true,
+    "xung_dot": false,
+    "tai": false,
+    "dt_s": 20.0,
+    "phi_mua": 0.9355069850316178,
+    "sigma_mua": 1.2,
+    "snr0_db": 12.0,
+    "snr_min_db": 0.0,
+    "gio_giat_max": 15.0,
+    "uav_ha_canh": true,
+    "p_set": 0.1,
+    "set_tb": 3.0,
+    "lam_xd": 1.0,
+    "p_loai_xd": [
+      0.5,
+      0.25,
+      0.25
+    ],
+    "ban_kinh_km": 150.0,
+    "nhieu_db": [
+      6.0,
+      20.0
+    ],
+    "tb_nhieu_phut": 60.0,
+    "tb_mat_nut_phut": 120.0,
+    "tang_tai": [
+      0.5,
+      1.5
+    ],
+    "rho_tb": 0.7,
+    "bien_do_ngay": 0.3,
+    "gio_dinh": 20.0,
+    "phi_tai": 0.9672161004820059,
+    "sigma_tai": 0.3,
+    "k_dem": 250.0
+  },
+  "stride": 3,
+  "snapshots_used": [
+    54,
+    57,
+    60,
+    63,
+    66,
+    87,
+    90,
+    111,
+    114,
+    135,
+    138,
+    141,
+    144,
+    147,
+    150,
+    171,
+    174,
+    177,
+    180,
+    183,
+    186,
+    189,
+    192,
+    195,
+    198,
+    201,
+    204,
+    207,
+    210,
+    231,
+    234,
+    255,
+    258,
+    279,
+    282,
+    285,
+    288,
+    291,
+    312,
+    315,
+    318,
+    321,
+    324,
+    327,
+    330,
+    333,
+    336,
+    339,
+    342,
+    345,
+    348,
+    351,
+    372,
+    375,
+    396,
+    399,
+    420,
+    423,
+    426,
+    429,
+    432,
+    453,
+    456,
+    459,
+    462,
+    465,
+    468,
+    471,
+    474,
+    477,
+    480,
+    483,
+    486,
+    489,
+    492,
+    513,
+    516,
+    537,
+    540,
+    561,
+    564,
+    567,
+    570,
+    573,
+    576
+  ],
+  "raw_sha256": "8500dcc6c43f490a103ff61b7ade9c420d045457285bca3c4b72bd456ce0f636",
+  "split_sha256": "eca76161eac374ac8051df8d326a40667701b049febebc113507fd413e62b4f8",
+  "catalog_sha256": "881884aea24c1e9f4a7ca1ad0730fe58046d43dc5efbfddc8017ee88e625427a",
+  "storm_split": {
+    "train": [
+      "soulik_2024",
+      "wutip_2025",
+      "wipha_2025",
+      "kajiki_2025",
+      "nongfa_2025",
+      "bualoi_2025",
+      "matmo_2025"
+    ],
+    "val": [
+      "prapiroon_2024",
+      "trami_2024",
+      "kalmaegi_2025"
+    ]
+  },
+  "label": "survive at decision t AND all t+1..t+delta; candidates visible in corrected forecast",
+  "features": "observation at t-age and 15-minute historical rain trend only",
+  "cases": [
+    {
+      "storm": "prapiroon_2024",
+      "h0": 9,
+      "seed": 100000
+    },
+    {
+      "storm": "prapiroon_2024",
+      "h0": 12,
+      "seed": 100001
+    },
+    {
+      "storm": "prapiroon_2024",
+      "h0": 27,
+      "seed": 100002
+    },
+    {
+      "storm": "prapiroon_2024",
+      "h0": 30,
+      "seed": 100003
+    },
+    {
+      "storm": "prapiroon_2024",
+      "h0": 33,
+      "seed": 100004
+    },
+    {
+      "storm": "prapiroon_2024",
+      "h0": 42,
+      "seed": 100005
+    },
+    {
+      "storm": "soulik_2024",
+      "h0": 9,
+      "seed": 101000
+    },
+    {
+      "storm": "soulik_2024",
+      "h0": 12,
+      "seed": 101001
+    },
+    {
+      "storm": "soulik_2024",
+      "h0": 57,
+      "seed": 101002
+    },
+    {
+      "storm": "soulik_2024",
+      "h0": 60,
+      "seed": 101003
+    },
+    {
+      "storm": "soulik_2024",
+      "h0": 81,
+      "seed": 101004
+    },
+    {
+      "storm": "soulik_2024",
+      "h0": 84,
+      "seed": 101005
+    },
+    {
+      "storm": "soulik_2024",
+      "h0": 87,
+      "seed": 101006
+    },
+    {
+      "storm": "trami_2024",
+      "h0": 9,
+      "seed": 102000
+    },
+    {
+      "storm": "trami_2024",
+      "h0": 12,
+      "seed": 102001
+    },
+    {
+      "storm": "trami_2024",
+      "h0": 15,
+      "seed": 102002
+    },
+    {
+      "storm": "trami_2024",
+      "h0": 18,
+      "seed": 102003
+    },
+    {
+      "storm": "trami_2024",
+      "h0": 21,
+      "seed": 102004
+    },
+    {
+      "storm": "trami_2024",
+      "h0": 24,
+      "seed": 102005
+    },
+    {
+      "storm": "wutip_2025",
+      "h0": 9,
+      "seed": 103000
+    },
+    {
+      "storm": "wutip_2025",
+      "h0": 12,
+      "seed": 103001
+    },
+    {
+      "storm": "wutip_2025",
+      "h0": 18,
+      "seed": 103002
+    },
+    {
+      "storm": "wutip_2025",
+      "h0": 21,
+      "seed": 103003
+    },
+    {
+      "storm": "wutip_2025",
+      "h0": 39,
+      "seed": 103004
+    },
+    {
+      "storm": "wutip_2025",
+      "h0": 51,
+      "seed": 103005
+    },
+    {
+      "storm": "wutip_2025",
+      "h0": 54,
+      "seed": 103006
+    },
+    {
+      "storm": "wutip_2025",
+      "h0": 57,
+      "seed": 103007
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 9,
+      "seed": 104000
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 12,
+      "seed": 104001
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 30,
+      "seed": 104002
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 33,
+      "seed": 104003
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 36,
+      "seed": 104004
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 39,
+      "seed": 104005
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 42,
+      "seed": 104006
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 45,
+      "seed": 104007
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 48,
+      "seed": 104008
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 51,
+      "seed": 104009
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 54,
+      "seed": 104010
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 57,
+      "seed": 104011
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 60,
+      "seed": 104012
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 63,
+      "seed": 104013
+    },
+    {
+      "storm": "wipha_2025",
+      "h0": 66,
+      "seed": 104014
+    },
+    {
+      "storm": "kajiki_2025",
+      "h0": 9,
+      "seed": 105000
+    },
+    {
+      "storm": "kajiki_2025",
+      "h0": 12,
+      "seed": 105001
+    },
+    {
+      "storm": "kajiki_2025",
+      "h0": 15,
+      "seed": 105002
+    },
+    {
+      "storm": "kajiki_2025",
+      "h0": 18,
+      "seed": 105003
+    },
+    {
+      "storm": "kajiki_2025",
+      "h0": 21,
+      "seed": 105004
+    },
+    {
+      "storm": "kajiki_2025",
+      "h0": 24,
+      "seed": 105005
+    },
+    {
+      "storm": "kajiki_2025",
+      "h0": 27,
+      "seed": 105006
+    },
+    {
+      "storm": "kajiki_2025",
+      "h0": 30,
+      "seed": 105007
+    },
+    {
+      "storm": "nongfa_2025",
+      "h0": 9,
+      "seed": 106000
+    },
+    {
+      "storm": "nongfa_2025",
+      "h0": 12,
+      "seed": 106001
+    },
+    {
+      "storm": "nongfa_2025",
+      "h0": 15,
+      "seed": 106002
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 9,
+      "seed": 107000
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 12,
+      "seed": 107001
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 33,
+      "seed": 107002
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 36,
+      "seed": 107003
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 39,
+      "seed": 107004
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 42,
+      "seed": 107005
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 45,
+      "seed": 107006
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 48,
+      "seed": 107007
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 51,
+      "seed": 107008
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 54,
+      "seed": 107009
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 57,
+      "seed": 107010
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 60,
+      "seed": 107011
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 63,
+      "seed": 107012
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 66,
+      "seed": 107013
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 69,
+      "seed": 107014
+    },
+    {
+      "storm": "bualoi_2025",
+      "h0": 72,
+      "seed": 107015
+    },
+    {
+      "storm": "matmo_2025",
+      "h0": 9,
+      "seed": 108000
+    },
+    {
+      "storm": "matmo_2025",
+      "h0": 12,
+      "seed": 108001
+    },
+    {
+      "storm": "kalmaegi_2025",
+      "h0": 9,
+      "seed": 109000
+    },
+    {
+      "storm": "kalmaegi_2025",
+      "h0": 12,
+      "seed": 109001
+    },
+    {
+      "storm": "kalmaegi_2025",
+      "h0": 15,
+      "seed": 109002
+    },
+    {
+      "storm": "kalmaegi_2025",
+      "h0": 18,
+      "seed": 109003
+    }
+  ],
+  "samples": 26088602,
+  "table_sha256": "5adacceb5fb1cd7ef40afa58483e1317e06e337a9ab68a131517e9d74db1ca60",
+  "limitations": [
+    "Correlated directed edges and overlapping scenarios are not independent samples.",
+    "Fixed v5 geometry retains pre-existing ISL limitations; weather is gridded model data.",
+    "3000 cells do not model all geometry/link-margin differences; probabilities require validation."
+  ]
+}

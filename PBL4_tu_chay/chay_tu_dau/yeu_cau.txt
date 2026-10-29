@@ -1,0 +1,5 @@
+# Thư viện cho 4 tệp chạy thí nghiệm (chay_tu_dau/). torch bản CPU là đủ.
+numpy
+scipy
+matplotlib
+torch
