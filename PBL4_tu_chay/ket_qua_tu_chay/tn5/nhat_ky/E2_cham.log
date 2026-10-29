@@ -1,0 +1,14 @@
+GNN + DM {'ck': 'ket_qua_tu_chay/tn5/mo_hinh/E2_dm_s0.pt:2:1', 'G_%': 55.94832023559411, 'toi_dich_%': 99.88926274543208, 'dut_%': 0.8646024106648494, 'thoi_gian_s': 56.233636140823364}
+GNN + DM {'ck': 'ket_qua_tu_chay/tn5/mo_hinh/E2_dm_s1.pt:2:1', 'G_%': 50.55564219288986, 'toi_dich_%': 99.98296349929724, 'dut_%': 0.7751607819753823, 'thoi_gian_s': 54.99636721611023}
+GNN + softmax {'ck': 'ket_qua_tu_chay/tn5/mo_hinh/E2_sm_s0.pt:1:1', 'G_%': 55.61416543591906, 'toi_dich_%': 99.91481749648622, 'dut_%': 0.8773797861919163, 'thoi_gian_s': 49.34161901473999}
+GNN + softmax {'ck': 'ket_qua_tu_chay/tn5/mo_hinh/E2_sm_s1.pt:1:1', 'G_%': 57.86793306961846, 'toi_dich_%': 99.90629924613485, 'dut_%': 0.9157119127731164, 'thoi_gian_s': 48.89628601074219}
+
+phương pháp                              G     đứt  tới đích
+Dijkstra trên W đo được           4217.87%  70.26%    100.0%
+Dijkstra + lịch quỹ đạo             61.73%   0.63%    100.0%
+GNN + DM                            53.25%   0.82%     99.9%
+GNN + softmax                       56.74%   0.90%     99.9%
+GNN + DM − GNN + softmax                              -3.49 điểm %  KTC95 [-10.10; +1.50]
+GNN + DM − Dijkstra + lịch quỹ đạo                    -8.48 điểm %  KTC95 [-16.09; +2.44]
+GNN + softmax − Dijkstra + lịch quỹ đạo               -4.99 điểm %  KTC95 [-16.18; +10.50]
+[0m

@@ -1,0 +1,63 @@
+{
+  "lookup": {
+    "samples": 187888,
+    "survival_rate": 0.998435238014136,
+    "brier": 0.001296131868404613,
+    "log_loss": 0.004859270088377359
+  },
+  "constant_train_baseline": {
+    "samples": 187888,
+    "survival_rate": 0.998435238014136,
+    "brier": 0.0015637700586807657,
+    "log_loss": 0.011984957985900746
+  },
+  "assume_forecast_edges_survive": {
+    "samples": 187888,
+    "survival_rate": 0.998435238014136,
+    "brier": 0.001564761954568779,
+    "log_loss": 0.02882399095836209
+  },
+  "by_band": {
+    "no_rain_band": {
+      "samples": 169148,
+      "survival_rate": 1.0,
+      "brier": 1.0000000100495188e-16,
+      "log_loss": 1.0000000100247597e-08
+    },
+    "5GHz": {
+      "samples": 2058,
+      "survival_rate": 1.0,
+      "brier": 0.0001656926605753659,
+      "log_loss": 0.008856354675485291
+    },
+    "12GHz": {
+      "samples": 13874,
+      "survival_rate": 0.9932247369179761,
+      "brier": 0.00642823955374139,
+      "log_loss": 0.029236968317964802
+    },
+    "20GHz": {
+      "samples": 1598,
+      "survival_rate": 0.9411764705882353,
+      "brier": 0.0468484073903684,
+      "log_loss": 0.15401211529842337
+    },
+    "28GHz": {
+      "samples": 1210,
+      "survival_rate": 0.912396694214876,
+      "brier": 0.0654028747247175,
+      "log_loss": 0.2008474465062442
+    }
+  },
+  "start_utc": "2024-09-07T06:00",
+  "seed": 2026,
+  "matrix_shape": [
+    48,
+    224,
+    224
+  ],
+  "table_sha256": "8ee691b7218970ef337e7aa9b1c03ad7d127f39ec16ee7b3f1d8086dece3f9ce",
+  "weather_sha256": "814e8887cc90c37ba0ff061876f5e61ad2e483cf0a51d48b97871b0df62c7f72",
+  "scope": "One Yagi window, v5 test geometry snapshots. Evaluation only; no refit.",
+  "unknown_band_edges": 0
+}

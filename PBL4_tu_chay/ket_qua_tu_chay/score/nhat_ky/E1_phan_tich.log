@@ -1,0 +1,30 @@
+19897 truy vấn, 12 cửa sổ val; không tránh được đứt: gd15_bão 0.2%, gd15_nhẹ 0.6%, gd5_bão 0.2%, gd5_nhẹ 0.6%
+có >= 2 ứng viên: 34%; oracle trong ứng viên: {'dut_nhanh_nhat_%': 0.043166274245991704, 'dut_it_nhat_trong_ung_vien_%': 0.0016818028927009761}
+
+== gd15_bão (10754 truy vấn)   [chuẩn hoá min-max | tỉ lệ]
+α=0.0: G  14.14%  đứt 0.003% (  3 truy vấn)  trễ sống    7.8 ms  |  G  14.14%  đứt 0.003% (  3)  trễ    7.8
+α=0.1: G  14.03%  đứt 0.003% (  3 truy vấn)  trễ sống    7.8 ms  |  G   1.87%  đứt 0.003% (  3)  trễ    7.0
+α=0.2: G  13.95%  đứt 0.003% (  3 truy vấn)  trễ sống    7.8 ms  |  G   5.35%  đứt 0.028% ( 13)  trễ    7.0
+α=0.3: G  13.90%  đứt 0.003% (  3 truy vấn)  trễ sống    7.8 ms  |  G   6.81%  đứt 0.038% ( 17)  trễ    7.0
+α=0.4: G  13.83%  đứt 0.003% (  3 truy vấn)  trễ sống    7.8 ms  |  G   8.89%  đứt 0.053% ( 22)  trễ    7.0
+α=0.5: G   6.96%  đứt 0.039% ( 17 truy vấn)  trễ sống    7.0 ms  |  G   9.61%  đứt 0.058% ( 23)  trễ    7.0
+α=0.6: G  11.31%  đứt 0.069% ( 26 truy vấn)  trễ sống    7.0 ms  |  G  10.37%  đứt 0.063% ( 24)  trễ    7.0
+α=0.7: G  12.03%  đứt 0.074% ( 27 truy vấn)  trễ sống    7.0 ms  |  G  10.38%  đứt 0.063% ( 24)  trễ    7.0
+α=0.8: G  12.02%  đứt 0.074% ( 27 truy vấn)  trễ sống    7.0 ms  |  G  11.12%  đứt 0.068% ( 25)  trễ    7.0
+α=0.9: G  12.78%  đứt 0.080% ( 28 truy vấn)  trễ sống    7.0 ms  |  G  12.61%  đứt 0.079% ( 27)  trễ    7.0
+α=1.0: G  12.78%  đứt 0.080% ( 28 truy vấn)  trễ sống    7.0 ms  |  G  12.78%  đứt 0.080% ( 28)  trễ    7.0
+ít đứt nhất trong ứng viên (biết trước): đứt 0.003% (3), trễ 7.0
+
+== gd15_nhẹ (9066 truy vấn)   [chuẩn hoá min-max | tỉ lệ]
+α=0.0: G  13.70%  đứt 0.000% (  0 truy vấn)  trễ sống    8.8 ms  |  G  13.70%  đứt 0.000% (  0)  trễ    8.8
+α=0.1: G  13.66%  đứt 0.000% (  0 truy vấn)  trễ sống    8.8 ms  |  G   2.24%  đứt 0.000% (  0)  trễ    7.9
+α=0.2: G  13.63%  đứt 0.000% (  0 truy vấn)  trễ sống    8.8 ms  |  G   2.24%  đứt 0.000% (  0)  trễ    7.9
+α=0.3: G  13.63%  đứt 0.000% (  0 truy vấn)  trễ sống    8.8 ms  |  G   2.18%  đứt 0.000% (  0)  trễ    7.9
+α=0.4: G  13.62%  đứt 0.000% (  0 truy vấn)  trễ sống    8.8 ms  |  G   2.19%  đứt 0.000% (  0)  trễ    7.9
+α=0.5: G   2.23%  đứt 0.000% (  0 truy vấn)  trễ sống    7.9 ms  |  G   2.22%  đứt 0.000% (  0)  trễ    7.9
+α=0.6: G   2.22%  đứt 0.000% (  0 truy vấn)  trễ sống    7.9 ms  |  G   2.23%  đứt 0.000% (  0)  trễ    7.9
+α=0.7: G   2.22%  đứt 0.000% (  0 truy vấn)  trễ sống    7.9 ms  |  G   2.22%  đứt 0.000% (  0)  trễ    7.9
+α=0.8: G   2.22%  đứt 0.000% (  0 truy vấn)  trễ sống    7.9 ms  |  G   2.22%  đứt 0.000% (  0)  trễ    7.9
+α=0.9: G   2.22%  đứt 0.000% (  0 truy vấn)  trễ sống    7.9 ms  |  G   2.22%  đứt 0.000% (  0)  trễ    7.9
+α=1.0: G   2.22%  đứt 0.000% (  0 truy vấn)  trễ sống    7.9 ms  |  G   2.22%  đứt 0.000% (  0)  trễ    7.9
+ít đứt nhất trong ứng viên (biết trước): đứt 0.000% (0), trễ 7.9

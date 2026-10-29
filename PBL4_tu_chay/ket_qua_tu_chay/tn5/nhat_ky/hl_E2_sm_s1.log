@@ -1,0 +1,22 @@
+[E2_sm_s1] N=224 | train 63608 đường/162397 bước | val 3129/8800 | test 23479/60745
+[E2_sm_s1] tham số: 101,442 | GNN 4 lớp, H=64, đầu ra classifier
+[E2_sm_s1] epoch  0 | loss 0.9700 | 166s
+[E2_sm_s1] epoch  1 | loss 0.5804 | 166s
+[E2_sm_s1] epoch  2 | loss 0.4854 | 165s | val next-hop 76.6% *
+[E2_sm_s1] epoch  3 | loss 0.4316 | 166s
+[E2_sm_s1] epoch  4 | loss 0.4026 | 165s
+[E2_sm_s1] epoch  5 | loss 0.3777 | 166s | val next-hop 77.4% *
+[E2_sm_s1] epoch  6 | loss 0.3566 | 165s
+[E2_sm_s1] epoch  7 | loss 0.3321 | 166s
+[E2_sm_s1] epoch  8 | loss 0.3071 | 167s | val next-hop 78.6% *
+[E2_sm_s1] epoch  9 | loss 0.2824 | 166s
+[E2_sm_s1] epoch 10 | loss 0.2621 | 165s
+[E2_sm_s1] epoch 11 | loss 0.2501 | 165s | val next-hop 76.6%
+[E2_sm_s1] guidance chọn trên VAL: w=1.0 (val w1.0=77.7%)
+[E2_sm_s1] TEST next-hop: mô hình 85.3% | ngẫu nhiên 16.4% | tham lam trễ thấp 19.7%
+[E2_sm_s1] rollout xong sau 54s
+[E2_sm_s1] ROLLOUT mo_hinh   : tới đích  99.9% | trễ/Dijkstra TB 1.069 | trong 10% tối ưu  89.9% | trùng oracle  67.5% | đúng tầng  92.5%
+[E2_sm_s1] ROLLOUT tham_lam  : tới đích   9.5% | trễ/Dijkstra TB 1.992 | trong 10% tối ưu  38.7% | trùng oracle   2.4% | đúng tầng  89.2%
+[E2_sm_s1] ROLLOUT ngau_nhien: tới đích   5.9% | trễ/Dijkstra TB 5.314 | trong 10% tối ưu  26.6% | trùng oracle   1.1% | đúng tầng  77.2%
+[E2_sm_s1] Đã lưu ket_qua_tu_chay\tn5\mo_hinh\E2_sm_s1.pt và ket_qua_tu_chay\tn5\mo_hinh\E2_sm_s1_results.json
+[0m

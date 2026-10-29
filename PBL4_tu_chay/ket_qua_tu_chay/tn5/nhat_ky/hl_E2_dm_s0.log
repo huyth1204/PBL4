@@ -1,0 +1,22 @@
+[E2_dm_s0] N=224 | train 63608 đường/162397 bước | val 3129/8800 | test 23479/60745
+[E2_dm_s0] tham số: 107,842 | GNN 4 lớp, H=64, đầu ra diffusion2
+[E2_dm_s0] epoch  0 | loss 0.9505 | 175s
+[E2_dm_s0] epoch  1 | loss 0.4946 | 174s
+[E2_dm_s0] epoch  2 | loss 0.4501 | 174s | val next-hop 74.8% *
+[E2_dm_s0] epoch  3 | loss 0.4207 | 172s
+[E2_dm_s0] epoch  4 | loss 0.3916 | 175s
+[E2_dm_s0] epoch  5 | loss 0.3799 | 174s | val next-hop 74.7%
+[E2_dm_s0] epoch  6 | loss 0.3656 | 173s
+[E2_dm_s0] epoch  7 | loss 0.3506 | 174s
+[E2_dm_s0] epoch  8 | loss 0.3330 | 175s | val next-hop 74.7%
+[E2_dm_s0] epoch  9 | loss 0.3230 | 173s
+[E2_dm_s0] epoch 10 | loss 0.3104 | 174s
+[E2_dm_s0] epoch 11 | loss 0.2988 | 173s | val next-hop 75.0% *
+[E2_dm_s0] guidance chọn trên VAL: w=1.0 (val w1.0=77.7%, w2.0=75.3%, w3.0=70.6%, w4.0=67.4%)
+[E2_dm_s0] TEST next-hop: mô hình 85.2% | ngẫu nhiên 16.4% | tham lam trễ thấp 19.7%
+[E2_dm_s0] rollout xong sau 58s
+[E2_dm_s0] ROLLOUT mo_hinh   : tới đích  99.9% | trễ/Dijkstra TB 1.054 | trong 10% tối ưu  90.0% | trùng oracle  67.4% | đúng tầng  92.3%
+[E2_dm_s0] ROLLOUT tham_lam  : tới đích   9.5% | trễ/Dijkstra TB 1.992 | trong 10% tối ưu  38.7% | trùng oracle   2.4% | đúng tầng  89.2%
+[E2_dm_s0] ROLLOUT ngau_nhien: tới đích   5.9% | trễ/Dijkstra TB 5.314 | trong 10% tối ưu  26.6% | trùng oracle   1.1% | đúng tầng  77.2%
+[E2_dm_s0] Đã lưu ket_qua_tu_chay\tn5\mo_hinh\E2_dm_s0.pt và ket_qua_tu_chay\tn5\mo_hinh\E2_dm_s0_results.json
+[0m

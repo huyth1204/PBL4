@@ -1,0 +1,58 @@
+{
+  "prapiroon_2024": {
+    "lookup": {
+      "samples": 2125464,
+      "survival_rate": 0.9974899598393574,
+      "brier": 0.002031997947035553,
+      "log_loss": 0.008459998998687771
+    },
+    "constant_train_baseline": {
+      "samples": 2125464,
+      "survival_rate": 0.9974899598393574,
+      "brier": 0.0025038082931524543,
+      "log_loss": 0.017548431284651705
+    }
+  },
+  "trami_2024": {
+    "lookup": {
+      "samples": 2116650,
+      "survival_rate": 0.9979883306167765,
+      "brier": 0.0015656288864110207,
+      "log_loss": 0.006294340210901771
+    },
+    "constant_train_baseline": {
+      "samples": 2116650,
+      "survival_rate": 0.9979883306167765,
+      "brier": 0.002008200123814346,
+      "log_loss": 0.014615249722834657
+    }
+  },
+  "kalmaegi_2025": {
+    "lookup": {
+      "samples": 1431496,
+      "survival_rate": 0.998973102265043,
+      "brier": 0.0008190868687959371,
+      "log_loss": 0.003169093188878632
+    },
+    "constant_train_baseline": {
+      "samples": 1431496,
+      "survival_rate": 0.998973102265043,
+      "brier": 0.0010288873391824792,
+      "log_loss": 0.008819335973127557
+    }
+  },
+  "pooled": {
+    "lookup": {
+      "samples": 5673610,
+      "survival_rate": 0.9980500950893699,
+      "brier": 0.001551983030778247,
+      "log_loss": 0.006317121328864541
+    },
+    "constant_train_baseline": {
+      "samples": 5673610,
+      "survival_rate": 0.9980500950893699,
+      "brier": 0.0019467780289020545,
+      "log_loss": 0.014251732397191052
+    }
+  }
+}

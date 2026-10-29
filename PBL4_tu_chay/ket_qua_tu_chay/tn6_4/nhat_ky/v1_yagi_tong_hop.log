@@ -1,0 +1,16 @@
+38400 truy vấn, 16 kịch bản, giai đoạn bão 53%, truy vấn có đầu UAV 78%
+                           tất cả  mặt đất   có UAV  lúc bão  trễ ms
+khong|hau_kiem             59.47%   84.72%   52.23% 
+khong|quy_dao              58.11%   82.78%   51.03%   37.56%   19.95
+khong|score                58.26%   83.12%   51.12%   37.84%   19.95
+gan_nut_yeu|hau_kiem       59.53%   84.75%   52.30% 
+gan_nut_yeu|quy_dao        58.14%   82.82%   51.07%   37.62%   19.96
+gan_nut_yeu|score          58.29%   83.15%   51.16%   37.89%   19.97
+vet_can|hau_kiem           59.52%   84.74%   52.29% 
+vet_can|quy_dao            58.13%   82.80%   51.05%   37.57%   19.93
+vet_can|score              58.27%   83.13%   51.14%   37.83%   19.95
+C1 vet_can+score − khong+quy_dao      +0.164 điểm KTC [+0.073; +0.260] ĐẠT | mặt đất +0.350 [+0.105; +0.643] | 85 truy vấn khác kết quả
+C2 vet_can+score − khong+score        +0.016 điểm KTC [-0.026; +0.062] trượt | mặt đất +0.012 [-0.023; +0.047] | 18 truy vấn khác kết quả
+C3 vet_can+score − vet_can+quy_dao    +0.141 điểm KTC [+0.057; +0.229] ĐẠT | mặt đất +0.327 [+0.093; +0.619] | 70 truy vấn khác kết quả
+C4 vet_can+score − gan_nut_yeu+score  -0.018 điểm KTC [-0.078; +0.044] trượt | mặt đất -0.023 [-0.093; +0.035] | 33 truy vấn khác kết quả
+số lần đổi chỗ: {'gan_nut_yeu': 92, 'vet_can': 5}

@@ -1,0 +1,40 @@
+{'train': [('2024-01-24T01:00', 'bao'), ('2024-07-30T11:00', 'nhe'), ('2024-10-12T04:00', 'nhe'), ('2024-11-27T04:00', 'bao'), ('2024-11-28T00:00', 'bao'), ('2024-12-10T16:00', 'nhe'), ('2024-12-18T05:00', 'nhe'), ('2024-12-28T00:00', 'bao'), ('2025-01-10T18:00', 'bao'), ('2025-01-11T02:00', 'bao'), ('2025-01-11T16:00', 'bao'), ('2025-01-12T20:00', 'nhe'), ('2025-02-16T21:00', 'nhe'), ('2025-07-21T01:00', 'bao'), ('2025-07-21T09:00', 'bao'), ('2025-07-21T20:00', 'bao'), ('2025-07-22T09:00', 'bao'), ('2025-07-31T23:00', 'nhe'), ('2025-08-25T10:00', 'bao'), ('2025-08-30T04:00', 'bao'), ('2025-09-28T08:00', 'bao'), ('2025-09-29T06:00', 'bao'), ('2025-11-19T09:00', 'bao'), ('2025-12-27T01:00', 'nhe')], 'val': [('2024-10-27T00:00', 'bao'), ('2024-12-09T07:00', 'nhe'), ('2024-12-14T01:00', 'bao'), ('2024-12-14T08:00', 'bao'), ('2025-02-24T00:00', 'bao'), ('2025-02-24T07:00', 'bao'), ('2025-05-03T05:00', 'nhe'), ('2025-06-13T00:00', 'bao'), ('2025-06-25T10:00', 'nhe'), ('2025-07-19T11:00', 'nhe'), ('2025-11-25T01:00', 'bao'), ('2025-11-27T00:00', 'bao')]}
+train 1/24 (bao) xong sau 7s, đã có 177,573 mẫu liên kết
+train 2/24 (nhe) xong sau 7s, đã có 356,226 mẫu liên kết
+train 3/24 (nhe) xong sau 7s, đã có 535,302 mẫu liên kết
+train 4/24 (bao) xong sau 9s, đã có 711,383 mẫu liên kết
+train 5/24 (bao) xong sau 15s, đã có 887,983 mẫu liên kết
+train 6/24 (nhe) xong sau 9s, đã có 1,066,658 mẫu liên kết
+train 7/24 (nhe) xong sau 4s, đã có 1,245,416 mẫu liên kết
+train 8/24 (bao) xong sau 5s, đã có 1,423,978 mẫu liên kết
+train 9/24 (bao) xong sau 4s, đã có 1,595,703 mẫu liên kết
+train 10/24 (bao) xong sau 4s, đã có 1,771,595 mẫu liên kết
+train 11/24 (bao) xong sau 4s, đã có 1,949,531 mẫu liên kết
+train 12/24 (nhe) xong sau 4s, đã có 2,126,207 mẫu liên kết
+train 13/24 (nhe) xong sau 4s, đã có 2,306,309 mẫu liên kết
+train 14/24 (bao) xong sau 4s, đã có 2,483,572 mẫu liên kết
+train 15/24 (bao) xong sau 5s, đã có 2,659,746 mẫu liên kết
+train 16/24 (bao) xong sau 5s, đã có 2,826,967 mẫu liên kết
+train 17/24 (bao) xong sau 6s, đã có 2,997,039 mẫu liên kết
+train 18/24 (nhe) xong sau 5s, đã có 3,176,292 mẫu liên kết
+train 19/24 (bao) xong sau 13s, đã có 3,344,197 mẫu liên kết
+train 20/24 (bao) xong sau 11s, đã có 3,513,024 mẫu liên kết
+train 21/24 (bao) xong sau 5s, đã có 3,683,174 mẫu liên kết
+train 22/24 (bao) xong sau 6s, đã có 3,851,012 mẫu liên kết
+train 23/24 (bao) xong sau 5s, đã có 4,029,025 mẫu liên kết
+train 24/24 (nhe) xong sau 5s, đã có 4,208,437 mẫu liên kết
+xác suất sống theo băng tần {0: 1.0, 5: 0.9901, 12: 0.9625, 20: 0.9546, 28: 0.9666}
+val 1/12 (bao) xong sau 20s: 1738 truy vấn, tỉ lệ giai đoạn bão (15 phút) 81%, ứng viên TB 1.7
+val 2/12 (nhe) xong sau 20s: 2144 truy vấn, tỉ lệ giai đoạn bão (15 phút) 14%, ứng viên TB 1.8
+val 3/12 (bao) xong sau 20s: 2013 truy vấn, tỉ lệ giai đoạn bão (15 phút) 90%, ứng viên TB 1.6
+val 4/12 (bao) xong sau 22s: 1889 truy vấn, tỉ lệ giai đoạn bão (15 phút) 87%, ứng viên TB 1.6
+val 5/12 (bao) xong sau 21s: 1931 truy vấn, tỉ lệ giai đoạn bão (15 phút) 86%, ứng viên TB 1.7
+val 6/12 (bao) xong sau 22s: 1853 truy vấn, tỉ lệ giai đoạn bão (15 phút) 40%, ứng viên TB 1.8
+val 7/12 (nhe) xong sau 23s: 2170 truy vấn, tỉ lệ giai đoạn bão (15 phút) 0%, ứng viên TB 1.7
+val 8/12 (bao) xong sau 23s: 2026 truy vấn, tỉ lệ giai đoạn bão (15 phút) 85%, ứng viên TB 1.7
+val 9/12 (nhe) xong sau 25s: 2304 truy vấn, tỉ lệ giai đoạn bão (15 phút) 0%, ứng viên TB 1.8
+val 10/12 (nhe) xong sau 27s: 2100 truy vấn, tỉ lệ giai đoạn bão (15 phút) 17%, ứng viên TB 1.8
+val 11/12 (bao) xong sau 20s: 1904 truy vấn, tỉ lệ giai đoạn bão (15 phút) 90%, ứng viên TB 1.7
+val 12/12 (bao) xong sau 17s: 2096 truy vấn, tỉ lệ giai đoạn bão (15 phút) 80%, ứng viên TB 1.6
+XONG_THU_TRONG_SO
+[0m
