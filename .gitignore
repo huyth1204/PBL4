@@ -25,3 +25,8 @@ results/yagi2/test_tho/
 # bản sao lưu tạm trước khi ghi đè dữ liệu lớn (giữ tại chỗ để đối chiếu hồi quy,
 # KHÔNG commit — sinh lại được bằng dataset/cong_cu_bo_sung_thoi_tiet.py)
 data/_backup_*.npz
+
+# dữ liệu thí nghiệm 3 (bão + nhiều luồng, điểm 70/30) sinh lại được bằng src/nhieu_luong/tao_du_lieu_rr.py
+data/bao_rr/
+# dữ liệu thí nghiệm 4–7 (tập tuyến dự phòng) sinh lại được bằng src/nhieu_luong/tao_du_lieu_dt.py (xem scripts/chay_thi_nghiem.py)
+data/bao_da_tuyen/
