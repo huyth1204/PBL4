@@ -56,7 +56,10 @@ def kiem_tra_cau_hinh(tham_so, meta):
     if (not isinstance(app, dict) or app.get('scope') != 'weather_only_with_fixed_background_load'
             or app.get('required_flags') != {'xung_dot': False, 'tai': False}):
         raise ValueError('applicability thiếu hoặc không thuộc phạm vi được hỗ trợ')
-    bad = [k for k in sorted(set(expected) | set(actual)) if expected.get(k) != actual.get(k)]
+    # Tham số thêm sau khi đếm bảng (vd. mô hình hỏng thí nghiệm 8) không có trong metadata: chỉ chấp nhận khi đang ở giá
+    # trị mặc định (tức tắt) — bật lên là khác hợp đồng, phải báo lỗi như mọi tham số khác.
+    mac_dinh = tham_so_dict(ThamSo())
+    bad = [k for k in sorted(set(expected) | set(actual)) if expected.get(k, mac_dinh.get(k)) != actual.get(k)]
     bad += [k for k, v in app['required_flags'].items() if actual[k] != v or expected.get(k) != v]
     if contract['dt_seconds'] != actual['dt_s'] or actual['dt_s'] != 20:
         bad.append('dt_seconds/dt_s')

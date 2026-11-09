@@ -7,6 +7,7 @@ k1  ma trận ô tiêu chí: Lai6 so với Dijkstra phạt (TN 6: C, B, A; TN 7a
 k2  Δ mất dịch vụ (C4) kèm CI 95% của từng ô
 k3  TN 6 — đóng góp của dữ liệu và của đặc trưng: DM (TN 4) → DM6a (thêm dữ liệu) → DM6 (thêm đặc trưng)
 k4  TN 7b — hai thành phần của mất dịch vụ theo khối lượng dữ liệu
+k5  TN 6 — mất dịch vụ theo mức khắc nghiệt thời tiết ở giờ quyết định (gộp C, B, A, 4–5 luồng)
 """
 
 from __future__ import annotations
@@ -156,6 +157,166 @@ def k4_thanh_phan_7b(plt):
     return so
 
 
+TANG = [(0, 5, "< 5%"), (5, 15, "5–15%"), (15, 30, "15–30%"), (30, 101, "≥ 30%\n(đỉnh bão)")]
+
+
+def k5_khac_nghiet_tn6(plt):
+    """Tầng khắc nghiệt = % điểm thời tiết có mưa > 11 mm/h hoặc gió giật > 15 m/s ở giờ quyết định (như BAO_CAO_6)."""
+    from src.nhieu_luong import tao_du_lieu_dt as tdt
+    from src.nhieu_luong import tao_du_lieu_rr as td
+    if td._tt is None:
+        td._khoi_tao_nhe()
+    tt = td._tt
+    xau = 100 * ((tt.precip > 11) | (tt.gust > 15)).mean(1)                       # [giờ] % điểm khắc nghiệt
+    gom = {i: {"n": 0, "a": [], "b": [], "lai": [], "bo": []} for i in range(len(TANG))}
+    for bo in ("c6", "mua5", "yagi5"):
+        h0 = [h for _, h, _ in tdt.cac_cua_so_tap(bo)]
+        for r in nap(bo, "k4_5"):
+            v = xau[h0[r["kb"]] + int(r["t"] * 20 // 3600)]
+            i = next(j for j, (lo, hi, _) in enumerate(TANG) if lo <= v < hi)
+            dp = r["ens"]["dphat"]
+            lai = r["ens"]["dm6" if r["rho_hat"] < 1.1 else "dm6_tkcb"]
+            g = gom[i]
+            g["n"] += 1
+            g["a"].append(dp["khong_tuyen_song_%"]); g["b"].append(dp["du_phong_qua_tai_%"])
+            g["lai"].append(lai["mat_dv_%"]); g["bo"].append(bo)
+    so = {TANG[i][2].split("\n")[0]: {"n": g["n"], "dphat_a": float(np.mean(g["a"])), "dphat_b": float(np.mean(g["b"])),
+                                       "lai6": float(np.mean(g["lai"])),
+                                       "ti_le_yagi_%": 100 * float(np.mean([b == "yagi5" for b in g["bo"]]))}
+          for i, g in gom.items()}
+    x = np.arange(len(TANG))
+    a = np.array([v["dphat_a"] for v in so.values()]); b = np.array([v["dphat_b"] for v in so.values()])
+    lai = np.array([v["lai6"] for v in so.values()])
+    fig, ax = plt.subplots(figsize=(9, 4.6))
+    ax.bar(x - 0.2, a, 0.38, color=MAU[1], label="Dijkstra phạt — (a) mọi tuyến cùng đứt", zorder=2)
+    ax.bar(x - 0.2, b, 0.38, bottom=a, color=MAU[0], label="Dijkstra phạt — (b) dự phòng quá tải", zorder=2)
+    ax.bar(x + 0.2, lai, 0.38, color=MAU[2], label="Lai6 (tổng)", zorder=2)
+    for i, v in enumerate(so.values()):
+        ax.text(i - 0.2, a[i] + b[i] + 0.6, f"{a[i] + b[i]:.1f}", ha="center", fontsize=9)
+        ax.text(i + 0.2, lai[i] + 0.6, f"{lai[i]:.1f}\n({lai[i] - a[i] - b[i]:+.1f})", ha="center", fontsize=9,
+                color="#1b7a55")
+        ax.text(i, -0.16, f"n = {v['n']:,}".replace(",", ".") + f"\nYagi {v['ti_le_yagi_%']:.0f}%", ha="center",
+                va="top", fontsize=8.5, color="#52514e", transform=ax.get_xaxis_transform())
+    ax.set_xticks(x, [t for _, _, t in TANG])
+    ax.set_ylim(0, max(a + b) * 1.25)
+    ax.set_ylabel("Lưu lượng mất dịch vụ (%)")
+    ax.set_xlabel("% điểm thời tiết có mưa > 11 mm/h hoặc gió giật > 15 m/s ở giờ quyết định", labelpad=34)
+    ax.grid(axis="y", color="#e4e3df", lw=0.8, zorder=0)
+    ax.legend(frameon=False, fontsize=9, loc="upper left")
+    ax.set_title("TN 6 — thời tiết càng khắc nghiệt, Dijkstra phạt càng mất dịch vụ (chủ yếu phần b)", loc="left",
+                 fontsize=11)
+    fig.tight_layout()
+    fig.savefig(RA / "k5_tn6_theo_muc_khac_nghiet.png", dpi=160)
+    plt.close(fig)
+    return so
+
+
+def o_dm_tn4():
+    """DM của thí nghiệm 4 (dữ liệu bão, không đặc trưng giông), chấm trên đúng các tình huống của bộ C, B, A ở TN 6 và
+    theo đúng quy tắc ô của TN 6 (C2 + C4, C5 ở 10 / 20 luồng). te_hon = C4 có CI nằm hẳn TRÊN 0 (tệ hơn Dijkstra)."""
+    from scripts.phan_tich_dt import bootstrap
+    rng = np.random.default_rng(0)
+    ra = {}
+    for bo, nhan in (("c6", "C ngày giông"), ("mua5", "B mưa lớn"), ("yagi5", "A Yagi")):
+        hang = []
+        for kd, d in O:
+            lo, hi = DAI[d]
+            x = [r for r in nap(bo, kd) if lo <= r["rho_hat"] < hi]
+            kb = np.array([r["kb"] for r in x])
+            v = lambda m, k: np.array([r["ens"][m][k] for r in x])
+            c2 = bootstrap(v("dm", "J") - v("dphat", "J"), kb, rng)
+            c4 = bootstrap(v("dm", "mat_dv_%") - v("dphat", "mat_dv_%"), kb, rng)
+            t10 = [r["tg_ms"]["online_tkcb10_6"] for r in x if "online_tkcb10_6" in r["tg_ms"]]
+            tdm = float(np.median([r["tg_ms"]["dm"] for r in x]))
+            c5 = bool(t10) and tdm <= float(np.median(t10)) and tdm <= 1000
+            hang.append({"C4": c4, "C2": c2, "dat_C2": c2[1][1] < 0, "dat_C4": c4[1][1] < 0, "te_hon": c4[1][0] > 0,
+                         "thang": bool(c2[1][1] < 0 and c4[1][1] < 0 and (kd == "k4_5" or c5))})
+        ra[nhan] = hang
+    return ra
+
+
+def k6_tn4_tn6(plt, tn4):
+    """Ma trận ô: DM của TN 4 và Lai6 của TN 6 trên CÙNG tình huống của ba bộ test."""
+    from matplotlib.colors import TwoSlopeNorm
+    tn6 = o_tn6()
+    hang = []
+    for (nhan, h4), h6 in zip(tn4.items(), tn6.values()):
+        hang += [(f"{nhan} — DM (TN 4)", h4), (f"{nhan} — Lai6 (TN 6)", [dict(x, te_hon=x["C4"][1][0] > 0) for x in h6])]
+    M = np.array([[x["C4"][0] for x in h] for _, h in hang])
+    fig, ax = plt.subplots(figsize=(11.5, 5.0))
+    im = ax.imshow(M, cmap="RdBu", norm=TwoSlopeNorm(vcenter=0, vmin=-4.0, vmax=2.5), aspect="auto")
+    for i, (_, h) in enumerate(hang):
+        for j, x in enumerate(h):
+            ky = "THẮNG" if x["thang"] else ("TỆ HƠN" if x["te_hon"] else
+                                             ("trượt C2" if x["dat_C4"] else ("trượt C4" if x["dat_C2"] else "trượt")))
+            ax.text(j, i, f"{x['C4'][0]:+.1f}\n{ky}", ha="center", va="center", fontsize=8.3,
+                    color="white" if (x["C4"][0] < -2.5 or x["C4"][0] > 1.6) else "#1f1e1b",
+                    fontweight="bold" if (x["thang"] or x["te_hon"]) else "normal")
+        so_t, so_x = sum(x["thang"] for x in h), sum(x["te_hon"] for x in h)
+        ax.text(len(O) - 0.35, i, f"  {so_t}/9" + (f"  ({so_x} tệ hơn)" if so_x else ""), va="center", fontsize=9.5)
+    ax.set_yticks(range(len(hang)), [n for n, _ in hang], fontsize=9)
+    ax.set_xticks(range(len(O)), [f"{NHAN_K[kd]} luồng\n{NHAN_DAI[d]}" for kd, d in O], fontsize=8.5)
+    for x in (2.5, 5.5):
+        ax.axvline(x, color="white", lw=3)
+    for y in (1.5, 3.5):
+        ax.axhline(y, color="white", lw=4)
+    ax.tick_params(length=0)
+    for s in ax.spines.values():
+        s.set_visible(False)
+    cb = fig.colorbar(im, ax=ax, shrink=0.8, pad=0.13)
+    cb.set_label("Phương pháp − Dijkstra phạt, mất dịch vụ (điểm %)")
+    cb.outline.set_visible(False)
+    ax.set_title("TN 4 → TN 6 trên cùng kịch bản: THẮNG = đạt C2 và C4 (CI 95%); TỆ HƠN = mất dịch vụ cao hơn Dijkstra có "
+                 "ý nghĩa", loc="left", fontsize=10.5)
+    fig.tight_layout()
+    fig.savefig(RA / "k6_tn4_tn6_ma_tran.png", dpi=160)
+    plt.close(fig)
+
+
+def k7_tn4_tn6_khac_nghiet(plt):
+    """Mất dịch vụ theo mức khắc nghiệt: Dijkstra phạt, DM (TN 4), Lai6 (TN 6) trên cùng tình huống (C, B, A, 4–5 luồng)."""
+    from src.nhieu_luong import tao_du_lieu_dt as tdt
+    from src.nhieu_luong import tao_du_lieu_rr as td
+    if td._tt is None:
+        td._khoi_tao_nhe()
+    tt = td._tt
+    xau = 100 * ((tt.precip > 11) | (tt.gust > 15)).mean(1)
+    gom = {i: {"dphat": [], "dm": [], "lai6": []} for i in range(len(TANG))}
+    for bo in ("c6", "mua5", "yagi5"):
+        h0 = [h for _, h, _ in tdt.cac_cua_so_tap(bo)]
+        for r in nap(bo, "k4_5"):
+            v = xau[h0[r["kb"]] + int(r["t"] * 20 // 3600)]
+            i = next(j for j, (lo, hi, _) in enumerate(TANG) if lo <= v < hi)
+            gom[i]["dphat"].append(r["ens"]["dphat"]["mat_dv_%"])
+            gom[i]["dm"].append(r["ens"]["dm"]["mat_dv_%"])
+            gom[i]["lai6"].append(r["ens"]["dm6" if r["rho_hat"] < 1.1 else "dm6_tkcb"]["mat_dv_%"])
+    so = {TANG[i][2].split("\n")[0]: {k: float(np.mean(v)) for k, v in g.items()} for i, g in gom.items()}
+    x = np.arange(len(TANG))
+    fig, ax = plt.subplots(figsize=(9.5, 4.6))
+    pp = [("dphat", "Dijkstra phạt", MAU[0]), ("dm", "DM (TN 4 — học từ bão)", MAU[1]),
+          ("lai6", "Lai6 (TN 6 — thêm ngày giông + đặc trưng UAV)", MAU[2])]
+    for k, (m, nhan, mau) in enumerate(pp):
+        v = np.array([so[t][m] for t in so])
+        ax.bar(x + (k - 1) * 0.27, v, 0.25, color=mau, label=nhan, zorder=2)
+        for i, y in enumerate(v):
+            chenh = f"{y - so[list(so)[i]]['dphat']:+.1f}".replace("-0.0", "±0.0").replace("+0.0", "±0.0")
+            nhan_so = f"{y:.1f}" if m == "dphat" else f"{y:.1f}\n({chenh})"
+            ax.text(i + (k - 1) * 0.27, y + 0.6, nhan_so, ha="center", fontsize=8.3,
+                    color={"dphat": "#1f1e1b", "dm": "#a8471d", "lai6": "#1b7a55"}[m])
+    ax.set_xticks(x, [t for _, _, t in TANG])
+    ax.set_ylim(0, 62)
+    ax.set_ylabel("Lưu lượng mất dịch vụ (%)")
+    ax.set_xlabel("% điểm thời tiết có mưa > 11 mm/h hoặc gió giật > 15 m/s ở giờ quyết định")
+    ax.grid(axis="y", color="#e4e3df", lw=0.8, zorder=0)
+    ax.legend(frameon=False, fontsize=9, loc="upper left")
+    ax.set_title("DM của TN 4 chỉ hơn Dijkstra ở đỉnh bão; DM của TN 6 hơn ở mọi mức thời tiết", loc="left",
+                 fontsize=11)
+    fig.tight_layout()
+    fig.savefig(RA / "k7_tn4_tn6_theo_muc_khac_nghiet.png", dpi=160)
+    plt.close(fig)
+    return so
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -168,7 +329,14 @@ def main():
     k2_rung(plt, bang)
     k3_dong_gop_tn6(plt)
     so = k4_thanh_phan_7b(plt)
-    print(json.dumps({"so_o_thang": so_thang, "thanh_phan_7b": so}, ensure_ascii=False, indent=1))
+    kn = k5_khac_nghiet_tn6(plt)
+    tn4 = o_dm_tn4()
+    k6_tn4_tn6(plt, tn4)
+    kn47 = k7_tn4_tn6_khac_nghiet(plt)
+    print(json.dumps({"so_o_thang": so_thang, "thanh_phan_7b": so, "khac_nghiet_tn6": kn,
+                      "dm_tn4_tren_bo_tn6": {h: {"thang": sum(x["thang"] for x in v), "te_hon": sum(x["te_hon"] for x in v)}
+                                             for h, v in tn4.items()}, "khac_nghiet_tn4_tn6": kn47},
+                     ensure_ascii=False, indent=1))
 
 
 if __name__ == "__main__":

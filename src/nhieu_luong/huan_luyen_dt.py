@@ -37,7 +37,10 @@ THI_NGHIEM = {4: {"train": ("train_k4_5",), "val": ("val_k4_5",), "thu_muc": md.
               6: {"train": ("train_k4_5", "train6_k4_5"), "val": ("val_k4_5", "val6_k4_5"),
                   "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh6"},
               7: {"train": ("train_k4_5", "train6_k4_5"), "val": ("val_k4_5", "val6_k4_5"),
-                  "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh7"}}
+                  "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh7"},
+              # thí nghiệm 8: DM8b học trong thế giới B (cùng cửa sổ / seed với dữ liệu của DM6 = thế giới A)
+              8: {"train": ("train_b_k4_5", "train6_b_k4_5"), "val": ("val_b_k4_5", "val6_b_k4_5"),
+                  "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh8"}}
 GAP_DOI = ("train7s_k4_5", "train7x_k4_5")      # thí nghiệm 7b: thêm vào để có mốc 200%
 
 
@@ -94,8 +97,9 @@ def chia_lo(ds, B, rng):
     return lo
 
 
-def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, them=False, ti_le=1.0, gap_doi=False):
-    torch.set_num_threads(1)
+def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, them=False, ti_le=1.0, gap_doi=False,
+               luong=1):
+    torch.set_num_threads(luong)
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     cfg = THI_NGHIEM[tn]
@@ -175,8 +179,11 @@ if __name__ == "__main__":
     ap.add_argument("--them", action="store_true", help="thêm 3 đặc trưng giông quanh UAV (thí nghiệm 6)")
     ap.add_argument("--ti-le", type=float, default=1.0, help="thí nghiệm 7b: phần cửa sổ train dùng")
     ap.add_argument("--gap-doi", action="store_true", help="thí nghiệm 7b: thêm dữ liệu train7s + train7x")
+    ap.add_argument("--seed", type=int, default=0, help="hạt giống huấn luyện (thí nghiệm 8: 0, 1, 2)")
+    ap.add_argument("--luong-cpu", type=int, default=1, help="số luồng CPU cho PyTorch khi huấn luyện")
     a = ap.parse_args()
     if a.viec == "chon-buoc":
         chon_buoc(a.thi_nghiem, a.ten or "dm")
     else:
-        huan_luyen(a.viec, tn=a.thi_nghiem, ten=a.ten, them=a.them, ti_le=a.ti_le, gap_doi=a.gap_doi)
+        huan_luyen(a.viec, tn=a.thi_nghiem, ten=a.ten, them=a.them, ti_le=a.ti_le, gap_doi=a.gap_doi, seed=a.seed,
+                   luong=a.luong_cpu)

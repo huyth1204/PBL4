@@ -243,18 +243,50 @@ HINH_HOC = {"val5": "val", "yagi5": "test", "mua5": "test",        # tập của
             "train6": "train", "val6": "val", "c6": "test", "train7s": "train", "train7x": "train",
             **{f"{b}7{s}": "test" for b in ("c", "y") for s in ("w", "h", "wh")}}
 SEED_6 = {"c6": 720000, "val6": 710000, "train6": 700000, "train7x": 730000}
-TAP_TRAIN = {"train", "train6", "train7s", "train7x"}
+TAP_TRAIN = {"train", "train6", "train7s", "train7x", "train_b", "train6_b"}
 # Thí nghiệm 7a — thế giới cực đoan giả lập (nhãn synthetic_stress, không phải cường độ đo được). Bộ định tuyến không
 # biết: bảng rủi ro và mọi phương pháp vẫn dùng cấu hình hợp đồng td._p; chỉ thế giới mô phỏng / chấm bị stress.
 STRESS = {"w": (1.5, 1.25, {}), "h": (1.0, 1.0, {"gio_giat_max": 12.0, "p_set": 0.2, "set_tb": 6.0}),
           "wh": (1.5, 1.25, {"gio_giat_max": 12.0, "p_set": 0.2, "set_tb": 6.0})}
 TAP_7 = {f"{b}7{s}": ({"c": "c6", "y": "yagi5"}[b], s) for b in ("c", "y") for s in ("w", "h", "wh")}
+# Thí nghiệm 8 — "thế giới B" (results/bao_da_tuyen/TIEU_CHI_8.md): THỜI TIẾT THẬT giữ nguyên, chỉ đổi mô hình hỏng hóc.
+# Mỗi tập B dùng ĐÚNG cửa sổ và seed của tập gốc (thế giới A) → hai thế giới chỉ khác nhau ở cách hạ tầng hỏng.
+TAP_8 = {"train_b": "train", "train6_b": "train6", "val_b": "val", "val6_b": "val6", "c6_b": "c6", "yagi5_b": "yagi5"}
+THE_GIOI_B = {"uav_set_pmax": 0.30, "uav_set_L": 15.0, "dat_set_pmax": 0.05, "dat_set_L": 5.0, "set_d_max": 50.0,
+              "p_set": 0.0}                         # p_set = 0: bỏ "sét ngắt trạm ~1 phút" cũ, thay bằng hỏng theo khoảng cách
+UAV_12 = {"so": 5, "nguong_12": 12.0, "nguong_15": 15.0, "vi_do_bao": 16.0, "gio_bao": 17.2}
+THOI_TIET_KHI_HAU = GOC / "data" / "thoi_tiet_vn_2017_2021_1.npz"
 _moi_truong = {}
+
+
+def loai_uav(g=None):
+    """Thí nghiệm 8: hai loại UAV. VÙNG BÃO = vĩ độ ≥ 16°N (Bắc Bộ, Bắc Trung Bộ — nơi phần lớn bão đổ bộ): mọi UAV dùng
+    loại chịu gió 15 m/s. Ngoài vùng bão, 5 UAV có ÍT ngày gió giật ≥ 17,2 m/s (cấp 8) nhất trong khí hậu 2017–2021 dùng
+    loại 12 m/s; còn lại 15 m/s. Khí hậu 2017–2021 nằm ngoài thời gian kiểm tra 2024–2025, nên bố trí không nhìn trước dữ
+    liệu kiểm tra. (Không xếp theo gió giật thuần: ERA5 cho gió nội đô Hải Phòng thấp quanh năm dù đây là vùng bão đổ bộ.)
+    Trả ((tên, ngưỡng), ...) theo thứ tự nút."""
+    g = g or td._g
+    kh = np.load(THOI_TIET_KHI_HAU, allow_pickle=False)
+    ten_diem = [str(s) for s in kh["site_names"]]
+    ngay = np.array([str(t)[:10] for t in kh["time_utc"]])
+    uav = [g.names[n] for n in range(g.N) if g.kind[n] == "uav"]
+    ngoai = []
+    for u in uav:
+        i = ten_diem.index(u)
+        if float(kh["lat"][i]) < UAV_12["vi_do_bao"]:
+            ngoai.append((len(set(ngay[kh["gust"][:, i] >= UAV_12["gio_bao"]])), u))
+    loai_12 = {u for _, u in sorted(ngoai)[:UAV_12["so"]]}
+    return tuple((u, UAV_12["nguong_12"] if u in loai_12 else UAV_12["nguong_15"]) for u in uav)
 
 
 def moi_truong(tap):
     """(thời tiết, tham số) để MÔ PHỎNG thế giới của tập `tap`: thường là td._tt, td._p; tập 7a: mưa × hệ số, gió giật
-    × hệ số, UAV / trạm mặt đất dễ hỏng hơn."""
+    × hệ số, UAV / trạm mặt đất dễ hỏng hơn; tập 8 (thế giới B): thời tiết thật, UAV hai loại, hỏng theo khoảng cách
+    tới giông."""
+    if tap in TAP_8:
+        if tap not in _moi_truong:
+            _moi_truong[tap] = (td._tt, dataclasses.replace(td._p, hong_b=True, uav_gio_nguong=loai_uav(), **THE_GIOI_B))
+        return _moi_truong[tap]
     if tap not in TAP_7:
         return td._tt, td._p
     if tap not in _moi_truong:
@@ -331,6 +363,8 @@ def ngay_xau(tt):
 
 def cac_cua_so_tap(tap):
     """[(tên, h0, seed)] — thêm các tập của thí nghiệm 5, 6 (seed mới) vào các tập cũ."""
+    if tap in TAP_8:                                   # thí nghiệm 8: đúng cửa sổ + seed của tập gốc (thế giới A)
+        return cac_cua_so_tap(TAP_8[tap])
     if tap in SEED_6:
         return [("xau_" + d, h, SEED_6[tap] + i) for i, (d, h) in enumerate(ngay_xau(td._tt)[tap])]
     if tap in TAP_7:                                   # 7a: cùng cửa sổ với C / Yagi, seed mới
@@ -353,7 +387,7 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tap", choices=["train", "val", "test", *HINH_HOC], required=True)
+    ap.add_argument("--tap", choices=["train", "val", "test", *HINH_HOC, *TAP_8], required=True)
     ap.add_argument("--K", default="4-5")
     ap.add_argument("--buoc-moc", type=int, default=None, help="lấy mỗi n mốc (mặc định như thí nghiệm 3)")
     ap.add_argument("--tien-trinh", type=int, default=3)
@@ -362,14 +396,15 @@ def main():
     a = ap.parse_args()
     K_rg = phan_tich_K(a.K)
     td._khoi_tao_nhe()
-    moc = td.cac_moc(HINH_HOC.get(a.tap, a.tap))
+    goc = TAP_8.get(a.tap, a.tap)                         # thí nghiệm 8: mốc / tải như tập gốc của thế giới A
+    moc = td.cac_moc(HINH_HOC.get(goc, goc))
     if a.buoc_moc:
         moc = moc[::a.buoc_moc]
     ra = thu_muc(a.tap, K_rg)
     ra.mkdir(parents=True, exist_ok=True)
     if a.khong_thay and a.tap in TAP_TRAIN:
         raise SystemExit("train cần nhãn thầy")
-    lien_tuc = a.tap in HINH_HOC                          # thí nghiệm 5: tải liên tục
+    lien_tuc = goc in HINH_HOC                            # thí nghiệm 5: tải liên tục
     jobs = [(a.tap, K_rg, i, ten, h0, seed, moc, ra / f"kb_{i:04d}.pkl", a.mo_hinh, not a.khong_thay, lien_tuc)
             for i, (ten, h0, seed) in enumerate(cac_cua_so_tap(a.tap))]
     con = [j for j in jobs if not Path(j[7]).exists()]

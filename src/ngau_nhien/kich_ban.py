@@ -60,6 +60,14 @@ class ThamSo:
     uav_ha_canh: bool = True                        # tách "hạ cánh an toàn" khỏi "mất nút"
     p_set: float = 0.03                             # xác suất sét gây ngắt / snapshot khi có giông
     set_tb: float = 3.0                             # thời gian ngắt trung bình (snapshot)
+    # thí nghiệm 8 — mô hình hỏng "thế giới B" (results/bao_da_tuyen/TIEU_CHI_8.md). Mặc định TẮT = hành vi cũ.
+    hong_b: bool = False
+    uav_gio_nguong: tuple = ()                      # ((tên UAV, ngưỡng gió giật m/s), ...); thiếu tên → gio_giat_max
+    uav_set_pmax: float = 0.0                       # xác suất UAV HỎNG mỗi giờ khi giông ở khoảng cách 0
+    uav_set_L: float = 15.0                         # km, độ dài suy giảm theo khoảng cách tới giông
+    dat_set_pmax: float = 0.0                       # như trên cho trạm mặt đất (gateway / user)
+    dat_set_L: float = 5.0
+    set_d_max: float = 50.0                         # km; giông xa hơn coi như không gây hỏng
     # xung đột
     lam_xd: float = 0.1                             # số sự cố / giờ
     p_loai_xd: tuple = (0.5, 0.25, 0.25)            # gây nhiễu, mất nút, tăng tải
@@ -161,6 +169,38 @@ def _ar1(rng, T, n, phi, sigma):
     return x
 
 
+def xac_suat_hong_set(g: MangGoc, giong_diem, p: ThamSo, dt_h: float):
+    """Thí nghiệm 8, thế giới B: xác suất HỎNG mỗi mốc [T, N] của UAV và trạm mặt đất theo khoảng cách d (km) tới điểm
+    thời tiết có giông gần nhất ở giờ đó: P_giờ(d) = pmax · exp(−d / L) nếu d ≤ set_d_max, ngược lại 0. Không có điểm nào
+    có giông → d = ∞ → 0. Đổi sang mỗi mốc: 1 − (1 − P_giờ)^(dt_h)."""
+    T, N = giong_diem.shape[0], g.N
+    ph = np.zeros((T, N))
+    nut = [n for n in range(N) if g.node_site[n] >= 0 and (g.kind[n] == "uav" or g.dat[n])]
+    if not nut:
+        return ph
+    sn = np.array([g.node_site[n] for n in nut])
+    d = np.where(giong_diem[:, None, :], g.kc_diem[sn][None], np.inf).min(-1)          # [T, len(nut)] km
+    pmax = np.array([p.uav_set_pmax if g.kind[n] == "uav" else p.dat_set_pmax for n in nut])
+    L = np.array([p.uav_set_L if g.kind[n] == "uav" else p.dat_set_L for n in nut])
+    with np.errstate(over="ignore", invalid="ignore"):
+        gio = np.where(d <= p.set_d_max, pmax * np.exp(-d / L), 0.0)
+    ph[:, nut] = 1.0 - (1.0 - gio) ** dt_h
+    return ph
+
+
+def hong_tich_luy(ph, rng, hong0=None):
+    """Bốc hỏng từng mốc từ xác suất ph [T, N]; đã hỏng thì hỏng tới hết kịch bản (không sửa kịp trong cửa sổ)."""
+    u = rng.random(ph.shape) < ph
+    if hong0 is not None and len(u):
+        u[0] |= hong0
+    return np.logical_or.accumulate(u, axis=0) if len(u) else u
+
+
+def r_hong_cua(seed):
+    """Luồng ngẫu nhiên riêng cho hỏng thế giới B: con thứ 5 của SeedSequence(seed) — không làm đổi 4 luồng cũ."""
+    return np.random.default_rng(np.random.SeedSequence(seed).spawn(5)[4])
+
+
 def sinh_kich_ban(g: MangGoc, tt: ThoiTiet, h0: int, seed: int, p: ThamSo = ThamSo()):
     """Một kịch bản dài g.T snapshot, bắt đầu ở giờ h0 của kho thời tiết. Trả (W mới, quan sát)."""
     T, N, S, dt_h = g.T, g.N, g.S, p.dt_s / 3600.0
@@ -189,19 +229,22 @@ def sinh_kich_ban(g: MangGoc, tt: ThoiTiet, h0: int, seed: int, p: ThamSo = Tham
     # chỉ nằm ở nhãn trong `quan_sat`, không làm đổi W (an toàn cho hồi quy).
     tat = np.zeros((T, N), bool)
     ha_canh = np.zeros((T, N), bool)
+    hong = np.zeros((T, N), bool)
     if p.giong:
+        nguong = dict(p.uav_gio_nguong)                 # thí nghiệm 8: ngưỡng gió theo loại UAV (12 / 15 m/s)
         for n in range(N):
             s = g.node_site[n]
             if s < 0:
                 continue
             if g.kind[n] == "uav":
+                gmax = nguong.get(g.names[n], p.gio_giat_max)
                 if p.uav_ha_canh:
                     # Hạ cánh do giông HOẶC gió giật vượt ngưỡng (2 nguyên nhân tách biệt).
-                    do_giong = giong_diem[:, s] | (gust[:, s] > p.gio_giat_max)
+                    do_giong = giong_diem[:, s] | (gust[:, s] > gmax)
                     ha_canh[:, n] |= do_giong
                     tat[:, n] |= do_giong
                 else:
-                    tat[:, n] |= giong_diem[:, s] | (gust[:, s] > p.gio_giat_max)
+                    tat[:, n] |= giong_diem[:, s] | (gust[:, s] > gmax)
             elif g.dat[n]:
                 con = 0
                 for t in range(T):
@@ -209,6 +252,9 @@ def sinh_kich_ban(g: MangGoc, tt: ThoiTiet, h0: int, seed: int, p: ThamSo = Tham
                         con = r_giong.geometric(1 / p.set_tb)
                     if con > 0:
                         tat[t, n], con = True, con - 1
+        if p.hong_b:                                    # thí nghiệm 8: hỏng hẳn theo khoảng cách tới giông
+            hong = hong_tich_luy(xac_suat_hong_set(g, giong_diem, p, dt_h), r_hong_cua(seed))
+            tat |= hong
 
     # 3) xung đột / an ninh
     J_diem = np.zeros((T, S))
@@ -262,7 +308,7 @@ def sinh_kich_ban(g: MangGoc, tt: ThoiTiet, h0: int, seed: int, p: ThamSo = Tham
     Wn[:, idx, idx] = g.W[:, idx, idx]
     quan_sat = {"R": R.astype(np.float32), "giong": giong_diem, "gust": gust.astype(np.float32),
                 "gio_vn": gio_vn.astype(np.float32), "J": J_diem.astype(np.float32),
-                "tai": L.astype(np.float32), "tat": tat, "ha_canh": ha_canh,
+                "tai": L.astype(np.float32), "tat": tat, "ha_canh": ha_canh, "hong": hong,
                 "su_co": su_co,
                 "ti_le_dut_mua": float(np.mean(dut[g.W > 0])),
                 "C2": C2.astype(np.float32), "rho": rho.astype(np.float32), "song": song}   # cho bài toán nhiều luồng

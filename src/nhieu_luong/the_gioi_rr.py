@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from src.ngau_nhien.kich_ban import RHO0, suy_hao_mua
+from src.ngau_nhien.kich_ban import RHO0, hong_tich_luy, r_hong_cua, suy_hao_mua, xac_suat_hong_set
 from src.ngau_nhien.thoi_tiet import GIONG
 
 
@@ -42,12 +42,13 @@ def phat_lai(g, tt, h0, seed, p):
     tat = np.zeros((T, N), bool)
     con_sau = np.zeros((T, N), int)
     uav_tat = np.zeros((T, N), bool)
+    nguong = dict(p.uav_gio_nguong)                    # thí nghiệm 8: ngưỡng gió theo loại UAV
     for n in range(N):
         s = g.node_site[n]
         if s < 0:
             continue
         if g.kind[n] == "uav":
-            uav_tat[:, n] = giong_diem[:, s] | (gust[:, s] > p.gio_giat_max)
+            uav_tat[:, n] = giong_diem[:, s] | (gust[:, s] > nguong.get(g.names[n], p.gio_giat_max))
             tat[:, n] |= uav_tat[:, n]
         elif g.dat[n]:
             con = 0
@@ -57,7 +58,13 @@ def phat_lai(g, tt, h0, seed, p):
                 if con > 0:
                     tat[t, n], con = True, con - 1
                 con_sau[t, n] = con
-    return {"P": P, "z": z, "tat": tat, "con": con_sau, "uav_tat": uav_tat, "giong_diem": giong_diem}
+    hong, ph = np.zeros((T, N), bool), None
+    if p.hong_b:                                       # thí nghiệm 8: đúng như sinh_kich_ban (cùng luồng, cùng thứ tự)
+        ph = xac_suat_hong_set(g, giong_diem, p, dt_h)
+        hong = hong_tich_luy(ph, r_hong_cua(seed))
+        tat |= hong
+    return {"P": P, "z": z, "tat": tat, "con": con_sau, "uav_tat": uav_tat, "giong_diem": giong_diem,
+            "hong": hong, "ph": ph}
 
 
 def _ar1_day(rng, T, n, phi, sigma):
@@ -91,6 +98,9 @@ def re_nhanh(g, pl, o, t_cuoi, seeds, p):
                     con = r_giong.geometric(1 / p.set_tb)
                 if con > 0:
                     tats[i, j, n], con = True, con - 1
+        if p.hong_b:                                   # thí nghiệm 8: nút đã hỏng ở o giữ hỏng; tương lai bốc lại
+            r_hong = np.random.default_rng(np.random.SeedSequence(sd).spawn(3)[2])
+            tats[i] |= hong_tich_luy(pl["ph"][o + 1:t_cuoi + 1], r_hong, hong0=pl["hong"][o])
     return zs, tats
 
 

@@ -30,3 +30,6 @@ data/_backup_*.npz
 data/bao_rr/
 # dữ liệu thí nghiệm 4–7 (tập tuyến dự phòng) sinh lại được bằng src/nhieu_luong/tao_du_lieu_dt.py (xem scripts/chay_thi_nghiem.py)
 data/bao_da_tuyen/
+
+# gói dữ liệu chép sang máy chạy thí nghiệm 8 (scripts/dong_goi_tn8.py) — ~0,6 GB, không commit
+TN8_du_lieu.zip
