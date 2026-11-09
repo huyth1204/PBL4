@@ -1,5 +1,6 @@
 """
-dong_goi_tn8.py — Đóng gói dữ liệu thế giới A của TN6, mô hình DM6 và code + tài liệu TN8 để chép sang máy chạy TN8.
+dong_goi_tn8.py — Đóng gói DỮ LIỆU thế giới A của TN6 + mô hình DM6 (git không lưu) để chép sang máy chạy TN8. Code đi
+theo git; gói này chỉ để bỏ qua bước tự sinh lại thế giới A (nhanh hơn ~3–4 giờ).
 
     python -m scripts.dong_goi_tn8                 # → TN8_du_lieu.zip ở thư mục gốc repo (~0,6 GB)
 
@@ -19,8 +20,8 @@ CAN = ["data/bao_da_tuyen/train_k4_5", "data/bao_da_tuyen/train6_k4_5", "data/ba
 TRONG_GIT = ["data/thoi_tiet_vn_mr.npz", "data/thoi_tiet_vn_2017_2021_1.npz", "dataset/oracle_dataset_v5.npz",
              "dataset/v5/split_info.json", "data/bao_manh/bang_tra_cuoi/bang_tra.npz",
              "data/bao_manh/bang_tra_cuoi/meta.json", "data/bao_manh/danh_muc.json"]
-# Code + tài liệu TN8 (đóng kèm để máy chạy không phải chờ push git; giải nén đè vào repo)
-CODE = ["src/ngau_nhien/kich_ban.py", "src/ngau_nhien/ma_tran_rui_ro.py", "src/nhieu_luong/the_gioi_rr.py",
+# Code + tài liệu TN8: KHÔNG đóng vào gói (code đi theo git; giải nén gói cũ có code sẽ ghi đè code mới)
+CODE_THAM_KHAO = ["src/ngau_nhien/kich_ban.py", "src/ngau_nhien/ma_tran_rui_ro.py", "src/nhieu_luong/the_gioi_rr.py",
         "src/nhieu_luong/tao_du_lieu_dt.py", "src/nhieu_luong/huan_luyen_dt.py", "scripts",
         "results/bao_da_tuyen/TIEU_CHI_8.md", "results/bao_da_tuyen/KE_HOACH_8.md", "tai_lieu/HUONG_DAN_TN8.md",
         "tai_lieu/HUONG_DAN_NHANH_TN8.md"]
@@ -29,13 +30,13 @@ CODE = ["src/ngau_nhien/kich_ban.py", "src/ngau_nhien/ma_tran_rui_ro.py", "src/n
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    thieu = [t for t in CAN + TRONG_GIT + CODE if not (GOC / t).exists()]
+    thieu = [t for t in CAN + TRONG_GIT if not (GOC / t).exists()]
     if thieu:
         raise SystemExit("Thiếu: " + ", ".join(thieu))
     ra = GOC / "TN8_du_lieu.zip"
     n = 0
     with zipfile.ZipFile(ra, "w", compression=zipfile.ZIP_STORED) as z:     # pickle đã nén kém, không nén thêm cho nhanh
-        for t in CAN + CODE:
+        for t in CAN:
             p = GOC / t
             teps = [p] if p.is_file() else sorted(p.rglob("*"))
             for f in teps:

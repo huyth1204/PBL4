@@ -28,10 +28,13 @@ GOC = Path(__file__).resolve().parents[1]
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    thieu = [t for t in CAN + TRONG_GIT if not (GOC / t).exists()]
-    print("1. Tệp đầu vào:", "đủ" if not thieu else "THIẾU " + ", ".join(thieu))
+    thieu = [t for t in TRONG_GIT if not (GOC / t).exists()]
     if thieu:
-        raise SystemExit("Giải nén TN8_du_lieu.zip vào thư mục gốc repo rồi chạy lại.")
+        raise SystemExit("1. THIẾU tệp đầu vào trong git: " + ", ".join(thieu) + " — chạy `git pull` lại.")
+    thieu_a = [t for t in CAN if not (GOC / t).exists()]
+    print("1. Tệp đầu vào: đủ." + ("" if not thieu_a else
+          f" Chưa có dữ liệu thế giới A / DM6 ({len(thieu_a)} mục) — chay_tn8 sẽ TỰ SINH LẠI (thêm ~3–4 giờ). "
+          "Muốn nhanh hơn: giải nén TN8_du_lieu.zip vào thư mục gốc repo."))
     from src.ngau_nhien import kich_ban as KB
     from src.nhieu_luong import tao_du_lieu_dt as tdt
     from src.nhieu_luong import tao_du_lieu_rr as td
