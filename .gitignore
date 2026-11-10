@@ -10,6 +10,8 @@ dataset/oracle_labeler.py
 # mô hình nhỏ (~0,4 MB) cần để chạy hướng dẫn
 !results/dmx0_4lop.pt
 !results/quy_mo/*.pt
+# Checkpoint mô hình chính TN8 (thế giới B, seed 0)
+!/results/bao_da_tuyen/mo_hinh8/dm8b_s0.pt
 
 # kết quả sinh ra khi chạy hướng dẫn
 huong_dan/ket_qua/
