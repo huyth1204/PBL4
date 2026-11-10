@@ -33,11 +33,21 @@ DAC_TRUNG_6 = ("giong_lan_can_uav", "giong_1h_uav", "cape_uav")      # thí nghi
 VO_CUC = -1e9
 
 
+def _den(x, dev):
+    """Thí nghiệm 10: chuyển sang thiết bị huấn luyện (GPU); dev None / cpu → giữ nguyên tensor (kết quả CPU không đổi)."""
+    return x if dev is None else x.to(dev)
+
+
+def _rand(shape, gen, dev):
+    """Số ngẫu nhiên luôn bốc trên CPU bằng `gen` (tái lập được), rồi mới chuyển sang thiết bị của lô."""
+    return _den(torch.rand(shape, generator=gen), dev)
+
+
 class LoDT:
     """Gộp các bài toán gọn (BaiToanGon) thành mảng đặc có đệm; lap = số bản sao mỗi bài toán (S chuỗi).
     them: thêm 3 đặc trưng cạnh của thí nghiệm 6."""
 
-    def __init__(self, ds, lap=1, them=False):
+    def __init__(self, ds, lap=1, them=False, dev=None):
         n, K, E = len(ds), max(x.K for x in ds), max(len(x.U) for x in ds)
         inc = np.zeros((n, K, P, E), np.float32)
         hl = np.zeros((n, K, P), bool)
@@ -70,7 +80,7 @@ class LoDT:
             if them:
                 for j, k in enumerate(DAC_TRUNG_6):
                     ftc[b, :e_, 11 + j] = d[k]
-        rep = lambda a: torch.from_numpy(np.repeat(a, lap, axis=0)) if lap > 1 else torch.from_numpy(a)
+        rep = lambda a: _den(torch.from_numpy(np.repeat(a, lap, axis=0)) if lap > 1 else torch.from_numpy(a), dev)
         self.inc, self.hop_le, self.fm, self.lam, self.m = rep(inc), rep(hl), rep(fm), rep(lam), rep(m)
         self.dmin, self.drange = rep(dmin), rep(drange)
         self.prop, self.C, self.rho0, self.risk = rep(lk[0]), rep(lk[1]), rep(lk[2]), rep(lk[3])
@@ -142,7 +152,7 @@ class MangDT(nn.Module):
         self.ra = nn.Sequential(nn.SiLU(), nn.Linear(H, 3))
 
     def t_emb(self, t):
-        f = torch.exp(torch.arange(self.t_dim // 2).float() * -math.log(100.0) / (self.t_dim // 2))
+        f = torch.exp(torch.arange(self.t_dim // 2, device=t.device).float() * -math.log(100.0) / (self.t_dim // 2))
         a = t[:, None] * 10 * f[None]
         return torch.cat([torch.sin(a), torch.cos(a)], 1)
 
@@ -182,9 +192,9 @@ def trang_thai_nhan(ds, K):
 def ngau_nhien(lo, gen=None):
     """Một lựa chọn hợp lệ ngẫu nhiên đều cho mỗi luồng → trạng thái [B,K,P]."""
     hl = lo.hop_le
-    u = torch.rand(hl.shape, generator=gen).masked_fill(~hl, -1.0)
+    u = _rand(hl.shape, gen, hl.device).masked_fill(~hl, -1.0)
     chinh = u.argmax(-1)
-    u2 = torch.rand(hl.shape, generator=gen).masked_fill(~hl, -1.0)
+    u2 = _rand(hl.shape, gen, hl.device).masked_fill(~hl, -1.0)
     u2.scatter_(-1, chinh[..., None], -2.0)
     hang = u2.argsort(-1, descending=True).argsort(-1)
     x = ((hang < (lo.m - 1)[..., None]) & hl).long()
@@ -194,7 +204,7 @@ def ngau_nhien(lo, gen=None):
 
 def nhieu(lo, y, t, gen=None):
     """Giữ lựa chọn của mỗi luồng với xác suất ᾱ(t), còn lại một lựa chọn ngẫu nhiên."""
-    giu = torch.rand(lo.B, lo.K, generator=gen) < alpha_bar(t)[:, None]
+    giu = _rand((lo.B, lo.K), gen, t.device) < alpha_bar(t)[:, None]
     return torch.where(giu[..., None], y, ngau_nhien(lo, gen))
 
 
@@ -205,7 +215,7 @@ def _ce(logit, y, lo):
 
 
 def mat_mat_dm(net, lo, y, gen=None):
-    t = torch.rand(lo.B, generator=gen)
+    t = _rand((lo.B,), gen, lo.inc.device)
     return _ce(net(lo, Fn.one_hot(nhieu(lo, y, t, gen), 3).float(), t), y, lo)
 
 
@@ -219,7 +229,7 @@ def X_deu(lo):
 
 
 def mat_mat_softmax(net, lo, y, gen=None):
-    return _ce(net(lo, X_deu(lo), torch.ones(lo.B)), y, lo)
+    return _ce(net(lo, X_deu(lo), torch.ones(lo.B, device=lo.inc.device)), y, lo)
 
 
 # ---------------------------------------------------------------- giải mã, lấy mẫu
@@ -230,8 +240,8 @@ def giai_ma(lo, logit, lay_mau=False, gen=None):
     a2 = lp[..., 2].masked_fill(~hl, VO_CUC)
     a1 = (lp[..., 1] - lp[..., 0]).masked_fill(~hl, VO_CUC)
     if lay_mau:
-        g2 = -torch.log(-torch.log(torch.rand(a2.shape, generator=gen).clamp(1e-12, 1 - 1e-12)))
-        g1 = -torch.log(-torch.log(torch.rand(a1.shape, generator=gen).clamp(1e-12, 1 - 1e-12)))
+        g2 = -torch.log(-torch.log(_rand(a2.shape, gen, a2.device).clamp(1e-12, 1 - 1e-12)))
+        g1 = -torch.log(-torch.log(_rand(a1.shape, gen, a1.device).clamp(1e-12, 1 - 1e-12)))
         a2, a1 = a2 + g2, a1 + g1
     chinh = a2.argmax(-1)
     a1 = a1.scatter(-1, chinh[..., None], 2 * VO_CUC)
@@ -255,24 +265,26 @@ def lua_chon_tu_trang_thai(gon, x):
 
 @torch.no_grad()
 def chon_dm(net, gon, S=8, so_buoc=5, gen=None):
-    lo = LoDT([gon], lap=S, them=net.them)
+    dev = next(net.parameters()).device                 # TN10: mạng có thể đang ở GPU khi đánh giá lúc huấn luyện
+    lo = LoDT([gon], lap=S, them=net.them, dev=None if dev.type == "cpu" else dev)
     x = ngau_nhien(lo, gen)
     for i in range(so_buoc):
-        logit = net(lo, Fn.one_hot(x, 3).float(), torch.full((S,), 1 - i / so_buoc))
+        logit = net(lo, Fn.one_hot(x, 3).float(), torch.full((S,), 1 - i / so_buoc, device=dev))
         cuoi = i == so_buoc - 1
         x0, lp = giai_ma(lo, logit, lay_mau=not cuoi, gen=gen)
         if not cuoi:
-            giu = torch.rand(S, lo.K, generator=gen) < alpha_bar(torch.tensor(1 - (i + 1) / so_buoc))
+            giu = _rand((S, lo.K), gen, dev) < alpha_bar(torch.tensor(1 - (i + 1) / so_buoc))
             x = torch.where(giu[..., None], x0, ngau_nhien(lo, gen))
     j = int(lp.argmax())
-    return lua_chon_tu_trang_thai(gon, x0[j, :gon.K].numpy())
+    return lua_chon_tu_trang_thai(gon, x0[j, :gon.K].cpu().numpy())
 
 
 @torch.no_grad()
 def chon_softmax(net, gon):
-    lo = LoDT([gon], them=net.them)
-    x, _ = giai_ma(lo, net(lo, X_deu(lo), torch.ones(1)))
-    return lua_chon_tu_trang_thai(gon, x[0, :gon.K].numpy())
+    dev = next(net.parameters()).device
+    lo = LoDT([gon], them=net.them, dev=None if dev.type == "cpu" else dev)
+    x, _ = giai_ma(lo, net(lo, X_deu(lo), torch.ones(1, device=dev)))
+    return lua_chon_tu_trang_thai(gon, x[0, :gon.K].cpu().numpy())
 
 
 def nap(kieu, thu_muc=None):

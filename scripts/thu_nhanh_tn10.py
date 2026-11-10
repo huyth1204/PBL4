@@ -3,6 +3,7 @@ thu_nhanh_tn10.py — Kiểm tra nhanh máy chạy TN10 trước khi chạy dài
 
     python -m scripts.thu_nhanh_tn10
 
+0. Code đủ và đúng bản (bắt lỗi push thiếu tệp), có GPU hay không.
 1. Đủ tệp đầu vào; dữ liệu nào đã có (val, val_b, bộ kiểm tra) thì chay_tn10 bỏ qua.
 2. Sinh thử 1 cửa sổ × 2 mốc của train10 (nhãn thầy + thế giới chấm) và train_b10 (thế giới B) vào thư mục tạm.
 3. Kiểm thử chéo: 4 phần đủ cửa sổ, cùng cửa sổ ở A và B cùng phần.
@@ -24,10 +25,30 @@ GOC = Path(__file__).resolve().parents[1]
 DL = GOC / "data" / "bao_da_tuyen"
 
 
+def kiem_tra_code():
+    """Bắt sớm lỗi push thiếu: mọi module TN10 import được và code huấn luyện là bản có --thiet-bi."""
+    import importlib
+    loi = []
+    for m in ("scripts.tn10", "scripts.phan_tich_10", "src.nhieu_luong.huan_luyen_dt", "src.nhieu_luong.cham_lai_dt"):
+        try:
+            importlib.import_module(m)
+        except ImportError as e:
+            loi.append(f"{m}: {e}")
+    hl, md = sys.modules.get("src.nhieu_luong.huan_luyen_dt"), sys.modules.get("src.nhieu_luong.mo_hinh_dt")
+    if (hl is not None and not hasattr(hl, "chon_thiet_bi")) or (md is not None and not hasattr(md, "_rand")):
+        loi.append("src/nhieu_luong/huan_luyen_dt.py, mo_hinh_dt.py là bản cũ (chưa có --thiet-bi)")
+    if loi:
+        raise SystemExit("0. Code THIẾU / CŨ — push đủ tệp rồi `git pull` (Colab: Run all lại):\n   " + "\n   ".join(loi))
+    import torch
+    gpu = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "không có (huấn luyện trên CPU)"
+    print(f"0. Code: đủ module TN10, huấn luyện có --thiet-bi. GPU: {gpu}")
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    can = ["data/thoi_tiet_vn_mr.npz", "data/thoi_tiet_vn_2017_2021_1.npz"]
+    kiem_tra_code()
+    can =["data/thoi_tiet_vn_mr.npz", "data/thoi_tiet_vn_2017_2021_1.npz"]
     thieu = [t for t in can if not (GOC / t).exists()]
     if thieu:
         raise SystemExit("1. THIẾU tệp đầu vào: " + ", ".join(thieu) + " — chạy `git pull` lại.")

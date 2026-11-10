@@ -122,7 +122,7 @@ def chia_lo(ds, B, rng):
 
 
 def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, them=False, ti_le=1.0, gap_doi=False,
-               luong=1, moi_epoch=False, bo_phan=None):
+               luong=1, moi_epoch=False, bo_phan=None, thiet_bi="cpu"):
     torch.set_num_threads(luong)
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
@@ -138,6 +138,7 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
     print(f"{ten} ({kieu}, đặc trưng mới: {them}, tỉ lệ {ti_le}, gấp đôi {gap_doi}): train {len(tr)}, val {len(vl)}",
           flush=True)
     net = md.MangDT(H=H, them=them)
+    dev = chon_thiet_bi(thiet_bi, net, tr, B, them, md.mat_mat_dm if kieu == "dm" else md.mat_mat_softmax)
     opt = torch.optim.Adam(net.parameters(), lr=lr)
     so_lo = math.ceil(len(tr) / B) * epochs
     sch = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: 0.01 + 0.99 * 0.5 * (1 + math.cos(math.pi * min(s / so_lo, 1))))
@@ -147,8 +148,8 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
         L = []
         for b in chia_lo(tr, B, rng):
             d = [tr[i] for i in b]
-            lo = md.LoDT([x for x, _ in d], them=them)
-            l = mat(net, lo, md.trang_thai_nhan(d, lo.K))
+            lo = md.LoDT([x for x, _ in d], them=them, dev=dev)
+            l = mat(net, lo, md._den(md.trang_thai_nhan(d, lo.K), dev))
             opt.zero_grad()
             l.backward()
             torch.nn.utils.clip_grad_norm_(net.parameters(), 1.0)
@@ -160,15 +161,16 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
             Lv = []
             for j in range(0, len(vl), 64):
                 d = vl[j:j + 64]
-                lo = md.LoDT([x for x, _ in d], them=them)
-                Lv.append(mat(net.eval(), lo, md.trang_thai_nhan(d, lo.K), g).item())
+                lo = md.LoDT([x for x, _ in d], them=them, dev=dev)
+                Lv.append(mat(net.eval(), lo, md._den(md.trang_thai_nhan(d, lo.K), dev), g).item())
             net.train()
         J, Jt = danh_gia(net, kieu, va_nho)
         nk.append({"epoch": ep + 1, "loss_train": float(np.mean(L)), "loss_val": float(np.mean(Lv)), "J_val": J,
                    "J_thay_val": Jt, "giay": time.time() - t0})
         print(f"  ep {ep + 1:2d}  loss {np.mean(L):.4f}  val {np.mean(Lv):.4f}  J val {J:.4f} (thầy {Jt:.4f})  "
               f"({time.time() - t0:.0f} s)", flush=True)
-        ck = {"state": net.state_dict(), "cau_hinh": net.cau_hinh, "epoch": ep + 1, "J_val": J}
+        ck = {"state": {k: v.cpu() for k, v in net.state_dict().items()}, "cau_hinh": net.cau_hinh, "epoch": ep + 1,
+              "J_val": J}                          # luôn lưu trọng số CPU → nạp được trên máy không có GPU
         if moi_epoch:                                   # thí nghiệm 9: đường học trên các bậc độ lạ
             torch.save(ck, ra / f"{ten}_ep{ep + 1:02d}.pt")
         if J < tot:
@@ -177,6 +179,31 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
         json.dump({"nhat_ky": nk, "tot_nhat_J_val": tot}, open(ra / f"{ten}_nhat_ky.json", "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
     (ra / f"{ten}.xong").write_text(time.strftime("%Y-%m-%d %H:%M:%S"))
+
+
+def chon_thiet_bi(thiet_bi, net, tr, B, them, mat):
+    """Thí nghiệm 10 (Colab): "auto" / "cuda" → thử một lô trên GPU; lỗi hoặc không có GPU → CPU. Trả thiết bị hoặc None
+    (CPU, đường cũ không đổi). Không làm lệch bộ sinh ngẫu nhiên toàn cục."""
+    if thiet_bi == "cpu" or not torch.cuda.is_available():
+        if thiet_bi == "cuda":
+            print("  không có GPU → dùng CPU", flush=True)
+        return None
+    dev, st = torch.device("cuda"), torch.get_rng_state()
+    try:
+        net.to(dev)
+        d = tr[:B]
+        lo = md.LoDT([x for x, _ in d], them=them, dev=dev)
+        mat(net, lo, md._den(md.trang_thai_nhan(d, lo.K), dev)).backward()
+        net.zero_grad(set_to_none=True)
+        print(f"  huấn luyện trên GPU: {torch.cuda.get_device_name(0)}", flush=True)
+        return dev
+    except Exception as e:                                               # noqa: BLE001 — mọi lỗi GPU → CPU
+        print(f"  GPU lỗi ({type(e).__name__}: {e}) → dùng CPU", flush=True)
+        net.cpu()
+        net.zero_grad(set_to_none=True)
+        return None
+    finally:
+        torch.set_rng_state(st)
 
 
 def chon_buoc(tn=4, ten="dm"):
@@ -213,9 +240,11 @@ if __name__ == "__main__":
     ap.add_argument("--epochs", type=int, default=20, help="thí nghiệm 10: số epoch")
     ap.add_argument("--H", type=int, default=64, help="thí nghiệm 10: độ rộng mạng")
     ap.add_argument("--bo-phan", type=int, default=None, help="thí nghiệm 10: phần (0..3) giữ lại của kiểm thử chéo")
+    ap.add_argument("--thiet-bi", default="cpu", choices=["cpu", "auto", "cuda"], help="thí nghiệm 10: auto = GPU nếu có")
     a = ap.parse_args()
     if a.viec == "chon-buoc":
         chon_buoc(a.thi_nghiem, a.ten or "dm")
     else:
         huan_luyen(a.viec, epochs=a.epochs, H=a.H, tn=a.thi_nghiem, ten=a.ten, them=a.them, ti_le=a.ti_le,
-                   gap_doi=a.gap_doi, seed=a.seed, luong=a.luong_cpu, moi_epoch=a.moi_epoch, bo_phan=a.bo_phan)
+                   gap_doi=a.gap_doi, seed=a.seed, luong=a.luong_cpu, moi_epoch=a.moi_epoch, bo_phan=a.bo_phan,
+                   thiet_bi=a.thiet_bi)

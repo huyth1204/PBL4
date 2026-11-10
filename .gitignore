@@ -37,6 +37,8 @@ data/bao_da_tuyen/
 
 # gói dữ liệu chép sang máy chạy thí nghiệm 8 (scripts/dong_goi_tn8.py) — ~0,6 GB, không commit
 TN8_du_lieu.zip
+# gói dữ liệu đưa lên Google Drive cho TN10 trên Colab (scripts/dong_goi_tn10.py) — ~0,7 GB, không commit
+TN10_du_lieu.zip
 
 # TN8: cấu hình suy luận và nhật ký DM6 không nằm trong bộ kết quả cần gửi
 /results/bao_da_tuyen/mo_hinh6/chon_buoc*.json
