@@ -1,0 +1,1415 @@
+
+=== TN8 started 2026-11-09T20:33:58.855331+07:00 ===
+[1/68] sinh dữ liệu train 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train --K 4-5 --tien-trinh 4
+train K=4-5: 59 cửa sổ × 37 mốc, còn 59
+  1/59  kb_0003.pkl  111 bản ghi  174 s  (tổng 111, 184 s)
+  2/59  kb_0001.pkl  111 bản ghi  180 s  (tổng 222, 190 s)
+  3/59  kb_0000.pkl  111 bản ghi  198 s  (tổng 333, 208 s)
+  4/59  kb_0002.pkl  111 bản ghi  208 s  (tổng 444, 218 s)
+  5/59  kb_0005.pkl  111 bản ghi  76 s  (tổng 555, 266 s)
+  6/59  kb_0006.pkl  111 bản ghi  64 s  (tổng 666, 271 s)
+  7/59  kb_0004.pkl  111 bản ghi  111 s  (tổng 777, 295 s)
+  8/59  kb_0007.pkl  111 bản ghi  77 s  (tổng 888, 295 s)
+  9/59  kb_0009.pkl  111 bản ghi  98 s  (tổng 999, 369 s)
+  10/59  kb_0008.pkl  111 bản ghi  117 s  (tổng 1110, 383 s)
+  11/59  kb_0011.pkl  111 bản ghi  111 s  (tổng 1221, 407 s)
+  12/59  kb_0010.pkl  111 bản ghi  117 s  (tổng 1332, 412 s)
+  13/59  kb_0013.pkl  111 bản ghi  45 s  (tổng 1443, 427 s)
+  14/59  kb_0012.pkl  111 bản ghi  64 s  (tổng 1554, 433 s)
+  15/59  kb_0014.pkl  111 bản ghi  41 s  (tổng 1665, 448 s)
+  16/59  kb_0015.pkl  111 bản ghi  38 s  (tổng 1776, 450 s)
+  17/59  kb_0016.pkl  111 bản ghi  62 s  (tổng 1887, 489 s)
+  18/59  kb_0017.pkl  111 bản ghi  87 s  (tổng 1998, 521 s)
+  19/59  kb_0018.pkl  111 bản ghi  85 s  (tổng 2109, 533 s)
+  20/59  kb_0019.pkl  111 bản ghi  83 s  (tổng 2220, 533 s)
+  21/59  kb_0022.pkl  111 bản ghi  40 s  (tổng 2331, 573 s)
+
+=== TN8 started 2026-11-09T20:44:09.460953+07:00 ===
+[1/68] sinh dữ liệu train 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train --K 4-5 --tien-trinh 6
+train K=4-5: 59 cửa sổ × 37 mốc, còn 38
+  1/38  kb_0024.pkl  111 bản ghi  61 s  (tổng 111, 84 s)
+  2/38  kb_0023.pkl  111 bản ghi  63 s  (tổng 222, 85 s)
+  3/38  kb_0025.pkl  111 bản ghi  77 s  (tổng 333, 99 s)
+  4/38  kb_0026.pkl  111 bản ghi  96 s  (tổng 444, 118 s)
+  5/38  kb_0027.pkl  111 bản ghi  70 s  (tổng 555, 154 s)
+  6/38  kb_0020.pkl  111 bản ghi  163 s  (tổng 666, 184 s)
+  7/38  kb_0021.pkl  111 bản ghi  170 s  (tổng 777, 192 s)
+  8/38  kb_0028.pkl  111 bản ghi  121 s  (tổng 888, 206 s)
+  9/38  kb_0032.pkl  111 bản ghi  34 s  (tổng 999, 218 s)
+  10/38  kb_0030.pkl  111 bản ghi  108 s  (tổng 1110, 226 s)
+  11/38  kb_0033.pkl  111 bản ghi  37 s  (tổng 1221, 229 s)
+  12/38  kb_0031.pkl  111 bản ghi  79 s  (tổng 1332, 233 s)
+  13/38  kb_0029.pkl  111 bản ghi  140 s  (tổng 1443, 239 s)
+  14/38  kb_0034.pkl  111 bản ghi  36 s  (tổng 1554, 241 s)
+  15/38  kb_0035.pkl  111 bản ghi  50 s  (tổng 1665, 268 s)
+
+=== TN8 started 2026-11-09T20:49:27.085031+07:00 ===
+[1/68] sinh dữ liệu train 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train --K 4-5 --tien-trinh 8
+train K=4-5: 59 cửa sổ × 37 mốc, còn 23
+  1/23  kb_0038.pkl  111 bản ghi  193 s  (tổng 111, 220 s)
+  2/23  kb_0043.pkl  111 bản ghi  193 s  (tổng 222, 220 s)
+  3/23  kb_0037.pkl  111 bản ghi  195 s  (tổng 333, 222 s)
+  4/23  kb_0036.pkl  111 bản ghi  196 s  (tổng 444, 223 s)
+  5/23  kb_0039.pkl  111 bản ghi  203 s  (tổng 555, 230 s)
+  6/23  kb_0040.pkl  111 bản ghi  243 s  (tổng 666, 270 s)
+  7/23  kb_0047.pkl  111 bản ghi  63 s  (tổng 777, 286 s)
+  8/23  kb_0041.pkl  111 bản ghi  260 s  (tổng 888, 287 s)
+  9/23  kb_0044.pkl  111 bản ghi  69 s  (tổng 999, 289 s)
+  10/23  kb_0042.pkl  111 bản ghi  262 s  (tổng 1110, 289 s)
+  11/23  kb_0046.pkl  111 bản ghi  69 s  (tổng 1221, 291 s)
+  12/23  kb_0045.pkl  111 bản ghi  84 s  (tổng 1332, 304 s)
+  13/23  kb_0048.pkl  111 bản ghi  101 s  (tổng 1443, 331 s)
+  14/23  kb_0049.pkl  111 bản ghi  67 s  (tổng 1554, 338 s)
+  15/23  kb_0050.pkl  111 bản ghi  52 s  (tổng 1665, 338 s)
+  16/23  kb_0052.pkl  111 bản ghi  59 s  (tổng 1776, 348 s)
+  17/23  kb_0051.pkl  111 bản ghi  68 s  (tổng 1887, 355 s)
+  18/23  kb_0053.pkl  111 bản ghi  70 s  (tổng 1998, 359 s)
+  19/23  kb_0054.pkl  111 bản ghi  138 s  (tổng 2109, 429 s)
+  20/23  kb_0057.pkl  111 bản ghi  109 s  (tổng 2220, 447 s)
+  21/23  kb_0055.pkl  111 bản ghi  147 s  (tổng 2331, 451 s)
+  22/23  kb_0058.pkl  111 bản ghi  116 s  (tổng 2442, 454 s)
+  23/23  kb_0056.pkl  111 bản ghi  130 s  (tổng 2553, 461 s)
+xong
+[2/68] sinh dữ liệu train6 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train6 --K 4-5 --tien-trinh 8
+train6 K=4-5: 60 cửa sổ × 37 mốc, còn 60
+  1/60  kb_0003.pkl  111 bản ghi  155 s  (tổng 111, 164 s)
+  2/60  kb_0005.pkl  111 bản ghi  202 s  (tổng 222, 212 s)
+  3/60  kb_0002.pkl  111 bản ghi  206 s  (tổng 333, 214 s)
+  4/60  kb_0004.pkl  111 bản ghi  207 s  (tổng 444, 215 s)
+  5/60  kb_0007.pkl  111 bản ghi  201 s  (tổng 555, 216 s)
+  6/60  kb_0000.pkl  111 bản ghi  219 s  (tổng 666, 227 s)
+  7/60  kb_0001.pkl  111 bản ghi  225 s  (tổng 777, 233 s)
+  8/60  kb_0006.pkl  111 bản ghi  227 s  (tổng 888, 241 s)
+  9/60  kb_0008.pkl  111 bản ghi  125 s  (tổng 999, 289 s)
+  10/60  kb_0015.pkl  111 bản ghi  77 s  (tổng 1110, 318 s)
+  11/60  kb_0011.pkl  111 bản ghi  104 s  (tổng 1221, 319 s)
+  12/60  kb_0009.pkl  111 bản ghi  110 s  (tổng 1332, 322 s)
+  13/60  kb_0012.pkl  111 bản ghi  108 s  (tổng 1443, 324 s)
+  14/60  kb_0010.pkl  111 bản ghi  110 s  (tổng 1554, 324 s)
+  15/60  kb_0014.pkl  111 bản ghi  107 s  (tổng 1665, 340 s)
+  16/60  kb_0013.pkl  111 bản ghi  117 s  (tổng 1776, 344 s)
+  17/60  kb_0016.pkl  111 bản ghi  59 s  (tổng 1887, 348 s)
+  18/60  kb_0020.pkl  111 bản ghi  52 s  (tổng 1998, 376 s)
+  19/60  kb_0018.pkl  111 bản ghi  73 s  (tổng 2109, 393 s)
+  20/60  kb_0024.pkl  111 bản ghi  51 s  (tổng 2220, 399 s)
+  21/60  kb_0021.pkl  111 bản ghi  82 s  (tổng 2331, 406 s)
+  22/60  kb_0019.pkl  111 bản ghi  98 s  (tổng 2442, 420 s)
+  23/60  kb_0017.pkl  111 bản ghi  109 s  (tổng 2553, 427 s)
+  24/60  kb_0026.pkl  111 bản ghi  34 s  (tổng 2664, 427 s)
+  25/60  kb_0022.pkl  111 bản ghi  90 s  (tổng 2775, 430 s)
+  26/60  kb_0023.pkl  111 bản ghi  122 s  (tổng 2886, 466 s)
+  27/60  kb_0030.pkl  111 bản ghi  73 s  (tổng 2997, 500 s)
+  28/60  kb_0031.pkl  111 bản ghi  79 s  (tổng 3108, 506 s)
+  29/60  kb_0025.pkl  111 bản ghi  133 s  (tổng 3219, 509 s)
+  30/60  kb_0032.pkl  111 bản ghi  89 s  (tổng 3330, 520 s)
+  31/60  kb_0028.pkl  111 bản ghi  118 s  (tổng 3441, 524 s)
+  32/60  kb_0027.pkl  111 bản ghi  139 s  (tổng 3552, 538 s)
+  33/60  kb_0029.pkl  111 bản ghi  121 s  (tổng 3663, 541 s)
+  34/60  kb_0033.pkl  111 bản ghi  125 s  (tổng 3774, 591 s)
+  35/60  kb_0036.pkl  111 bản ghi  94 s  (tổng 3885, 603 s)
+  36/60  kb_0037.pkl  111 bản ghi  97 s  (tổng 3996, 617 s)
+  37/60  kb_0035.pkl  111 bản ghi  124 s  (tổng 4107, 630 s)
+  38/60  kb_0040.pkl  111 bản ghi  92 s  (tổng 4218, 633 s)
+  39/60  kb_0039.pkl  111 bản ghi  95 s  (tổng 4329, 633 s)
+  40/60  kb_0038.pkl  111 bản ghi  125 s  (tổng 4440, 649 s)
+  41/60  kb_0034.pkl  111 bản ghi  165 s  (tổng 4551, 665 s)
+  42/60  kb_0041.pkl  111 bản ghi  77 s  (tổng 4662, 668 s)
+  43/60  kb_0044.pkl  111 bản ghi  56 s  (tổng 4773, 686 s)
+  44/60  kb_0043.pkl  111 bản ghi  91 s  (tổng 4884, 707 s)
+  45/60  kb_0045.pkl  111 bản ghi  90 s  (tổng 4995, 723 s)
+  46/60  kb_0047.pkl  111 bản ghi  95 s  (tổng 5106, 744 s)
+  47/60  kb_0046.pkl  111 bản ghi  112 s  (tổng 5217, 745 s)
+  48/60  kb_0042.pkl  111 bản ghi  148 s  (tổng 5328, 751 s)
+  49/60  kb_0050.pkl  111 bản ghi  81 s  (tổng 5439, 767 s)
+  50/60  kb_0048.pkl  111 bản ghi  102 s  (tổng 5550, 767 s)
+  51/60  kb_0053.pkl  111 bản ghi  35 s  (tổng 5661, 779 s)
+  52/60  kb_0049.pkl  111 bản ghi  125 s  (tổng 5772, 793 s)
+  53/60  kb_0051.pkl  111 bản ghi  114 s  (tổng 5883, 822 s)
+  54/60  kb_0054.pkl  111 bản ghi  79 s  (tổng 5994, 824 s)
+  55/60  kb_0052.pkl  111 bản ghi  103 s  (tổng 6105, 826 s)
+  56/60  kb_0055.pkl  111 bản ghi  87 s  (tổng 6216, 838 s)
+  57/60  kb_0058.pkl  111 bản ghi  64 s  (tổng 6327, 843 s)
+  58/60  kb_0057.pkl  111 bản ghi  91 s  (tổng 6438, 859 s)
+  59/60  kb_0056.pkl  111 bản ghi  96 s  (tổng 6549, 863 s)
+  60/60  kb_0059.pkl  111 bản ghi  85 s  (tổng 6660, 879 s)
+xong
+[3/68] sinh dữ liệu val 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap val --K 4-5 --tien-trinh 8
+val K=4-5: 16 cửa sổ × 24 mốc, còn 16
+  1/16  kb_0006.pkl  72 bản ghi  52 s  (tổng 72, 61 s)
+  2/16  kb_0000.pkl  72 bản ghi  62 s  (tổng 144, 70 s)
+  3/16  kb_0001.pkl  72 bản ghi  64 s  (tổng 216, 72 s)
+  4/16  kb_0007.pkl  72 bản ghi  71 s  (tổng 288, 80 s)
+  5/16  kb_0005.pkl  72 bản ghi  111 s  (tổng 360, 120 s)
+  6/16  kb_0002.pkl  72 bản ghi  124 s  (tổng 432, 133 s)
+  7/16  kb_0003.pkl  72 bản ghi  124 s  (tổng 504, 133 s)
+  8/16  kb_0010.pkl  72 bản ghi  65 s  (tổng 576, 137 s)
+  9/16  kb_0009.pkl  72 bản ghi  72 s  (tổng 648, 142 s)
+  10/16  kb_0008.pkl  72 bản ghi  87 s  (tổng 720, 148 s)
+  11/16  kb_0012.pkl  72 bản ghi  31 s  (tổng 792, 151 s)
+  12/16  kb_0011.pkl  72 bản ghi  74 s  (tổng 864, 154 s)
+  13/16  kb_0004.pkl  72 bản ghi  156 s  (tổng 936, 165 s)
+  14/16  kb_0013.pkl  72 bản ghi  40 s  (tổng 1008, 172 s)
+  15/16  kb_0014.pkl  72 bản ghi  53 s  (tổng 1080, 186 s)
+  16/16  kb_0015.pkl  72 bản ghi  53 s  (tổng 1152, 190 s)
+xong
+[4/68] sinh dữ liệu val6 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap val6 --K 4-5 --tien-trinh 8
+val6 K=4-5: 16 cửa sổ × 24 mốc, còn 16
+  1/16  kb_0000.pkl  72 bản ghi  104 s  (tổng 72, 112 s)
+  2/16  kb_0003.pkl  72 bản ghi  105 s  (tổng 144, 114 s)
+  3/16  kb_0006.pkl  72 bản ghi  166 s  (tổng 216, 175 s)
+  4/16  kb_0001.pkl  72 bản ghi  182 s  (tổng 288, 190 s)
+  5/16  kb_0007.pkl  72 bản ghi  215 s  (tổng 360, 224 s)
+  6/16  kb_0004.pkl  72 bản ghi  216 s  (tổng 432, 225 s)
+  7/16  kb_0005.pkl  72 bản ghi  224 s  (tổng 504, 232 s)
+  8/16  kb_0002.pkl  72 bản ghi  225 s  (tổng 576, 233 s)
+  9/16  kb_0008.pkl  72 bản ghi  131 s  (tổng 648, 244 s)
+  10/16  kb_0010.pkl  72 bản ghi  78 s  (tổng 720, 253 s)
+  11/16  kb_0009.pkl  72 bản ghi  148 s  (tổng 792, 262 s)
+  12/16  kb_0014.pkl  72 bản ghi  44 s  (tổng 864, 277 s)
+  13/16  kb_0011.pkl  72 bản ghi  87 s  (tổng 936, 278 s)
+  14/16  kb_0012.pkl  72 bản ghi  58 s  (tổng 1008, 282 s)
+  15/16  kb_0015.pkl  72 bản ghi  57 s  (tổng 1080, 291 s)
+  16/16  kb_0013.pkl  72 bản ghi  68 s  (tổng 1152, 293 s)
+xong
+[5/68] sinh dữ liệu c6 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap c6 --K 4-5 --khong-thay --tien-trinh 8
+c6 K=4-5: 13 cửa sổ × 48 mốc, còn 13
+  1/13  kb_0005.pkl  144 bản ghi  41 s  (tổng 144, 52 s)
+  2/13  kb_0004.pkl  144 bản ghi  46 s  (tổng 288, 57 s)
+  3/13  kb_0000.pkl  144 bản ghi  48 s  (tổng 432, 57 s)
+  4/13  kb_0006.pkl  144 bản ghi  50 s  (tổng 576, 61 s)
+  5/13  kb_0007.pkl  144 bản ghi  50 s  (tổng 720, 61 s)
+  6/13  kb_0002.pkl  144 bản ghi  53 s  (tổng 864, 63 s)
+  7/13  kb_0003.pkl  144 bản ghi  56 s  (tổng 1008, 66 s)
+  8/13  kb_0001.pkl  144 bản ghi  56 s  (tổng 1152, 66 s)
+  9/13  kb_0008.pkl  144 bản ghi  31 s  (tổng 1296, 83 s)
+  10/13  kb_0010.pkl  144 bản ghi  26 s  (tổng 1440, 84 s)
+  11/13  kb_0011.pkl  144 bản ghi  24 s  (tổng 1584, 84 s)
+  12/13  kb_0009.pkl  144 bản ghi  29 s  (tổng 1728, 86 s)
+  13/13  kb_0012.pkl  144 bản ghi  25 s  (tổng 1872, 86 s)
+xong
+[6/68] sinh dữ liệu c6 10 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap c6 --K 10 --buoc-moc 2 --khong-thay --tien-trinh 8
+c6 K=10: 13 cửa sổ × 24 mốc, còn 13
+  1/13  kb_0005.pkl  72 bản ghi  47 s  (tổng 72, 55 s)
+  2/13  kb_0004.pkl  72 bản ghi  51 s  (tổng 144, 59 s)
+  3/13  kb_0000.pkl  72 bản ghi  56 s  (tổng 216, 63 s)
+  4/13  kb_0002.pkl  72 bản ghi  56 s  (tổng 288, 64 s)
+  5/13  kb_0006.pkl  72 bản ghi  58 s  (tổng 360, 66 s)
+  6/13  kb_0001.pkl  72 bản ghi  60 s  (tổng 432, 68 s)
+  7/13  kb_0007.pkl  72 bản ghi  61 s  (tổng 504, 69 s)
+  8/13  kb_0003.pkl  72 bản ghi  62 s  (tổng 576, 70 s)
+  9/13  kb_0008.pkl  72 bản ghi  36 s  (tổng 648, 91 s)
+  10/13  kb_0011.pkl  72 bản ghi  31 s  (tổng 720, 95 s)
+  11/13  kb_0010.pkl  72 bản ghi  34 s  (tổng 792, 98 s)
+  12/13  kb_0009.pkl  72 bản ghi  39 s  (tổng 864, 99 s)
+  13/13  kb_0012.pkl  72 bản ghi  34 s  (tổng 936, 100 s)
+xong
+[7/68] sinh dữ liệu c6 20 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap c6 --K 20 --buoc-moc 4 --khong-thay --tien-trinh 8
+c6 K=20: 13 cửa sổ × 12 mốc, còn 13
+  1/13  kb_0005.pkl  36 bản ghi  51 s  (tổng 36, 68 s)
+  2/13  kb_0007.pkl  36 bản ghi  58 s  (tổng 72, 74 s)
+  3/13  kb_0004.pkl  36 bản ghi  64 s  (tổng 108, 80 s)
+  4/13  kb_0000.pkl  36 bản ghi  72 s  (tổng 144, 80 s)
+  5/13  kb_0001.pkl  36 bản ghi  76 s  (tổng 180, 84 s)
+  6/13  kb_0002.pkl  36 bản ghi  80 s  (tổng 216, 88 s)
+  7/13  kb_0003.pkl  36 bản ghi  82 s  (tổng 252, 97 s)
+  8/13  kb_0006.pkl  36 bản ghi  83 s  (tổng 288, 100 s)
+  9/13  kb_0008.pkl  36 bản ghi  43 s  (tổng 324, 111 s)
+  10/13  kb_0010.pkl  36 bản ghi  35 s  (tổng 360, 115 s)
+  11/13  kb_0009.pkl  36 bản ghi  45 s  (tổng 396, 119 s)
+  12/13  kb_0012.pkl  36 bản ghi  37 s  (tổng 432, 122 s)
+  13/13  kb_0011.pkl  36 bản ghi  43 s  (tổng 468, 123 s)
+xong
+[8/68] sinh dữ liệu yagi5 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap yagi5 --K 4-5 --khong-thay --tien-trinh 8
+yagi5 K=4-5: 13 cửa sổ × 48 mốc, còn 13
+  1/13  kb_0004.pkl  144 bản ghi  40 s  (tổng 144, 48 s)
+  2/13  kb_0003.pkl  144 bản ghi  40 s  (tổng 288, 49 s)
+  3/13  kb_0002.pkl  144 bản ghi  41 s  (tổng 432, 49 s)
+  4/13  kb_0006.pkl  144 bản ghi  41 s  (tổng 576, 49 s)
+  5/13  kb_0001.pkl  144 bản ghi  42 s  (tổng 720, 50 s)
+  6/13  kb_0007.pkl  144 bản ghi  41 s  (tổng 864, 50 s)
+  7/13  kb_0005.pkl  144 bản ghi  41 s  (tổng 1008, 50 s)
+  8/13  kb_0000.pkl  144 bản ghi  43 s  (tổng 1152, 51 s)
+  9/13  kb_0008.pkl  144 bản ghi  23 s  (tổng 1296, 71 s)
+  10/13  kb_0009.pkl  144 bản ghi  26 s  (tổng 1440, 75 s)
+  11/13  kb_0011.pkl  144 bản ghi  30 s  (tổng 1584, 79 s)
+  12/13  kb_0010.pkl  144 bản ghi  30 s  (tổng 1728, 79 s)
+  13/13  kb_0012.pkl  144 bản ghi  29 s  (tổng 1872, 79 s)
+xong
+[9/68] sinh dữ liệu yagi5 10 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap yagi5 --K 10 --buoc-moc 2 --khong-thay --tien-trinh 8
+yagi5 K=10: 13 cửa sổ × 24 mốc, còn 13
+  1/13  kb_0003.pkl  72 bản ghi  34 s  (tổng 72, 41 s)
+  2/13  kb_0006.pkl  72 bản ghi  34 s  (tổng 144, 42 s)
+  3/13  kb_0005.pkl  72 bản ghi  34 s  (tổng 216, 42 s)
+  4/13  kb_0002.pkl  72 bản ghi  35 s  (tổng 288, 42 s)
+  5/13  kb_0004.pkl  72 bản ghi  35 s  (tổng 360, 42 s)
+  6/13  kb_0007.pkl  72 bản ghi  37 s  (tổng 432, 45 s)
+  7/13  kb_0001.pkl  72 bản ghi  40 s  (tổng 504, 47 s)
+  8/13  kb_0000.pkl  72 bản ghi  46 s  (tổng 576, 52 s)
+  9/13  kb_0008.pkl  72 bản ghi  27 s  (tổng 648, 68 s)
+  10/13  kb_0009.pkl  72 bản ghi  33 s  (tổng 720, 74 s)
+  11/13  kb_0012.pkl  72 bản ghi  35 s  (tổng 792, 77 s)
+  12/13  kb_0010.pkl  72 bản ghi  36 s  (tổng 864, 78 s)
+  13/13  kb_0011.pkl  72 bản ghi  37 s  (tổng 936, 80 s)
+xong
+[10/68] sinh dữ liệu yagi5 20 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap yagi5 --K 20 --buoc-moc 4 --khong-thay --tien-trinh 8
+yagi5 K=20: 13 cửa sổ × 12 mốc, còn 13
+  1/13  kb_0003.pkl  36 bản ghi  34 s  (tổng 36, 41 s)
+  2/13  kb_0004.pkl  36 bản ghi  35 s  (tổng 72, 42 s)
+  3/13  kb_0006.pkl  36 bản ghi  36 s  (tổng 108, 43 s)
+  4/13  kb_0002.pkl  36 bản ghi  36 s  (tổng 144, 43 s)
+  5/13  kb_0005.pkl  36 bản ghi  36 s  (tổng 180, 44 s)
+  6/13  kb_0007.pkl  36 bản ghi  39 s  (tổng 216, 46 s)
+  7/13  kb_0001.pkl  36 bản ghi  43 s  (tổng 252, 50 s)
+  8/13  kb_0000.pkl  36 bản ghi  52 s  (tổng 288, 59 s)
+  9/13  kb_0008.pkl  36 bản ghi  37 s  (tổng 324, 78 s)
+  10/13  kb_0009.pkl  36 bản ghi  61 s  (tổng 360, 103 s)
+  11/13  kb_0012.pkl  36 bản ghi  68 s  (tổng 396, 111 s)
+  12/13  kb_0010.pkl  36 bản ghi  69 s  (tổng 432, 112 s)
+  13/13  kb_0011.pkl  36 bản ghi  70 s  (tổng 468, 113 s)
+xong
+[11/68] huấn luyện DM6 seed 0 (thế giới A) — chỉ khi chưa có
+    python -m src.nhieu_luong.huan_luyen_dt dm --thi-nghiem 6 --ten dm6 --them --seed 0 --luong-cpu 4
+dm6 (dm, đặc trưng mới: True, tỉ lệ 1.0, gấp đôi False): train 13209, val 2304
+  ep  1  loss 0.3759  val 0.3127  J val 3.9638 (thầy 2.8110)  (23 s)
+  ep  2  loss 0.3226  val 0.3017  J val 3.3977 (thầy 2.8110)  (42 s)
+  ep  3  loss 0.3141  val 0.2903  J val 3.4194 (thầy 2.8110)  (61 s)
+  ep  4  loss 0.3037  val 0.2925  J val 3.6207 (thầy 2.8110)  (80 s)
+  ep  5  loss 0.3035  val 0.2811  J val 3.5724 (thầy 2.8110)  (102 s)
+  ep  6  loss 0.2979  val 0.2772  J val 3.3155 (thầy 2.8110)  (121 s)
+  ep  7  loss 0.2899  val 0.2756  J val 3.4603 (thầy 2.8110)  (140 s)
+  ep  8  loss 0.2903  val 0.2732  J val 3.1455 (thầy 2.8110)  (158 s)
+  ep  9  loss 0.2901  val 0.2708  J val 3.4508 (thầy 2.8110)  (214 s)
+  ep 10  loss 0.2849  val 0.2699  J val 3.4557 (thầy 2.8110)  (235 s)
+  ep 11  loss 0.2815  val 0.2666  J val 3.2913 (thầy 2.8110)  (255 s)
+  ep 12  loss 0.2758  val 0.2652  J val 3.0907 (thầy 2.8110)  (274 s)
+  ep 13  loss 0.2777  val 0.2627  J val 3.2577 (thầy 2.8110)  (354 s)
+  ep 14  loss 0.2734  val 0.2601  J val 3.0387 (thầy 2.8110)  (391 s)
+  ep 15  loss 0.2714  val 0.2600  J val 3.0787 (thầy 2.8110)  (416 s)
+  ep 16  loss 0.2721  val 0.2589  J val 3.0630 (thầy 2.8110)  (485 s)
+  ep 17  loss 0.2714  val 0.2586  J val 3.0481 (thầy 2.8110)  (558 s)
+  ep 18  loss 0.2696  val 0.2580  J val 3.0867 (thầy 2.8110)  (627 s)
+  ep 19  loss 0.2704  val 0.2573  J val 3.0409 (thầy 2.8110)  (712 s)
+  ep 20  loss 0.2684  val 0.2569  J val 3.0908 (thầy 2.8110)  (851 s)
+[12/68] sinh dữ liệu train_b 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train_b --K 4-5 --tien-trinh 8
+train_b K=4-5: 59 cửa sổ × 37 mốc, còn 59
+  1/59  kb_0006.pkl  111 bản ghi  289 s  (tổng 111, 313 s)
+  2/59  kb_0003.pkl  111 bản ghi  293 s  (tổng 222, 316 s)
+  3/59  kb_0007.pkl  111 bản ghi  334 s  (tổng 333, 357 s)
+  4/59  kb_0001.pkl  111 bản ghi  341 s  (tổng 444, 363 s)
+  5/59  kb_0002.pkl  111 bản ghi  341 s  (tổng 555, 364 s)
+  6/59  kb_0005.pkl  111 bản ghi  345 s  (tổng 666, 368 s)
+  7/59  kb_0000.pkl  111 bản ghi  355 s  (tổng 777, 377 s)
+  8/59  kb_0004.pkl  111 bản ghi  483 s  (tổng 888, 506 s)
+  9/59  kb_0008.pkl  111 bản ghi  228 s  (tổng 999, 541 s)
+  10/59  kb_0009.pkl  111 bản ghi  235 s  (tổng 1110, 551 s)
+  11/59  kb_0013.pkl  111 bản ghi  203 s  (tổng 1221, 571 s)
+  12/59  kb_0011.pkl  111 bản ghi  225 s  (tổng 1332, 589 s)
+  13/59  kb_0012.pkl  111 bản ghi  252 s  (tổng 1443, 616 s)
+  14/59  kb_0010.pkl  111 bản ghi  270 s  (tổng 1554, 627 s)
+  15/59  kb_0014.pkl  111 bản ghi  257 s  (tổng 1665, 634 s)
+  16/59  kb_0015.pkl  111 bản ghi  139 s  (tổng 1776, 645 s)
+  17/59  kb_0016.pkl  111 bản ghi  161 s  (tổng 1887, 701 s)
+  18/59  kb_0022.pkl  111 bản ghi  101 s  (tổng 1998, 736 s)
+  19/59  kb_0017.pkl  111 bản ghi  197 s  (tổng 2109, 749 s)
+  20/59  kb_0023.pkl  111 bản ghi  153 s  (tổng 2220, 797 s)
+  21/59  kb_0018.pkl  111 bản ghi  264 s  (tổng 2331, 835 s)
+  22/59  kb_0024.pkl  111 bản ghi  162 s  (tổng 2442, 863 s)
+  23/59  kb_0019.pkl  111 bản ghi  290 s  (tổng 2553, 879 s)
+  24/59  kb_0020.pkl  111 bản ghi  283 s  (tổng 2664, 899 s)
+  25/59  kb_0021.pkl  111 bản ghi  325 s  (tổng 2775, 952 s)
+  26/59  kb_0025.pkl  111 bản ghi  222 s  (tổng 2886, 957 s)
+  27/59  kb_0027.pkl  111 bản ghi  180 s  (tổng 2997, 977 s)
+  28/59  kb_0026.pkl  111 bản ghi  229 s  (tổng 3108, 978 s)
+  29/59  kb_0033.pkl  111 bản ghi  120 s  (tổng 3219, 1078 s)
+  30/59  kb_0032.pkl  111 bản ghi  132 s  (tổng 3330, 1084 s)
+  31/59  kb_0034.pkl  111 bản ghi  126 s  (tổng 3441, 1103 s)
+  32/59  kb_0031.pkl  111 bản ghi  205 s  (tổng 3552, 1104 s)
+  33/59  kb_0028.pkl  111 bản ghi  269 s  (tổng 3663, 1104 s)
+  34/59  kb_0035.pkl  111 bản ghi  179 s  (tổng 3774, 1157 s)
+  35/59  kb_0029.pkl  111 bản ghi  356 s  (tổng 3885, 1219 s)
+  36/59  kb_0030.pkl  111 bản ghi  344 s  (tổng 3996, 1223 s)
+  37/59  kb_0036.pkl  111 bản ghi  233 s  (tổng 4107, 1311 s)
+  38/59  kb_0038.pkl  111 bản ghi  237 s  (tổng 4218, 1340 s)
+  39/59  kb_0037.pkl  111 bản ghi  279 s  (tổng 4329, 1363 s)
+  40/59  kb_0039.pkl  111 bản ghi  270 s  (tổng 4440, 1374 s)
+  41/59  kb_0043.pkl  111 bản ghi  255 s  (tổng 4551, 1478 s)
+  42/59  kb_0040.pkl  111 bản ghi  399 s  (tổng 4662, 1503 s)
+  43/59  kb_0044.pkl  111 bản ghi  243 s  (tổng 4773, 1554 s)
+  44/59  kb_0046.pkl  111 bản ghi  240 s  (tổng 4884, 1603 s)
+  45/59  kb_0045.pkl  111 bản ghi  274 s  (tổng 4995, 1614 s)
+  46/59  kb_0047.pkl  111 bản ghi  244 s  (tổng 5106, 1618 s)
+  47/59  kb_0041.pkl  111 bản ghi  483 s  (tổng 5217, 1640 s)
+  48/59  kb_0042.pkl  111 bản ghi  475 s  (tổng 5328, 1695 s)
+  49/59  kb_0049.pkl  111 bản ghi  192 s  (tổng 5439, 1695 s)
+  50/59  kb_0050.pkl  111 bản ghi  147 s  (tổng 5550, 1701 s)
+  51/59  kb_0048.pkl  111 bản ghi  300 s  (tổng 5661, 1778 s)
+  52/59  kb_0051.pkl  111 bản ghi  183 s  (tổng 5772, 1787 s)
+  53/59  kb_0052.pkl  111 bản ghi  177 s  (tổng 5883, 1791 s)
+  54/59  kb_0053.pkl  111 bản ghi  194 s  (tổng 5994, 1813 s)
+  55/59  kb_0057.pkl  111 bản ghi  221 s  (tổng 6105, 1922 s)
+  56/59  kb_0054.pkl  111 bản ghi  290 s  (tổng 6216, 1930 s)
+  57/59  kb_0058.pkl  111 bản ghi  166 s  (tổng 6327, 1945 s)
+  58/59  kb_0055.pkl  111 bản ghi  268 s  (tổng 6438, 1963 s)
+  59/59  kb_0056.pkl  111 bản ghi  269 s  (tổng 6549, 1964 s)
+xong
+[13/68] sinh dữ liệu train6_b 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train6_b --K 4-5 --tien-trinh 8
+train6_b K=4-5: 60 cửa sổ × 37 mốc, còn 60
+  1/60  kb_0003.pkl  111 bản ghi  228 s  (tổng 111, 249 s)
+  2/60  kb_0000.pkl  111 bản ghi  383 s  (tổng 222, 404 s)
+  3/60  kb_0007.pkl  111 bản ghi  387 s  (tổng 333, 408 s)
+  4/60  kb_0002.pkl  111 bản ghi  388 s  (tổng 444, 409 s)
+  5/60  kb_0004.pkl  111 bản ghi  419 s  (tổng 555, 441 s)
+  6/60  kb_0005.pkl  111 bản ghi  426 s  (tổng 666, 447 s)
+  7/60  kb_0001.pkl  111 bản ghi  436 s  (tổng 777, 457 s)
+  8/60  kb_0006.pkl  111 bản ghi  448 s  (tổng 888, 469 s)
+  9/60  kb_0008.pkl  111 bản ghi  420 s  (tổng 999, 669 s)
+  10/60  kb_0015.pkl  111 bản ghi  272 s  (tổng 1110, 741 s)
+  11/60  kb_0010.pkl  111 bản ghi  347 s  (tổng 1221, 755 s)
+  12/60  kb_0009.pkl  111 bản ghi  386 s  (tổng 1332, 790 s)
+  13/60  kb_0011.pkl  111 bản ghi  381 s  (tổng 1443, 790 s)
+  14/60  kb_0012.pkl  111 bản ghi  375 s  (tổng 1554, 816 s)
+  15/60  kb_0014.pkl  111 bản ghi  417 s  (tổng 1665, 873 s)
+  16/60  kb_0016.pkl  111 bản ghi  214 s  (tổng 1776, 883 s)
+  17/60  kb_0013.pkl  111 bản ghi  474 s  (tổng 1887, 922 s)
+  18/60  kb_0020.pkl  111 bản ghi  204 s  (tổng 1998, 994 s)
+  19/60  kb_0018.pkl  111 bản ghi  263 s  (tổng 2109, 1018 s)
+  20/60  kb_0021.pkl  111 bản ghi  298 s  (tổng 2220, 1114 s)
+  21/60  kb_0024.pkl  111 bản ghi  192 s  (tổng 2331, 1114 s)
+  22/60  kb_0017.pkl  111 bản ghi  384 s  (tổng 2442, 1126 s)
+  23/60  kb_0026.pkl  111 bản ghi  141 s  (tổng 2553, 1159 s)
+  24/60  kb_0022.pkl  111 bản ghi  306 s  (tổng 2664, 1180 s)
+  25/60  kb_0019.pkl  111 bản ghi  392 s  (tổng 2775, 1182 s)
+  26/60  kb_0023.pkl  111 bản ghi  471 s  (tổng 2886, 1355 s)
+  27/60  kb_0025.pkl  111 bản ghi  418 s  (tổng 2997, 1412 s)
+  28/60  kb_0030.pkl  111 bản ghi  260 s  (tổng 3108, 1419 s)
+  29/60  kb_0031.pkl  111 bản ghi  267 s  (tổng 3219, 1447 s)
+  30/60  kb_0032.pkl  111 bản ghi  268 s  (tổng 3330, 1450 s)
+  31/60  kb_0028.pkl  111 bản ghi  404 s  (tổng 3441, 1518 s)
+  32/60  kb_0027.pkl  111 bản ghi  407 s  (tổng 3552, 1521 s)
+  33/60  kb_0029.pkl  111 bản ghi  444 s  (tổng 3663, 1569 s)
+  34/60  kb_0033.pkl  111 bản ghi  372 s  (tổng 3774, 1727 s)
+  35/60  kb_0036.pkl  111 bản ghi  284 s  (tổng 3885, 1730 s)
+  36/60  kb_0037.pkl  111 bản ghi  282 s  (tổng 3996, 1732 s)
+  37/60  kb_0040.pkl  111 bản ghi  166 s  (tổng 4107, 1736 s)
+  38/60  kb_0039.pkl  111 bản ghi  215 s  (tổng 4218, 1736 s)
+  39/60  kb_0035.pkl  111 bản ghi  318 s  (tổng 4329, 1737 s)
+  40/60  kb_0034.pkl  111 bản ghi  351 s  (tổng 4440, 1763 s)
+  41/60  kb_0038.pkl  111 bản ghi  327 s  (tổng 4551, 1845 s)
+  42/60  kb_0044.pkl  111 bản ghi  145 s  (tổng 4662, 1881 s)
+  43/60  kb_0041.pkl  111 bản ghi  199 s  (tổng 4773, 1926 s)
+  44/60  kb_0043.pkl  111 bản ghi  218 s  (tổng 4884, 1951 s)
+  45/60  kb_0045.pkl  111 bản ghi  244 s  (tổng 4995, 1980 s)
+  46/60  kb_0047.pkl  111 bản ghi  312 s  (tổng 5106, 2075 s)
+  47/60  kb_0046.pkl  111 bản ghi  339 s  (tổng 5217, 2076 s)
+  48/60  kb_0042.pkl  111 bản ghi  382 s  (tổng 5328, 2112 s)
+  49/60  kb_0048.pkl  111 bản ghi  385 s  (tổng 5439, 2230 s)
+  50/60  kb_0053.pkl  111 bản ghi  196 s  (tổng 5550, 2272 s)
+  51/60  kb_0050.pkl  111 bản ghi  346 s  (tổng 5661, 2273 s)
+  52/60  kb_0049.pkl  111 bản ghi  451 s  (tổng 5772, 2332 s)
+  53/60  kb_0052.pkl  111 bản ghi  389 s  (tổng 5883, 2369 s)
+  54/60  kb_0051.pkl  111 bản ghi  429 s  (tổng 5994, 2380 s)
+  55/60  kb_0054.pkl  111 bản ghi  323 s  (tổng 6105, 2399 s)
+  56/60  kb_0055.pkl  111 bản ghi  294 s  (tổng 6216, 2407 s)
+  57/60  kb_0058.pkl  111 bản ghi  210 s  (tổng 6327, 2483 s)
+  58/60  kb_0056.pkl  111 bản ghi  296 s  (tổng 6438, 2525 s)
+  59/60  kb_0057.pkl  111 bản ghi  269 s  (tổng 6549, 2541 s)
+  60/60  kb_0059.pkl  111 bản ghi  228 s  (tổng 6660, 2560 s)
+xong
+[14/68] sinh dữ liệu val_b 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap val_b --K 4-5 --tien-trinh 8
+val_b K=4-5: 16 cửa sổ × 24 mốc, còn 16
+  1/16  kb_0006.pkl  72 bản ghi  172 s  (tổng 72, 189 s)
+  2/16  kb_0001.pkl  72 bản ghi  220 s  (tổng 144, 232 s)
+  3/16  kb_0007.pkl  72 bản ghi  232 s  (tổng 216, 249 s)
+  4/16  kb_0000.pkl  72 bản ghi  269 s  (tổng 288, 280 s)
+  5/16  kb_0005.pkl  72 bản ghi  312 s  (tổng 360, 330 s)
+  6/16  kb_0002.pkl  72 bản ghi  331 s  (tổng 432, 347 s)
+  7/16  kb_0003.pkl  72 bản ghi  340 s  (tổng 504, 356 s)
+  8/16  kb_0010.pkl  72 bản ghi  154 s  (tổng 576, 403 s)
+  9/16  kb_0009.pkl  72 bản ghi  177 s  (tổng 648, 409 s)
+  10/16  kb_0008.pkl  72 bản ghi  230 s  (tổng 720, 419 s)
+  11/16  kb_0012.pkl  72 bản ghi  111 s  (tổng 792, 441 s)
+  12/16  kb_0004.pkl  72 bản ghi  443 s  (tổng 864, 460 s)
+  13/16  kb_0013.pkl  72 bản ghi  117 s  (tổng 936, 464 s)
+  14/16  kb_0011.pkl  72 bản ghi  190 s  (tổng 1008, 470 s)
+  15/16  kb_0014.pkl  72 bản ghi  118 s  (tổng 1080, 474 s)
+  16/16  kb_0015.pkl  72 bản ghi  154 s  (tổng 1152, 557 s)
+xong
+[15/68] sinh dữ liệu val6_b 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap val6_b --K 4-5 --tien-trinh 8
+val6_b K=4-5: 16 cửa sổ × 24 mốc, còn 16
+  1/16  kb_0003.pkl  72 bản ghi  203 s  (tổng 72, 214 s)
+  2/16  kb_0000.pkl  72 bản ghi  234 s  (tổng 144, 245 s)
+  3/16  kb_0006.pkl  72 bản ghi  238 s  (tổng 216, 249 s)
+  4/16  kb_0001.pkl  72 bản ghi  242 s  (tổng 288, 253 s)
+  5/16  kb_0004.pkl  72 bản ghi  284 s  (tổng 360, 295 s)
+  6/16  kb_0005.pkl  72 bản ghi  298 s  (tổng 432, 309 s)
+  7/16  kb_0002.pkl  72 bản ghi  305 s  (tổng 504, 316 s)
+  8/16  kb_0007.pkl  72 bản ghi  353 s  (tổng 576, 364 s)
+  9/16  kb_0008.pkl  72 bản ghi  193 s  (tổng 648, 407 s)
+  10/16  kb_0010.pkl  72 bản ghi  202 s  (tổng 720, 452 s)
+  11/16  kb_0009.pkl  72 bản ghi  235 s  (tổng 792, 480 s)
+  12/16  kb_0014.pkl  72 bản ghi  199 s  (tổng 864, 515 s)
+  13/16  kb_0012.pkl  72 bản ghi  220 s  (tổng 936, 516 s)
+  14/16  kb_0011.pkl  72 bản ghi  269 s  (tổng 1008, 522 s)
+  15/16  kb_0013.pkl  72 bản ghi  248 s  (tổng 1080, 558 s)
+  16/16  kb_0015.pkl  72 bản ghi  218 s  (tổng 1152, 582 s)
+xong
+[16/68] sinh dữ liệu c6_b 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap c6_b --K 4-5 --khong-thay --tien-trinh 8
+c6_b K=4-5: 13 cửa sổ × 48 mốc, còn 13
+  1/13  kb_0005.pkl  144 bản ghi  134 s  (tổng 144, 156 s)
+  2/13  kb_0004.pkl  144 bản ghi  149 s  (tổng 288, 171 s)
+  3/13  kb_0000.pkl  144 bản ghi  163 s  (tổng 432, 185 s)
+  4/13  kb_0007.pkl  144 bản ghi  169 s  (tổng 576, 192 s)
+  5/13  kb_0006.pkl  144 bản ghi  169 s  (tổng 720, 192 s)
+  6/13  kb_0002.pkl  144 bản ghi  181 s  (tổng 864, 203 s)
+  7/13  kb_0001.pkl  144 bản ghi  199 s  (tổng 1008, 221 s)
+  8/13  kb_0003.pkl  144 bản ghi  199 s  (tổng 1152, 222 s)
+  9/13  kb_0008.pkl  144 bản ghi  134 s  (tổng 1296, 291 s)
+  10/13  kb_0010.pkl  144 bản ghi  109 s  (tổng 1440, 293 s)
+  11/13  kb_0011.pkl  144 bản ghi  102 s  (tổng 1584, 294 s)
+  12/13  kb_0009.pkl  144 bản ghi  127 s  (tổng 1728, 298 s)
+  13/13  kb_0012.pkl  144 bản ghi  110 s  (tổng 1872, 302 s)
+xong
+[17/68] sinh dữ liệu c6_b 10 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap c6_b --K 10 --buoc-moc 2 --khong-thay --tien-trinh 8
+c6_b K=10: 13 cửa sổ × 24 mốc, còn 13
+  1/13  kb_0005.pkl  72 bản ghi  167 s  (tổng 72, 191 s)
+  2/13  kb_0004.pkl  72 bản ghi  175 s  (tổng 144, 199 s)
+  3/13  kb_0002.pkl  72 bản ghi  208 s  (tổng 216, 231 s)
+  4/13  kb_0006.pkl  72 bản ghi  210 s  (tổng 288, 236 s)
+  5/13  kb_0000.pkl  72 bản ghi  214 s  (tổng 360, 237 s)
+  6/13  kb_0001.pkl  72 bản ghi  222 s  (tổng 432, 246 s)
+  7/13  kb_0007.pkl  72 bản ghi  225 s  (tổng 504, 252 s)
+  8/13  kb_0003.pkl  72 bản ghi  232 s  (tổng 576, 256 s)
+  9/13  kb_0008.pkl  72 bản ghi  140 s  (tổng 648, 331 s)
+  10/13  kb_0011.pkl  72 bản ghi  105 s  (tổng 720, 341 s)
+  11/13  kb_0010.pkl  72 bản ghi  112 s  (tổng 792, 343 s)
+  12/13  kb_0009.pkl  72 bản ghi  144 s  (tổng 864, 343 s)
+  13/13  kb_0012.pkl  72 bản ghi  108 s  (tổng 936, 345 s)
+xong
+[18/68] sinh dữ liệu c6_b 20 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap c6_b --K 20 --buoc-moc 4 --khong-thay --tien-trinh 8
+c6_b K=20: 13 cửa sổ × 12 mốc, còn 13
+  1/13  kb_0005.pkl  36 bản ghi  194 s  (tổng 36, 220 s)
+  2/13  kb_0007.pkl  36 bản ghi  217 s  (tổng 72, 243 s)
+  3/13  kb_0004.pkl  36 bản ghi  238 s  (tổng 108, 264 s)
+  4/13  kb_0000.pkl  36 bản ghi  261 s  (tổng 144, 286 s)
+  5/13  kb_0002.pkl  36 bản ghi  269 s  (tổng 180, 294 s)
+  6/13  kb_0006.pkl  36 bản ghi  306 s  (tổng 216, 332 s)
+  7/13  kb_0001.pkl  36 bản ghi  307 s  (tổng 252, 332 s)
+  8/13  kb_0003.pkl  36 bản ghi  315 s  (tổng 288, 340 s)
+  9/13  kb_0008.pkl  36 bản ghi  188 s  (tổng 324, 409 s)
+  10/13  kb_0010.pkl  36 bản ghi  152 s  (tổng 360, 416 s)
+  11/13  kb_0009.pkl  36 bản ghi  184 s  (tổng 396, 427 s)
+  12/13  kb_0012.pkl  36 bản ghi  146 s  (tổng 432, 440 s)
+  13/13  kb_0011.pkl  36 bản ghi  155 s  (tổng 468, 441 s)
+xong
+[19/68] sinh dữ liệu yagi5_b 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap yagi5_b --K 4-5 --khong-thay --tien-trinh 8
+yagi5_b K=4-5: 13 cửa sổ × 48 mốc, còn 13
+  1/13  kb_0002.pkl  144 bản ghi  116 s  (tổng 144, 138 s)
+  2/13  kb_0004.pkl  144 bản ghi  116 s  (tổng 288, 139 s)
+  3/13  kb_0003.pkl  144 bản ghi  116 s  (tổng 432, 139 s)
+  4/13  kb_0005.pkl  144 bản ghi  116 s  (tổng 576, 139 s)
+  5/13  kb_0006.pkl  144 bản ghi  118 s  (tổng 720, 141 s)
+  6/13  kb_0007.pkl  144 bản ghi  119 s  (tổng 864, 142 s)
+  7/13  kb_0001.pkl  144 bản ghi  120 s  (tổng 1008, 142 s)
+  8/13  kb_0000.pkl  144 bản ghi  128 s  (tổng 1152, 149 s)
+  9/13  kb_0008.pkl  144 bản ghi  83 s  (tổng 1296, 222 s)
+  10/13  kb_0009.pkl  144 bản ghi  97 s  (tổng 1440, 235 s)
+  11/13  kb_0010.pkl  144 bản ghi  103 s  (tổng 1584, 242 s)
+  12/13  kb_0012.pkl  144 bản ghi  104 s  (tổng 1728, 245 s)
+  13/13  kb_0011.pkl  144 bản ghi  106 s  (tổng 1872, 245 s)
+xong
+[20/68] sinh dữ liệu yagi5_b 10 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap yagi5_b --K 10 --buoc-moc 2 --khong-thay --tien-trinh 8
+yagi5_b K=10: 13 cửa sổ × 24 mốc, còn 13
+  1/13  kb_0006.pkl  72 bản ghi  117 s  (tổng 72, 138 s)
+  2/13  kb_0003.pkl  72 bản ghi  119 s  (tổng 144, 139 s)
+  3/13  kb_0002.pkl  72 bản ghi  122 s  (tổng 216, 141 s)
+  4/13  kb_0005.pkl  72 bản ghi  122 s  (tổng 288, 141 s)
+  5/13  kb_0004.pkl  72 bản ghi  122 s  (tổng 360, 142 s)
+  6/13  kb_0007.pkl  72 bản ghi  131 s  (tổng 432, 152 s)
+  7/13  kb_0001.pkl  72 bản ghi  142 s  (tổng 504, 161 s)
+  8/13  kb_0000.pkl  72 bản ghi  161 s  (tổng 576, 180 s)
+  9/13  kb_0008.pkl  72 bản ghi  109 s  (tổng 648, 247 s)
+  10/13  kb_0009.pkl  72 bản ghi  128 s  (tổng 720, 267 s)
+  11/13  kb_0012.pkl  72 bản ghi  140 s  (tổng 792, 282 s)
+  12/13  kb_0010.pkl  72 bản ghi  143 s  (tổng 864, 284 s)
+  13/13  kb_0011.pkl  72 bản ghi  148 s  (tổng 936, 289 s)
+xong
+[21/68] sinh dữ liệu yagi5_b 20 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap yagi5_b --K 20 --buoc-moc 4 --khong-thay --tien-trinh 8
+yagi5_b K=20: 13 cửa sổ × 12 mốc, còn 13
+  1/13  kb_0003.pkl  36 bản ghi  74 s  (tổng 36, 99 s)
+  2/13  kb_0004.pkl  36 bản ghi  75 s  (tổng 72, 101 s)
+  3/13  kb_0005.pkl  36 bản ghi  76 s  (tổng 108, 102 s)
+  4/13  kb_0002.pkl  36 bản ghi  77 s  (tổng 144, 102 s)
+  5/13  kb_0006.pkl  36 bản ghi  77 s  (tổng 180, 102 s)
+  6/13  kb_0007.pkl  36 bản ghi  79 s  (tổng 216, 105 s)
+  7/13  kb_0001.pkl  36 bản ghi  84 s  (tổng 252, 109 s)
+  8/13  kb_0000.pkl  36 bản ghi  91 s  (tổng 288, 116 s)
+  9/13  kb_0008.pkl  36 bản ghi  32 s  (tổng 324, 132 s)
+  10/13  kb_0009.pkl  36 bản ghi  43 s  (tổng 360, 144 s)
+  11/13  kb_0012.pkl  36 bản ghi  46 s  (tổng 396, 149 s)
+  12/13  kb_0010.pkl  36 bản ghi  49 s  (tổng 432, 151 s)
+  13/13  kb_0011.pkl  36 bản ghi  50 s  (tổng 468, 152 s)
+xong
+[22/68] huấn luyện DM8b seed 0 (thế giới B)
+    python -m src.nhieu_luong.huan_luyen_dt dm --thi-nghiem 8 --ten dm8b_s0 --them --seed 0 --luong-cpu 4
+dm8b_s0 (dm, đặc trưng mới: True, tỉ lệ 1.0, gấp đôi False): train 13209, val 2304
+  ep  1  loss 0.3735  val 0.3149  J val 4.1546 (thầy 2.7355)  (24 s)
+  ep  2  loss 0.3225  val 0.3007  J val 3.2552 (thầy 2.7355)  (44 s)
+  ep  3  loss 0.3145  val 0.2934  J val 3.5060 (thầy 2.7355)  (69 s)
+  ep  4  loss 0.3079  val 0.2915  J val 3.8912 (thầy 2.7355)  (101 s)
+  ep  5  loss 0.3027  val 0.2902  J val 3.1002 (thầy 2.7355)  (134 s)
+  ep  6  loss 0.2976  val 0.2812  J val 3.4595 (thầy 2.7355)  (157 s)
+  ep  7  loss 0.2943  val 0.2798  J val 3.0574 (thầy 2.7355)  (177 s)
+  ep  8  loss 0.2894  val 0.2769  J val 3.2770 (thầy 2.7355)  (196 s)
+  ep  9  loss 0.2914  val 0.2739  J val 3.0633 (thầy 2.7355)  (215 s)
+  ep 10  loss 0.2872  val 0.2699  J val 3.0151 (thầy 2.7355)  (234 s)
+  ep 11  loss 0.2861  val 0.2703  J val 3.0026 (thầy 2.7355)  (253 s)
+  ep 12  loss 0.2837  val 0.2686  J val 3.1258 (thầy 2.7355)  (272 s)
+  ep 13  loss 0.2789  val 0.2668  J val 3.1519 (thầy 2.7355)  (290 s)
+  ep 14  loss 0.2770  val 0.2634  J val 3.0335 (thầy 2.7355)  (309 s)
+  ep 15  loss 0.2773  val 0.2630  J val 3.0856 (thầy 2.7355)  (327 s)
+  ep 16  loss 0.2750  val 0.2615  J val 2.8678 (thầy 2.7355)  (346 s)
+  ep 17  loss 0.2687  val 0.2615  J val 2.9907 (thầy 2.7355)  (364 s)
+  ep 18  loss 0.2711  val 0.2604  J val 3.0478 (thầy 2.7355)  (383 s)
+  ep 19  loss 0.2682  val 0.2604  J val 2.9440 (thầy 2.7355)  (401 s)
+  ep 20  loss 0.2687  val 0.2601  J val 3.0941 (thầy 2.7355)  (420 s)
+[23/68] huấn luyện DM8b seed 1 (thế giới B)
+    python -m src.nhieu_luong.huan_luyen_dt dm --thi-nghiem 8 --ten dm8b_s1 --them --seed 1 --luong-cpu 4
+dm8b_s1 (dm, đặc trưng mới: True, tỉ lệ 1.0, gấp đôi False): train 13209, val 2304
+  ep  1  loss 0.3735  val 0.3098  J val 3.5330 (thầy 2.7355)  (21 s)
+  ep  2  loss 0.3227  val 0.2988  J val 3.3302 (thầy 2.7355)  (43 s)
+  ep  3  loss 0.3120  val 0.2949  J val 3.2469 (thầy 2.7355)  (61 s)
+  ep  4  loss 0.3061  val 0.2880  J val 3.1701 (thầy 2.7355)  (80 s)
+  ep  5  loss 0.3015  val 0.2837  J val 3.2274 (thầy 2.7355)  (98 s)
+  ep  6  loss 0.2983  val 0.2867  J val 3.0761 (thầy 2.7355)  (117 s)
+  ep  7  loss 0.2931  val 0.2798  J val 2.9943 (thầy 2.7355)  (136 s)
+  ep  8  loss 0.2923  val 0.2750  J val 3.4025 (thầy 2.7355)  (155 s)
+  ep  9  loss 0.2873  val 0.2731  J val 3.2029 (thầy 2.7355)  (173 s)
+  ep 10  loss 0.2848  val 0.2686  J val 3.4965 (thầy 2.7355)  (192 s)
+  ep 11  loss 0.2830  val 0.2697  J val 3.1335 (thầy 2.7355)  (212 s)
+  ep 12  loss 0.2813  val 0.2655  J val 3.0387 (thầy 2.7355)  (230 s)
+  ep 13  loss 0.2783  val 0.2652  J val 3.1502 (thầy 2.7355)  (249 s)
+  ep 14  loss 0.2761  val 0.2643  J val 3.0227 (thầy 2.7355)  (269 s)
+  ep 15  loss 0.2723  val 0.2629  J val 3.0195 (thầy 2.7355)  (288 s)
+  ep 16  loss 0.2746  val 0.2614  J val 2.9726 (thầy 2.7355)  (307 s)
+  ep 17  loss 0.2732  val 0.2603  J val 3.1031 (thầy 2.7355)  (326 s)
+  ep 18  loss 0.2745  val 0.2602  J val 2.9906 (thầy 2.7355)  (346 s)
+  ep 19  loss 0.2703  val 0.2593  J val 3.1034 (thầy 2.7355)  (364 s)
+  ep 20  loss 0.2717  val 0.2595  J val 3.0585 (thầy 2.7355)  (382 s)
+[24/68] huấn luyện DM8b seed 2 (thế giới B)
+    python -m src.nhieu_luong.huan_luyen_dt dm --thi-nghiem 8 --ten dm8b_s2 --them --seed 2 --luong-cpu 4
+dm8b_s2 (dm, đặc trưng mới: True, tỉ lệ 1.0, gấp đôi False): train 13209, val 2304
+  ep  1  loss 0.3723  val 0.3088  J val 3.2586 (thầy 2.7355)  (21 s)
+  ep  2  loss 0.3226  val 0.3014  J val 3.0435 (thầy 2.7355)  (39 s)
+  ep  3  loss 0.3106  val 0.2951  J val 3.3541 (thầy 2.7355)  (59 s)
+  ep  4  loss 0.3061  val 0.2862  J val 3.3454 (thầy 2.7355)  (78 s)
+  ep  5  loss 0.3028  val 0.2821  J val 3.1977 (thầy 2.7355)  (96 s)
+  ep  6  loss 0.2975  val 0.2871  J val 3.1207 (thầy 2.7355)  (115 s)
+  ep  7  loss 0.2911  val 0.2784  J val 2.9733 (thầy 2.7355)  (135 s)
+  ep  8  loss 0.2915  val 0.2737  J val 3.3281 (thầy 2.7355)  (154 s)
+  ep  9  loss 0.2907  val 0.2731  J val 3.0836 (thầy 2.7355)  (172 s)
+  ep 10  loss 0.2868  val 0.2698  J val 3.0587 (thầy 2.7355)  (191 s)
+  ep 11  loss 0.2844  val 0.2693  J val 2.9286 (thầy 2.7355)  (210 s)
+  ep 12  loss 0.2807  val 0.2676  J val 2.9907 (thầy 2.7355)  (229 s)
+  ep 13  loss 0.2784  val 0.2661  J val 2.9324 (thầy 2.7355)  (248 s)
+  ep 14  loss 0.2773  val 0.2635  J val 3.1373 (thầy 2.7355)  (266 s)
+  ep 15  loss 0.2740  val 0.2640  J val 2.9828 (thầy 2.7355)  (285 s)
+  ep 16  loss 0.2740  val 0.2625  J val 2.9206 (thầy 2.7355)  (303 s)
+  ep 17  loss 0.2725  val 0.2607  J val 2.9252 (thầy 2.7355)  (322 s)
+  ep 18  loss 0.2742  val 0.2608  J val 2.8761 (thầy 2.7355)  (340 s)
+  ep 19  loss 0.2697  val 0.2602  J val 2.8494 (thầy 2.7355)  (359 s)
+  ep 20  loss 0.2688  val 0.2599  J val 2.9260 (thầy 2.7355)  (378 s)
+[25/68] huấn luyện DM6 seed 1 (thế giới A)
+    python -m src.nhieu_luong.huan_luyen_dt dm --thi-nghiem 6 --ten dm6_s1 --them --seed 1 --luong-cpu 4
+dm6_s1 (dm, đặc trưng mới: True, tỉ lệ 1.0, gấp đôi False): train 13209, val 2304
+  ep  1  loss 0.3695  val 0.3089  J val 3.6162 (thầy 2.8110)  (24 s)
+  ep  2  loss 0.3251  val 0.2973  J val 3.4654 (thầy 2.8110)  (43 s)
+  ep  3  loss 0.3123  val 0.2892  J val 3.4292 (thầy 2.8110)  (62 s)
+  ep  4  loss 0.3049  val 0.2853  J val 3.3694 (thầy 2.8110)  (81 s)
+  ep  5  loss 0.3023  val 0.2802  J val 3.4805 (thầy 2.8110)  (100 s)
+  ep  6  loss 0.2965  val 0.2818  J val 3.5316 (thầy 2.8110)  (118 s)
+  ep  7  loss 0.2908  val 0.2759  J val 3.1956 (thầy 2.8110)  (136 s)
+  ep  8  loss 0.2876  val 0.2729  J val 3.3250 (thầy 2.8110)  (155 s)
+  ep  9  loss 0.2814  val 0.2695  J val 3.3373 (thầy 2.8110)  (173 s)
+  ep 10  loss 0.2829  val 0.2659  J val 3.3400 (thầy 2.8110)  (192 s)
+  ep 11  loss 0.2801  val 0.2654  J val 3.4122 (thầy 2.8110)  (211 s)
+  ep 12  loss 0.2804  val 0.2646  J val 3.3938 (thầy 2.8110)  (229 s)
+  ep 13  loss 0.2758  val 0.2628  J val 3.3633 (thầy 2.8110)  (247 s)
+  ep 14  loss 0.2750  val 0.2623  J val 3.2846 (thầy 2.8110)  (266 s)
+  ep 15  loss 0.2709  val 0.2601  J val 3.3768 (thầy 2.8110)  (285 s)
+  ep 16  loss 0.2720  val 0.2595  J val 3.2711 (thầy 2.8110)  (304 s)
+  ep 17  loss 0.2693  val 0.2582  J val 3.2740 (thầy 2.8110)  (322 s)
+  ep 18  loss 0.2697  val 0.2580  J val 3.0802 (thầy 2.8110)  (341 s)
+  ep 19  loss 0.2680  val 0.2574  J val 3.3128 (thầy 2.8110)  (360 s)
+  ep 20  loss 0.2728  val 0.2572  J val 3.1350 (thầy 2.8110)  (378 s)
+[26/68] huấn luyện DM6 seed 2 (thế giới A)
+    python -m src.nhieu_luong.huan_luyen_dt dm --thi-nghiem 6 --ten dm6_s2 --them --seed 2 --luong-cpu 4
+dm6_s2 (dm, đặc trưng mới: True, tỉ lệ 1.0, gấp đôi False): train 13209, val 2304
+  ep  1  loss 0.3696  val 0.3057  J val 3.8578 (thầy 2.8110)  (21 s)
+  ep  2  loss 0.3203  val 0.2933  J val 3.6626 (thầy 2.8110)  (41 s)
+  ep  3  loss 0.3091  val 0.2944  J val 3.8602 (thầy 2.8110)  (59 s)
+  ep  4  loss 0.3050  val 0.2857  J val 3.3276 (thầy 2.8110)  (78 s)
+  ep  5  loss 0.3035  val 0.2810  J val 3.5718 (thầy 2.8110)  (97 s)
+  ep  6  loss 0.2962  val 0.2768  J val 3.5807 (thầy 2.8110)  (116 s)
+  ep  7  loss 0.2935  val 0.2764  J val 3.1454 (thầy 2.8110)  (134 s)
+  ep  8  loss 0.2911  val 0.2729  J val 3.2957 (thầy 2.8110)  (153 s)
+  ep  9  loss 0.2827  val 0.2702  J val 3.3209 (thầy 2.8110)  (172 s)
+  ep 10  loss 0.2829  val 0.2705  J val 3.2421 (thầy 2.8110)  (190 s)
+  ep 11  loss 0.2805  val 0.2674  J val 3.0968 (thầy 2.8110)  (209 s)
+  ep 12  loss 0.2812  val 0.2643  J val 3.0365 (thầy 2.8110)  (227 s)
+  ep 13  loss 0.2779  val 0.2622  J val 2.9610 (thầy 2.8110)  (246 s)
+  ep 14  loss 0.2757  val 0.2606  J val 3.1092 (thầy 2.8110)  (264 s)
+  ep 15  loss 0.2740  val 0.2601  J val 3.1398 (thầy 2.8110)  (283 s)
+  ep 16  loss 0.2730  val 0.2593  J val 3.1212 (thầy 2.8110)  (302 s)
+  ep 17  loss 0.2706  val 0.2580  J val 3.1572 (thầy 2.8110)  (320 s)
+  ep 18  loss 0.2688  val 0.2575  J val 3.0214 (thầy 2.8110)  (339 s)
+  ep 19  loss 0.2686  val 0.2575  J val 3.0760 (thầy 2.8110)  (357 s)
+  ep 20  loss 0.2679  val 0.2574  J val 3.0613 (thầy 2.8110)  (376 s)
+[27/68] cố định S = 8, 5 bước cho các mô hình TN8 (như DM6)
+    chon_buoc_8
+[28/68] chấm dm6 trên c6 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 3
+c6 K=4-5: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  144 bản ghi  (22 s)
+  2/13  kb_0002.pkl  144 bản ghi  (25 s)
+  3/13  kb_0001.pkl  144 bản ghi  (34 s)
+  4/13  kb_0004.pkl  144 bản ghi  (42 s)
+  5/13  kb_0005.pkl  144 bản ghi  (44 s)
+  6/13  kb_0003.pkl  144 bản ghi  (51 s)
+  7/13  kb_0006.pkl  144 bản ghi  (63 s)
+  8/13  kb_0007.pkl  144 bản ghi  (63 s)
+  9/13  kb_0008.pkl  144 bản ghi  (72 s)
+  10/13  kb_0010.pkl  144 bản ghi  (76 s)
+  11/13  kb_0009.pkl  144 bản ghi  (81 s)
+  12/13  kb_0011.pkl  144 bản ghi  (84 s)
+  13/13  kb_0012.pkl  144 bản ghi  (88 s)
+xong
+[29/68] chấm dm6_s1 trên c6 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6_s1 --khoa dm6_s1 --khoa-tkcb10 "" --tien-trinh 3
+c6 K=4-5: 13 tệp, mô hình dm6_s1 → khoá dm6_s1
+  1/13  kb_0000.pkl  144 bản ghi  (10 s)
+  2/13  kb_0002.pkl  144 bản ghi  (12 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0005.pkl  144 bản ghi  (19 s)
+  5/13  kb_0004.pkl  144 bản ghi  (20 s)
+  6/13  kb_0003.pkl  144 bản ghi  (22 s)
+  7/13  kb_0006.pkl  144 bản ghi  (28 s)
+  8/13  kb_0007.pkl  144 bản ghi  (29 s)
+  9/13  kb_0008.pkl  144 bản ghi  (31 s)
+  10/13  kb_0010.pkl  144 bản ghi  (37 s)
+  11/13  kb_0009.pkl  144 bản ghi  (37 s)
+  12/13  kb_0011.pkl  144 bản ghi  (38 s)
+  13/13  kb_0012.pkl  144 bản ghi  (43 s)
+xong
+[30/68] chấm dm6_s2 trên c6 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6_s2 --khoa dm6_s2 --khoa-tkcb10 "" --tien-trinh 3
+c6 K=4-5: 13 tệp, mô hình dm6_s2 → khoá dm6_s2
+  1/13  kb_0000.pkl  144 bản ghi  (10 s)
+  2/13  kb_0002.pkl  144 bản ghi  (12 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0005.pkl  144 bản ghi  (20 s)
+  5/13  kb_0004.pkl  144 bản ghi  (20 s)
+  6/13  kb_0003.pkl  144 bản ghi  (22 s)
+  7/13  kb_0006.pkl  144 bản ghi  (28 s)
+  8/13  kb_0007.pkl  144 bản ghi  (29 s)
+  9/13  kb_0008.pkl  144 bản ghi  (32 s)
+  10/13  kb_0010.pkl  144 bản ghi  (37 s)
+  11/13  kb_0009.pkl  144 bản ghi  (38 s)
+  12/13  kb_0011.pkl  144 bản ghi  (38 s)
+  13/13  kb_0012.pkl  144 bản ghi  (44 s)
+xong
+[31/68] chấm dm8b_s0 trên c6 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 3
+c6 K=4-5: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  144 bản ghi  (11 s)
+  2/13  kb_0002.pkl  144 bản ghi  (13 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0005.pkl  144 bản ghi  (20 s)
+  5/13  kb_0004.pkl  144 bản ghi  (21 s)
+  6/13  kb_0003.pkl  144 bản ghi  (23 s)
+  7/13  kb_0006.pkl  144 bản ghi  (29 s)
+  8/13  kb_0007.pkl  144 bản ghi  (30 s)
+  9/13  kb_0008.pkl  144 bản ghi  (32 s)
+  10/13  kb_0010.pkl  144 bản ghi  (38 s)
+  11/13  kb_0009.pkl  144 bản ghi  (38 s)
+  12/13  kb_0011.pkl  144 bản ghi  (39 s)
+  13/13  kb_0012.pkl  144 bản ghi  (44 s)
+xong
+[32/68] chấm dm8b_s1 trên c6 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s1 --khoa dm8b_s1 --khoa-tkcb10 "" --tien-trinh 3
+c6 K=4-5: 13 tệp, mô hình dm8b_s1 → khoá dm8b_s1
+  1/13  kb_0000.pkl  144 bản ghi  (11 s)
+  2/13  kb_0002.pkl  144 bản ghi  (13 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0005.pkl  144 bản ghi  (20 s)
+  5/13  kb_0004.pkl  144 bản ghi  (21 s)
+  6/13  kb_0003.pkl  144 bản ghi  (23 s)
+  7/13  kb_0006.pkl  144 bản ghi  (29 s)
+  8/13  kb_0007.pkl  144 bản ghi  (30 s)
+  9/13  kb_0008.pkl  144 bản ghi  (32 s)
+  10/13  kb_0010.pkl  144 bản ghi  (37 s)
+  11/13  kb_0009.pkl  144 bản ghi  (38 s)
+  12/13  kb_0011.pkl  144 bản ghi  (38 s)
+  13/13  kb_0012.pkl  144 bản ghi  (44 s)
+xong
+[33/68] chấm dm8b_s2 trên c6 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s2 --khoa dm8b_s2 --khoa-tkcb10 "" --tien-trinh 3
+c6 K=4-5: 13 tệp, mô hình dm8b_s2 → khoá dm8b_s2
+  1/13  kb_0000.pkl  144 bản ghi  (11 s)
+  2/13  kb_0002.pkl  144 bản ghi  (13 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0005.pkl  144 bản ghi  (20 s)
+  5/13  kb_0004.pkl  144 bản ghi  (21 s)
+  6/13  kb_0003.pkl  144 bản ghi  (23 s)
+  7/13  kb_0006.pkl  144 bản ghi  (29 s)
+  8/13  kb_0007.pkl  144 bản ghi  (30 s)
+  9/13  kb_0008.pkl  144 bản ghi  (32 s)
+  10/13  kb_0010.pkl  144 bản ghi  (37 s)
+  11/13  kb_0009.pkl  144 bản ghi  (38 s)
+  12/13  kb_0011.pkl  144 bản ghi  (38 s)
+  13/13  kb_0012.pkl  144 bản ghi  (44 s)
+xong
+[34/68] chấm dm6 trên c6 10 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 10 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 1
+c6 K=10: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  72 bản ghi  (28 s)
+  2/13  kb_0001.pkl  72 bản ghi  (62 s)
+  3/13  kb_0002.pkl  72 bản ghi  (91 s)
+  4/13  kb_0003.pkl  72 bản ghi  (134 s)
+  5/13  kb_0004.pkl  72 bản ghi  (159 s)
+  6/13  kb_0005.pkl  72 bản ghi  (181 s)
+  7/13  kb_0006.pkl  72 bản ghi  (215 s)
+  8/13  kb_0007.pkl  72 bản ghi  (248 s)
+  9/13  kb_0008.pkl  72 bản ghi  (271 s)
+  10/13  kb_0009.pkl  72 bản ghi  (299 s)
+  11/13  kb_0010.pkl  72 bản ghi  (320 s)
+  12/13  kb_0011.pkl  72 bản ghi  (342 s)
+  13/13  kb_0012.pkl  72 bản ghi  (365 s)
+xong
+[35/68] chấm dm8b_s0 trên c6 10 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 10 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 1
+c6 K=10: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  72 bản ghi  (13 s)
+  2/13  kb_0001.pkl  72 bản ghi  (26 s)
+  3/13  kb_0002.pkl  72 bản ghi  (38 s)
+  4/13  kb_0003.pkl  72 bản ghi  (51 s)
+  5/13  kb_0004.pkl  72 bản ghi  (61 s)
+  6/13  kb_0005.pkl  72 bản ghi  (69 s)
+  7/13  kb_0006.pkl  72 bản ghi  (81 s)
+  8/13  kb_0007.pkl  72 bản ghi  (94 s)
+  9/13  kb_0008.pkl  72 bản ghi  (104 s)
+  10/13  kb_0009.pkl  72 bản ghi  (117 s)
+  11/13  kb_0010.pkl  72 bản ghi  (128 s)
+  12/13  kb_0011.pkl  72 bản ghi  (136 s)
+  13/13  kb_0012.pkl  72 bản ghi  (148 s)
+xong
+[36/68] chấm dm6 trên c6 20 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 20 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 1
+c6 K=20: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  36 bản ghi  (43 s)
+  2/13  kb_0001.pkl  36 bản ghi  (94 s)
+  3/13  kb_0002.pkl  36 bản ghi  (148 s)
+  4/13  kb_0003.pkl  36 bản ghi  (213 s)
+  5/13  kb_0004.pkl  36 bản ghi  (255 s)
+  6/13  kb_0005.pkl  36 bản ghi  (276 s)
+  7/13  kb_0006.pkl  36 bản ghi  (336 s)
+  8/13  kb_0007.pkl  36 bản ghi  (377 s)
+  9/13  kb_0008.pkl  36 bản ghi  (417 s)
+  10/13  kb_0009.pkl  36 bản ghi  (461 s)
+  11/13  kb_0010.pkl  36 bản ghi  (492 s)
+  12/13  kb_0011.pkl  36 bản ghi  (532 s)
+  13/13  kb_0012.pkl  36 bản ghi  (575 s)
+xong
+[37/68] chấm dm8b_s0 trên c6 20 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6 --K 20 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 1
+c6 K=20: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  36 bản ghi  (17 s)
+  2/13  kb_0001.pkl  36 bản ghi  (36 s)
+  3/13  kb_0002.pkl  36 bản ghi  (53 s)
+  4/13  kb_0003.pkl  36 bản ghi  (74 s)
+  5/13  kb_0004.pkl  36 bản ghi  (89 s)
+  6/13  kb_0005.pkl  36 bản ghi  (99 s)
+  7/13  kb_0006.pkl  36 bản ghi  (120 s)
+  8/13  kb_0007.pkl  36 bản ghi  (133 s)
+  9/13  kb_0008.pkl  36 bản ghi  (146 s)
+  10/13  kb_0009.pkl  36 bản ghi  (163 s)
+  11/13  kb_0010.pkl  36 bản ghi  (174 s)
+  12/13  kb_0011.pkl  36 bản ghi  (188 s)
+  13/13  kb_0012.pkl  36 bản ghi  (201 s)
+xong
+[38/68] chấm dm6 trên yagi5 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 3
+yagi5 K=4-5: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0002.pkl  144 bản ghi  (11 s)
+  2/13  kb_0001.pkl  144 bản ghi  (12 s)
+  3/13  kb_0000.pkl  144 bản ghi  (15 s)
+  4/13  kb_0003.pkl  144 bản ghi  (17 s)
+  5/13  kb_0004.pkl  144 bản ghi  (18 s)
+  6/13  kb_0005.pkl  144 bản ghi  (22 s)
+  7/13  kb_0006.pkl  144 bản ghi  (24 s)
+  8/13  kb_0007.pkl  144 bản ghi  (25 s)
+  9/13  kb_0008.pkl  144 bản ghi  (34 s)
+  10/13  kb_0009.pkl  144 bản ghi  (38 s)
+  11/13  kb_0010.pkl  144 bản ghi  (47 s)
+  12/13  kb_0011.pkl  144 bản ghi  (56 s)
+  13/13  kb_0012.pkl  144 bản ghi  (59 s)
+xong
+[39/68] chấm dm6_s1 trên yagi5 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6_s1 --khoa dm6_s1 --khoa-tkcb10 "" --tien-trinh 3
+yagi5 K=4-5: 13 tệp, mô hình dm6_s1 → khoá dm6_s1
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (8 s)
+  4/13  kb_0003.pkl  144 bản ghi  (10 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (12 s)
+  7/13  kb_0006.pkl  144 bản ghi  (15 s)
+  8/13  kb_0007.pkl  144 bản ghi  (16 s)
+  9/13  kb_0008.pkl  144 bản ghi  (18 s)
+  10/13  kb_0009.pkl  144 bản ghi  (23 s)
+  11/13  kb_0010.pkl  144 bản ghi  (25 s)
+  12/13  kb_0011.pkl  144 bản ghi  (28 s)
+  13/13  kb_0012.pkl  144 bản ghi  (32 s)
+xong
+[40/68] chấm dm6_s2 trên yagi5 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6_s2 --khoa dm6_s2 --khoa-tkcb10 "" --tien-trinh 3
+yagi5 K=4-5: 13 tệp, mô hình dm6_s2 → khoá dm6_s2
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (7 s)
+  4/13  kb_0003.pkl  144 bản ghi  (10 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (11 s)
+  7/13  kb_0006.pkl  144 bản ghi  (14 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (17 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (25 s)
+  12/13  kb_0011.pkl  144 bản ghi  (28 s)
+  13/13  kb_0012.pkl  144 bản ghi  (31 s)
+xong
+[41/68] chấm dm8b_s0 trên yagi5 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 3
+yagi5 K=4-5: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (7 s)
+  4/13  kb_0003.pkl  144 bản ghi  (10 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (12 s)
+  7/13  kb_0006.pkl  144 bản ghi  (15 s)
+  8/13  kb_0007.pkl  144 bản ghi  (16 s)
+  9/13  kb_0008.pkl  144 bản ghi  (18 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (25 s)
+  12/13  kb_0011.pkl  144 bản ghi  (28 s)
+  13/13  kb_0012.pkl  144 bản ghi  (31 s)
+xong
+[42/68] chấm dm8b_s1 trên yagi5 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s1 --khoa dm8b_s1 --khoa-tkcb10 "" --tien-trinh 3
+yagi5 K=4-5: 13 tệp, mô hình dm8b_s1 → khoá dm8b_s1
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (7 s)
+  4/13  kb_0003.pkl  144 bản ghi  (10 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (11 s)
+  7/13  kb_0006.pkl  144 bản ghi  (14 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (17 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (25 s)
+  12/13  kb_0011.pkl  144 bản ghi  (27 s)
+  13/13  kb_0012.pkl  144 bản ghi  (31 s)
+xong
+[43/68] chấm dm8b_s2 trên yagi5 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s2 --khoa dm8b_s2 --khoa-tkcb10 "" --tien-trinh 3
+yagi5 K=4-5: 13 tệp, mô hình dm8b_s2 → khoá dm8b_s2
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (8 s)
+  4/13  kb_0003.pkl  144 bản ghi  (11 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (12 s)
+  7/13  kb_0006.pkl  144 bản ghi  (16 s)
+  8/13  kb_0007.pkl  144 bản ghi  (16 s)
+  9/13  kb_0008.pkl  144 bản ghi  (18 s)
+  10/13  kb_0009.pkl  144 bản ghi  (23 s)
+  11/13  kb_0010.pkl  144 bản ghi  (26 s)
+  12/13  kb_0011.pkl  144 bản ghi  (29 s)
+  13/13  kb_0012.pkl  144 bản ghi  (32 s)
+xong
+[44/68] chấm dm6 trên yagi5 10 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 10 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 1
+yagi5 K=10: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  72 bản ghi  (16 s)
+  2/13  kb_0001.pkl  72 bản ghi  (32 s)
+  3/13  kb_0002.pkl  72 bản ghi  (40 s)
+  4/13  kb_0003.pkl  72 bản ghi  (48 s)
+  5/13  kb_0004.pkl  72 bản ghi  (55 s)
+  6/13  kb_0005.pkl  72 bản ghi  (63 s)
+  7/13  kb_0006.pkl  72 bản ghi  (69 s)
+  8/13  kb_0007.pkl  72 bản ghi  (78 s)
+  9/13  kb_0008.pkl  72 bản ghi  (97 s)
+  10/13  kb_0009.pkl  72 bản ghi  (122 s)
+  11/13  kb_0010.pkl  72 bản ghi  (160 s)
+  12/13  kb_0011.pkl  72 bản ghi  (202 s)
+  13/13  kb_0012.pkl  72 bản ghi  (237 s)
+xong
+[45/68] chấm dm8b_s0 trên yagi5 10 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 10 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 1
+yagi5 K=10: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  72 bản ghi  (12 s)
+  2/13  kb_0001.pkl  72 bản ghi  (18 s)
+  3/13  kb_0002.pkl  72 bản ghi  (23 s)
+  4/13  kb_0003.pkl  72 bản ghi  (27 s)
+  5/13  kb_0004.pkl  72 bản ghi  (31 s)
+  6/13  kb_0005.pkl  72 bản ghi  (35 s)
+  7/13  kb_0006.pkl  72 bản ghi  (39 s)
+  8/13  kb_0007.pkl  72 bản ghi  (43 s)
+  9/13  kb_0008.pkl  72 bản ghi  (51 s)
+  10/13  kb_0009.pkl  72 bản ghi  (61 s)
+  11/13  kb_0010.pkl  72 bản ghi  (74 s)
+  12/13  kb_0011.pkl  72 bản ghi  (88 s)
+  13/13  kb_0012.pkl  72 bản ghi  (101 s)
+xong
+[46/68] chấm dm6 trên yagi5 20 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 20 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 1
+yagi5 K=20: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  36 bản ghi  (35 s)
+  2/13  kb_0001.pkl  36 bản ghi  (63 s)
+  3/13  kb_0002.pkl  36 bản ghi  (83 s)
+  4/13  kb_0003.pkl  36 bản ghi  (99 s)
+  5/13  kb_0004.pkl  36 bản ghi  (112 s)
+  6/13  kb_0005.pkl  36 bản ghi  (126 s)
+  7/13  kb_0006.pkl  36 bản ghi  (143 s)
+  8/13  kb_0007.pkl  36 bản ghi  (160 s)
+  9/13  kb_0008.pkl  36 bản ghi  (182 s)
+  10/13  kb_0009.pkl  36 bản ghi  (222 s)
+  11/13  kb_0010.pkl  36 bản ghi  (283 s)
+  12/13  kb_0011.pkl  36 bản ghi  (347 s)
+  13/13  kb_0012.pkl  36 bản ghi  (410 s)
+xong
+[47/68] chấm dm8b_s0 trên yagi5 20 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5 --K 20 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 1
+yagi5 K=20: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  36 bản ghi  (14 s)
+  2/13  kb_0001.pkl  36 bản ghi  (23 s)
+  3/13  kb_0002.pkl  36 bản ghi  (29 s)
+  4/13  kb_0003.pkl  36 bản ghi  (35 s)
+  5/13  kb_0004.pkl  36 bản ghi  (40 s)
+  6/13  kb_0005.pkl  36 bản ghi  (47 s)
+  7/13  kb_0006.pkl  36 bản ghi  (53 s)
+  8/13  kb_0007.pkl  36 bản ghi  (60 s)
+  9/13  kb_0008.pkl  36 bản ghi  (71 s)
+  10/13  kb_0009.pkl  36 bản ghi  (86 s)
+  11/13  kb_0010.pkl  36 bản ghi  (110 s)
+  12/13  kb_0011.pkl  36 bản ghi  (131 s)
+  13/13  kb_0012.pkl  36 bản ghi  (152 s)
+xong
+[48/68] chấm dm6 trên c6_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 3
+c6_b K=4-5: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  144 bản ghi  (20 s)
+  2/13  kb_0002.pkl  144 bản ghi  (23 s)
+  3/13  kb_0001.pkl  144 bản ghi  (32 s)
+  4/13  kb_0004.pkl  144 bản ghi  (37 s)
+  5/13  kb_0005.pkl  144 bản ghi  (41 s)
+  6/13  kb_0003.pkl  144 bản ghi  (49 s)
+  7/13  kb_0006.pkl  144 bản ghi  (56 s)
+  8/13  kb_0007.pkl  144 bản ghi  (60 s)
+  9/13  kb_0008.pkl  144 bản ghi  (69 s)
+  10/13  kb_0010.pkl  144 bản ghi  (72 s)
+  11/13  kb_0009.pkl  144 bản ghi  (78 s)
+  12/13  kb_0011.pkl  144 bản ghi  (81 s)
+  13/13  kb_0012.pkl  144 bản ghi  (84 s)
+xong
+[49/68] chấm dm6_s1 trên c6_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6_s1 --khoa dm6_s1 --khoa-tkcb10 "" --tien-trinh 3
+c6_b K=4-5: 13 tệp, mô hình dm6_s1 → khoá dm6_s1
+  1/13  kb_0000.pkl  144 bản ghi  (10 s)
+  2/13  kb_0002.pkl  144 bản ghi  (12 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0004.pkl  144 bản ghi  (19 s)
+  5/13  kb_0005.pkl  144 bản ghi  (20 s)
+  6/13  kb_0003.pkl  144 bản ghi  (22 s)
+  7/13  kb_0006.pkl  144 bản ghi  (28 s)
+  8/13  kb_0007.pkl  144 bản ghi  (28 s)
+  9/13  kb_0008.pkl  144 bản ghi  (31 s)
+  10/13  kb_0010.pkl  144 bản ghi  (35 s)
+  11/13  kb_0009.pkl  144 bản ghi  (37 s)
+  12/13  kb_0011.pkl  144 bản ghi  (37 s)
+  13/13  kb_0012.pkl  144 bản ghi  (42 s)
+xong
+[50/68] chấm dm6_s2 trên c6_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6_s2 --khoa dm6_s2 --khoa-tkcb10 "" --tien-trinh 3
+c6_b K=4-5: 13 tệp, mô hình dm6_s2 → khoá dm6_s2
+  1/13  kb_0000.pkl  144 bản ghi  (10 s)
+  2/13  kb_0002.pkl  144 bản ghi  (12 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0004.pkl  144 bản ghi  (19 s)
+  5/13  kb_0005.pkl  144 bản ghi  (19 s)
+  6/13  kb_0003.pkl  144 bản ghi  (22 s)
+  7/13  kb_0006.pkl  144 bản ghi  (27 s)
+  8/13  kb_0007.pkl  144 bản ghi  (28 s)
+  9/13  kb_0008.pkl  144 bản ghi  (31 s)
+  10/13  kb_0010.pkl  144 bản ghi  (35 s)
+  11/13  kb_0009.pkl  144 bản ghi  (37 s)
+  12/13  kb_0011.pkl  144 bản ghi  (37 s)
+  13/13  kb_0012.pkl  144 bản ghi  (42 s)
+xong
+[51/68] chấm dm8b_s0 trên c6_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 3
+c6_b K=4-5: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  144 bản ghi  (10 s)
+  2/13  kb_0002.pkl  144 bản ghi  (12 s)
+  3/13  kb_0001.pkl  144 bản ghi  (13 s)
+  4/13  kb_0004.pkl  144 bản ghi  (19 s)
+  5/13  kb_0005.pkl  144 bản ghi  (19 s)
+  6/13  kb_0003.pkl  144 bản ghi  (22 s)
+  7/13  kb_0006.pkl  144 bản ghi  (27 s)
+  8/13  kb_0007.pkl  144 bản ghi  (28 s)
+  9/13  kb_0008.pkl  144 bản ghi  (31 s)
+  10/13  kb_0010.pkl  144 bản ghi  (35 s)
+  11/13  kb_0009.pkl  144 bản ghi  (37 s)
+  12/13  kb_0011.pkl  144 bản ghi  (38 s)
+  13/13  kb_0012.pkl  144 bản ghi  (42 s)
+xong
+[52/68] chấm dm8b_s1 trên c6_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s1 --khoa dm8b_s1 --khoa-tkcb10 "" --tien-trinh 3
+c6_b K=4-5: 13 tệp, mô hình dm8b_s1 → khoá dm8b_s1
+  1/13  kb_0000.pkl  144 bản ghi  (10 s)
+  2/13  kb_0002.pkl  144 bản ghi  (12 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0004.pkl  144 bản ghi  (19 s)
+  5/13  kb_0005.pkl  144 bản ghi  (19 s)
+  6/13  kb_0003.pkl  144 bản ghi  (22 s)
+  7/13  kb_0006.pkl  144 bản ghi  (28 s)
+  8/13  kb_0007.pkl  144 bản ghi  (28 s)
+  9/13  kb_0008.pkl  144 bản ghi  (31 s)
+  10/13  kb_0010.pkl  144 bản ghi  (35 s)
+  11/13  kb_0009.pkl  144 bản ghi  (37 s)
+  12/13  kb_0011.pkl  144 bản ghi  (37 s)
+  13/13  kb_0012.pkl  144 bản ghi  (42 s)
+xong
+[53/68] chấm dm8b_s2 trên c6_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s2 --khoa dm8b_s2 --khoa-tkcb10 "" --tien-trinh 3
+c6_b K=4-5: 13 tệp, mô hình dm8b_s2 → khoá dm8b_s2
+  1/13  kb_0000.pkl  144 bản ghi  (11 s)
+  2/13  kb_0002.pkl  144 bản ghi  (13 s)
+  3/13  kb_0001.pkl  144 bản ghi  (14 s)
+  4/13  kb_0004.pkl  144 bản ghi  (19 s)
+  5/13  kb_0005.pkl  144 bản ghi  (20 s)
+  6/13  kb_0003.pkl  144 bản ghi  (23 s)
+  7/13  kb_0006.pkl  144 bản ghi  (28 s)
+  8/13  kb_0007.pkl  144 bản ghi  (30 s)
+  9/13  kb_0008.pkl  144 bản ghi  (34 s)
+  10/13  kb_0010.pkl  144 bản ghi  (38 s)
+  11/13  kb_0009.pkl  144 bản ghi  (41 s)
+  12/13  kb_0011.pkl  144 bản ghi  (42 s)
+  13/13  kb_0012.pkl  144 bản ghi  (47 s)
+xong
+[54/68] chấm dm6 trên c6_b 10 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 10 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 1
+c6_b K=10: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  72 bản ghi  (39 s)
+  2/13  kb_0001.pkl  72 bản ghi  (76 s)
+  3/13  kb_0002.pkl  72 bản ghi  (107 s)
+  4/13  kb_0003.pkl  72 bản ghi  (147 s)
+  5/13  kb_0004.pkl  72 bản ghi  (173 s)
+  6/13  kb_0005.pkl  72 bản ghi  (194 s)
+  7/13  kb_0006.pkl  72 bản ghi  (227 s)
+  8/13  kb_0007.pkl  72 bản ghi  (257 s)
+  9/13  kb_0008.pkl  72 bản ghi  (281 s)
+  10/13  kb_0009.pkl  72 bản ghi  (312 s)
+  11/13  kb_0010.pkl  72 bản ghi  (333 s)
+  12/13  kb_0011.pkl  72 bản ghi  (352 s)
+  13/13  kb_0012.pkl  72 bản ghi  (377 s)
+xong
+[55/68] chấm dm8b_s0 trên c6_b 10 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 10 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 1
+c6_b K=10: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  72 bản ghi  (15 s)
+  2/13  kb_0001.pkl  72 bản ghi  (28 s)
+  3/13  kb_0002.pkl  72 bản ghi  (40 s)
+  4/13  kb_0003.pkl  72 bản ghi  (53 s)
+  5/13  kb_0004.pkl  72 bản ghi  (61 s)
+  6/13  kb_0005.pkl  72 bản ghi  (69 s)
+  7/13  kb_0006.pkl  72 bản ghi  (81 s)
+  8/13  kb_0007.pkl  72 bản ghi  (92 s)
+  9/13  kb_0008.pkl  72 bản ghi  (103 s)
+  10/13  kb_0009.pkl  72 bản ghi  (116 s)
+  11/13  kb_0010.pkl  72 bản ghi  (125 s)
+  12/13  kb_0011.pkl  72 bản ghi  (132 s)
+  13/13  kb_0012.pkl  72 bản ghi  (142 s)
+xong
+[56/68] chấm dm6 trên c6_b 20 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 20 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 1
+c6_b K=20: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  36 bản ghi  (46 s)
+  2/13  kb_0001.pkl  36 bản ghi  (99 s)
+  3/13  kb_0002.pkl  36 bản ghi  (143 s)
+  4/13  kb_0003.pkl  36 bản ghi  (209 s)
+  5/13  kb_0004.pkl  36 bản ghi  (249 s)
+  6/13  kb_0005.pkl  36 bản ghi  (274 s)
+  7/13  kb_0006.pkl  36 bản ghi  (330 s)
+  8/13  kb_0007.pkl  36 bản ghi  (369 s)
+  9/13  kb_0008.pkl  36 bản ghi  (418 s)
+  10/13  kb_0009.pkl  36 bản ghi  (467 s)
+  11/13  kb_0010.pkl  36 bản ghi  (499 s)
+  12/13  kb_0011.pkl  36 bản ghi  (532 s)
+  13/13  kb_0012.pkl  36 bản ghi  (570 s)
+xong
+[57/68] chấm dm8b_s0 trên c6_b 20 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap c6_b --K 20 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 1
+c6_b K=20: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  36 bản ghi  (18 s)
+  2/13  kb_0001.pkl  36 bản ghi  (39 s)
+  3/13  kb_0002.pkl  36 bản ghi  (56 s)
+  4/13  kb_0003.pkl  36 bản ghi  (77 s)
+  5/13  kb_0004.pkl  36 bản ghi  (92 s)
+  6/13  kb_0005.pkl  36 bản ghi  (102 s)
+  7/13  kb_0006.pkl  36 bản ghi  (120 s)
+  8/13  kb_0007.pkl  36 bản ghi  (133 s)
+  9/13  kb_0008.pkl  36 bản ghi  (148 s)
+  10/13  kb_0009.pkl  36 bản ghi  (164 s)
+  11/13  kb_0010.pkl  36 bản ghi  (175 s)
+  12/13  kb_0011.pkl  36 bản ghi  (188 s)
+  13/13  kb_0012.pkl  36 bản ghi  (200 s)
+xong
+[58/68] chấm dm6 trên yagi5_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 3
+yagi5_b K=4-5: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0002.pkl  144 bản ghi  (8 s)
+  2/13  kb_0001.pkl  144 bản ghi  (9 s)
+  3/13  kb_0000.pkl  144 bản ghi  (12 s)
+  4/13  kb_0003.pkl  144 bản ghi  (14 s)
+  5/13  kb_0004.pkl  144 bản ghi  (15 s)
+  6/13  kb_0005.pkl  144 bản ghi  (19 s)
+  7/13  kb_0006.pkl  144 bản ghi  (21 s)
+  8/13  kb_0007.pkl  144 bản ghi  (22 s)
+  9/13  kb_0008.pkl  144 bản ghi  (30 s)
+  10/13  kb_0009.pkl  144 bản ghi  (35 s)
+  11/13  kb_0010.pkl  144 bản ghi  (41 s)
+  12/13  kb_0011.pkl  144 bản ghi  (51 s)
+  13/13  kb_0012.pkl  144 bản ghi  (55 s)
+xong
+[59/68] chấm dm6_s1 trên yagi5_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6_s1 --khoa dm6_s1 --khoa-tkcb10 "" --tien-trinh 3
+yagi5_b K=4-5: 13 tệp, mô hình dm6_s1 → khoá dm6_s1
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (8 s)
+  4/13  kb_0003.pkl  144 bản ghi  (10 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (12 s)
+  7/13  kb_0006.pkl  144 bản ghi  (15 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (17 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (24 s)
+  12/13  kb_0011.pkl  144 bản ghi  (28 s)
+  13/13  kb_0012.pkl  144 bản ghi  (31 s)
+xong
+[60/68] chấm dm6_s2 trên yagi5_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6_s2 --khoa dm6_s2 --khoa-tkcb10 "" --tien-trinh 3
+yagi5_b K=4-5: 13 tệp, mô hình dm6_s2 → khoá dm6_s2
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (6 s)
+  3/13  kb_0000.pkl  144 bản ghi  (7 s)
+  4/13  kb_0003.pkl  144 bản ghi  (10 s)
+  5/13  kb_0004.pkl  144 bản ghi  (10 s)
+  6/13  kb_0005.pkl  144 bản ghi  (11 s)
+  7/13  kb_0006.pkl  144 bản ghi  (14 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (17 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (24 s)
+  12/13  kb_0011.pkl  144 bản ghi  (27 s)
+  13/13  kb_0012.pkl  144 bản ghi  (30 s)
+xong
+[61/68] chấm dm8b_s0 trên yagi5_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 3
+yagi5_b K=4-5: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (8 s)
+  4/13  kb_0003.pkl  144 bản ghi  (10 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (12 s)
+  7/13  kb_0006.pkl  144 bản ghi  (14 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (17 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (24 s)
+  12/13  kb_0011.pkl  144 bản ghi  (27 s)
+  13/13  kb_0012.pkl  144 bản ghi  (31 s)
+xong
+[62/68] chấm dm8b_s1 trên yagi5_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s1 --khoa dm8b_s1 --khoa-tkcb10 "" --tien-trinh 3
+yagi5_b K=4-5: 13 tệp, mô hình dm8b_s1 → khoá dm8b_s1
+  1/13  kb_0002.pkl  144 bản ghi  (6 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (7 s)
+  4/13  kb_0003.pkl  144 bản ghi  (10 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (11 s)
+  7/13  kb_0006.pkl  144 bản ghi  (14 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (17 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (24 s)
+  12/13  kb_0011.pkl  144 bản ghi  (27 s)
+  13/13  kb_0012.pkl  144 bản ghi  (30 s)
+xong
+[63/68] chấm dm8b_s2 trên yagi5_b 4-5 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 4-5 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s2 --khoa dm8b_s2 --khoa-tkcb10 "" --tien-trinh 3
+yagi5_b K=4-5: 13 tệp, mô hình dm8b_s2 → khoá dm8b_s2
+  1/13  kb_0002.pkl  144 bản ghi  (7 s)
+  2/13  kb_0001.pkl  144 bản ghi  (7 s)
+  3/13  kb_0000.pkl  144 bản ghi  (8 s)
+  4/13  kb_0003.pkl  144 bản ghi  (11 s)
+  5/13  kb_0004.pkl  144 bản ghi  (11 s)
+  6/13  kb_0005.pkl  144 bản ghi  (12 s)
+  7/13  kb_0006.pkl  144 bản ghi  (15 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (18 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (24 s)
+  12/13  kb_0011.pkl  144 bản ghi  (28 s)
+  13/13  kb_0012.pkl  144 bản ghi  (31 s)
+xong
+[64/68] chấm dm6 trên yagi5_b 10 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 10 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 1
+yagi5_b K=10: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  72 bản ghi  (15 s)
+  2/13  kb_0001.pkl  72 bản ghi  (31 s)
+  3/13  kb_0002.pkl  72 bản ghi  (39 s)
+  4/13  kb_0003.pkl  72 bản ghi  (46 s)
+  5/13  kb_0004.pkl  72 bản ghi  (53 s)
+  6/13  kb_0005.pkl  72 bản ghi  (60 s)
+  7/13  kb_0006.pkl  72 bản ghi  (67 s)
+  8/13  kb_0007.pkl  72 bản ghi  (76 s)
+  9/13  kb_0008.pkl  72 bản ghi  (95 s)
+  10/13  kb_0009.pkl  72 bản ghi  (118 s)
+  11/13  kb_0010.pkl  72 bản ghi  (153 s)
+  12/13  kb_0011.pkl  72 bản ghi  (196 s)
+  13/13  kb_0012.pkl  72 bản ghi  (230 s)
+xong
+[65/68] chấm dm8b_s0 trên yagi5_b 10 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 10 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 1
+yagi5_b K=10: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  72 bản ghi  (10 s)
+  2/13  kb_0001.pkl  72 bản ghi  (15 s)
+  3/13  kb_0002.pkl  72 bản ghi  (19 s)
+  4/13  kb_0003.pkl  72 bản ghi  (23 s)
+  5/13  kb_0004.pkl  72 bản ghi  (28 s)
+  6/13  kb_0005.pkl  72 bản ghi  (32 s)
+  7/13  kb_0006.pkl  72 bản ghi  (35 s)
+  8/13  kb_0007.pkl  72 bản ghi  (40 s)
+  9/13  kb_0008.pkl  72 bản ghi  (47 s)
+  10/13  kb_0009.pkl  72 bản ghi  (56 s)
+  11/13  kb_0010.pkl  72 bản ghi  (68 s)
+  12/13  kb_0011.pkl  72 bản ghi  (82 s)
+  13/13  kb_0012.pkl  72 bản ghi  (95 s)
+xong
+[66/68] chấm dm6 trên yagi5_b 20 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 20 --mo-hinh results/bao_da_tuyen/mo_hinh6 --ten dm6 --khoa dm6 --khoa-tkcb10 online_tkcb10_6 --tien-trinh 1
+yagi5_b K=20: 13 tệp, mô hình dm6 → khoá dm6
+  1/13  kb_0000.pkl  36 bản ghi  (33 s)
+  2/13  kb_0001.pkl  36 bản ghi  (59 s)
+  3/13  kb_0002.pkl  36 bản ghi  (78 s)
+  4/13  kb_0003.pkl  36 bản ghi  (93 s)
+  5/13  kb_0004.pkl  36 bản ghi  (106 s)
+  6/13  kb_0005.pkl  36 bản ghi  (119 s)
+  7/13  kb_0006.pkl  36 bản ghi  (138 s)
+  8/13  kb_0007.pkl  36 bản ghi  (154 s)
+  9/13  kb_0008.pkl  36 bản ghi  (177 s)
+  10/13  kb_0009.pkl  36 bản ghi  (220 s)
+  11/13  kb_0010.pkl  36 bản ghi  (288 s)
+  12/13  kb_0011.pkl  36 bản ghi  (342 s)
+  13/13  kb_0012.pkl  36 bản ghi  (405 s)
+xong
+[67/68] chấm dm8b_s0 trên yagi5_b 20 luồng
+    python -m src.nhieu_luong.cham_lai_dt --tap yagi5_b --K 20 --mo-hinh results/bao_da_tuyen/mo_hinh8 --ten dm8b_s0 --khoa dm8b_s0 --khoa-tkcb10 "" --tien-trinh 1
+yagi5_b K=20: 13 tệp, mô hình dm8b_s0 → khoá dm8b_s0
+  1/13  kb_0000.pkl  36 bản ghi  (17 s)
+  2/13  kb_0001.pkl  36 bản ghi  (25 s)
+  3/13  kb_0002.pkl  36 bản ghi  (32 s)
+  4/13  kb_0003.pkl  36 bản ghi  (38 s)
+  5/13  kb_0004.pkl  36 bản ghi  (43 s)
+  6/13  kb_0005.pkl  36 bản ghi  (50 s)
+  7/13  kb_0006.pkl  36 bản ghi  (56 s)
+  8/13  kb_0007.pkl  36 bản ghi  (63 s)
+  9/13  kb_0008.pkl  36 bản ghi  (73 s)
+  10/13  kb_0009.pkl  36 bản ghi  (89 s)
+  11/13  kb_0010.pkl  36 bản ghi  (115 s)
+  12/13  kb_0011.pkl  36 bản ghi  (134 s)
+  13/13  kb_0012.pkl  36 bản ghi  (154 s)
+xong
+[68/68] phân tích thí nghiệm 8
+    python -m scripts.phan_tich_8
+{
+ "A|A|c6": {
+  "thang": 6,
+  "du_9_o": true,
+  "so_o": 9
+ },
+ "A|A|yagi5": {
+  "thang": 7,
+  "du_9_o": true,
+  "so_o": 9
+ },
+ "A|B|c6_b": {
+  "thang": 6,
+  "du_9_o": true,
+  "so_o": 9
+ },
+ "A|B|yagi5_b": {
+  "thang": 8,
+  "du_9_o": true,
+  "so_o": 9
+ },
+ "B|A|c6": {
+  "thang": 6,
+  "du_9_o": true,
+  "so_o": 9
+ },
+ "B|A|yagi5": {
+  "thang": 8,
+  "du_9_o": true,
+  "so_o": 9
+ },
+ "B|B|c6_b": {
+  "thang": 7,
+  "du_9_o": true,
+  "so_o": 9
+ },
+ "B|B|yagi5_b": {
+  "thang": 8,
+  "du_9_o": true,
+  "so_o": 9
+ }
+}
+xong — 0 bước đã có sẵn được bỏ qua

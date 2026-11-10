@@ -16,7 +16,9 @@ huong_dan/ket_qua/
 
 # dữ liệu Yagi nhiều luồng sinh lại được bằng src/nhieu_luong/tao_du_lieu_nl.py
 data/yagi/
-logs/
+/logs/*
+# Log TN8 cần gửi cùng kết quả thí nghiệm
+!/logs/tn8.log
 results/yagi/test_tho/
 data/yagi2/
 results/**/*.xong
@@ -33,3 +35,8 @@ data/bao_da_tuyen/
 
 # gói dữ liệu chép sang máy chạy thí nghiệm 8 (scripts/dong_goi_tn8.py) — ~0,6 GB, không commit
 TN8_du_lieu.zip
+
+# TN8: cấu hình suy luận và nhật ký DM6 không nằm trong bộ kết quả cần gửi
+/results/bao_da_tuyen/mo_hinh6/chon_buoc*.json
+/results/bao_da_tuyen/mo_hinh6/*_nhat_ky.json
+/results/bao_da_tuyen/mo_hinh8/chon_buoc.json
