@@ -26,7 +26,8 @@ GOC = Path(__file__).resolve().parents[1]
 KQ = GOC / "results" / "bao_da_tuyen"
 TAU = 1.1
 KHOA_T10 = "online_tkcb10_6"
-BO = {"A": {"c6": "C ngày giông", "yagi5": "A Yagi"}, "B": {"c6_b": "C ngày giông", "yagi5_b": "A Yagi"}}
+BO = {"A": {"c6": "C ngày giông", "yagi5": "Yagi"}, "B": {"c6_b": "C ngày giông", "yagi5_b": "Yagi"}}
+ALPHA = 0.025                                                            # một phía, như kiem_dinh_boi_9
 CAP = {"c6": "c6_b", "yagi5": "yagi5_b"}                                # bộ A ↔ bộ B cùng cửa sổ / seed
 HO = {"A": ("dm6", "dm6_s1", "dm6_s2"), "B": ("dm8b_s0", "dm8b_s1", "dm8b_s2")}
 CHINH = {"A": "dm6", "B": "dm8b_s0"}
@@ -126,10 +127,46 @@ def phan_tich():
                 if co(recs, m):
                     s[f"lai_{hoc}_a_%"] = float(np.mean([lai(r, m)["khong_tuyen_song_%"] for r in recs]))
             ra["san_a"][f"{kt}|{bo}"] = s
+    return ghi(ra)
+
+
+def ghi(ra):
+    ra["holm_xap_xi"] = holm_xap_xi(ra)
     (KQ / "ket_qua_8.json").write_text(json.dumps(ra, ensure_ascii=False, indent=1, default=float), encoding="utf-8")
     viet_md(ra)
     ve_hinh(ra)
     return ra
+
+
+def _p_tu_ci(c):
+    """p một phía P(Δ ≥ 0) xấp xỉ chuẩn từ CI 95% bootstrap, dùng nửa CI phía về 0 (CI bootstrap có thể lệch)."""
+    from math import erf, sqrt
+    m, (lo, hi) = c
+    se = ((hi - m) if m < 0 else (m - lo)) / 1.96
+    return 0.5 * (1 + erf(m / se / sqrt(2))) if se > 0 else float(m >= 0)
+
+
+def holm_xap_xi(ra):
+    """Holm / BH cho các ô (p_ô = max(p_C2, p_C4), C5 là điều kiện xác định), họ = 36 ô của mỗi mô hình và 72 ô toàn
+    thí nghiệm. p XẤP XỈ từ CI (không còn mẫu bootstrap); kiểm tra: p ≤ α khớp cột "thắng" đã báo."""
+    from scripts.kiem_dinh_boi_9 import bh, holm
+    k = [(hoc_bo_k, d) for hoc_bo_k, o in ra["o"].items() for d in o]
+    x = [ra["o"][a][d] for a, d in k]
+    p = np.array([max(_p_tu_ci(o["C2"]), _p_tu_ci(o["C4"])) for o in x])
+    c5 = np.array([o["dat_C5"] or a.endswith("k4_5") for (a, _), o in zip(k, x)])
+    th = np.array([o["thang"] for o in x])
+    h72 = holm(p) & c5
+    ra_ = {"khop_thang_da_bao": int((((p <= ALPHA) & c5) == th).sum()), "so_o": len(k),
+           "toan_72": {"thang": int(th.sum()), "holm": int(h72.sum()), "bh": int((bh(p) & c5).sum())}, "khoi": {}}
+    for hoc in CHINH:
+        i = np.array([a.startswith(hoc + "|") for a, _ in k])
+        h36, b36 = np.zeros(len(k), bool), np.zeros(len(k), bool)
+        h36[i], b36[i] = holm(p[i]) & c5[i], bh(p[i]) & c5[i]
+        for bo in (b for bos in BO.values() for b in bos):
+            j = i & np.array([a.split("|")[1] == bo for a, _ in k])
+            ra_["khoi"][f"{hoc}|{bo}"] = {"thang": int(th[j].sum()), "holm_36": int(h36[j].sum()),
+                                         "bh_36": int(b36[j].sum()), "holm_72": int(h72[j].sum())}
+    return ra_
 
 
 def _ci(v, nd=2):
@@ -177,6 +214,17 @@ def viet_md(ra):
         L.append(f"| {k.replace('|', ' · ')} | {x['san_a_%']:.2f} | {x['dphat_a_%']:.2f} | "
                  f"{x.get('lai_A_a_%', float('nan')):.2f} | {x.get('lai_B_a_%', float('nan')):.2f} |")
     L += ["", "Phần (a) vượt trên sàn là phần chọn tuyến tốt hơn còn cứu được."]
+    hx = ra.get("holm_xap_xi")
+    if hx:
+        L += ["", "## 6. Hiệu chỉnh so sánh bội (p xấp xỉ từ CI)", "",
+              f"p_ô = max(p_C2, p_C4), α = {ALPHA} một phía; p xấp xỉ chuẩn từ CI nên chỉ là ước lượng "
+              f"(p ≤ α khớp cột thắng ở {hx['khop_thang_da_bao']}/{hx['so_o']} ô).", "",
+              "| Mô hình | Bộ | Thắng | Holm (36 ô / mô hình) | BH (36 ô) | Holm (72 ô) |", "|---|---|---:|---:|---:|---:|"]
+        for kk, v in hx["khoi"].items():
+            hoc, bo = kk.split("|")
+            L.append(f"| {CHINH[hoc]} | {bo} | {v['thang']}/9 | {v['holm_36']}/9 | {v['bh_36']}/9 | {v['holm_72']}/9 |")
+        t = hx["toan_72"]
+        L += ["", f"Toàn thí nghiệm: {t['thang']}/72 → Holm {t['holm']}, BH {t['bh']}."]
     (KQ / "KET_QUA_8.md").write_text("\n".join(L) + "\n", encoding="utf-8")
 
 
@@ -190,7 +238,7 @@ def ve_hinh(ra):
     plt.rcParams.update({"font.family": "serif", "font.serif": ["Times New Roman", "DejaVu Serif"],
                          "axes.spines.top": False, "axes.spines.right": False, "font.size": 10})
     cot = [(kt, bo) for kt, bos in BO.items() for bo in bos]
-    nhan_cot = [f"{kt} · {BO[kt][bo]}" for kt, bo in cot]
+    nhan_cot = [f"TG {kt} · {BO[kt][bo]}" for kt, bo in cot]                # TG = thế giới hỏng hóc kiểm tra
     fig, ax = plt.subplots(1, 3, figsize=(16, 4.8), gridspec_kw={"width_ratios": [1.1, 1.3, 1.1]})
     # (a) bảng chéo số ô thắng
     M = np.full((2, 4), np.nan)
@@ -199,32 +247,37 @@ def ve_hinh(ra):
             x = ra["tom_tat"].get(f"{hoc}|{kt}|{bo}")
             if x and x.get("so_o"):
                 M[i, j] = x["thang"]
-    ax[0].imshow(M, cmap="Greens", vmin=0, vmax=9, aspect="auto")
+    ax[0].imshow(M, cmap="Greens", vmin=0, vmax=12, aspect="auto")
     for i in range(2):
         for j in range(4):
             ax[0].text(j, i, "–" if np.isnan(M[i, j]) else f"{int(M[i, j])}/9", ha="center", va="center", fontsize=12,
+                       color="white" if M[i, j] >= 6 else "#1a1a19",
                        fontweight="bold" if (i == 0) == (j < 2) else "normal")
     ax[0].set_xticks(range(4), nhan_cot, fontsize=8.5, rotation=15)
     ax[0].set_yticks(range(2), ["DM học trong A", "DM học trong B"])
-    ax[0].set_title("(a) Số ô thắng — đậm: trong miền, thường: chéo", loc="left", fontsize=10.5)
-    # (b) mất dịch vụ 4–5 luồng: Dijkstra, Lai A, Lai B (vạch: min–max theo 3 seed)
-    w = 0.26
+    ax[0].set_title("(a) Số ô thắng / 9 — đậm: trong miền, thường: chéo", loc="left", fontsize=10.5)
+    # (b) mất dịch vụ 4–5 luồng: Dijkstra, Lai A, Lai B (cột: trung bình 3 seed, vạch: min–max) — chỉ đọc từ ra
+    w, cao = 0.26, 0.0
     for j, (kt, bo) in enumerate(cot):
-        recs = nap(bo, "k4_5")
-        if not recs:
-            continue
-        ax[1].bar(j - w, np.mean([r["ens"]["dphat"]["mat_dv_%"] for r in recs]), w * .9, color=MAU[0],
-                  label="Dijkstra phạt" if j == 0 else None)
+        a = next((x for x, y in CAP.items() if bo in (x, y)), None)
+        dc = ra["dich_chuyen"].get(a)
+        if dc:
+            v = dc["mat_dv_%"][kt]
+            ax[1].bar(j - w, v, w * .9, color=MAU[0], label="Dijkstra phạt" if j == 0 else None)
+            cao = max(cao, v)
         for k, hoc in enumerate(("A", "B")):
-            gt = [np.mean([lai(r, m)["mat_dv_%"] for r in recs]) for m in HO[hoc] if co(recs, m)]
+            s = ra["seed"].get(f"{hoc}|{kt}|{bo}")
+            gt = [h["lai_mat_dv_%"] for h in s["mo_hinh"].values()] if s else []
             if gt:
                 ax[1].bar(j + k * w, np.mean(gt), w * .9, color=MAU[1 + k], label=f"Lai — {TEN_HO[hoc]}" if j == 0 else None,
                           yerr=[[np.mean(gt) - min(gt)], [max(gt) - np.mean(gt)]], capsize=3)
     ax[1].set_xticks(range(4), nhan_cot, fontsize=8.5, rotation=15)
     ax[1].set_ylabel("Mất dịch vụ (%), 4–5 luồng")
-    ax[1].legend(frameon=False, fontsize=8.5)
-    ax[1].set_title("(b) Mất dịch vụ theo thế giới kiểm tra", loc="left", fontsize=10.5)
+    ax[1].set_ylim(0, cao * 1.32 if cao else None)
+    ax[1].legend(frameon=False, fontsize=8.5, loc="upper right")
+    ax[1].set_title("(b) Mất dịch vụ theo thế giới kiểm tra (vạch: min–max 3 seed)", loc="left", fontsize=10.5)
     ax[1].grid(axis="y", color="#e4e3df", lw=0.8)
+    ax[1].set_axisbelow(True)
     # (c) phần (a): sàn không tránh được + phần tránh được
     keys = [k for k in ra["san_a"]]
     for j, k in enumerate(keys):
@@ -233,7 +286,9 @@ def ve_hinh(ra):
             if ten in x:
                 ax[2].bar(j + (q - 1) * w, x["san_a_%"], w * .9, color=MAU[4])
                 ax[2].bar(j + (q - 1) * w, x[ten] - x["san_a_%"], w * .9, bottom=x["san_a_%"], color=mau)
-    ax[2].set_xticks(range(len(keys)), [k.replace("|", " · ") for k in keys], fontsize=8.5, rotation=15)
+    nhan_c = [f"TG {k.split('|')[0]} · {BO[k.split('|')[0]][k.split('|')[1]]}" for k in keys]
+    ax[2].set_xticks(range(len(keys)), nhan_c, fontsize=8.5, rotation=15)
+    ax[2].set_axisbelow(True)
     ax[2].set_ylabel("(a) mọi tuyến cùng đứt (%)")
     ax[2].set_title("(c) Phần (a): xám = không tránh được", loc="left", fontsize=10.5)
     ax[2].grid(axis="y", color="#e4e3df", lw=0.8)
@@ -245,5 +300,6 @@ def ve_hinh(ra):
 if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    r = phan_tich()
+    # --tu-json: không cần dữ liệu — đọc ket_qua_8.json có sẵn, thêm Holm xấp xỉ, viết lại KET_QUA_8.md và hinh_8.png
+    r = ghi(json.loads((KQ / "ket_qua_8.json").read_text(encoding="utf-8"))) if "--tu-json" in sys.argv else phan_tich()
     print(json.dumps(r["tom_tat"], ensure_ascii=False, indent=1))

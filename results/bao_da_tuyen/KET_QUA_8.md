@@ -118,3 +118,20 @@ Lai(·) = DM nếu ρ̂ < 1,1, ngược lại DM + TKCB. So với Dijkstra phạ
 | B · yagi5_b | 10.62 | 11.05 | 11.73 | 11.64 |
 
 Phần (a) vượt trên sàn là phần chọn tuyến tốt hơn còn cứu được.
+
+## 6. Hiệu chỉnh so sánh bội (p xấp xỉ từ CI)
+
+p_ô = max(p_C2, p_C4), α = 0.025 một phía; p xấp xỉ chuẩn từ CI nên chỉ là ước lượng (p ≤ α khớp cột thắng ở 72/72 ô).
+
+| Mô hình | Bộ | Thắng | Holm (36 ô / mô hình) | BH (36 ô) | Holm (72 ô) |
+|---|---|---:|---:|---:|---:|
+| dm6 | c6 | 6/9 | 3/9 | 6/9 | 2/9 |
+| dm6 | yagi5 | 7/9 | 6/9 | 7/9 | 6/9 |
+| dm6 | c6_b | 6/9 | 4/9 | 6/9 | 2/9 |
+| dm6 | yagi5_b | 8/9 | 6/9 | 8/9 | 6/9 |
+| dm8b_s0 | c6 | 6/9 | 4/9 | 6/9 | 4/9 |
+| dm8b_s0 | yagi5 | 8/9 | 7/9 | 8/9 | 7/9 |
+| dm8b_s0 | c6_b | 7/9 | 4/9 | 7/9 | 4/9 |
+| dm8b_s0 | yagi5_b | 8/9 | 5/9 | 8/9 | 5/9 |
+
+Toàn thí nghiệm: 56/72 → Holm 36, BH 56.

@@ -1,5 +1,5 @@
 """
-chay_thi_nghiem.py — Chạy lại toàn bộ thí nghiệm 4, 6, 7 hoặc 8 theo đúng thứ tự (tai_lieu/BAO_CAO_THI_NGHIEM_6_7.md,
+chay_thi_nghiem.py — Chạy lại toàn bộ thí nghiệm 4, 6, 7, 8 hoặc 9 theo đúng thứ tự (tai_lieu/BAO_CAO_THI_NGHIEM_6_7.md,
 tai_lieu/HUONG_DAN_TN8.md).
 
     python -m scripts.chay_thi_nghiem 4                   # thí nghiệm 4 (Yagi, ≈ 1,5 giờ với 2–3 tiến trình)
@@ -24,7 +24,7 @@ from pathlib import Path
 GOC = Path(__file__).resolve().parents[1]
 M4, M6, M7 = "results/bao_da_tuyen/mo_hinh", "results/bao_da_tuyen/mo_hinh6", "results/bao_da_tuyen/mo_hinh7"
 M8 = "results/bao_da_tuyen/mo_hinh8"
-CAU_HINH = {"tt": 2, "luong": 1}                      # số tiến trình sinh / chấm và số luồng PyTorch (đặt từ dòng lệnh)
+CAU_HINH = {"tt": 2, "luong": 1, "song_song": 2}      # số tiến trình sinh / chấm, luồng PyTorch, mô hình huấn luyện cùng lúc
 K_MOC = {"4-5": [], "10": ["--buoc-moc", "2"], "20": ["--buoc-moc", "4"]}
 
 
@@ -128,6 +128,63 @@ def buoc_8():
     return B
 
 
+def buoc_9():
+    """Thí nghiệm 9 (results/bao_da_tuyen/TIEU_CHI_9.md): overfitting (bậc thang độ lạ, đường học, kiểm định đối kháng),
+    hiệu chỉnh so sánh bội, mốc tối ưu ILP, ablation DM. Cần dữ liệu + DM6 của TN6."""
+    tt = CAU_HINH["tt"]
+    B = []
+    for t in ("hoc9", "seed9", "hinh9", "ngay9", "nam9", "bao9"):                    # 6 bậc, có thầy
+        B += [sinh(t, thay=True, tt=tt), cham(t, "4-5", M6, "dm6", "online_tkcb10_6", 1)]
+    B += [("huấn luyện lại DM6, lưu mọi epoch (dm6r)", ["-m", "src.nhieu_luong.huan_luyen_dt", "dm", "--thi-nghiem", "9",
+                                                         "--ten", "dm6r", "--them", "--moi-epoch"]),
+          ("huấn luyện softmax cùng dữ liệu DM6 (softmax9)", ["-m", "src.nhieu_luong.huan_luyen_dt", "softmax",
+                                                              "--thi-nghiem", "9", "--ten", "softmax9", "--them"]),
+          ("B1: hiệu chỉnh so sánh bội TN4 / TN6 / TN7a", ["-m", "scripts.kiem_dinh_boi_9"]),
+          ("B2: tối ưu ILP mất dịch vụ", ["-m", "scripts.toi_uu_ilp_9", "--tien-trinh", str(min(tt, 3))]),
+          ("B3: ablation DM", ["-m", "scripts.ablation_9", "--tien-trinh", str(min(tt, 3))]),
+          ("B3: ablation softmax9", ["-m", "scripts.ablation_9", "--bien-the", "softmax9", "--tien-trinh", str(min(tt, 3))]),
+          ("A2: đường học", ["-m", "scripts.duong_hoc_9", "--tien-trinh", str(min(tt, 3))]),
+          ("A3: kiểm định đối kháng", ["-m", "scripts.doi_khang_9"]),
+          ("phân tích thí nghiệm 9", ["-m", "scripts.phan_tich_9"])]
+    return B
+
+
+def buoc_10():
+    """Thí nghiệm 10 (results/bao_da_tuyen/TIEU_CHI_10.md): "học tới nơi" — 4 bước chọn bằng kiểm thử chéo 4 phần trên tập
+    học (năng lực, số chuỗi S, thầy, dữ liệu A + B), rồi chấm bộ kiểm tra một lần. Dùng lại val và bộ kiểm tra của TN8 /
+    TN9 nếu có, thiếu thì tự sinh. Không cần mô hình cũ: đối chứng DM6r học lại trên cùng tập học."""
+    tt, lu, ss = CAU_HINH["tt"], CAU_HINH["luong"], CAU_HINH["song_song"]
+    tn10 = lambda *x: ["-m", "scripts.tn10", *x, "--tien-trinh", str(min(tt, 4)), "--song-song", str(ss),
+                       "--luong-cpu", str(lu)]
+    # 0) val (chọn checkpoint) + bộ kiểm tra — có rồi thì bỏ qua
+    B = [sinh(t, thay=True, tt=tt) for t in ("val", "val6", "val_b", "val6_b")]
+    B += [sinh(t, K, tt=tt) for t in ("c6", "yagi5", "c6_b", "yagi5_b") for K in K_MOC]
+    B += [sinh(t, thay=True, tt=tt) for t in ("ngay9", "nam9", "bao9")]                # bộ kiểm tra có thầy (TN9)
+    # 1) tập học A có thế giới chấm (kiểm thử chéo) → bước 1, 2
+    B += [sinh(t, thay=True, tt=tt) for t in ("train10", "train6_10")]
+    B += [("bước 1: huấn luyện 4 cấu hình × 4 phần", tn10("huan-luyen", "--buoc", "1")),
+          ("bước 1: chọn cấu hình (kiểm thử chéo)", tn10("chon", "--buoc", "1")),
+          ("bước 2: chọn số chuỗi S (kiểm thử chéo)", tn10("chon", "--buoc", "2"))]
+    # 3) thầy 64 thế giới nhãn
+    B += [sinh("val10_t32", thay=True, tt=tt), sinh("val10_t64", thay=True, tt=tt),
+          ("bước 3: so thầy 64 với 32 thế giới nhãn", tn10("chon", "--buoc", "3a")),
+          ("bước 3: nhãn thầy 64 cho tập học A (nếu qua)", ["-m", "scripts.tn10", "sinh", "--buoc", "3",
+                                                            "--tien-trinh", str(tt)]),
+          ("bước 3: huấn luyện 4 phần trên nhãn thầy 64 (nếu qua)", tn10("huan-luyen", "--buoc", "3")),
+          ("bước 3: chọn (kiểm thử chéo)", tn10("chon", "--buoc", "3b"))]
+    # 4) dữ liệu A + B
+    B += [sinh(t, thay=True, tt=tt) for t in ("train_b10", "train6_b10")]
+    B += [("bước 4: nhãn thầy 64 cho tập học B (nếu bước 3 chọn)", ["-m", "scripts.tn10", "sinh", "--buoc", "4",
+                                                                     "--tien-trinh", str(tt)]),
+          ("bước 4: huấn luyện 4 phần trên A + B", tn10("huan-luyen", "--buoc", "4")),
+          ("bước 4: chọn (kiểm thử chéo A + B)", tn10("chon", "--buoc", "4")),
+          ("huấn luyện DM10 và DM6r trên toàn bộ tập học (3 seed)", tn10("huan-luyen", "--buoc", "day")),
+          ("chốt DM10, DM6r", tn10("chon", "--buoc", "chot")),
+          ("chấm kiểm tra Lai(DM6r), Lai(DM10)", tn10("cham")),
+          ("phân tích thí nghiệm 10", ["-m", "scripts.phan_tich_10"])]
+    return B
+
+
 CHON_BUOC_8 = (f"{M8}/chon_buoc.json", f"{M6}/chon_buoc_dm6.json", f"{M6}/chon_buoc_dm6_s1.json",
                f"{M6}/chon_buoc_dm6_s2.json")
 
@@ -155,8 +212,10 @@ def chon_buoc_7():
 
 DL = GOC / "data" / "bao_da_tuyen"
 SO_CUA_SO = {"train": 59, "val": 16, "test": 13, "train6": 60, "val6": 16, "val5": 16, "train7s": 59, "train7x": 60,
-             "train_b": 59, "train6_b": 60, "val_b": 16, "val6_b": 16}
-THU_MUC_MH = {"4": M4, "6": M6, "7": M7, "8": M8}
+             "train_b": 59, "train6_b": 60, "val_b": 16, "val6_b": 16, "val10_t32": 16, "val10_t64": 16,
+             "train10": 59, "train6_10": 60, "train_b10": 59, "train6_b10": 60}
+M9 = "results/bao_da_tuyen/mo_hinh9"
+THU_MUC_MH = {"4": M4, "6": M6, "7": M7, "8": M8, "9": M9}
 
 
 def _doi(lenh, ten, mac_dinh=None):
@@ -206,6 +265,8 @@ def da_xong(lenh):
         return True
     if mo == "scripts.phan_tich_6" and lenh[2] == "chon-tau":
         return (GOC / "results" / "bao_da_tuyen" / "chon_tau_6.json").exists()
+    if mo == "scripts.duong_hoc_9":
+        return (GOC / "results" / "bao_da_tuyen" / "tn9" / "duong_hoc.json").exists()
     if mo in ("src.nhieu_luong.cham_lai_dt", "src.nhieu_luong.cham_mo_hinh_dt"):
         if mo == "src.nhieu_luong.cham_lai_dt":
             teps, can = _kb(_doi(lenh, "--tap"), _doi(lenh, "--K")), [_doi(lenh, "--khoa") + "_tkcb"]
@@ -225,19 +286,21 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
-    ap.add_argument("thi_nghiem", choices=["4", "6", "7", "8", "hinh"])
+    ap.add_argument("thi_nghiem", choices=["4", "6", "7", "8", "9", "10", "hinh"])
     ap.add_argument("--chi-in", action="store_true", help="chỉ in lệnh, không chạy")
     ap.add_argument("--tu-buoc", type=int, default=1)
     ap.add_argument("--lam-lai", action="store_true",
                     help="chạy lại cả bước đã có sản phẩm (mặc định bỏ qua: không sinh / huấn luyện / chấm lại)")
     ap.add_argument("--tien-trinh", type=int, default=None,
                     help="số tiến trình sinh dữ liệu (mặc định: nửa số luồng CPU, tối đa 6; mỗi tiến trình ~2,5 GB RAM)")
-    ap.add_argument("--luong-cpu", type=int, default=4, help="số luồng PyTorch khi huấn luyện (thí nghiệm 8)")
+    ap.add_argument("--luong-cpu", type=int, default=4, help="số luồng PyTorch khi huấn luyện (thí nghiệm 8, 10)")
+    ap.add_argument("--song-song", type=int, default=2, help="thí nghiệm 10: số mô hình huấn luyện cùng lúc")
     a = ap.parse_args()
     import os
     CAU_HINH["tt"] = a.tien_trinh or max(1, min(6, (os.cpu_count() or 2) // 2))
     CAU_HINH["luong"] = a.luong_cpu
-    B = {"4": buoc_4, "6": buoc_6, "7": buoc_7, "8": buoc_8, "hinh": buoc_hinh}[a.thi_nghiem]()
+    CAU_HINH["song_song"] = a.song_song
+    B = {"4": buoc_4, "6": buoc_6, "7": buoc_7, "8": buoc_8, "9": buoc_9, "10": buoc_10, "hinh": buoc_hinh}[a.thi_nghiem]()
     bo_qua = 0
     for i, (mo_ta, lenh) in enumerate(B, 1):
         if i < a.tu_buoc:

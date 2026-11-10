@@ -40,7 +40,31 @@ THI_NGHIEM = {4: {"train": ("train_k4_5",), "val": ("val_k4_5",), "thu_muc": md.
                   "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh7"},
               # thí nghiệm 8: DM8b học trong thế giới B (cùng cửa sổ / seed với dữ liệu của DM6 = thế giới A)
               8: {"train": ("train_b_k4_5", "train6_b_k4_5"), "val": ("val_b_k4_5", "val6_b_k4_5"),
-                  "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh8"}}
+                  "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh8"},
+              # thí nghiệm 9: đúng dữ liệu của DM6, lưu mọi epoch (đường học, chọn checkpoint) + softmax cùng dữ liệu
+              9: {"train": ("train_k4_5", "train6_k4_5"), "val": ("val_k4_5", "val6_k4_5"),
+                  "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh9"}}
+# thí nghiệm 10 (TIEU_CHI_10.md): 10 = dữ liệu A, thầy 32 thế giới; 11 = A, thầy 64; 12 = A + B, thầy 32; 13 = A + B,
+# thầy 64. Tập học có thế giới chấm (train10…) → kiểm thử chéo 4 phần theo cửa sổ (--phan). Checkpoint chọn trên val
+# của (các) thế giới học, KHÔNG dùng phần giữ lại.
+_M10 = GOC / "results" / "bao_da_tuyen" / "mo_hinh10"
+_VA, _VB = ("val_k4_5", "val6_k4_5"), ("val_b_k4_5", "val6_b_k4_5")
+_HA, _HB = ("train10_k4_5", "train6_10_k4_5"), ("train_b10_k4_5", "train6_b10_k4_5")
+_t64 = lambda ds: tuple(d.replace("_k4_5", "_t64_k4_5") for d in ds)
+THI_NGHIEM.update({10: {"train": _HA, "val": _VA, "thu_muc": _M10}, 11: {"train": _t64(_HA), "val": _VA, "thu_muc": _M10},
+                   12: {"train": _HA + _HB, "val": _VA + _VB, "thu_muc": _M10},
+                   13: {"train": _t64(_HA + _HB), "val": _VA + _VB, "thu_muc": _M10}})
+SO_PHAN, HAT_PHAN = 4, 10
+_SO_CUA_SO_GOC = {"train": 59, "train6": 60}
+
+
+def phan_cua(thu_muc, kb):
+    """Phần (0..3) của cửa sổ kb trong tập học TN10. Chia theo CỬA SỔ GỐC (train / train6): cùng cửa sổ thời tiết thì cùng
+    phần ở thế giới A, B và ở nhãn thầy 32 / 64 → không rò rỉ khi học A + B."""
+    goc = "train6" if thu_muc.startswith(("train6", "train6_b")) else "train"
+    n = _SO_CUA_SO_GOC[goc]
+    hv = np.random.default_rng(HAT_PHAN + (goc == "train6")).permutation(n)
+    return int(hv[int(kb)] % SO_PHAN)
 GAP_DOI = ("train7s_k4_5", "train7x_k4_5")      # thí nghiệm 7b: thêm vào để có mốc 200%
 
 
@@ -98,7 +122,7 @@ def chia_lo(ds, B, rng):
 
 
 def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, them=False, ti_le=1.0, gap_doi=False,
-               luong=1):
+               luong=1, moi_epoch=False, bo_phan=None):
     torch.set_num_threads(luong)
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
@@ -106,7 +130,8 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
     ra, ten = cfg["thu_muc"], ten or kieu
     ra.mkdir(parents=True, exist_ok=True)
     cac_train = cfg["train"] + (GAP_DOI if gap_doi else ())
-    tr = [(r["gon"], r["nhan"]) for d in cac_train for r in nap_thu_muc(d, ti_le)]
+    tr = [(r["gon"], r["nhan"]) for d in cac_train for r in nap_thu_muc(d, ti_le)
+          if bo_phan is None or phan_cua(d, r["kb"]) != bo_phan]           # TN10: bỏ phần giữ lại của kiểm thử chéo
     cac_val = [nap_thu_muc(d) for d in cfg["val"]]
     va_nho = val_tron(cac_val)
     vl = [(r["gon"], r["nhan"]) for va in cac_val for r in va]
@@ -143,9 +168,12 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
                    "J_thay_val": Jt, "giay": time.time() - t0})
         print(f"  ep {ep + 1:2d}  loss {np.mean(L):.4f}  val {np.mean(Lv):.4f}  J val {J:.4f} (thầy {Jt:.4f})  "
               f"({time.time() - t0:.0f} s)", flush=True)
+        ck = {"state": net.state_dict(), "cau_hinh": net.cau_hinh, "epoch": ep + 1, "J_val": J}
+        if moi_epoch:                                   # thí nghiệm 9: đường học trên các bậc độ lạ
+            torch.save(ck, ra / f"{ten}_ep{ep + 1:02d}.pt")
         if J < tot:
             tot = J
-            torch.save({"state": net.state_dict(), "cau_hinh": net.cau_hinh, "epoch": ep + 1, "J_val": J}, ra / f"{ten}.pt")
+            torch.save(ck, ra / f"{ten}.pt")
         json.dump({"nhat_ky": nk, "tot_nhat_J_val": tot}, open(ra / f"{ten}_nhat_ky.json", "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
     (ra / f"{ten}.xong").write_text(time.strftime("%Y-%m-%d %H:%M:%S"))
@@ -181,9 +209,13 @@ if __name__ == "__main__":
     ap.add_argument("--gap-doi", action="store_true", help="thí nghiệm 7b: thêm dữ liệu train7s + train7x")
     ap.add_argument("--seed", type=int, default=0, help="hạt giống huấn luyện (thí nghiệm 8: 0, 1, 2)")
     ap.add_argument("--luong-cpu", type=int, default=1, help="số luồng CPU cho PyTorch khi huấn luyện")
+    ap.add_argument("--moi-epoch", action="store_true", help="thí nghiệm 9: lưu checkpoint mọi epoch (<tên>_epNN.pt)")
+    ap.add_argument("--epochs", type=int, default=20, help="thí nghiệm 10: số epoch")
+    ap.add_argument("--H", type=int, default=64, help="thí nghiệm 10: độ rộng mạng")
+    ap.add_argument("--bo-phan", type=int, default=None, help="thí nghiệm 10: phần (0..3) giữ lại của kiểm thử chéo")
     a = ap.parse_args()
     if a.viec == "chon-buoc":
         chon_buoc(a.thi_nghiem, a.ten or "dm")
     else:
-        huan_luyen(a.viec, tn=a.thi_nghiem, ten=a.ten, them=a.them, ti_le=a.ti_le, gap_doi=a.gap_doi, seed=a.seed,
-                   luong=a.luong_cpu)
+        huan_luyen(a.viec, epochs=a.epochs, H=a.H, tn=a.thi_nghiem, ten=a.ten, them=a.them, ti_le=a.ti_le,
+                   gap_doi=a.gap_doi, seed=a.seed, luong=a.luong_cpu, moi_epoch=a.moi_epoch, bo_phan=a.bo_phan)

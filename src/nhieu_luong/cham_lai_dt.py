@@ -18,6 +18,7 @@ import os
 import pickle
 import sys
 import time
+import zlib
 from multiprocessing import Pool
 
 import numpy as np
@@ -48,6 +49,11 @@ def rho_hat(gon):
     return float(np.max(F[m] / (gon.C[m] * (1 - gon.rho0[m]))))
 
 
+def giong_ban_ghi(r):
+    """Hạt giống mẫu DM của một bản ghi (thí nghiệm 10): chỉ phụ thuộc cửa sổ, mốc, mức tải."""
+    return zlib.crc32(f"{r['kb']}_{r['t']}_{r['muc']}".encode())
+
+
 def _mot_tep(tep):
     global _dm
     torch.set_num_threads(1)
@@ -60,6 +66,8 @@ def _mot_tep(tep):
     cac_t = sorted({r["t"] for r in recs})
     for r in recs:
         gon = r["gon"]
+        if _cfg.get("giong_ban_ghi"):          # thí nghiệm 10: mẫu DM chỉ phụ thuộc bản ghi, không phụ thuộc số tiến trình
+            _dm.gen.manual_seed(giong_ban_ghi(r))
         s = time.perf_counter()
         a_dm = _dm(gon)
         ms_dm = (time.perf_counter() - s) * 1e3
@@ -67,7 +75,8 @@ def _mot_tep(tep):
         B = dt.TheGioi.tu_bang(gon, np.random.default_rng([r["kb"], r["t"], 4]))
         a_ls, _ = dt.tkcb(B, a_dm)
         r["tg_ms"][k_dm], r["tg_ms"][k_ls] = ms_dm, ms_dm + (time.perf_counter() - s) * 1e3
-        if cac_t.index(r["t"]) % 4 == 0 and _cfg["khoa_tkcb10"]:
+        if cac_t.index(r["t"]) % 4 == 0 and _cfg["khoa_tkcb10"] and not (
+                _cfg.get("giong_ban_ghi") and _cfg["khoa_tkcb10"] in r["tg_ms"]):   # TN10: đã đo thì không đo lại
             r["tg_ms"][_cfg["khoa_tkcb10"]] = tkcb10(gon, np.random.default_rng([r["kb"], r["t"], 3]))[1]
         r["rho_hat"] = rho_hat(gon)
         for ten_tg, khoa in (("ens", "cham"), ("qs", "cham_qs")):
@@ -93,9 +102,12 @@ def main():
     ap.add_argument("--ten", default="dm", help="tên checkpoint DM")
     ap.add_argument("--khoa", default="dm", help="khoá kết quả (dm → dm, dm_tkcb)")
     ap.add_argument("--khoa-tkcb10", default="online_tkcb10", help="khoá thời gian TKCB 10 lần; rỗng = không đo")
+    ap.add_argument("--giong-ban-ghi", action="store_true",
+                    help="thí nghiệm 10: hạt giống DM theo từng bản ghi (crc32 kb_t_mức); TKCB 10 lần chỉ đo khi chưa có")
     a = ap.parse_args()
     from pathlib import Path
-    cfg = {"thu_muc": Path(a.mo_hinh) if a.mo_hinh else None, "ten": a.ten, "khoa": a.khoa, "khoa_tkcb10": a.khoa_tkcb10}
+    cfg = {"thu_muc": Path(a.mo_hinh) if a.mo_hinh else None, "ten": a.ten, "khoa": a.khoa, "khoa_tkcb10": a.khoa_tkcb10,
+           "giong_ban_ghi": a.giong_ban_ghi}
     teps = sorted(glob.glob(str(thu_muc(a.tap, phan_tich_K(a.K)) / "kb_*.pkl")))
     print(f"{a.tap} K={a.K}: {len(teps)} tệp, mô hình {cfg['ten']} → khoá {cfg['khoa']}", flush=True)
     t0 = time.time()

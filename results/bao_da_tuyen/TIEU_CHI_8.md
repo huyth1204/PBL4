@@ -76,4 +76,13 @@ hỏng hóc khác nhau.
 
 ## Thay đổi
 
-(chưa có)
+Ghi ngày 10/11/2026, sau khi nhận kết quả từ máy nhóm. Không đổi giả thuyết, ô tiêu chí hay luật kết luận.
+
+1. **DM6 seed 0 được huấn luyện lại tại máy nhóm** (cùng lệnh, seed 0, trên train / train6 sinh lại ở máy đó), không
+   dùng bản có sẵn của TN6. Mọi so sánh A / B trong TN8 chạy cùng máy. Số của DM6 lệch nhẹ so với TN6 — xem đó là kiểm
+   tra độ bền khi huấn luyện lại (BAO_CAO_8, mục 6).
+2. **Thêm hiệu chỉnh Holm / BH sau khi chạy** (ngoài tiêu chí, theo hướng TN9). p xấp xỉ từ CI vì mẫu bootstrap nằm ở
+   máy nhóm (`phan_tich_8.holm_xap_xi`, mục 6 của KET_QUA_8).
+3. **Hình 8:** sửa nhãn trục ("A · A Yagi" → "TG A · Yagi"), chú giải đè cột, màu chữ trên ô đậm. Hình vẽ lại từ
+   `ket_qua_8.json` (`--tu-json`); không đổi số.
+

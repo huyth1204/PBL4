@@ -292,6 +292,7 @@ def ham_chon(thu_muc=None, ten_dm="dm", softmax=True):
     dm = nap(ten_dm, thu_muc)
     gen = torch.Generator().manual_seed(2026)
     ra = {"dm": lambda gon: chon_dm(dm, gon, cb["S"], cb["so_buoc"], gen)}
+    ra["dm"].gen = gen                         # thí nghiệm 10: bộ chấm đặt lại hạt giống theo bản ghi (--giong-ban-ghi)
     if softmax:
         sm = nap("softmax", thu_muc)
         ra["softmax"] = lambda gon: chon_softmax(sm, gon)

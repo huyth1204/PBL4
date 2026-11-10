@@ -2367,5 +2367,64 @@
    "lai_A_a_%": 11.727150465562104,
    "lai_B_a_%": 11.640855450317988
   }
+ },
+ "holm_xap_xi": {
+  "khop_thang_da_bao": 72,
+  "so_o": 72,
+  "toan_72": {
+   "thang": 56,
+   "holm": 36,
+   "bh": 56
+  },
+  "khoi": {
+   "A|c6": {
+    "thang": 6,
+    "holm_36": 3,
+    "bh_36": 6,
+    "holm_72": 2
+   },
+   "A|yagi5": {
+    "thang": 7,
+    "holm_36": 6,
+    "bh_36": 7,
+    "holm_72": 6
+   },
+   "A|c6_b": {
+    "thang": 6,
+    "holm_36": 4,
+    "bh_36": 6,
+    "holm_72": 2
+   },
+   "A|yagi5_b": {
+    "thang": 8,
+    "holm_36": 6,
+    "bh_36": 8,
+    "holm_72": 6
+   },
+   "B|c6": {
+    "thang": 6,
+    "holm_36": 4,
+    "bh_36": 6,
+    "holm_72": 4
+   },
+   "B|yagi5": {
+    "thang": 8,
+    "holm_36": 7,
+    "bh_36": 8,
+    "holm_72": 7
+   },
+   "B|c6_b": {
+    "thang": 7,
+    "holm_36": 4,
+    "bh_36": 7,
+    "holm_72": 4
+   },
+   "B|yagi5_b": {
+    "thang": 8,
+    "holm_36": 5,
+    "bh_36": 8,
+    "holm_72": 5
+   }
+  }
  }
 }

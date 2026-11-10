@@ -64,16 +64,17 @@ def _seeds(seed, t, bo, W):
 
 
 BAN_KINH_GIONG = 100.0          # km — thí nghiệm 6: giông lân cận UAV
-_CAPE = None
+_CAPE = {}
 
 
-def cape_luc(h0, o):
-    """[S] CAPE (J/kg) của giờ chứa mốc o — giờ hiện tại, không phải giờ tới."""
-    global _CAPE
-    if _CAPE is None:
-        with np.load(td.THOI_TIET, allow_pickle=False) as z:
-            _CAPE = z["cape"].astype(np.float32)
-    return _CAPE[h0 + int(o * 20 / 3600)]
+def cape_luc(h0, o, tep=None):
+    """[S] CAPE (J/kg) của giờ chứa mốc o — giờ hiện tại, không phải giờ tới. tep: tệp thời tiết của tập (thí nghiệm 9:
+    2017–2021); mặc định thời tiết 2024–2025."""
+    tep = str(tep or td.THOI_TIET)
+    if tep not in _CAPE:
+        with np.load(tep, allow_pickle=False) as z:
+            _CAPE[tep] = z["cape"].astype(np.float32)
+    return _CAPE[tep][h0 + int(o * 20 / 3600)]
 
 
 def dac_trung_uav(g, q, o, cape_o):
@@ -177,17 +178,18 @@ def _mot_cua_so(job):
         Y = dt.yen_m(th)
         tg_yen = time.perf_counter() - s
         S = dt.suurballe_m(th)
-        sn, sc = _seeds(seed, t, 0, SO_TG_NHAN), _seeds(seed, t, 1, SO_TG_CHAM)
+        n_nhan = TAP_10[tap][1] if tap in TAP_10 else SO_TG_NHAN      # thí nghiệm 10: 64 thế giới nhãn (32 đầu trùng)
+        sn, sc = _seeds(seed, t, 0, n_nhan), _seeds(seed, t, 1, SO_TG_CHAM)
         cac_muc = (np.random.default_rng([seed, t, 5]).uniform(*TAI_LIEN_TUC, 3).tolist() if lien_tuc
                    else list(MUC_TAI))                    # thí nghiệm 5: 3 hệ số tải bốc đều, cùng luồng
-        for muc in cac_muc:
+        for so_muc, muc in enumerate(cac_muc):
             lam = th["lam"] * (MUC_TAI[muc] if isinstance(muc, str) else muc) / th["u"]
             s = time.perf_counter()
             DP = dt.dijkstra_phat(th, lam, *BETA_GAMMA)
             tg_dp = time.perf_counter() - s
             bt = dt.BaiToan(th, muc, [Y[k] + DP[k] for k in range(len(lam))])
             gon = dt.BaiToanGon(bt)
-            gon.dac_trung_canh = dac_trung_canh(g, q, mg, gon.U, o, cape_luc(h0, o))
+            gon.dac_trung_canh = dac_trung_canh(g, q, mg, gon.U, o, cape_luc(h0, o, tep_thoi_tiet(tap)))
             gon.dac_trung_uv = [dac_trung_uv(g, th, k) for k in range(bt.K)]
             En = dt.TheGioi.ensemble(bt, g, pl, p_sim, sn) if co_thay else None
             s = time.perf_counter()
@@ -197,7 +199,8 @@ def _mot_cua_so(job):
             sol = {"yen": bt.loi_giai(Y), "suurballe": bt.loi_giai(S), "dphat": bt.loi_giai(DP),
                    "online_tkcb": bt.tu_lua_chon(a_on)}
             dau = [a_on] + [a for a in (anh_xa(bt, sol["suurballe"]), anh_xa(bt, sol["dphat"])) if a is not None]
-            a_thay, J_thay = thay(bt, En, dau, rng) if co_thay else (None, float("nan"))
+            r_thay = np.random.default_rng([seed, t, 6, so_muc]) if tap in TAP_10 else rng   # TN10: thầy không chạm rng
+            a_thay, J_thay = thay(bt, En, dau, r_thay) if co_thay else (None, float("nan"))
             rec = {"gon": gon, "nhan": None if a_thay is None else a_thay.astype(np.int16), "J_nhan": float(J_thay),
                    "kb": i, "bao": ten,
                    "t": t, "muc": muc, "K": bt.K, "nguon": th["nguon"],
@@ -239,9 +242,15 @@ def _nap_mo_hinh():
 
 
 TAI_LIEN_TUC = (0.5, 1.3)
+# Thí nghiệm 9 (results/bao_da_tuyen/TIEU_CHI_9.md) — bậc thang độ lạ, mỗi bậc đổi MỘT yếu tố so với bậc trước; mọi tập
+# có thầy, 13 cửa sổ, 4–5 luồng. hoc9: đúng tình huống đã học (cửa sổ + seed của train6); seed9: seed mới; hinh9: thêm
+# split hình học test; ngay9: ngày mới 2024–2025 (cửa sổ C); nam9 / bao9: thời tiết 2017–2021 (ngày xấu / đợt mạnh).
+TAP_9 = {"hoc9": "train", "seed9": "train", "hinh9": "test", "ngay9": "test", "nam9": "test", "bao9": "test"}
+NAM_9 = ("nam9", "bao9")
+SO_CUA_SO_9 = 13
 HINH_HOC = {"val5": "val", "yagi5": "test", "mua5": "test",        # tập của thí nghiệm 5–7 → split hình học v5
             "train6": "train", "val6": "val", "c6": "test", "train7s": "train", "train7x": "train",
-            **{f"{b}7{s}": "test" for b in ("c", "y") for s in ("w", "h", "wh")}}
+            **{f"{b}7{s}": "test" for b in ("c", "y") for s in ("w", "h", "wh")}, **TAP_9}
 SEED_6 = {"c6": 720000, "val6": 710000, "train6": 700000, "train7x": 730000}
 TAP_TRAIN = {"train", "train6", "train7s", "train7x", "train_b", "train6_b"}
 # Thí nghiệm 7a — thế giới cực đoan giả lập (nhãn synthetic_stress, không phải cường độ đo được). Bộ định tuyến không
@@ -255,6 +264,18 @@ TAP_8 = {"train_b": "train", "train6_b": "train6", "val_b": "val", "val6_b": "va
 THE_GIOI_B = {"uav_set_pmax": 0.30, "uav_set_L": 15.0, "dat_set_pmax": 0.05, "dat_set_L": 5.0, "set_d_max": 50.0,
               "p_set": 0.0}                         # p_set = 0: bỏ "sét ngắt trạm ~1 phút" cũ, thay bằng hỏng theo khoảng cách
 UAV_12 = {"so": 5, "nguong_12": 12.0, "nguong_15": 15.0, "vi_do_bao": 16.0, "gio_bao": 17.2}
+# Thí nghiệm 10 (results/bao_da_tuyen/TIEU_CHI_10.md): tên tập → (tập gốc, số thế giới NHÃN, có lưu thế giới CHẤM).
+# Cửa sổ, seed, mốc và thế giới mô phỏng như tập gốc (train_b… là thế giới B của TN8). Thầy dùng bộ sinh ngẫu nhiên RIÊNG
+# default_rng([seed, t, 6, số thứ tự mức tải]) → tình huống không phụ thuộc thầy: các tập cùng gốc có ĐÚNG cùng tình huống,
+# nên thầy 32 / 64 so cặp được và mô hình học trên nhãn thầy 64 chấm được trên thế giới chấm của tập thầy 32.
+#   train10, train6_10 (A), train_b10, train6_b10 (B): tập học có thế giới chấm → kiểm thử chéo 4 phần theo cửa sổ
+#   *_t64: cùng tình huống, nhãn thầy 64 thế giới (chỉ nhãn); val10_t32 / val10_t64: kiểm tra nhanh thầy 64 trên val
+TAP_10 = {"train10": ("train", 32, True), "train6_10": ("train6", 32, True),
+          "train_b10": ("train_b", 32, True), "train6_b10": ("train6_b", 32, True),
+          "train10_t64": ("train", 64, False), "train6_10_t64": ("train6", 64, False),
+          "train_b10_t64": ("train_b", 64, False), "train6_b10_t64": ("train6_b", 64, False),
+          "val10_t32": ("val", 32, True), "val10_t64": ("val", 64, True)}
+TAP_TRAIN |= {t for t, (_, _, cham) in TAP_10.items() if not cham}          # chỉ nhãn → không lưu thế giới chấm
 THOI_TIET_KHI_HAU = GOC / "data" / "thoi_tiet_vn_2017_2021_1.npz"
 _moi_truong = {}
 
@@ -282,7 +303,11 @@ def loai_uav(g=None):
 def moi_truong(tap):
     """(thời tiết, tham số) để MÔ PHỎNG thế giới của tập `tap`: thường là td._tt, td._p; tập 7a: mưa × hệ số, gió giật
     × hệ số, UAV / trạm mặt đất dễ hỏng hơn; tập 8 (thế giới B): thời tiết thật, UAV hai loại, hỏng theo khoảng cách
-    tới giông."""
+    tới giông; tập 9 năm mới: thời tiết thật 2017–2021, tham số như thế giới A."""
+    if tap in NAM_9:
+        return thoi_tiet_9(), td._p
+    if tap in TAP_10:
+        return moi_truong(TAP_10[tap][0])
     if tap in TAP_8:
         if tap not in _moi_truong:
             _moi_truong[tap] = (td._tt, dataclasses.replace(td._p, hong_b=True, uav_gio_nguong=loai_uav(), **THE_GIOI_B))
@@ -295,6 +320,18 @@ def moi_truong(tap):
         tt.precip, tt.gust = td._tt.precip * mua, td._tt.gust * gio
         _moi_truong[tap] = (tt, dataclasses.replace(td._p, **ts))
     return _moi_truong[tap]
+def thoi_tiet_9():
+    """Thời tiết 2017–2021 (cùng 74 điểm, cùng nguồn mưa / gió Open-Meteo ERA5; giông theo luật CAPE) — thí nghiệm 9."""
+    if "_tt9" not in _moi_truong:
+        from src.ngau_nhien.thoi_tiet import ThoiTiet
+        _moi_truong["_tt9"] = ThoiTiet(str(THOI_TIET_KHI_HAU))
+    return _moi_truong["_tt9"]
+
+
+def tep_thoi_tiet(tap):
+    return THOI_TIET_KHI_HAU if tap in NAM_9 else td.THOI_TIET
+
+
 LOAI_MUA = ("2024-09-03", "2024-09-13")                             # Yagi (loại khỏi bộ mưa lớn mới)
 
 
@@ -330,10 +367,11 @@ def cua_so_mua_lon(tt, so=13):
     return sorted(h for _, h, _ in chon)
 
 
-def ngay_xau(tt):
+def ngay_xau(tt, loai_them=()):
     """Thí nghiệm 6 (luật chốt trong TIEU_CHI_6.md): ngày ngoài 10 cơn đã dùng (±1), ngoài Yagi và ngoài các ngày của bộ B
     (±1), có giờ với ≥ 3% điểm mưa > 11 mm/h, hoặc ≥ 20% điểm gió giật > 15 m/s, hoặc ≥ 10% điểm có mã giông. Mỗi ngày một
     cửa sổ bắt đầu ở giờ chia hết cho 3 chứa giờ nặng nhất. Xáo bằng default_rng(2026): 13 → c6, 16 → val6, 60 → train6.
+    loai_them (thí nghiệm 9, năm 2017–2021): chỉ số giờ của các đợt bão đã lấy — loại thêm ngày của chúng (±1).
     Trả {tập: [(ngày, h0)]}."""
     import json
     from src.ngau_nhien.thoi_tiet import GIONG
@@ -347,7 +385,7 @@ def ngay_xau(tt):
     loai = (ngay >= np.datetime64(LOAI_MUA[0])) & (ngay <= np.datetime64(LOAI_MUA[1]))
     for b in json.loads((GOC / "data" / "bao_manh" / "danh_muc.json").read_text(encoding="utf-8"))["bao"]:
         loai |= (ngay >= np.datetime64(b["start_utc"][:10]) - mot) & (ngay <= np.datetime64(b["end_utc"][:10]) + mot)
-    for h in cua_so_mua_lon(tt):
+    for h in [*cua_so_mua_lon(tt), *loai_them]:
         loai |= np.abs((ngay - ngay[h]).astype(int)) <= 1
     ds = []
     for d in np.unique(ngay):
@@ -361,8 +399,47 @@ def ngay_xau(tt):
             "train7x": [ds[i] for i in perm[89:149]]}         # thí nghiệm 7b: 60 ngày tiếp theo
 
 
+def dot_bao_17(tt, so=SO_CUA_SO_9):
+    """Thí nghiệm 9, bộ bão năm mới (2017–2021, không có danh mục bão): giờ mạnh theo luật chọn cửa sổ của bao_manh
+    (≥ 5% điểm mưa > 11 mm/h hoặc ≥ 20% điểm gió giật > 15 m/s); giờ mạnh cách nhau ≤ 24 giờ gộp thành một đợt; cường
+    độ = max theo giờ của max(tỉ lệ mưa / 0,05, tỉ lệ gió / 0,20); lấy `so` đợt mạnh nhất. Trả [(giờ mạnh nhất, các giờ
+    mạnh)] theo thời gian."""
+    cd = np.maximum((tt.precip > 11).mean(1) / 0.05, (tt.gust > 15).mean(1) / 0.20)
+    dot = []
+    for h in np.flatnonzero(cd >= 1):
+        if dot and h - dot[-1][-1] <= 24:
+            dot[-1].append(int(h))
+        else:
+            dot.append([int(h)])
+    dot = [d for d in dot if (max(d) // 3) * 3 + 5 < tt.H]
+    dot = sorted(dot, key=lambda d: -cd[d].max())[:so]
+    return sorted((d[int(np.argmax(cd[d]))], d) for d in dot)
+
+
+def cua_so_9(tap):
+    """Thí nghiệm 9: [(tên, h0, seed)] của bậc `tap` (xem TAP_9)."""
+    if tap in ("hoc9", "seed9", "hinh9"):
+        goc = cac_cua_so_tap("train6")
+        chon = sorted(np.random.default_rng(2027).choice(len(goc), SO_CUA_SO_9, replace=False))
+        them = {"hoc9": 0, "seed9": 5000, "hinh9": 6000}[tap]
+        return [(goc[i][0], goc[i][1], goc[i][2] + them) for i in chon]
+    if tap == "ngay9":
+        return [(ten, h0, seed + 5000) for ten, h0, seed in cac_cua_so_tap("c6")]
+    tt = thoi_tiet_9()
+    T = [str(x) for x in tt.time_utc]
+    dot = dot_bao_17(tt)
+    if tap == "bao9":
+        return [("bao17_" + T[hm][:10], (hm // 3) * 3, 991000 + i) for i, (hm, _) in enumerate(dot)]
+    ds = ngay_xau(tt, loai_them=[h for _, d in dot for h in d])["c6"]       # 13 ngày đầu của hoán vị, như bộ C
+    return [("xau17_" + d, h, 990000 + i) for i, (d, h) in enumerate(ds)]
+
+
 def cac_cua_so_tap(tap):
     """[(tên, h0, seed)] — thêm các tập của thí nghiệm 5, 6 (seed mới) vào các tập cũ."""
+    if tap in TAP_9:
+        return cua_so_9(tap)
+    if tap in TAP_10:
+        return cac_cua_so_tap(TAP_10[tap][0])
     if tap in TAP_8:                                   # thí nghiệm 8: đúng cửa sổ + seed của tập gốc (thế giới A)
         return cac_cua_so_tap(TAP_8[tap])
     if tap in SEED_6:
@@ -387,7 +464,7 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tap", choices=["train", "val", "test", *HINH_HOC, *TAP_8], required=True)
+    ap.add_argument("--tap", choices=["train", "val", "test", *HINH_HOC, *TAP_8, *TAP_10], required=True)
     ap.add_argument("--K", default="4-5")
     ap.add_argument("--buoc-moc", type=int, default=None, help="lấy mỗi n mốc (mặc định như thí nghiệm 3)")
     ap.add_argument("--tien-trinh", type=int, default=3)
@@ -396,7 +473,8 @@ def main():
     a = ap.parse_args()
     K_rg = phan_tich_K(a.K)
     td._khoi_tao_nhe()
-    goc = TAP_8.get(a.tap, a.tap)                         # thí nghiệm 8: mốc / tải như tập gốc của thế giới A
+    goc = TAP_10[a.tap][0] if a.tap in TAP_10 else a.tap  # thí nghiệm 10: như tập gốc
+    goc = TAP_8.get(goc, goc)                             # thí nghiệm 8: mốc / tải như tập gốc của thế giới A
     moc = td.cac_moc(HINH_HOC.get(goc, goc))
     if a.buoc_moc:
         moc = moc[::a.buoc_moc]
