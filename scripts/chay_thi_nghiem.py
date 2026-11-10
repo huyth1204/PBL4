@@ -24,7 +24,7 @@ from pathlib import Path
 GOC = Path(__file__).resolve().parents[1]
 M4, M6, M7 = "results/bao_da_tuyen/mo_hinh", "results/bao_da_tuyen/mo_hinh6", "results/bao_da_tuyen/mo_hinh7"
 M8 = "results/bao_da_tuyen/mo_hinh8"
-CAU_HINH = {"tt": 2, "luong": 1, "song_song": 2}      # số tiến trình sinh / chấm, luồng PyTorch, mô hình huấn luyện cùng lúc
+CAU_HINH = {"tt": 2, "luong": 1, "song_song": 2, "thiet_bi": "cpu"}      # số tiến trình sinh / chấm, luồng PyTorch, mô hình huấn luyện cùng lúc
 K_MOC = {"4-5": [], "10": ["--buoc-moc", "2"], "20": ["--buoc-moc", "4"]}
 
 
@@ -155,7 +155,7 @@ def buoc_10():
     TN9 nếu có, thiếu thì tự sinh. Không cần mô hình cũ: đối chứng DM6r học lại trên cùng tập học."""
     tt, lu, ss = CAU_HINH["tt"], CAU_HINH["luong"], CAU_HINH["song_song"]
     tn10 = lambda *x: ["-m", "scripts.tn10", *x, "--tien-trinh", str(min(tt, 4)), "--song-song", str(ss),
-                       "--luong-cpu", str(lu)]
+                       "--luong-cpu", str(lu), "--thiet-bi", CAU_HINH["thiet_bi"]]
     # 0) val (chọn checkpoint) + bộ kiểm tra — có rồi thì bỏ qua
     B = [sinh(t, thay=True, tt=tt) for t in ("val", "val6", "val_b", "val6_b")]
     B += [sinh(t, K, tt=tt) for t in ("c6", "yagi5", "c6_b", "yagi5_b") for K in K_MOC]
@@ -295,11 +295,14 @@ def main():
                     help="số tiến trình sinh dữ liệu (mặc định: nửa số luồng CPU, tối đa 6; mỗi tiến trình ~2,5 GB RAM)")
     ap.add_argument("--luong-cpu", type=int, default=4, help="số luồng PyTorch khi huấn luyện (thí nghiệm 8, 10)")
     ap.add_argument("--song-song", type=int, default=2, help="thí nghiệm 10: số mô hình huấn luyện cùng lúc")
+    ap.add_argument("--thiet-bi", default="cpu", choices=["cpu", "auto", "cuda"],
+                    help="thí nghiệm 10: huấn luyện trên GPU nếu có (Colab: auto)")
     a = ap.parse_args()
     import os
     CAU_HINH["tt"] = a.tien_trinh or max(1, min(6, (os.cpu_count() or 2) // 2))
     CAU_HINH["luong"] = a.luong_cpu
     CAU_HINH["song_song"] = a.song_song
+    CAU_HINH["thiet_bi"] = a.thiet_bi
     B = {"4": buoc_4, "6": buoc_6, "7": buoc_7, "8": buoc_8, "9": buoc_9, "10": buoc_10, "hinh": buoc_hinh}[a.thi_nghiem]()
     bo_qua = 0
     for i, (mo_ta, lenh) in enumerate(B, 1):
