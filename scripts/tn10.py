@@ -75,7 +75,7 @@ def cau_hinh(ten):
 
 
 # ----------------------------------------------------------------------------------------------- huấn luyện
-def huan_luyen(viec, song_song, luong):
+def huan_luyen(viec, song_song, luong, thiet_bi="cpu"):
     """viec: [(tên mô hình, cấu hình, seed, phần bỏ ra hoặc None)] — bỏ qua mô hình đã có .xong."""
     viec = [v for v in viec if not (M10 / f"{v[0]}.xong").exists()]
     LOG.mkdir(exist_ok=True)
@@ -85,7 +85,7 @@ def huan_luyen(viec, song_song, luong):
             E, H, tn = cau_hinh(ch)
             lenh = [sys.executable, "-W", "ignore", "-m", "src.nhieu_luong.huan_luyen_dt", "dm", "--thi-nghiem", str(tn),
                     "--ten", ten_mh, "--them", "--seed", str(seed), "--epochs", str(E), "--H", str(H), "--luong-cpu",
-                    str(luong), *([] if phan is None else ["--bo-phan", str(phan)])]
+                    str(luong), "--thiet-bi", thiet_bi, *([] if phan is None else ["--bo-phan", str(phan)])]
             print(f"  {time.strftime('%H:%M:%S')} huấn luyện {ten_mh} → logs/tn10_{ten_mh}.log", flush=True)
             chay.append((ten_mh, subprocess.Popen(lenh, cwd=GOC, stderr=subprocess.STDOUT,
                                                   stdout=open(LOG / f"tn10_{ten_mh}.log", "w", encoding="utf-8"))))
@@ -100,22 +100,22 @@ def kiem_thu_cheo(ch):
 
 
 def lenh_huan_luyen(a):
-    c, ss = doc_chon(), a.song_song
+    c, ss, tb = doc_chon(), a.song_song, a.thiet_bi
     if a.buoc == "1":
-        huan_luyen([v for ch in UNG_VIEN_1 for v in kiem_thu_cheo(ch)], ss, a.luong_cpu)
+        huan_luyen([v for ch in UNG_VIEN_1 for v in kiem_thu_cheo(ch)], ss, a.luong_cpu, tb)
     elif a.buoc == "3":
         if not c.get("buoc3a", {}).get("gan_nhan_lai"):
             print("bước 3: thầy 64 không qua ngưỡng → không huấn luyện thêm")
             return
-        huan_luyen(kiem_thu_cheo(c["buoc2"]["ho"] + "_t64"), ss, a.luong_cpu)
+        huan_luyen(kiem_thu_cheo(c["buoc2"]["ho"] + "_t64"), ss, a.luong_cpu, tb)
     elif a.buoc == "4":
-        huan_luyen(kiem_thu_cheo(c["buoc3b"]["ho"] + "_ab"), ss, a.luong_cpu)          # ~2,5 GB RAM mỗi mô hình
+        huan_luyen(kiem_thu_cheo(c["buoc3b"]["ho"] + "_ab"), ss, a.luong_cpu, tb)          # ~2,5 GB RAM mỗi mô hình
     elif a.buoc == "day":
         ch = c["buoc4"]["ho"]
         viec = [(f"{GOC_HO}_day_s{k}", GOC_HO, k, None) for k in range(3)]
         if ch != GOC_HO:
             viec += [(f"{ch}_day_s{k}", ch, k, None) for k in range(3)]
-        huan_luyen(viec, ss, a.luong_cpu)
+        huan_luyen(viec, ss, a.luong_cpu, tb)
 
 
 # ----------------------------------------------------------------------------------------------- sinh dữ liệu
@@ -325,6 +325,7 @@ def main():
     ap.add_argument("--tien-trinh", type=int, default=3)
     ap.add_argument("--song-song", type=int, default=2, help="số mô hình huấn luyện cùng lúc (~1,2 GB RAM, A + B ~2,5 GB)")
     ap.add_argument("--luong-cpu", type=int, default=4, help="số luồng PyTorch mỗi mô hình")
+    ap.add_argument("--thiet-bi", default="cpu", choices=["cpu", "auto", "cuda"], help="huấn luyện: auto = GPU nếu có")
     a = ap.parse_args()
     {"huan-luyen": lenh_huan_luyen, "sinh": lenh_sinh, "chon": lenh_chon, "cham": lenh_cham}[a.viec](a)
 
