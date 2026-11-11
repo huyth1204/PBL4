@@ -24,7 +24,7 @@ from pathlib import Path
 import numpy as np
 import plotly.graph_objects as go
 
-GOC = Path(__file__).resolve().parent
+GOC = Path(r"E:\PBL4")
 sys.path.insert(0, str(GOC))
 import visualization as vz  # noqa: E402
 
