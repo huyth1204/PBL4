@@ -2,12 +2,16 @@
 tn11a.py — Thí nghiệm 11a (results/bao_da_tuyen/TIEU_CHI_11A.md): chẩn đoán khoảng cách DM10 → thầy. Chạy trên máy đã
 chạy TN10 (dùng lại train10 / train6_10, val, val6 và mô hình mo_hinh10), không sinh nhãn mới, không chấm bộ kiểm tra:
 
-    python -m scripts.tn11a tat-ca --tien-trinh 8 --song-song 3 --luong-cpu 5          # ~2 giờ trên máy 20 luồng
+    python -m scripts.tn11a toi-da        # TỰ DÒ máy: bổ sung → học trên GPU (8 mô hình cùng lúc) song song với
+                                          # chấm B, C trên CPU → chấm A → phân tích
+    python -m scripts.tn11a tat-ca --tien-trinh 8 --song-song 4 --luong-cpu 5      # chỉ CPU, tuần tự
 
 Từng bước (chạy lại an toàn: phần đã xong tự bỏ qua):
     bo-sung     thêm 3 đặc trưng nhìn trước (tương lai thật) vào train10, train6_10, val, val6 — chỉ THÊM khoá
-    huan-luyen  nt60h128_p0..3 = e60h128 của TN10 (cùng seed / phần / dữ liệu) + --nhin-truoc → mo_hinh11a/
-    cham        A: kiểm thử chéo nt60h128 (S 8) · B: e120h128 trên phần ĐÃ học (S 8) · C: DM10 (e120h128, S 32) + TKCB
+    huan-luyen  nt60h128_p0..3 = e60h128 của TN10 (cùng seed / phần / dữ liệu) + --nhin-truoc; dc60h128_p0..3 = đối
+                chứng học lại y hệt, KHÔNG nhìn trước, cùng thiết bị / cùng lượt → mo_hinh11a/
+    cham        A: kiểm thử chéo nt60h128, dc60h128 (S 8) · B: e120h128 trên phần ĐÃ học (S 8) · C: DM10 (e120h128,
+                S 32) + TKCB
     phan-tich   → results/bao_da_tuyen/tn11a/{ket_qua_11a.json, KET_QUA_11A.md}
 """
 
@@ -20,6 +24,7 @@ import os
 import pickle
 import subprocess
 import sys
+import threading
 import time
 from multiprocessing import Pool
 from pathlib import Path
@@ -37,7 +42,7 @@ CV10 = KQ / "tn10" / "kiem_thu_cheo"
 DL = GOC / "data" / "bao_da_tuyen"
 LOG = GOC / "logs"
 BO_SUNG = {"train10_k4_5": "train10", "train6_10_k4_5": "train6_10", "val_k4_5": "val", "val6_k4_5": "val6"}
-NT = "nt60h128"
+NT, DC = "nt60h128", "dc60h128"        # nhìn trước / đối chứng học lại (cùng thiết bị, cùng lượt)
 CAC_TAU = (1.1, 1.3, 1.5, float("inf"))
 TAU_GOC = 1.1
 
@@ -124,15 +129,15 @@ def lenh_bo_sung(a):
 
 # ----------------------------------------------------------------------------------------------- A1. huấn luyện
 def lenh_huan_luyen(a):
-    viec = [f for f in range(4) if not (M11 / f"{NT}_p{f}.xong").exists()]
+    viec = [(ch, f) for f in range(4) for ch in (NT, DC) if not (M11 / f"{ch}_p{f}.xong").exists()]
     LOG.mkdir(exist_ok=True)
     for i in range(0, len(viec), a.song_song):
         chay = []
-        for f in viec[i:i + a.song_song]:
-            ten = f"{NT}_p{f}"
+        for ch, f in viec[i:i + a.song_song]:
+            ten = f"{ch}_p{f}"
             lenh = [sys.executable, "-W", "ignore", "-m", "src.nhieu_luong.huan_luyen_dt", "dm", "--thi-nghiem", "14",
-                    "--ten", ten, "--them", "--nhin-truoc", "--seed", str(f), "--epochs", "60", "--H", "128",
-                    "--luong-cpu", str(a.luong_cpu), "--thiet-bi", a.thiet_bi, "--bo-phan", str(f)]
+                    "--ten", ten, "--them", *(["--nhin-truoc"] if ch == NT else []), "--seed", str(f), "--epochs", "60",
+                    "--H", "128", "--luong-cpu", str(a.luong_cpu), "--thiet-bi", a.thiet_bi, "--bo-phan", str(f)]
             print(f"  {time.strftime('%H:%M:%S')} huấn luyện {ten} → logs/tn11a_{ten}.log", flush=True)
             chay.append((ten, subprocess.Popen(lenh, cwd=GOC, stderr=subprocess.STDOUT,
                                                stdout=open(LOG / f"tn11a_{ten}.log", "w", encoding="utf-8"))))
@@ -199,15 +204,22 @@ def cv10(ch, S, tt):
     return cham(f"tn10_{ch}_S{S}", ch, S, M10, 0, False, tt)
 
 
+def cham_BC(tt):
+    """Phần không cần mô hình mới (chạy được trong lúc học nt / dc)."""
+    cham("B_e120h128_S8_da_hoc", "e120h128", 8, M10, 1, False, tt)
+    cv10("e120h128", 8, tt)
+    cham("C_e120h128_S32_tkcb", "e120h128", 32, M10, 0, True, tt)
+    cv10("e60h128", 8, tt)
+
+
 def lenh_cham(a):
-    for f in range(4):
-        if not (M11 / f"{NT}_p{f}.xong").exists():
-            raise SystemExit(f"chưa huấn luyện xong {NT}_p{f}")
+    for ch in (NT, DC):
+        for f in range(4):
+            if not (M11 / f"{ch}_p{f}.xong").exists():
+                raise SystemExit(f"chưa huấn luyện xong {ch}_p{f}")
     cham(f"A_{NT}_S8", NT, 8, M11, 0, False, a.tien_trinh)
-    cv10("e60h128", 8, a.tien_trinh)
-    cham("B_e120h128_S8_da_hoc", "e120h128", 8, M10, 1, False, a.tien_trinh)
-    cv10("e120h128", 8, a.tien_trinh)
-    cham("C_e120h128_S32_tkcb", "e120h128", 32, M10, 0, True, a.tien_trinh)
+    cham(f"A_{DC}_S8", DC, 8, M11, 0, False, a.tien_trinh)
+    cham_BC(a.tien_trinh)
 
 
 # ----------------------------------------------------------------------------------------------- phân tích
@@ -244,9 +256,10 @@ def lenh_phan_tich(a):
     tt = a.tien_trinh
     kb, ph, muc = nhan()
     nt, e60 = cham(f"A_{NT}_S8", NT, 8, M11, 0, False, tt), cv10("e60h128", 8, tt)
+    dc = cham(f"A_{DC}_S8", DC, 8, M11, 0, False, tt)
     da, e120 = cham("B_e120h128_S8_da_hoc", "e120h128", 8, M10, 1, False, tt), cv10("e120h128", 8, tt)
     C = cham("C_e120h128_S32_tkcb", "e120h128", 32, M10, 0, True, tt)
-    for X in (e60, da, e120, C):                          # cùng thứ tự bản ghi (thầy, Dijkstra phạt trùng)
+    for X in (e60, dc, da, e120, C):                          # cùng thứ tự bản ghi (thầy, Dijkstra phạt trùng)
         assert len(X) == len(nt) and np.allclose(X[:, 2:4], nt[:, 2:4]), "thứ tự bản ghi không khớp"
     G = lambda X, m: float((X[m, 0] - X[m, 2]).mean())
     ra = {"so_ban_ghi": len(nt), "thay": float(nt[:, 2].mean()), "dphat": float(nt[:, 3].mean())}
@@ -254,13 +267,15 @@ def lenh_phan_tich(a):
     nua = {"train6 (số chính)": kb >= 10_000, "train (7 cơn bão)": kb < 10_000, "cả hai": np.ones(len(kb), bool)}
 
     # A
-    d = nt[:, 0] - e60[:, 0]
+    d = nt[:, 0] - dc[:, 0]                       # so sánh chính: cùng thiết bị, cùng lượt, chỉ khác 3 đặc trưng
 
     def phan_A(m):
         dG = _bs(d[m], kb[m])
-        return {"mat_dv_nt": float(nt[m, 0].mean()), "mat_dv_e60": float(e60[m, 0].mean()), "G_nt": G(nt, m),
-                "G_e60": G(e60, m), "hieu": dG, "hieu_J": _bs(nt[m, 1] - e60[m, 1], kb[m]),
-                "phan_do_thong_tin": -dG[0] / G(e60, m), "theo_muc": [float(d[m & (muc == j)].mean()) for j in range(3)]}
+        return {"mat_dv_nt": float(nt[m, 0].mean()), "mat_dv_dc": float(dc[m, 0].mean()),
+                "mat_dv_e60": float(e60[m, 0].mean()), "G_nt": G(nt, m), "G_dc": G(dc, m), "G_e60": G(e60, m),
+                "hieu": dG, "hieu_J": _bs(nt[m, 1] - dc[m, 1], kb[m]), "phan_do_thong_tin": -dG[0] / G(dc, m),
+                "theo_muc": [float(d[m & (muc == j)].mean()) for j in range(3)],
+                "dc_tru_e60": _bs(dc[m, 0] - e60[m, 0], kb[m])}
 
     A = {k: phan_A(m) for k, m in nua.items()}
     chinh = A["train6 (số chính)"]
@@ -272,7 +287,8 @@ def lenh_phan_tich(a):
     else:
         kl, huong = "không phải chủ yếu do thông tin", "tinh chỉnh theo mất DV + đổi kiến trúc"
     ra["A"] = {"theo_nua": A, "theo_phan": [float(d[ph == f].mean()) for f in range(4)],
-               "epoch_tot_nt": epoch_tot(M11, NT), "epoch_tot_e60": epoch_tot(M10, "e60h128"),
+               "epoch_tot_nt": epoch_tot(M11, NT), "epoch_tot_dc": epoch_tot(M11, DC),
+               "epoch_tot_e60": epoch_tot(M10, "e60h128"),
                "ket_luan": kl, "huong_11b": huong}
 
     # B
@@ -322,14 +338,16 @@ def viet_md(ra):
              for d, x in ra["bo_sung"].items()) + "."), ""] if "bo_sung" in ra else []),
          "Nửa train6 (60 ngày xấu khác nhau) là số chính; nửa train là cửa sổ cách 3 giờ của 7 cơn bão (rò theo bão "
          "giữa các phần).", "",
-         "| Nửa | Mất DV e60h128 → nt60h128 | G e60h128 → nt60h128 | Hiệu mất DV | Hiệu J | Thấp / giữa / cao | "
-         "Phần do thông tin |", "|---|---|---|---|---|---|---:|"]
+         "So sánh chính: nt60h128 (nhìn trước) với dc60h128 (đối chứng học lại y hệt, cùng thiết bị, cùng lượt). "
+         "e60h128 của TN10 (CPU) chỉ để đo nhiễu học lại + thiết bị.", "",
+         "| Nửa | Mất DV dc → nt | G dc → nt | Hiệu mất DV nt − dc | Hiệu J | Thấp / giữa / cao | Phần do thông tin | "
+         "dc − e60h128 TN10 |", "|---|---|---|---|---|---|---:|---|"]
     for k, x in A["theo_nua"].items():
-        L.append(f"| {k} | {x['mat_dv_e60']:.2f} → {x['mat_dv_nt']:.2f} | {x['G_e60']:.2f} → {x['G_nt']:.2f} | "
+        L.append(f"| {k} | {x['mat_dv_dc']:.2f} → {x['mat_dv_nt']:.2f} | {x['G_dc']:.2f} → {x['G_nt']:.2f} | "
                  f"{_ci(x['hieu'])} | {_ci(x['hieu_J'], 3)} | {', '.join(f'{v:+.2f}' for v in x['theo_muc'])} | "
-                 f"{x['phan_do_thong_tin'] * 100:.0f}% |")
-    L += ["", f"- Theo phần (cả hai nửa): {', '.join(f'{x:+.2f}' for x in A['theo_phan'])}. Epoch tốt nhất: e60h128 "
-          f"{A['epoch_tot_e60']}, nt60h128 {A['epoch_tot_nt']}.",
+                 f"{x['phan_do_thong_tin'] * 100:.0f}% | {_ci(x['dc_tru_e60'])} |")
+    L += ["", f"- Theo phần (cả hai nửa): {', '.join(f'{x:+.2f}' for x in A['theo_phan'])}. Epoch tốt nhất: dc60h128 "
+          f"{A['epoch_tot_dc']}, nt60h128 {A['epoch_tot_nt']}, e60h128 TN10 {A['epoch_tot_e60']}.",
           f"- **Kết luận (nửa train6, cận dưới): {A['ket_luan']}.** Hướng TN11b: {A['huong_11b']}.", "",
           "## B. G trên tình huống đã học (e120h128, S = 8)", "",
           "| Nửa | G đã học | G kiểm thử chéo | Tỉ số | Hiệu | Đọc |", "|---|---:|---:|---:|---|---|"]
@@ -349,11 +367,85 @@ def viet_md(ra):
     (RA / "KET_QUA_11A.md").write_text("\n".join(L), encoding="utf-8")
 
 
+# ----------------------------------------------------------------------------------------------- chế độ tối đa
+def tong_ram_gb():
+    try:
+        import ctypes
+
+        class MS(ctypes.Structure):
+            _fields_ = [("dwLength", ctypes.c_ulong), ("dwMemoryLoad", ctypes.c_ulong)] + \
+                       [(n, ctypes.c_ulonglong) for n in ("tong", "trong", "a", "b", "c", "d", "e")]
+        m = MS()
+        m.dwLength = ctypes.sizeof(MS)
+        ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m))
+        return m.tong / 2**30
+    except Exception:                                  # Linux / macOS
+        return os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / 2**30
+
+
+def tai_nguyen():
+    """Chia việc theo máy. RAM đo trên máy người viết: tiến trình bổ sung ~3,9 GB, tiến trình chấm ~0,3–0,5 GB; học:
+    ~1,2 GB (CPU), ~2,5 GB khi dùng GPU (thêm thư viện CUDA). VRAM ~0,9 GB mỗi mô hình (ngữ cảnh CUDA + mạng H 128)."""
+    cpu, ram = os.cpu_count() or 4, tong_ram_gb()
+    gpu, vram, ten = False, 0.0, "không có"
+    try:
+        import torch
+        if torch.cuda.is_available():
+            pr = torch.cuda.get_device_properties(0)
+            gpu, vram, ten = True, pr.total_memory / 2**30, pr.name
+    except Exception:
+        pass
+    du = ram - 4                                                         # chừa cho hệ điều hành
+    p = {"cpu": cpu, "ram_gb": round(ram, 1), "gpu": ten, "vram_gb": round(vram, 1),
+         "bo_sung": max(1, min(cpu, int(du // 4)))}
+    if gpu:
+        p.update(song_song=max(1, min(8, int(vram // 0.9), int(du // 2.5))), luong_cpu=2, thiet_bi="auto")
+        ram_hl = p["song_song"] * 2.5
+    else:
+        p.update(song_song=max(1, min(8, cpu // 5, int(du // 1.5))), thiet_bi="cpu")
+        p["luong_cpu"] = max(1, cpu // p["song_song"])
+        ram_hl = p["song_song"] * 1.5
+    p["cham_kem"] = max(1, min(cpu - p["song_song"] * p["luong_cpu"], int((du - ram_hl) // 0.8)))  # cùng lúc với học
+    p["cham"] = max(1, min(cpu, int(du // 0.8)))
+    return p
+
+
+def lenh_toi_da(a):
+    p = tai_nguyen()
+    print(f"máy: {p['cpu']} luồng CPU, {p['ram_gb']} GB RAM, GPU: {p['gpu']} ({p['vram_gb']} GB)", flush=True)
+    print(f"→ bổ sung {p['bo_sung']} tiến trình; học {p['song_song']} mô hình cùng lúc × {p['luong_cpu']} luồng "
+          f"({p['thiet_bi']}); chấm kèm {p['cham_kem']}, chấm sau {p['cham']} tiến trình", flush=True)
+    if p["thiet_bi"] == "cpu":
+        print('  (không thấy GPU CUDA — kiểm tra: python -c "import torch; print(torch.cuda.is_available())")', flush=True)
+    a.tien_trinh = p["bo_sung"]
+    lenh_bo_sung(a)
+    hl, loi = argparse.Namespace(song_song=p["song_song"], luong_cpu=p["luong_cpu"], thiet_bi=p["thiet_bi"]), []
+
+    def hoc():
+        try:
+            lenh_huan_luyen(hl)
+        except BaseException as e:                     # SystemExit khi một mô hình lỗi
+            loi.append(e)
+
+    th = threading.Thread(target=hoc)
+    th.start()
+    print(f"=== chấm B, C trên CPU trong lúc học ({time.strftime('%H:%M:%S')})", flush=True)
+    cham_BC(p["cham_kem"])
+    th.join()
+    if loi:
+        raise SystemExit(f"huấn luyện lỗi: {loi[0]} — chạy lại đúng lệnh (mô hình đã xong được giữ); nếu lỗi GPU: "
+                         f"python -m scripts.tn11a tat-ca --thiet-bi cpu")
+    a.tien_trinh = p["cham"]
+    print(f"=== chấm A ({time.strftime('%H:%M:%S')})", flush=True)
+    lenh_cham(a)
+    lenh_phan_tich(a)
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
-    ap.add_argument("viec", choices=["bo-sung", "huan-luyen", "cham", "phan-tich", "tat-ca"])
+    ap.add_argument("viec", choices=["bo-sung", "huan-luyen", "cham", "phan-tich", "tat-ca", "toi-da"])
     ap.add_argument("--tien-trinh", type=int, default=4, help="số tiến trình bổ sung / chấm")
     ap.add_argument("--song-song", type=int, default=2, help="số mô hình huấn luyện cùng lúc")
     ap.add_argument("--luong-cpu", type=int, default=4, help="luồng PyTorch mỗi mô hình")
@@ -361,7 +453,7 @@ def main():
     a = ap.parse_args()
     buoc = {"bo-sung": [lenh_bo_sung], "huan-luyen": [lenh_huan_luyen], "cham": [lenh_cham],
             "phan-tich": [lenh_phan_tich],
-            "tat-ca": [lenh_bo_sung, lenh_huan_luyen, lenh_cham, lenh_phan_tich]}[a.viec]
+            "tat-ca": [lenh_bo_sung, lenh_huan_luyen, lenh_cham, lenh_phan_tich], "toi-da": [lenh_toi_da]}[a.viec]
     for f in buoc:
         print(f"=== {f.__name__} {time.strftime('%Y-%m-%d %H:%M:%S')}", flush=True)
         f(a)

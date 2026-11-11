@@ -51,10 +51,12 @@ TN10 thấy trên bộ kiểm tra rằng DM10 thuần tốt hơn Lai(DM10); ở 
   - Vẫn giữ đặc trưng này. Tỉ lệ khác 0 trên tập học được báo ở `tn11a/bo_sung.json`.
 - **Mô hình:** `nt60h128` = đúng cấu hình e60h128 của TN10 (60 epoch, H = 128, cùng seed = phần, cùng dữ liệu, cùng val),
   chỉ thêm 3 đặc trưng trên. Kiểm thử chéo 4 phần, S = 8.
-- **Đối chứng:** e60h128 S = 8 của TN10 (G = 1,65), cùng máy, cùng phần.
+- **Đối chứng:** `dc60h128` là e60h128 học lại y hệt (cùng seed, phần, dữ liệu), KHÔNG có 3 đặc trưng nhìn trước,
+  cùng thiết bị và cùng lượt với nt60h128. Như vậy hiệu chỉ đến từ 3 đặc trưng, kể cả khi học trên GPU.
+  - e60h128 của TN10 (CPU, G = 1,65) chỉ dùng để đo nhiễu học lại + thiết bị (dc − e60h128).
 - **Đại lượng:**
-  - ΔG = mất DV(nt60h128) − mất DV(e60h128), ghép theo tình huống;
-  - phần do thông tin = −ΔG / G(e60h128).
+  - ΔG = mất DV(nt60h128) − mất DV(dc60h128), ghép theo tình huống;
+  - phần do thông tin = −ΔG / G(dc60h128).
 - **Luật đọc:**
 
   | Phần do thông tin, và CI cận trên của ΔG < 0 | Kết luận | Hướng TN11b |
@@ -89,4 +91,8 @@ TN10 thấy trên bộ kiểm tra rằng DM10 thuần tốt hơn Lai(DM10); ở 
 
 ## Thay đổi
 
-(chưa có)
+1. **11/11/2026, trước khi chạy:**
+   - Thêm chế độ `toi-da`: tự dò máy, học trên GPU, chấm B, C trên CPU cùng lúc với lúc học.
+   - Học trên GPU không cùng đường tính với e60h128 của TN10 (CPU). Vì vậy thêm đối chứng dc60h128 học cùng thiết bị,
+     cùng lượt, và đổi so sánh chính của A từ e60h128 (TN10) sang dc60h128.
+   - Luật đọc không đổi.
