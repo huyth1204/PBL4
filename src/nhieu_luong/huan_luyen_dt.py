@@ -54,6 +54,8 @@ _t64 = lambda ds: tuple(d.replace("_k4_5", "_t64_k4_5") for d in ds)
 THI_NGHIEM.update({10: {"train": _HA, "val": _VA, "thu_muc": _M10}, 11: {"train": _t64(_HA), "val": _VA, "thu_muc": _M10},
                    12: {"train": _HA + _HB, "val": _VA + _VB, "thu_muc": _M10},
                    13: {"train": _t64(_HA + _HB), "val": _VA + _VB, "thu_muc": _M10}})
+# thí nghiệm 11a (TIEU_CHI_11A.md): cùng dữ liệu / phần với 10, mô hình "nhìn trước" (--nhin-truoc) lưu riêng
+THI_NGHIEM[14] = {"train": _HA, "val": _VA, "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh11a"}
 SO_PHAN, HAT_PHAN = 4, 10
 _SO_CUA_SO_GOC = {"train": 59, "train6": 60}
 
@@ -241,7 +243,11 @@ if __name__ == "__main__":
     ap.add_argument("--H", type=int, default=64, help="thí nghiệm 10: độ rộng mạng")
     ap.add_argument("--bo-phan", type=int, default=None, help="thí nghiệm 10: phần (0..3) giữ lại của kiểm thử chéo")
     ap.add_argument("--thiet-bi", default="cpu", choices=["cpu", "auto", "cuda"], help="thí nghiệm 10: auto = GPU nếu có")
+    ap.add_argument("--nhin-truoc", action="store_true",
+                    help="thí nghiệm 11a: thêm 3 đặc trưng tương lai thật (chẩn đoán; cần scripts.tn11a bo-sung trước)")
     a = ap.parse_args()
+    if a.nhin_truoc:
+        a.them = 2
     if a.viec == "chon-buoc":
         chon_buoc(a.thi_nghiem, a.ten or "dm")
     else:

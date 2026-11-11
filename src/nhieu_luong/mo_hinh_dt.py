@@ -30,7 +30,16 @@ KQ = GOC / "results" / "bao_da_tuyen" / "mo_hinh"
 P = SO_KHO
 SO_UV_TINH, SO_UV_DONG, SO_LK_TINH, SO_LK_DONG = 15, 9, 18, 3
 DAC_TRUNG_6 = ("giong_lan_can_uav", "giong_1h_uav", "cape_uav")      # thí nghiệm 6: giông quanh UAV
+# thí nghiệm 11a (TIEU_CHI_11A.md): thông tin TƯƠNG LAI THẬT mà thế giới của thầy dùng — chỉ để chẩn đoán, không triển khai
+NHIN_TRUOC_11 = ("nt_mua", "nt_giong_dat", "nt_uav_tat")
 VO_CUC = -1e9
+
+
+def dac_trung_them(them):
+    """Đặc trưng cạnh thêm sau 11 đặc trưng gốc: False → không; True → 3 đặc trưng TN6; 2 → thêm 3 đặc trưng nhìn trước."""
+    if not them:
+        return ()
+    return DAC_TRUNG_6 + (NHIN_TRUOC_11 if them == 2 else ())
 
 
 def _den(x, dev):
@@ -58,7 +67,7 @@ class LoDT:
         lk = np.zeros((4, n, E), np.float32)
         lk[1] = 1.0
         em = np.zeros((n, E), bool)
-        ftc = np.zeros((n, E, 11 + len(DAC_TRUNG_6) * them), np.float32)
+        ftc = np.zeros((n, E, 11 + len(dac_trung_them(them))), np.float32)
         fuv = np.zeros((n, K, P, 5), np.float32)
         for b, x in enumerate(ds):
             e_ = len(x.U)
@@ -77,9 +86,8 @@ class LoDT:
             ftc[b, :e_, 6] = np.clip(d["dR"], -20, 20) / 10
             ftc[b, :e_, 7] = d["gust"] / 15
             ftc[b, :e_, 8], ftc[b, :e_, 9], ftc[b, :e_, 10] = d["giong_dat"], d["giong_uav"], d["mat_dat"]
-            if them:
-                for j, k in enumerate(DAC_TRUNG_6):
-                    ftc[b, :e_, 11 + j] = d[k]
+            for j, k in enumerate(dac_trung_them(them)):
+                ftc[b, :e_, 11 + j] = d[k]
         rep = lambda a: _den(torch.from_numpy(np.repeat(a, lap, axis=0)) if lap > 1 else torch.from_numpy(a), dev)
         self.inc, self.hop_le, self.fm, self.lam, self.m = rep(inc), rep(hl), rep(fm), rep(lam), rep(m)
         self.dmin, self.drange = rep(dmin), rep(drange)
@@ -142,10 +150,10 @@ class LoDT:
 class MangDT(nn.Module):
     def __init__(self, H=64, so_lop=3, t_dim=8, them=False):
         super().__init__()
-        self.H, self.t_dim, self.them = H, t_dim, bool(them)
+        self.H, self.t_dim, self.them = H, t_dim, (2 if them == 2 else bool(them))     # 2: TN11a nhìn trước
         self.cau_hinh = dict(H=H, so_lop=so_lop, t_dim=t_dim, them=self.them)
         self.vao_uv = mlp(SO_UV_TINH + SO_UV_DONG + t_dim, H, H)
-        self.vao_lk = mlp(SO_LK_TINH + len(DAC_TRUNG_6) * self.them + SO_LK_DONG, H, H)
+        self.vao_lk = mlp(SO_LK_TINH + len(dac_trung_them(self.them)) + SO_LK_DONG, H, H)
         self.gui = nn.ModuleList([nn.Linear(H, H) for _ in range(so_lop)])
         self.cap_lk = nn.ModuleList([mlp(2 * H, H, H) for _ in range(so_lop)])
         self.cap_uv = nn.ModuleList([mlp(4 * H, H, H) for _ in range(so_lop)])
