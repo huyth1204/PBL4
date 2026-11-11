@@ -37,6 +37,7 @@ from src.nhieu_luong import tao_du_lieu_rr as td
 from src.nhieu_luong import the_gioi_rr as tg
 from src.nhieu_luong.bai_toan import MUC_TAI
 from src.nhieu_luong.bai_toan_rr import DELTA, TUOI
+from src.ngau_nhien.thoi_tiet import GIONG
 
 GOC = Path(__file__).resolve().parents[2]
 RA = GOC / "data" / "bao_da_tuyen"
@@ -157,7 +158,7 @@ def _mot_cua_so(job):
     if Path(tep).exists():
         return tep, 0, 0.0
     g, p = td._g, td._p                    # p: cấu hình hợp đồng của bảng rủi ro — bộ định tuyến luôn dùng p này
-    tt, p_sim = moi_truong(tap)            # thế giới mô phỏng (thí nghiệm 7a: đã stress)
+    tt, p_sim = moi_truong(tap, i)         # thế giới mô phỏng (thí nghiệm 7a / 11: đã stress)
     if mo_hinh:
         _nap_mo_hinh()
     t_bd = time.time()
@@ -276,6 +277,43 @@ TAP_10 = {"train10": ("train", 32, True), "train6_10": ("train6", 32, True),
           "train_b10_t64": ("train_b", 64, False), "train6_b10_t64": ("train6_b", 64, False),
           "val10_t32": ("val", 32, True), "val10_t64": ("val", 64, True)}
 TAP_TRAIN |= {t for t, (_, _, cham) in TAP_10.items() if not cham}          # chỉ nhãn → không lưu thế giới chấm
+# Thí nghiệm 11 (results/bao_da_tuyen/TIEU_CHI_11.md): dữ liệu CỰC ĐOAN kiểu đỉnh bão — mưa, gió giật và xác suất sét
+# ngắt trạm (p_set) × k, k ~ U(1,3; 1,5) bốc RIÊNG từng cửa sổ (default_rng([SEED_11, thứ tự tập, kb])). Như TN7a, bộ định
+# tuyến không biết k (bảng rủi ro dùng tham số hợp đồng td._p) nhưng thấy quan sát mưa / gió đã tăng.
+#   x11: tập học (thầy + thế giới chấm, cho kiểm thử chéo) — SO_X11 cửa sổ đỉnh (≈ 5% của 119 cửa sổ train + train6),
+#        mỗi cơn bão / ngày tối đa một cửa sổ, seed mới; cùng phần kiểm thử chéo với cửa sổ nguồn.
+#   xc11, xy11: bộ kiểm tra — đúng cửa sổ của c6 / yagi5, seed mới, k riêng từng cửa sổ.
+TAP_11 = {"x11": "train", "xc11": "c6", "xy11": "yagi5"}
+HE_SO_11, SEED_11, SO_X11 = (1.3, 1.5), 1100, 6
+
+
+def he_so_11(tap, kb):
+    return float(np.random.default_rng([SEED_11, list(TAP_11).index(tap), int(kb)]).uniform(*HE_SO_11))
+
+
+def do_du_doi(tt, h0, so_gio):
+    """Độ dữ dội của cửa sổ [h0, h0 + so_gio): đỉnh theo giờ của trung bình các điểm (mưa / 20 + gió giật / 25, mỗi phần
+    chặn ở 1, + có giông)."""
+    gio = slice(h0, h0 + so_gio)
+    x = np.minimum(tt.precip[gio] / 20, 1) + np.minimum(tt.gust[gio] / 25, 1) + np.isin(tt.code[gio], GIONG)
+    return float(x.mean(1).max())
+
+
+def cua_so_x11():
+    """[(tên, h0, seed, (tập nguồn, kb nguồn), độ dữ dội)] — SO_X11 cửa sổ dữ dội nhất của train + train6, mỗi nhóm (cơn
+    bão ở train, ngày ở train6) tối đa một cửa sổ. Tất định."""
+    so_gio = int(np.ceil(td._g.T * td._p.dt_s / 3600)) + 1
+    ung = []
+    for nguon in ("train", "train6"):
+        for kb, (ten, h0, _) in enumerate(cac_cua_so_tap(nguon)):
+            nhom = ten if nguon == "train" else ten[:14]                    # 'soulik_2024' / 'xau_2025-05-14'
+            ung.append((do_du_doi(td._tt, h0, so_gio), nhom, nguon, kb, ten, h0))
+    ra, da = [], set()
+    for dd, nhom, nguon, kb, ten, h0 in sorted(ung, key=lambda x: (-x[0], x[2], x[3])):
+        if nhom not in da and len(ra) < SO_X11:
+            da.add(nhom)
+            ra.append((f"cd_{ten}", h0, 1_100_000 + len(ra), (nguon, kb), dd))
+    return ra
 THOI_TIET_KHI_HAU = GOC / "data" / "thoi_tiet_vn_2017_2021_1.npz"
 _moi_truong = {}
 
@@ -300,12 +338,21 @@ def loai_uav(g=None):
     return tuple((u, UAV_12["nguong_12"] if u in loai_12 else UAV_12["nguong_15"]) for u in uav)
 
 
-def moi_truong(tap):
+def moi_truong(tap, kb=None):
     """(thời tiết, tham số) để MÔ PHỎNG thế giới của tập `tap`: thường là td._tt, td._p; tập 7a: mưa × hệ số, gió giật
     × hệ số, UAV / trạm mặt đất dễ hỏng hơn; tập 8 (thế giới B): thời tiết thật, UAV hai loại, hỏng theo khoảng cách
     tới giông; tập 9 năm mới: thời tiết thật 2017–2021, tham số như thế giới A."""
     if tap in NAM_9:
         return thoi_tiet_9(), td._p
+    if tap in TAP_11:                                  # thí nghiệm 11: k riêng từng cửa sổ
+        if kb is None:
+            raise ValueError(f"{tap}: cần kb để bốc hệ số cực đoan")
+        if (tap, kb) not in _moi_truong:
+            k = he_so_11(tap, kb)
+            tt = copy.copy(td._tt)
+            tt.precip, tt.gust = td._tt.precip * k, td._tt.gust * k
+            _moi_truong[(tap, kb)] = (tt, dataclasses.replace(td._p, p_set=min(1.0, td._p.p_set * k)))
+        return _moi_truong[(tap, kb)]
     if tap in TAP_10:
         return moi_truong(TAP_10[tap][0])
     if tap in TAP_8:
@@ -438,6 +485,10 @@ def cac_cua_so_tap(tap):
     """[(tên, h0, seed)] — thêm các tập của thí nghiệm 5, 6 (seed mới) vào các tập cũ."""
     if tap in TAP_9:
         return cua_so_9(tap)
+    if tap == "x11":
+        return [x[:3] for x in cua_so_x11()]
+    if tap in TAP_11:                                  # xc11 / xy11: cửa sổ của bộ kiểm tra gốc, seed mới
+        return [(ten, h0, seed + SEED_11) for ten, h0, seed in cac_cua_so_tap(TAP_11[tap])]
     if tap in TAP_10:
         return cac_cua_so_tap(TAP_10[tap][0])
     if tap in TAP_8:                                   # thí nghiệm 8: đúng cửa sổ + seed của tập gốc (thế giới A)
@@ -464,7 +515,7 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tap", choices=["train", "val", "test", *HINH_HOC, *TAP_8, *TAP_10], required=True)
+    ap.add_argument("--tap", choices=["train", "val", "test", *HINH_HOC, *TAP_8, *TAP_10, *TAP_11], required=True)
     ap.add_argument("--K", default="4-5")
     ap.add_argument("--buoc-moc", type=int, default=None, help="lấy mỗi n mốc (mặc định như thí nghiệm 3)")
     ap.add_argument("--tien-trinh", type=int, default=3)
@@ -475,6 +526,7 @@ def main():
     td._khoi_tao_nhe()
     goc = TAP_10[a.tap][0] if a.tap in TAP_10 else a.tap  # thí nghiệm 10: như tập gốc
     goc = TAP_8.get(goc, goc)                             # thí nghiệm 8: mốc / tải như tập gốc của thế giới A
+    goc = TAP_11.get(goc, goc)                            # thí nghiệm 11: mốc / tải như tập gốc
     moc = td.cac_moc(HINH_HOC.get(goc, goc))
     if a.buoc_moc:
         moc = moc[::a.buoc_moc]

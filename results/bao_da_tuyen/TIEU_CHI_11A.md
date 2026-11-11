@@ -96,3 +96,7 @@ TN10 thấy trên bộ kiểm tra rằng DM10 thuần tốt hơn Lai(DM10); ở 
    - Học trên GPU không cùng đường tính với e60h128 của TN10 (CPU). Vì vậy thêm đối chứng dc60h128 học cùng thiết bị,
      cùng lượt, và đổi so sánh chính của A từ e60h128 (TN10) sang dc60h128.
    - Luật đọc không đổi.
+2. **11/11/2026, sau khi chạy (ghi nhận lỗi code, không đổi luật):**
+   - `nhan()` bản đầu không xử lý hệ số tải liên tục của nửa train6. Máy chạy đã sửa theo cách chia dải tải
+     [0,5; 0,75) / [0,75; 1) / [1; 1,3]; repo sửa theo đúng cách đó.
+   - Chỉ ảnh hưởng cột "thấp / giữa / cao". Không ảnh hưởng luật A, B, C.

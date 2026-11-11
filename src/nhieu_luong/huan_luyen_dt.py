@@ -19,6 +19,7 @@ import argparse
 import glob
 import json
 import math
+import os
 import pickle
 import sys
 import time
@@ -31,7 +32,7 @@ from src.nhieu_luong import da_tuyen as dt
 from src.nhieu_luong import mo_hinh_dt as md
 
 GOC = Path(__file__).resolve().parents[2]
-DL = GOC / "data" / "bao_da_tuyen"
+DL = Path(os.environ.get("PBL4_DL", GOC / "data" / "bao_da_tuyen"))           # TN11: đổi được khi chạy thử
 BUOC, S = (3, 5, 10), 8
 THI_NGHIEM = {4: {"train": ("train_k4_5",), "val": ("val_k4_5",), "thu_muc": md.KQ},
               6: {"train": ("train_k4_5", "train6_k4_5"), "val": ("val_k4_5", "val6_k4_5"),
@@ -56,6 +57,12 @@ THI_NGHIEM.update({10: {"train": _HA, "val": _VA, "thu_muc": _M10}, 11: {"train"
                    13: {"train": _t64(_HA + _HB), "val": _VA + _VB, "thu_muc": _M10}})
 # thí nghiệm 11a (TIEU_CHI_11A.md): cùng dữ liệu / phần với 10, mô hình "nhìn trước" (--nhin-truoc) lưu riêng
 THI_NGHIEM[14] = {"train": _HA, "val": _VA, "thu_muc": GOC / "results" / "bao_da_tuyen" / "mo_hinh11a"}
+# thí nghiệm 11 (TIEU_CHI_11.md): 15 = A + 5% cực đoan (x11), 16 = chỉ A (đối chứng). Phần kiểm thử chéo theo NHÓM (cơn bão /
+# ngày, đọc từ tn11/phan.json — không rò theo bão như phần theo cửa sổ của TN10); bản ghi lỗi (kiem_tra_du_lieu) bị loại.
+_KQ11 = Path(os.environ.get("PBL4_KQ", GOC / "results" / "bao_da_tuyen"))      # đổi được khi chạy thử
+_M11, _PHAN11 = _KQ11 / "mo_hinh11", _KQ11 / "tn11" / "phan.json"
+THI_NGHIEM.update({15: {"train": _HA + ("x11_k4_5",), "val": _VA, "thu_muc": _M11, "phan": _PHAN11, "sach": True},
+                   16: {"train": _HA, "val": _VA, "thu_muc": _M11, "phan": _PHAN11, "sach": True}})
 SO_PHAN, HAT_PHAN = 4, 10
 _SO_CUA_SO_GOC = {"train": 59, "train6": 60}
 
@@ -67,6 +74,12 @@ def phan_cua(thu_muc, kb):
     n = _SO_CUA_SO_GOC[goc]
     hv = np.random.default_rng(HAT_PHAN + (goc == "train6")).permutation(n)
     return int(hv[int(kb)] % SO_PHAN)
+def phan_tu_tep(tep):
+    """Thí nghiệm 11: (thư mục, kb) → phần, theo bảng đã lưu {thư mục: {kb: phần}}."""
+    bang = json.loads(Path(tep).read_text(encoding="utf-8"))
+    return lambda d, kb: int(bang[d][str(int(kb))])
+
+
 GAP_DOI = ("train7s_k4_5", "train7x_k4_5")      # thí nghiệm 7b: thêm vào để có mốc 200%
 
 
@@ -124,7 +137,7 @@ def chia_lo(ds, B, rng):
 
 
 def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, them=False, ti_le=1.0, gap_doi=False,
-               luong=1, moi_epoch=False, bo_phan=None, thiet_bi="cpu"):
+               luong=1, moi_epoch=False, bo_phan=None, thiet_bi="cpu", dung_som=0):
     torch.set_num_threads(luong)
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
@@ -132,9 +145,15 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
     ra, ten = cfg["thu_muc"], ten or kieu
     ra.mkdir(parents=True, exist_ok=True)
     cac_train = cfg["train"] + (GAP_DOI if gap_doi else ())
-    tr = [(r["gon"], r["nhan"]) for d in cac_train for r in nap_thu_muc(d, ti_le)
-          if bo_phan is None or phan_cua(d, r["kb"]) != bo_phan]           # TN10: bỏ phần giữ lại của kiểm thử chéo
-    cac_val = [nap_thu_muc(d) for d in cfg["val"]]
+    pc = phan_tu_tep(cfg["phan"]) if "phan" in cfg else phan_cua                # TN11: phần theo nhóm bão / ngày
+    if cfg.get("sach"):                                                         # TN11: loại bản ghi lỗi
+        from src.nhieu_luong.kiem_tra_du_lieu import loi_ban_ghi
+        sach = lambda rs, nhan: [r for r in rs if not loi_ban_ghi(r, can_nhan=nhan)]
+    else:
+        sach = lambda rs, nhan: rs
+    tr = [(r["gon"], r["nhan"]) for d in cac_train for r in sach(nap_thu_muc(d, ti_le), True)
+          if bo_phan is None or pc(d, r["kb"]) != bo_phan]                # TN10: bỏ phần giữ lại của kiểm thử chéo
+    cac_val = [sach(nap_thu_muc(d), True) for d in cfg["val"]]
     va_nho = val_tron(cac_val)
     vl = [(r["gon"], r["nhan"]) for va in cac_val for r in va]
     print(f"{ten} ({kieu}, đặc trưng mới: {them}, tỉ lệ {ti_le}, gấp đôi {gap_doi}): train {len(tr)}, val {len(vl)}",
@@ -145,7 +164,7 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
     so_lo = math.ceil(len(tr) / B) * epochs
     sch = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: 0.01 + 0.99 * 0.5 * (1 + math.cos(math.pi * min(s / so_lo, 1))))
     mat = md.mat_mat_dm if kieu == "dm" else md.mat_mat_softmax
-    nk, tot, t0 = [], np.inf, time.time()
+    nk, tot, ep_tot, t0 = [], np.inf, 0, time.time()
     for ep in range(epochs):
         L = []
         for b in chia_lo(tr, B, rng):
@@ -176,10 +195,16 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
         if moi_epoch:                                   # thí nghiệm 9: đường học trên các bậc độ lạ
             torch.save(ck, ra / f"{ten}_ep{ep + 1:02d}.pt")
         if J < tot:
-            tot = J
+            tot, ep_tot = J, ep + 1
             torch.save(ck, ra / f"{ten}.pt")
-        json.dump({"nhat_ky": nk, "tot_nhat_J_val": tot}, open(ra / f"{ten}_nhat_ky.json", "w", encoding="utf-8"),
-                  ensure_ascii=False, indent=1)
+        dung = bool(dung_som) and ep + 1 - ep_tot >= dung_som and ep + 1 < epochs     # TN11: dừng sớm theo J val
+        json.dump({"nhat_ky": nk, "tot_nhat_J_val": tot, "epoch_tot": ep_tot, "so_epoch_toi_da": epochs,
+                   "dung_som": dung_som, "dung_som_o": ep + 1 if dung else None},
+                  open(ra / f"{ten}_nhat_ky.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        if dung:
+            print(f"  dừng sớm ở epoch {ep + 1}: J val không tốt lên trong {dung_som} epoch (tốt nhất epoch {ep_tot})",
+                  flush=True)
+            break
     (ra / f"{ten}.xong").write_text(time.strftime("%Y-%m-%d %H:%M:%S"))
 
 
@@ -243,6 +268,7 @@ if __name__ == "__main__":
     ap.add_argument("--H", type=int, default=64, help="thí nghiệm 10: độ rộng mạng")
     ap.add_argument("--bo-phan", type=int, default=None, help="thí nghiệm 10: phần (0..3) giữ lại của kiểm thử chéo")
     ap.add_argument("--thiet-bi", default="cpu", choices=["cpu", "auto", "cuda"], help="thí nghiệm 10: auto = GPU nếu có")
+    ap.add_argument("--dung-som", type=int, default=0, help="thí nghiệm 11: dừng nếu J val không tốt lên sau N epoch")
     ap.add_argument("--nhin-truoc", action="store_true",
                     help="thí nghiệm 11a: thêm 3 đặc trưng tương lai thật (chẩn đoán; cần scripts.tn11a bo-sung trước)")
     a = ap.parse_args()
@@ -253,4 +279,4 @@ if __name__ == "__main__":
     else:
         huan_luyen(a.viec, epochs=a.epochs, H=a.H, tn=a.thi_nghiem, ten=a.ten, them=a.them, ti_le=a.ti_le,
                    gap_doi=a.gap_doi, seed=a.seed, luong=a.luong_cpu, moi_epoch=a.moi_epoch, bo_phan=a.bo_phan,
-                   thiet_bi=a.thiet_bi)
+                   thiet_bi=a.thiet_bi, dung_som=a.dung_som)
