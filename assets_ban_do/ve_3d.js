@@ -384,8 +384,149 @@ function updateHud(fi){ if (fi === lastFi) return; lastFi = fi; const f = F[fi];
   $('alerts').innerHTML = al.join('');
   }
 
+/* ---------- chọn NGUỒN / ĐÍCH để xem đường đi ---------- */
+let SRC_CHON = -1, DST_CHON = -1;     // -1 = không lọc (dùng mặc định M.src/M.dst)
+/* Hai danh sách chọn, đúng vai trò trong dữ liệu:
+   - NGUỒN: nút điểm cuối (user + gateway) — bộ sinh nhãn chỉ chọn src từ đây.
+   - ĐÍCH : chỉ gateway (tao_tinh_huong luôn đặt đích ở gateway).
+   Muốn cho chọn user làm đích thì đổi GATEWAY_ONLY = false. */
+const GATEWAY_ONLY = true;
+function nutTheoLoai(loai){
+  const ds = [];
+  M.kinds.forEach((k, i) => { if (loai.includes(k)) ds.push(i); });
+  return ds.sort((a, b) => vn(M.names[a]).localeCompare(vn(M.names[b]), "vi"));
+}
+const nutNguon = () => nutTheoLoai([3, 4]);
+const nutDich = () => nutTheoLoai(GATEWAY_ONLY ? [3] : [3, 4]);
 /* Bộ chọn luồng cập nhật mỗi frame (vì đổi luồng cần vẽ lại ngay). */
-function capNhatLuong(fi){ napChonLuong(fi); }
+function capNhatLuong(fi){ napChonLuong(fi); napChonNut(fi); }
+
+/* Đổ 2 ô chọn nguồn/đích; chỉ dựng lại khi danh sách nút đổi. */
+function napChonNut(fi){
+  const sBox = document.getElementById('selNguon'), dBox = document.getElementById('selDich');
+  if (!sBox || !dBox) return;
+  const dsS = nutNguon(), dsD = nutDich();
+  const khoa = dsS.join(',') + '|' + dsD.join(',');
+  if (sBox.dataset.khoa !== khoa){
+    sBox.dataset.khoa = dBox.dataset.khoa = khoa;
+    const opt = (ds, sel) => ds.map(x => '<option value="' + x + '"' + (x === sel ? ' selected' : '') + '>' +
+      vn(M.names[x]) + '</option>').join('');
+    sBox.innerHTML = '<option value="-1">— nguồn —</option>' + opt(dsS, SRC_CHON);
+    dBox.innerHTML = '<option value="-1">— đích —</option>' + opt(dsD, DST_CHON);
+    sBox.value = String(SRC_CHON); dBox.value = String(DST_CHON);
+    sBox.onchange = e => { SRC_CHON = parseInt(e.target.value, 10); lastFi = -1; };
+    dBox.onchange = e => { DST_CHON = parseInt(e.target.value, 10); lastFi = -1; };
+  }
+}
+
+/* Giải mã bảng pred của một khung (base64 float32 N x N) -> mảng số. */
+const _predCache = {};
+function predCua(fi){
+  const seg = F[fi] && F[fi].dmTuyen;
+  if (!seg) return null;
+  const k = String(seg.t);
+  if (k in _predCache) return _predCache[k];
+  const blob = (typeof PRED !== 'undefined') ? PRED[k] : null;
+  if (!blob){ _predCache[k] = null; return null; }
+  const bin = atob(blob), u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  _predCache[k] = new Float32Array(u8.buffer);
+  return _predCache[k];
+}
+/* Đường Dijkstra s -> d dựng từ bảng pred (dùng khi dữ liệu không có tuyến cặp đó).
+   Trả {nut, loai:'dijkstra', tong} hoặc null nếu không tới được. */
+function duongTuPred(fi, a, b){
+  const pr = predCua(fi);
+  if (!pr) return null;
+  const N = M.names.length;
+  const at = (x, y) => pr[x * N + y];
+  if (!(at(a, b) >= 0)) return null;            // -9999 = không tới được (W đã tính cả nguồn user)
+  const nut = [b];
+  let q = b, chan = 0;
+  while (q !== a && chan++ < N){
+    const truoc = at(a, q);
+    if (!(truoc >= 0) || truoc === q) return null;
+    q = truoc; nut.push(q);
+  }
+  if (q !== a) return null;
+  nut.reverse();
+  return { nut, loai: 'dijkstra', tuPred: true };
+}
+/* Đường đi từ nguồn -> đích: ưu tiên tuyến có trong dữ liệu (DM/dphat/dijkstra/thầy),
+   nếu không có thì dựng bằng pred Dijkstra của khung. */
+function timDuong(fi, a, b){
+  const seg = F[fi] && F[fi].dmTuyen;
+  for (const loai of ["dm", "dphat", "dijkstra", "thay"]){
+    for (const l of (seg && seg[loai]) || []){
+      const n = l.nut || [];
+      if (n.length < 2) continue;
+      if (n[0] === a && n[n.length - 1] === b) return { nut: n, loai, luong: int_luong(l) };
+      if (n[0] === b && n[n.length - 1] === a) return { nut: n.slice().reverse(), loai, luong: int_luong(l), nguoc: true };
+    }
+  }
+  return duongTuPred(fi, a, b);
+}
+/* Vẽ đường cho cặp NGUỒN/ĐÍCH đang chọn: 3 cách, cùng hệ màu với bản đồ.
+   DM tím · dphat xanh lá · Dijkstra dựng từ W xanh dương (nét dày hơn lớp nền).
+   Trả {dm, dphat, dij} — mỗi cái là {nut, tong} hoặc null nếu không tới được. */
+const poolSP = mkPool(0xab47bc, 1.0, 40), poolSDP = mkPool(0x00e676, 1.0, 40),
+      poolSDJ = mkPool(0x42a5f5, 1.0, 40);
+
+function veDuongChon(fi, r){
+  if (SRC_CHON < 0 || DST_CHON < 0){
+    setPool(poolSP, [], r); setPool(poolSDP, [], r); setPool(poolSDJ, [], r);
+    return null;
+  }
+  const a = SRC_CHON, b = DST_CHON;
+  const seg = F[fi] && F[fi].dmTuyen;
+  const tim = (loai) => {
+    for (const l of (seg && seg[loai]) || []){
+      const n = l.nut || [];
+      if (n.length < 2) continue;
+      if (n[0] === a && n[n.length - 1] === b) return { nut: n, loai };
+      if (n[0] === b && n[n.length - 1] === a) return { nut: n.slice().reverse(), loai, nguoc: true };
+    }
+    return null;
+  };
+  let dm = tim("dm"), dphat = tim("dphat");
+  let dij = tim("dijkstra") || duongTuPred(fi, a, b);
+  /* Cặp ngoài 4–5 luồng: dùng tuyến tính riêng (nhãn "1 luồng" trên HUD). */
+  if (!dm || !dphat){
+    const c = traCapTinh(fi, a, b);
+    if (c){
+      const nut = (c.nut[0] === a) ? c.nut : c.nut.slice().reverse();
+      if (!dm) dm = { nut, loai: "dm", motLuong: true };
+      if (!dphat){
+        const nd = (c.dphat && c.dphat.length) ? c.dphat : null;
+        if (nd) dphat = { nut: (nd[0] === a) ? nd : nd.slice().reverse(), loai: "dphat", motLuong: true };
+      }
+      if (!dij && c.dijkstra && c.dijkstra.length)
+        dij = { nut: (c.dijkstra[0] === a) ? c.dijkstra : c.dijkstra.slice().reverse(), loai: "dijkstra", motLuong: true };
+    }
+  }
+  setPool(poolSP, dm ? pairsOf(dm.nut) : [], r * 1.7);
+  setPool(poolSDP, dphat ? pairsOf(dphat.nut) : [], r * 1.4);
+  setPool(poolSDJ, dij ? pairsOf(dij.nut) : [], r * 1.1);
+  return { dm, dphat, dij };
+}
+
+/* Tuyến DM/dphat cho cặp NGOÀI 4–5 luồng, do xuat_tuyen_cap.py tính riêng (1 luồng).
+   Tra trong dmTuyen.cap của đúng khung; không có -> null (chưa chạy script đó). */
+function traCapTinh(fi, a, b){
+  const seg = F[fi] && F[fi].dmTuyen;
+  const ds = (seg && seg.cap) || [];
+  for (const c of ds){
+    const n = c.nut || [];
+    if (n.length < 2) continue;
+    if (n[0] === a && n[n.length - 1] === b) return c;
+    if (n[0] === b && n[n.length - 1] === a) return c;
+  }
+  return null;
+}
+
+/* Trễ từng chặng của tuyến: đọc bảng link đã xuất (dist, elev, bw, loss).
+   W = trễ cả chặng, nên KHÔNG cộng dồn vào đây; chỉ dùng để hiện số chặng/đường. */
+function soChang(d){ return d && d.nut ? d.nut.length - 1 : 0; }
 
 /* ---------- điều khiển ---------- */
 let t = 0, playing = true, speed = 1;
@@ -572,6 +713,29 @@ function frame(now){
     setPool(poolD, f.adapt_dut || [], r*.75);
     poolD.mat.opacity = .55 + .45*pulse;
   }
+  /* Đường đi của cặp NGUỒN/ĐÍCH đang chọn: ống vàng. Không có tuyến -> không vẽ
+     và ghi rõ "không có đường đi" (dữ liệu không chứa cặp đó, không bịa đường). */
+  { const dChon = veDuongChon(fi, r);
+    if (SRC_CHON >= 0 && DST_CHON >= 0){
+      const o = document.getElementById('kqChon');
+      if (o){
+        if (!dChon){
+          o.textContent = vn(M.names[SRC_CHON]) + ' → ' + vn(M.names[DST_CHON]) +
+            ': không có đường đi ở mốc này';
+          o.style.color = 'var(--red)';
+        } else {
+          const t = (ten, mau, d) => '<span style="color:' + mau + '">' + ten + '</span> ' +
+            (d ? soChang(d) + ' chặng' + (d.motLuong ? '*' : '') : 'không có');
+          o.innerHTML = vn(M.names[SRC_CHON]) + ' → ' + vn(M.names[DST_CHON]) + ' · ' +
+            t('DM', '#d891ee', dChon.dm) + ' · ' + t('dphat', '#7ee8a0', dChon.dphat) +
+            ' · ' + t('Dijkstra', '#7fc4ff', dChon.dij) +
+            ((dChon.dm && dChon.dm.motLuong) || (dChon.dphat && dChon.dphat.motLuong)
+              ? '<div style="color:#7f93a8;font-size:10.5px">* tuyến tính riêng 1 luồng (ngoài 4–5 luồng kịch bản)</div>'
+              : '');
+          o.style.color = '#cfd8dc';
+        }
+      }
+    } }
   updateWeather(t, simTime);
   capNhatLuong(fi);
   updateLabels(fi);
@@ -615,7 +779,10 @@ function canhTuChuoi(cacLuong){
   }
   return o;
 }
-window.__sim = { setT: v => { t = v; }, setPlay, goTo, get t(){ return t; }, NF };
+window.__sim = { setT: v => { t = v; }, setPlay, goTo,
+  chonNut: (a, b) => { SRC_CHON = a; DST_CHON = b; lastFi = -1; },
+  timDuong: (a, b) => timDuong(Math.min(Math.round(t), NF-1), a, b),
+  get t(){ return t; }, NF };
 requestAnimationFrame(frame);
 })();
 </script>

@@ -9,6 +9,9 @@
   <div class="ev" id="ev"></div>
   <div id="clock">--<small>giờ VN</small></div>
   <div id="hangLuong"></div>
+  <div class="chonNut"><label>Nguồn <select id="selNguon"></select></label>
+    <label>Đích <select id="selDich"></select></label></div>
+  <div id="kqChon" style="font-size:11.5px;color:#8fa3b8;margin:2px 0 6px"></div>
   <div class="row"><span class="k"><span class="dot" style="background:var(--green)"></span>Độ trễ đường đi</span><b id="aCost">–</b></div>
   <div class="row"><span class="k"><span class="dot" style="background:var(--blue)"></span>Mưa lớn nhất</span><b id="rainMax">–</b></div>
   <div class="row" id="hangTuyen"><span class="k"><span class="dot" style="background:#00e676"></span>Đường đi: dài · góc ngẩng · băng thông · mất gói</span><b id="tuyenInfo">–</b></div>

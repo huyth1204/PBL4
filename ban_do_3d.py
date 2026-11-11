@@ -28,6 +28,12 @@ Làm lại dữ liệu cho một bão (chạy ở thư mục gốc):
     python them_dijkstra.py                 # tuỳ chọn
     python ban_do_3d.py --bao soulik
 
+Định tuyến cho cặp NGUỒN–ĐÍCH bất kỳ (DM/dphat cho cặp ngoài 4–5 luồng kịch bản):
+    python xuat_tuyen_cap.py --bao soulik --mau          # 10 cặp mẫu (~1 phút)
+    python xuat_tuyen_cap.py --bao soulik                # mọi cặp 32×5 (~15 phút)
+    python xuat_tuyen_cap.py --bao soulik --cap CaMau,DaNang --cap PleiKu,Hanoi
+    python ban_do_3d.py --bao soulik        # đọc duong_di_cap.json; cặp đó có DM/dphat, nhãn *
+
 Tuyến trên bản đồ:
     DM tím · dphat xanh lá · dijkstra xanh dương · thầy xám (bật/tắt ở chân trang)
 """
@@ -518,6 +524,9 @@ def dung_luoi(data: dict, tt: dict, n_frame: int, snapshot: int | None,
     # Tuyến DM (nếu có) cho các mốc oracle có trong dữ liệu TN6.
     # Tuyến DM/dphat/dijkstra/thầy cho ĐÚNG bão + kịch bản đang vẽ (Bước C).
     dm_theo_t = nap_tuyen_dm(ten_bao, kich_ban)
+    # Tuyến tính riêng cho cặp bất kỳ (xuat_tuyen_cap.py) — nhúng kèm vào dmTuyen
+    # dưới khoá `cap` để giao diện tra khi người xem chọn 2 nút ngoài 4–5 luồng.
+    cap_theo_t = nap_tuyen_cap(ten_bao)
     dung_tn6 = bool(dm_theo_t)
     if ten_bao and not dm_theo_t:
         print(f"  ! Chưa có tuyến cho bão {ten_bao} kịch bản {kich_ban} trong "
@@ -694,6 +703,21 @@ def dung_luoi(data: dict, tt: dict, n_frame: int, snapshot: int | None,
         else:
             _dm_khung = None
 
+        # Tuyến DM/dphat của cặp bất kỳ (tính riêng, 1 luồng) cho ĐÚNG mốc này.
+        _cap = cap_theo_t.get(int(s))
+        if _cap:
+            if _dm_khung is None:
+                _dm_khung = {"K": 0, "dm": [], "dphat": [], "dijkstra": [], "thay": [],
+                             "nguon": [], "bao": ten_bao, "t": int(s), "kb": kich_ban}
+            _ds_cap = []
+            for _sn, _dn, _ts_cap in _cap["cap"]:
+                _item = {"nguon": _sn, "dich": _dn, "mot_luong": True,
+                         "nut": [int(x) for x in _ts_cap["dm"]],
+                         "dphat": [int(x) for x in (_ts_cap.get("dphat") or [])],
+                         "dijkstra": [int(x) for x in (_ts_cap.get("dijkstra") or [])]}
+                _ds_cap.append(_item)
+            _dm_khung["cap"] = _ds_cap
+
         chuoi_ac.append(ac)
         chuoi_nb.append(int(cs_canh["co_so"].sum()))
 
@@ -816,6 +840,31 @@ def nap_tuyen_dm(bao: str | None = None, kich_ban: int = 0) -> dict[int, dict]:
         t = int(v["t"])
         if t not in ra:
             ra[t] = v
+    return ra
+
+
+def nap_tuyen_cap(bao: str | None = None) -> dict[int, dict]:
+    """Đọc `duong_di_cap.json` (do xuat_tuyen_cap.py sinh) — tuyến DM/dphat cho cặp
+    NGUỒN–ĐÍCH bất kỳ, tính ở phạm vi MỘT luồng.
+
+    Trả {mốc t: {cap: [(nguon, dich, {dm, dphat, dijkstra})]}}. Không có file -> {}.
+    """
+    f = GOC / "duong_di_cap.json"
+    if not f.exists():
+        return {}
+    import json as _j
+    tat_ca = _j.loads(f.read_text(encoding="utf-8"))
+    ra: dict[int, dict] = {}
+    for khoa, v in tat_ca.items():
+        if not isinstance(v.get("dm"), list) or not v["dm"]:
+            continue
+        if bao and v.get("bao") != bao:
+            continue
+        t = int(v["t"])
+        ds = ra.setdefault(t, {"cap": []})
+        ds["cap"].append((v["nguon"], v["dich"],
+                          {"dm": v["dm"], "dphat": v.get("dphat"),
+                           "dijkstra": v.get("dijkstra"), "mot_luong": True}))
     return ra
 
 
@@ -1070,6 +1119,51 @@ def ban_do_tuyen(data: dict, snapshot: int, dut_set: set) -> dict:
 # ---------------------------------------------------------------------------
 
 
+def duong_ngan_nhat(W0: np.ndarray, kind: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Dijkstra mọi cặp trên W của MỘT khung (chi phí = trễ ms).
+
+    Luật chuyển tiếp giống dữ liệu train (bai_toan_rr.DoThi._giu):
+        can_relay[u] or u == nguồn
+    tức nút `user` chỉ không được làm TRUNG GIAN; nó vẫn được là điểm xuất phát.
+    Trả (dist [N,N], pred [N,N]) — pred[a, b] = nút trước b trên đường a -> b.
+
+    Mẹo: bỏ cạnh đi ra khỏi `user` một lần, rồi bù riêng cho từng nguồn là user
+    (chạy Dijkstra thêm một lượt trên đồ thị đầy đủ) — tránh phải nhân bản đồ thị N lần.
+    """
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import dijkstra
+
+    n = W0.shape[0]
+    w = W0.astype(np.float64)
+    eu, ev = np.nonzero(np.triu(w > 0, 1))
+    relay = kind != "user"
+    k1, k2 = relay[eu], relay[ev]
+    rows = np.concatenate([eu[k1], ev[k2]])
+    cols = np.concatenate([ev[k1], eu[k2]])
+    data = np.concatenate([w[eu, ev][k1], w[ev, eu][k2]])
+    G = coo_matrix((data, (rows, cols)), shape=(n, n)).tocsr()
+    dist, pred = dijkstra(G, directed=True, return_predecessors=True)
+
+    # Nguồn là user: cho nó đi ra bằng đồ thị đầy đủ (cả hai chiều W > 0).
+    nguon_user = np.where(~relay)[0]
+    if nguon_user.size:
+        rows2 = np.concatenate([eu, ev])
+        cols2 = np.concatenate([ev, eu])
+        data2 = np.concatenate([w[eu, ev], w[ev, eu]])
+        G2 = coo_matrix((data2, (rows2, cols2)), shape=(n, n)).tocsr()
+        d2, p2 = dijkstra(G2, directed=True, return_predecessors=True)
+        dist[nguon_user] = d2[nguon_user]
+        pred[nguon_user] = p2[nguon_user]
+    return dist, pred
+
+
+def dong_goi_pred(pred: np.ndarray) -> str:
+    """Nén pred thành chuỗi base64 (float32) để nhúng gọn vào HTML."""
+    import base64
+    raw = pred.astype(np.float32).tobytes()
+    return base64.b64encode(np.frombuffer(raw, np.uint8)).decode("ascii")
+
+
 def doc_bo_cuc() -> tuple[str, str, str]:
     """Đọc 3 mảnh giao diện trong assets_ban_do/ và kiểm tra chúng còn đúng mốc."""
     dau, than, ve = (ASSET / "khung_dau.txt"), (ASSET / "khung_than.txt"), (ASSET / "ve_3d.js")
@@ -1092,8 +1186,24 @@ def xuat_html(D: dict, ra: Path) -> None:
     (ac_theo_luong, *.link) nên không nhúng thêm khối DO_TRE_TUYEN nữa.
     """
     d, t, v = doc_bo_cuc()
+
+    # Bảng pred Dijkstra cho TỪNG khung: nhờ vậy giao diện dựng được đường đi cho
+    # bất kỳ cặp nút nào, không chỉ 4-5 luồng có sẵn trong dữ liệu.
+    oracle = GOC / "dataset" / "oracle_dataset_v5.npz"
+    P = {}
+    with np.load(oracle, allow_pickle=False) as raw:
+        W = raw["W_snapshots"]
+        kind = np.asarray(raw["node_kind"]).astype(str)
+        for f in D["frames"]:
+            seg = f.get("dmTuyen") or {}
+            s = int(seg.get("t", -1))
+            if 0 <= s < W.shape[0] and str(s) not in P:
+                _, pred = duong_ngan_nhat(W[s], kind)
+                P[str(s)] = dong_goi_pred(pred)
+
     js = json.dumps(D, ensure_ascii=False, separators=(",", ":"))
-    html = d + t + "const D = " + js + ";\n" + v
+    pj = json.dumps(P, separators=(",", ":"))
+    html = d + t + "const D = " + js + ";\nconst PRED = " + pj + ";\n" + v
     ra.parent.mkdir(parents=True, exist_ok=True)
     ra.write_text(html, encoding="utf-8", newline="")
     print(f"Đã tạo: {ra}  ({ra.stat().st_size / 1e6:.1f} MB)")
