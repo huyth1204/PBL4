@@ -1,0 +1,1720 @@
+
+=== TN10 started 2026-11-10T12:22:07.328999+07:00 ===
+[1/39] sinh dữ liệu val 4-5 luồng — đã có, bỏ qua
+[2/39] sinh dữ liệu val6 4-5 luồng — đã có, bỏ qua
+[3/39] sinh dữ liệu val_b 4-5 luồng — đã có, bỏ qua
+[4/39] sinh dữ liệu val6_b 4-5 luồng — đã có, bỏ qua
+[5/39] sinh dữ liệu c6 4-5 luồng — đã có, bỏ qua
+[6/39] sinh dữ liệu c6 10 luồng — đã có, bỏ qua
+[7/39] sinh dữ liệu c6 20 luồng — đã có, bỏ qua
+[8/39] sinh dữ liệu yagi5 4-5 luồng — đã có, bỏ qua
+[9/39] sinh dữ liệu yagi5 10 luồng — đã có, bỏ qua
+[10/39] sinh dữ liệu yagi5 20 luồng — đã có, bỏ qua
+[11/39] sinh dữ liệu c6_b 4-5 luồng — đã có, bỏ qua
+[12/39] sinh dữ liệu c6_b 10 luồng — đã có, bỏ qua
+[13/39] sinh dữ liệu c6_b 20 luồng — đã có, bỏ qua
+[14/39] sinh dữ liệu yagi5_b 4-5 luồng — đã có, bỏ qua
+[15/39] sinh dữ liệu yagi5_b 10 luồng — đã có, bỏ qua
+[16/39] sinh dữ liệu yagi5_b 20 luồng — đã có, bỏ qua
+[17/39] sinh dữ liệu ngay9 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap ngay9 --K 4-5 --tien-trinh 6
+ngay9 K=4-5: 13 cửa sổ × 48 mốc, còn 13
+  1/13  kb_0005.pkl  144 bản ghi  179 s  (tổng 144, 201 s)
+  2/13  kb_0000.pkl  144 bản ghi  202 s  (tổng 288, 224 s)
+  3/13  kb_0004.pkl  144 bản ghi  202 s  (tổng 432, 224 s)
+  4/13  kb_0001.pkl  144 bản ghi  253 s  (tổng 576, 275 s)
+  5/13  kb_0002.pkl  144 bản ghi  292 s  (tổng 720, 314 s)
+  6/13  kb_0003.pkl  144 bản ghi  374 s  (tổng 864, 396 s)
+  7/13  kb_0006.pkl  144 bản ghi  208 s  (tổng 1008, 409 s)
+  8/13  kb_0007.pkl  144 bản ghi  193 s  (tổng 1152, 416 s)
+  9/13  kb_0008.pkl  144 bản ghi  281 s  (tổng 1296, 505 s)
+  10/13  kb_0010.pkl  144 bản ghi  234 s  (tổng 1440, 548 s)
+  11/13  kb_0011.pkl  144 bản ghi  187 s  (tổng 1584, 583 s)
+  12/13  kb_0012.pkl  144 bản ghi  174 s  (tổng 1728, 583 s)
+  13/13  kb_0009.pkl  144 bản ghi  322 s  (tổng 1872, 597 s)
+xong
+[18/39] sinh dữ liệu nam9 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap nam9 --K 4-5 --tien-trinh 6
+nam9 K=4-5: 13 cửa sổ × 48 mốc, còn 13
+
+=== TN10 started 2026-11-10T12:32:45.587914+07:00 ===
+[1/39] sinh dữ liệu val 4-5 luồng — đã có, bỏ qua
+[2/39] sinh dữ liệu val6 4-5 luồng — đã có, bỏ qua
+[3/39] sinh dữ liệu val_b 4-5 luồng — đã có, bỏ qua
+[4/39] sinh dữ liệu val6_b 4-5 luồng — đã có, bỏ qua
+[5/39] sinh dữ liệu c6 4-5 luồng — đã có, bỏ qua
+[6/39] sinh dữ liệu c6 10 luồng — đã có, bỏ qua
+[7/39] sinh dữ liệu c6 20 luồng — đã có, bỏ qua
+[8/39] sinh dữ liệu yagi5 4-5 luồng — đã có, bỏ qua
+[9/39] sinh dữ liệu yagi5 10 luồng — đã có, bỏ qua
+[10/39] sinh dữ liệu yagi5 20 luồng — đã có, bỏ qua
+[11/39] sinh dữ liệu c6_b 4-5 luồng — đã có, bỏ qua
+[12/39] sinh dữ liệu c6_b 10 luồng — đã có, bỏ qua
+[13/39] sinh dữ liệu c6_b 20 luồng — đã có, bỏ qua
+[14/39] sinh dữ liệu yagi5_b 4-5 luồng — đã có, bỏ qua
+[15/39] sinh dữ liệu yagi5_b 10 luồng — đã có, bỏ qua
+[16/39] sinh dữ liệu yagi5_b 20 luồng — đã có, bỏ qua
+[17/39] sinh dữ liệu ngay9 4-5 luồng — đã có, bỏ qua
+[18/39] sinh dữ liệu nam9 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap nam9 --K 4-5 --tien-trinh 6
+nam9 K=4-5: 13 cửa sổ × 48 mốc, còn 13
+  1/13  kb_0005.pkl  144 bản ghi  148 s  (tổng 144, 166 s)
+  2/13  kb_0003.pkl  144 bản ghi  215 s  (tổng 288, 232 s)
+  3/13  kb_0006.pkl  144 bản ghi  225 s  (tổng 432, 391 s)
+  4/13  kb_0001.pkl  144 bản ghi  398 s  (tổng 576, 415 s)
+  5/13  kb_0000.pkl  144 bản ghi  411 s  (tổng 720, 428 s)
+  6/13  kb_0002.pkl  144 bản ghi  427 s  (tổng 864, 443 s)
+  7/13  kb_0004.pkl  144 bản ghi  431 s  (tổng 1008, 448 s)
+  8/13  kb_0012.pkl  144 bản ghi  136 s  (tổng 1152, 584 s)
+  9/13  kb_0007.pkl  144 bản ghi  355 s  (tổng 1296, 587 s)
+  10/13  kb_0008.pkl  144 bản ghi  198 s  (tổng 1440, 589 s)
+  11/13  kb_0009.pkl  144 bản ghi  221 s  (tổng 1584, 635 s)
+  12/13  kb_0010.pkl  144 bản ghi  246 s  (tổng 1728, 674 s)
+  13/13  kb_0011.pkl  144 bản ghi  259 s  (tổng 1872, 703 s)
+xong
+[19/39] sinh dữ liệu bao9 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap bao9 --K 4-5 --tien-trinh 6
+bao9 K=4-5: 13 cửa sổ × 48 mốc, còn 13
+  1/13  kb_0001.pkl  144 bản ghi  126 s  (tổng 144, 137 s)
+  2/13  kb_0000.pkl  144 bản ghi  154 s  (tổng 288, 165 s)
+  3/13  kb_0006.pkl  144 bản ghi  128 s  (tổng 432, 265 s)
+  4/13  kb_0005.pkl  144 bản ghi  271 s  (tổng 576, 283 s)
+  5/13  kb_0003.pkl  144 bản ghi  309 s  (tổng 720, 320 s)
+  6/13  kb_0008.pkl  144 bản ghi  68 s  (tổng 864, 333 s)
+  7/13  kb_0009.pkl  144 bản ghi  76 s  (tổng 1008, 359 s)
+  8/13  kb_0010.pkl  144 bản ghi  51 s  (tổng 1152, 371 s)
+  9/13  kb_0002.pkl  144 bản ghi  367 s  (tổng 1296, 378 s)
+  10/13  kb_0004.pkl  144 bản ghi  385 s  (tổng 1440, 397 s)
+  11/13  kb_0007.pkl  144 bản ghi  251 s  (tổng 1584, 416 s)
+  12/13  kb_0012.pkl  144 bản ghi  202 s  (tổng 1728, 561 s)
+  13/13  kb_0011.pkl  144 bản ghi  355 s  (tổng 1872, 689 s)
+xong
+[20/39] sinh dữ liệu train10 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train10 --K 4-5 --tien-trinh 6
+train10 K=4-5: 59 cửa sổ × 37 mốc, còn 59
+  1/59  kb_0001.pkl  111 bản ghi  210 s  (tổng 111, 222 s)
+  2/59  kb_0005.pkl  111 bản ghi  220 s  (tổng 222, 232 s)
+  3/59  kb_0003.pkl  111 bản ghi  244 s  (tổng 333, 256 s)
+  4/59  kb_0000.pkl  111 bản ghi  249 s  (tổng 444, 260 s)
+  5/59  kb_0004.pkl  111 bản ghi  268 s  (tổng 555, 280 s)
+  6/59  kb_0002.pkl  111 bản ghi  276 s  (tổng 666, 288 s)
+  7/59  kb_0006.pkl  111 bản ghi  147 s  (tổng 777, 369 s)
+  8/59  kb_0009.pkl  111 bản ghi  121 s  (tổng 888, 382 s)
+  9/59  kb_0008.pkl  111 bản ghi  145 s  (tổng 999, 401 s)
+  10/59  kb_0007.pkl  111 bản ghi  184 s  (tổng 1110, 416 s)
+  11/59  kb_0011.pkl  111 bản ghi  132 s  (tổng 1221, 420 s)
+  12/59  kb_0010.pkl  111 bản ghi  171 s  (tổng 1332, 451 s)
+  13/59  kb_0013.pkl  111 bản ghi  117 s  (tổng 1443, 499 s)
+  14/59  kb_0012.pkl  111 bản ghi  133 s  (tổng 1554, 502 s)
+  15/59  kb_0015.pkl  111 bản ghi  141 s  (tổng 1665, 556 s)
+  16/59  kb_0014.pkl  111 bản ghi  165 s  (tổng 1776, 566 s)
+  17/59  kb_0016.pkl  111 bản ghi  155 s  (tổng 1887, 576 s)
+  18/59  kb_0017.pkl  111 bản ghi  220 s  (tổng 1998, 670 s)
+  19/59  kb_0022.pkl  111 bản ghi  104 s  (tổng 2109, 679 s)
+  20/59  kb_0019.pkl  111 bản ghi  220 s  (tổng 2220, 723 s)
+  21/59  kb_0018.pkl  111 bản ghi  262 s  (tổng 2331, 761 s)
+  22/59  kb_0024.pkl  111 bản ghi  110 s  (tổng 2442, 789 s)
+  23/59  kb_0023.pkl  111 bản ghi  119 s  (tổng 2553, 789 s)
+  24/59  kb_0020.pkl  111 bản ghi  266 s  (tổng 2664, 822 s)
+  25/59  kb_0021.pkl  111 bản ghi  276 s  (tổng 2775, 842 s)
+  26/59  kb_0025.pkl  111 bản ghi  153 s  (tổng 2886, 876 s)
+  27/59  kb_0027.pkl  111 bản ghi  119 s  (tổng 2997, 908 s)
+  28/59  kb_0026.pkl  111 bản ghi  179 s  (tổng 3108, 940 s)
+  29/59  kb_0028.pkl  111 bản ghi  193 s  (tổng 3219, 982 s)
+  30/59  kb_0032.pkl  111 bản ghi  82 s  (tổng 3330, 990 s)
+  31/59  kb_0033.pkl  111 bản ghi  77 s  (tổng 3441, 1017 s)
+  32/59  kb_0031.pkl  111 bản ghi  143 s  (tổng 3552, 1019 s)
+  33/59  kb_0030.pkl  111 bản ghi  186 s  (tổng 3663, 1028 s)
+  34/59  kb_0029.pkl  111 bản ghi  231 s  (tổng 3774, 1054 s)
+  35/59  kb_0034.pkl  111 bản ghi  92 s  (tổng 3885, 1074 s)
+  36/59  kb_0035.pkl  111 bản ghi  116 s  (tổng 3996, 1106 s)
+  37/59  kb_0038.pkl  111 bản ghi  139 s  (tổng 4107, 1167 s)
+  38/59  kb_0036.pkl  111 bản ghi  156 s  (tổng 4218, 1173 s)
+  39/59  kb_0037.pkl  111 bản ghi  154 s  (tổng 4329, 1173 s)
+  40/59  kb_0039.pkl  111 bản ghi  125 s  (tổng 4440, 1178 s)
+  41/59  kb_0044.pkl  111 bản ghi  118 s  (tổng 4551, 1291 s)
+  42/59  kb_0043.pkl  111 bản ghi  133 s  (tổng 4662, 1305 s)
+  43/59  kb_0040.pkl  111 bản ghi  240 s  (tổng 4773, 1314 s)
+  44/59  kb_0045.pkl  111 bản ghi  155 s  (tổng 4884, 1333 s)
+  45/59  kb_0041.pkl  111 bản ghi  273 s  (tổng 4995, 1379 s)
+  46/59  kb_0046.pkl  111 bản ghi  127 s  (tổng 5106, 1418 s)
+  47/59  kb_0047.pkl  111 bản ghi  128 s  (tổng 5217, 1433 s)
+  48/59  kb_0049.pkl  111 bản ghi  115 s  (tổng 5328, 1448 s)
+  49/59  kb_0050.pkl  111 bản ghi  85 s  (tổng 5439, 1464 s)
+  50/59  kb_0042.pkl  111 bản ghi  311 s  (tổng 5550, 1478 s)
+  51/59  kb_0048.pkl  111 bản ghi  164 s  (tổng 5661, 1478 s)
+  52/59  kb_0051.pkl  111 bản ghi  101 s  (tổng 5772, 1519 s)
+  53/59  kb_0052.pkl  111 bản ghi  102 s  (tổng 5883, 1535 s)
+  54/59  kb_0053.pkl  111 bản ghi  122 s  (tổng 5994, 1569 s)
+  55/59  kb_0057.pkl  111 bản ghi  166 s  (tổng 6105, 1684 s)
+  56/59  kb_0055.pkl  111 bản ghi  215 s  (tổng 6216, 1693 s)
+  57/59  kb_0056.pkl  111 bản ghi  234 s  (tổng 6327, 1713 s)
+  58/59  kb_0054.pkl  111 bản ghi  250 s  (tổng 6438, 1714 s)
+  59/59  kb_0058.pkl  111 bản ghi  183 s  (tổng 6549, 1718 s)
+xong
+[21/39] sinh dữ liệu train6_10 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train6_10 --K 4-5 --tien-trinh 6
+train6_10 K=4-5: 60 cửa sổ × 37 mốc, còn 60
+  1/60  kb_0003.pkl  111 bản ghi  158 s  (tổng 111, 176 s)
+  2/60  kb_0004.pkl  111 bản ghi  227 s  (tổng 222, 246 s)
+  3/60  kb_0002.pkl  111 bản ghi  229 s  (tổng 333, 247 s)
+  4/60  kb_0000.pkl  111 bản ghi  240 s  (tổng 444, 258 s)
+  5/60  kb_0005.pkl  111 bản ghi  241 s  (tổng 555, 259 s)
+  6/60  kb_0001.pkl  111 bản ghi  286 s  (tổng 666, 304 s)
+  7/60  kb_0006.pkl  111 bản ghi  263 s  (tổng 777, 439 s)
+  8/60  kb_0007.pkl  111 bản ghi  217 s  (tổng 888, 463 s)
+  9/60  kb_0008.pkl  111 bản ghi  234 s  (tổng 999, 481 s)
+  10/60  kb_0009.pkl  111 bản ghi  244 s  (tổng 1110, 502 s)
+  11/60  kb_0010.pkl  111 bản ghi  254 s  (tổng 1221, 513 s)
+  12/60  kb_0011.pkl  111 bản ghi  245 s  (tổng 1332, 549 s)
+  13/60  kb_0012.pkl  111 bản ghi  232 s  (tổng 1443, 671 s)
+  14/60  kb_0016.pkl  111 bản ghi  169 s  (tổng 1554, 682 s)
+  15/60  kb_0015.pkl  111 bản ghi  222 s  (tổng 1665, 724 s)
+  16/60  kb_0013.pkl  111 bản ghi  296 s  (tổng 1776, 759 s)
+  17/60  kb_0014.pkl  111 bản ghi  317 s  (tổng 1887, 799 s)
+  18/60  kb_0017.pkl  111 bản ghi  278 s  (tổng 1998, 828 s)
+  19/60  kb_0020.pkl  111 bản ghi  130 s  (tổng 2109, 853 s)
+  20/60  kb_0018.pkl  111 bản ghi  202 s  (tổng 2220, 874 s)
+  21/60  kb_0019.pkl  111 bản ghi  287 s  (tổng 2331, 970 s)
+  22/60  kb_0024.pkl  111 bản ghi  138 s  (tổng 2442, 991 s)
+  23/60  kb_0021.pkl  111 bản ghi  242 s  (tổng 2553, 1002 s)
+  24/60  kb_0022.pkl  111 bản ghi  225 s  (tổng 2664, 1024 s)
+  25/60  kb_0026.pkl  111 bản ghi  103 s  (tổng 2775, 1072 s)
+  26/60  kb_0023.pkl  111 bản ghi  321 s  (tổng 2886, 1149 s)
+  27/60  kb_0027.pkl  111 bản ghi  278 s  (tổng 2997, 1269 s)
+  28/60  kb_0028.pkl  111 bản ghi  277 s  (tổng 3108, 1279 s)
+  29/60  kb_0030.pkl  111 bản ghi  208 s  (tổng 3219, 1280 s)
+  30/60  kb_0025.pkl  111 bản ghi  410 s  (tổng 3330, 1283 s)
+  31/60  kb_0031.pkl  111 bản ghi  189 s  (tổng 3441, 1339 s)
+  32/60  kb_0029.pkl  111 bản ghi  333 s  (tổng 3552, 1357 s)
+  33/60  kb_0032.pkl  111 bản ghi  246 s  (tổng 3663, 1515 s)
+  34/60  kb_0036.pkl  111 bản ghi  249 s  (tổng 3774, 1588 s)
+  35/60  kb_0033.pkl  111 bản ghi  356 s  (tổng 3885, 1635 s)
+  36/60  kb_0035.pkl  111 bản ghi  373 s  (tổng 3996, 1656 s)
+  37/60  kb_0037.pkl  111 bản ghi  312 s  (tổng 4107, 1669 s)
+  38/60  kb_0034.pkl  111 bản ghi  406 s  (tổng 4218, 1686 s)
+  39/60  kb_0039.pkl  111 bản ghi  252 s  (tổng 4329, 1841 s)
+  40/60  kb_0041.pkl  111 bản ghi  186 s  (tổng 4440, 1842 s)
+  41/60  kb_0038.pkl  111 bản ghi  328 s  (tổng 4551, 1843 s)
+  42/60  kb_0040.pkl  111 bản ghi  227 s  (tổng 4662, 1862 s)
+  43/60  kb_0043.pkl  111 bản ghi  229 s  (tổng 4773, 1915 s)
+  44/60  kb_0044.pkl  111 bản ghi  148 s  (tổng 4884, 1989 s)
+  45/60  kb_0042.pkl  111 bản ghi  333 s  (tổng 4995, 2002 s)
+  46/60  kb_0045.pkl  111 bản ghi  221 s  (tổng 5106, 2063 s)
+  47/60  kb_0046.pkl  111 bản ghi  265 s  (tổng 5217, 2108 s)
+  48/60  kb_0047.pkl  111 bản ghi  249 s  (tổng 5328, 2111 s)
+  49/60  kb_0050.pkl  111 bản ghi  172 s  (tổng 5439, 2175 s)
+  50/60  kb_0048.pkl  111 bản ghi  268 s  (tổng 5550, 2183 s)
+  51/60  kb_0053.pkl  111 bản ghi  111 s  (tổng 5661, 2222 s)
+  52/60  kb_0049.pkl  111 bản ghi  301 s  (tổng 5772, 2290 s)
+  53/60  kb_0051.pkl  111 bản ghi  294 s  (tổng 5883, 2357 s)
+  54/60  kb_0054.pkl  111 bản ghi  206 s  (tổng 5994, 2381 s)
+  55/60  kb_0052.pkl  111 bản ghi  297 s  (tổng 6105, 2405 s)
+  56/60  kb_0055.pkl  111 bản ghi  240 s  (tổng 6216, 2423 s)
+  57/60  kb_0056.pkl  111 bản ghi  282 s  (tổng 6327, 2504 s)
+  58/60  kb_0058.pkl  111 bản ghi  180 s  (tổng 6438, 2538 s)
+  59/60  kb_0057.pkl  111 bản ghi  250 s  (tổng 6549, 2540 s)
+  60/60  kb_0059.pkl  111 bản ghi  268 s  (tổng 6660, 2648 s)
+xong
+[22/39] bước 1: huấn luyện 4 cấu hình × 4 phần
+    python -m scripts.tn10 huan-luyen --buoc 1 --tien-trinh 4 --song-song 2 --luong-cpu 4 --thiet-bi cpu
+  14:09:15 huấn luyện e20h64_p0 → logs/tn10_e20h64_p0.log
+  14:09:15 huấn luyện e20h64_p1 → logs/tn10_e20h64_p1.log
+  14:41:49 xong e20h64_p0
+  14:41:52 xong e20h64_p1
+  14:41:52 huấn luyện e20h64_p2 → logs/tn10_e20h64_p2.log
+  14:41:52 huấn luyện e20h64_p3 → logs/tn10_e20h64_p3.log
+  15:13:53 xong e20h64_p2
+  15:14:06 xong e20h64_p3
+  15:14:06 huấn luyện e60h64_p0 → logs/tn10_e60h64_p0.log
+  15:14:06 huấn luyện e60h64_p1 → logs/tn10_e60h64_p1.log
+  16:46:26 xong e60h64_p0
+  16:46:50 xong e60h64_p1
+  16:46:50 huấn luyện e60h64_p2 → logs/tn10_e60h64_p2.log
+  16:46:50 huấn luyện e60h64_p3 → logs/tn10_e60h64_p3.log
+  17:20:05 xong e60h64_p2
+  17:20:08 xong e60h64_p3
+  17:20:08 huấn luyện e60h128_p0 → logs/tn10_e60h128_p0.log
+  17:20:08 huấn luyện e60h128_p1 → logs/tn10_e60h128_p1.log
+  17:53:45 xong e60h128_p0
+  17:53:45 xong e60h128_p1
+  17:53:45 huấn luyện e60h128_p2 → logs/tn10_e60h128_p2.log
+  17:53:45 huấn luyện e60h128_p3 → logs/tn10_e60h128_p3.log
+  18:27:39 xong e60h128_p2
+  18:27:51 xong e60h128_p3
+  18:27:51 huấn luyện e120h128_p0 → logs/tn10_e120h128_p0.log
+  18:27:51 huấn luyện e120h128_p1 → logs/tn10_e120h128_p1.log
+  20:49:53 xong e120h128_p0
+  20:49:53 xong e120h128_p1
+  20:49:53 huấn luyện e120h128_p2 → logs/tn10_e120h128_p2.log
+  20:49:53 huấn luyện e120h128_p3 → logs/tn10_e120h128_p3.log
+
+=== TN10 started 2026-11-10T20:49:54.759746+07:00 ===
+[1/39] sinh dữ liệu val 4-5 luồng — đã có, bỏ qua
+[2/39] sinh dữ liệu val6 4-5 luồng — đã có, bỏ qua
+[3/39] sinh dữ liệu val_b 4-5 luồng — đã có, bỏ qua
+[4/39] sinh dữ liệu val6_b 4-5 luồng — đã có, bỏ qua
+[5/39] sinh dữ liệu c6 4-5 luồng — đã có, bỏ qua
+[6/39] sinh dữ liệu c6 10 luồng — đã có, bỏ qua
+[7/39] sinh dữ liệu c6 20 luồng — đã có, bỏ qua
+[8/39] sinh dữ liệu yagi5 4-5 luồng — đã có, bỏ qua
+[9/39] sinh dữ liệu yagi5 10 luồng — đã có, bỏ qua
+[10/39] sinh dữ liệu yagi5 20 luồng — đã có, bỏ qua
+[11/39] sinh dữ liệu c6_b 4-5 luồng — đã có, bỏ qua
+[12/39] sinh dữ liệu c6_b 10 luồng — đã có, bỏ qua
+[13/39] sinh dữ liệu c6_b 20 luồng — đã có, bỏ qua
+[14/39] sinh dữ liệu yagi5_b 4-5 luồng — đã có, bỏ qua
+[15/39] sinh dữ liệu yagi5_b 10 luồng — đã có, bỏ qua
+[16/39] sinh dữ liệu yagi5_b 20 luồng — đã có, bỏ qua
+[17/39] sinh dữ liệu ngay9 4-5 luồng — đã có, bỏ qua
+[18/39] sinh dữ liệu nam9 4-5 luồng — đã có, bỏ qua
+[19/39] sinh dữ liệu bao9 4-5 luồng — đã có, bỏ qua
+[20/39] sinh dữ liệu train10 4-5 luồng — đã có, bỏ qua
+[21/39] sinh dữ liệu train6_10 4-5 luồng — đã có, bỏ qua
+[22/39] bước 1: huấn luyện 4 cấu hình × 4 phần
+    python -m scripts.tn10 huan-luyen --buoc 1 --tien-trinh 4 --song-song 2 --luong-cpu 4 --thiet-bi cpu
+  20:49:55 huấn luyện e120h128_p2 → logs/tn10_e120h128_p2.log
+  20:49:55 huấn luyện e120h128_p3 → logs/tn10_e120h128_p3.log
+
+=== TN10 started 2026-11-10T20:55:17.732578+07:00 ===
+[1/39] sinh dữ liệu val 4-5 luồng — đã có, bỏ qua
+[2/39] sinh dữ liệu val6 4-5 luồng — đã có, bỏ qua
+[3/39] sinh dữ liệu val_b 4-5 luồng — đã có, bỏ qua
+[4/39] sinh dữ liệu val6_b 4-5 luồng — đã có, bỏ qua
+[5/39] sinh dữ liệu c6 4-5 luồng — đã có, bỏ qua
+[6/39] sinh dữ liệu c6 10 luồng — đã có, bỏ qua
+[7/39] sinh dữ liệu c6 20 luồng — đã có, bỏ qua
+[8/39] sinh dữ liệu yagi5 4-5 luồng — đã có, bỏ qua
+[9/39] sinh dữ liệu yagi5 10 luồng — đã có, bỏ qua
+[10/39] sinh dữ liệu yagi5 20 luồng — đã có, bỏ qua
+[11/39] sinh dữ liệu c6_b 4-5 luồng — đã có, bỏ qua
+[12/39] sinh dữ liệu c6_b 10 luồng — đã có, bỏ qua
+[13/39] sinh dữ liệu c6_b 20 luồng — đã có, bỏ qua
+[14/39] sinh dữ liệu yagi5_b 4-5 luồng — đã có, bỏ qua
+[15/39] sinh dữ liệu yagi5_b 10 luồng — đã có, bỏ qua
+[16/39] sinh dữ liệu yagi5_b 20 luồng — đã có, bỏ qua
+[17/39] sinh dữ liệu ngay9 4-5 luồng — đã có, bỏ qua
+[18/39] sinh dữ liệu nam9 4-5 luồng — đã có, bỏ qua
+[19/39] sinh dữ liệu bao9 4-5 luồng — đã có, bỏ qua
+[20/39] sinh dữ liệu train10 4-5 luồng — đã có, bỏ qua
+[21/39] sinh dữ liệu train6_10 4-5 luồng — đã có, bỏ qua
+[22/39] bước 1: huấn luyện 4 cấu hình × 4 phần
+    python -m scripts.tn10 huan-luyen --buoc 1 --tien-trinh 4 --song-song 2 --luong-cpu 6 --thiet-bi cpu
+  20:55:18 huấn luyện e120h128_p2 → logs/tn10_e120h128_p2.log
+  20:55:18 huấn luyện e120h128_p3 → logs/tn10_e120h128_p3.log
+  22:36:42 xong e120h128_p2
+  22:37:08 xong e120h128_p3
+[23/39] bước 1: chọn cấu hình (kiểm thử chéo)
+    python -m scripts.tn10 chon --buoc 1 --tien-trinh 4 --song-song 2 --luong-cpu 6 --thiet-bi cpu
+  kiểm thử chéo: e60h64 S = 8 trên train10_k4_5+train6_10_k4_5: mất DV 29.255 (13209 bản ghi, 116 s)
+  kiểm thử chéo: e20h64 S = 8 trên train10_k4_5+train6_10_k4_5: mất DV 29.756 (13209 bản ghi, 113 s)
+  kiểm thử chéo: e60h128 S = 8 trên train10_k4_5+train6_10_k4_5: mất DV 29.092 (13209 bản ghi, 178 s)
+  kiểm thử chéo: e120h128 S = 8 trên train10_k4_5+train6_10_k4_5: mất DV 29.024 (13209 bản ghi, 178 s)
+[24/39] bước 2: chọn số chuỗi S (kiểm thử chéo)
+    python -m scripts.tn10 chon --buoc 2 --tien-trinh 4 --song-song 2 --luong-cpu 6 --thiet-bi cpu
+  kiểm thử chéo: e120h128 S = 16 trên train10_k4_5+train6_10_k4_5: mất DV 28.643 (13209 bản ghi, 328 s)
+  kiểm thử chéo: e120h128 S = 32 trên train10_k4_5+train6_10_k4_5: mất DV 28.502 (13209 bản ghi, 968 s)
+  Chọn S = 32 cho e120h128.
+[25/39] sinh dữ liệu val10_t32 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap val10_t32 --K 4-5 --tien-trinh 8
+val10_t32 K=4-5: 16 cửa sổ × 24 mốc, còn 16
+  1/16  kb_0006.pkl  72 bản ghi  169 s  (tổng 72, 190 s)
+  2/16  kb_0007.pkl  72 bản ghi  170 s  (tổng 144, 192 s)
+  3/16  kb_0000.pkl  72 bản ghi  176 s  (tổng 216, 196 s)
+  4/16  kb_0001.pkl  72 bản ghi  183 s  (tổng 288, 204 s)
+  5/16  kb_0005.pkl  72 bản ghi  239 s  (tổng 360, 261 s)
+
+=== TN10 (nhanh) started 2026-11-10T23:13:25.583036+07:00 ===
+[1/39] sinh dữ liệu val 4-5 luồng — đã có, bỏ qua
+[2/39] sinh dữ liệu val6 4-5 luồng — đã có, bỏ qua
+[3/39] sinh dữ liệu val_b 4-5 luồng — đã có, bỏ qua
+[4/39] sinh dữ liệu val6_b 4-5 luồng — đã có, bỏ qua
+[5/39] sinh dữ liệu c6 4-5 luồng — đã có, bỏ qua
+[6/39] sinh dữ liệu c6 10 luồng — đã có, bỏ qua
+[7/39] sinh dữ liệu c6 20 luồng — đã có, bỏ qua
+[8/39] sinh dữ liệu yagi5 4-5 luồng — đã có, bỏ qua
+[9/39] sinh dữ liệu yagi5 10 luồng — đã có, bỏ qua
+[10/39] sinh dữ liệu yagi5 20 luồng — đã có, bỏ qua
+[11/39] sinh dữ liệu c6_b 4-5 luồng — đã có, bỏ qua
+[12/39] sinh dữ liệu c6_b 10 luồng — đã có, bỏ qua
+[13/39] sinh dữ liệu c6_b 20 luồng — đã có, bỏ qua
+[14/39] sinh dữ liệu yagi5_b 4-5 luồng — đã có, bỏ qua
+[15/39] sinh dữ liệu yagi5_b 10 luồng — đã có, bỏ qua
+[16/39] sinh dữ liệu yagi5_b 20 luồng — đã có, bỏ qua
+[17/39] sinh dữ liệu ngay9 4-5 luồng — đã có, bỏ qua
+[18/39] sinh dữ liệu nam9 4-5 luồng — đã có, bỏ qua
+[19/39] sinh dữ liệu bao9 4-5 luồng — đã có, bỏ qua
+[20/39] sinh dữ liệu train10 4-5 luồng — đã có, bỏ qua
+[21/39] sinh dữ liệu train6_10 4-5 luồng — đã có, bỏ qua
+[22/39] bước 1: huấn luyện 4 cấu hình × 4 phần
+    python -m scripts.tn10 huan-luyen --buoc 1 --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+[23/39] bước 1: chọn cấu hình (kiểm thử chéo)
+    python -m scripts.tn10 chon --buoc 1 --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  Chọn cấu hình e120h128.
+[24/39] bước 2: chọn số chuỗi S (kiểm thử chéo)
+    python -m scripts.tn10 chon --buoc 2 --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  Chọn S = 32 cho e120h128.
+[25/39] sinh dữ liệu val10_t32 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap val10_t32 --K 4-5 --tien-trinh 8
+val10_t32 K=4-5: 16 cửa sổ × 24 mốc, còn 11
+  1/11  kb_0012.pkl  72 bản ghi  40 s  (tổng 72, 49 s)
+  2/11  kb_0011.pkl  72 bản ghi  54 s  (tổng 144, 63 s)
+  3/11  kb_0010.pkl  72 bản ghi  54 s  (tổng 216, 63 s)
+  4/11  kb_0009.pkl  72 bản ghi  59 s  (tổng 288, 67 s)
+  5/11  kb_0013.pkl  72 bản ghi  33 s  (tổng 360, 81 s)
+  6/11  kb_0008.pkl  72 bản ghi  73 s  (tổng 432, 82 s)
+  7/11  kb_0003.pkl  72 bản ghi  81 s  (tổng 504, 89 s)
+  8/11  kb_0002.pkl  72 bản ghi  92 s  (tổng 576, 100 s)
+  9/11  kb_0014.pkl  72 bản ghi  47 s  (tổng 648, 110 s)
+  10/11  kb_0015.pkl  72 bản ghi  49 s  (tổng 720, 112 s)
+  11/11  kb_0004.pkl  72 bản ghi  110 s  (tổng 792, 119 s)
+xong
+[26/39] sinh dữ liệu val10_t64 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap val10_t64 --K 4-5 --tien-trinh 8
+val10_t64 K=4-5: 16 cửa sổ × 24 mốc, còn 16
+  1/16  kb_0006.pkl  72 bản ghi  105 s  (tổng 72, 114 s)
+  2/16  kb_0007.pkl  72 bản ghi  105 s  (tổng 144, 115 s)
+  3/16  kb_0000.pkl  72 bản ghi  111 s  (tổng 216, 119 s)
+  4/16  kb_0001.pkl  72 bản ghi  115 s  (tổng 288, 123 s)
+  5/16  kb_0005.pkl  72 bản ghi  149 s  (tổng 360, 158 s)
+  6/16  kb_0003.pkl  72 bản ghi  169 s  (tổng 432, 178 s)
+  7/16  kb_0010.pkl  72 bản ghi  69 s  (tổng 504, 188 s)
+  8/16  kb_0011.pkl  72 bản ghi  69 s  (tổng 576, 192 s)
+  9/16  kb_0012.pkl  72 bản ghi  37 s  (tổng 648, 195 s)
+  10/16  kb_0009.pkl  72 bản ghi  81 s  (tổng 720, 196 s)
+  11/16  kb_0002.pkl  72 bản ghi  197 s  (tổng 792, 206 s)
+  12/16  kb_0008.pkl  72 bản ghi  107 s  (tổng 864, 222 s)
+  13/16  kb_0013.pkl  72 bản ghi  44 s  (tổng 936, 223 s)
+  14/16  kb_0004.pkl  72 bản ghi  241 s  (tổng 1008, 250 s)
+  15/16  kb_0014.pkl  72 bản ghi  72 s  (tổng 1080, 260 s)
+  16/16  kb_0015.pkl  72 bản ghi  71 s  (tổng 1152, 263 s)
+xong
+[27/39] bước 3: so thầy 64 với 32 thế giới nhãn
+    python -m scripts.tn10 chon --buoc 3a --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  Giữ nhãn thầy 32; mức cải thiện của thầy 64 chưa đạt ngưỡng.
+[28/39] bước 3: nhãn thầy 64 cho tập học A (nếu qua)
+    python -m scripts.tn10 sinh --buoc 3 --tien-trinh 8
+bước 3: thầy 64 không qua ngưỡng → không gắn lại nhãn
+[29/39] bước 3: huấn luyện 4 phần trên nhãn thầy 64 (nếu qua)
+    python -m scripts.tn10 huan-luyen --buoc 3 --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+bước 3: thầy 64 không qua ngưỡng → không huấn luyện thêm
+[30/39] bước 3: chọn (kiểm thử chéo)
+    python -m scripts.tn10 chon --buoc 3b --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  Bỏ qua học lại với thầy 64; giữ e120h128.
+[31/39] sinh dữ liệu train_b10 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train_b10 --K 4-5 --tien-trinh 8
+train_b10 K=4-5: 59 cửa sổ × 37 mốc, còn 59
+  1/59  kb_0006.pkl  111 bản ghi  62 s  (tổng 111, 74 s)
+  2/59  kb_0002.pkl  111 bản ghi  78 s  (tổng 222, 87 s)
+  3/59  kb_0001.pkl  111 bản ghi  79 s  (tổng 333, 87 s)
+  4/59  kb_0007.pkl  111 bản ghi  76 s  (tổng 444, 88 s)
+  5/59  kb_0003.pkl  111 bản ghi  78 s  (tổng 555, 89 s)
+  6/59  kb_0005.pkl  111 bản ghi  84 s  (tổng 666, 95 s)
+  7/59  kb_0000.pkl  111 bản ghi  91 s  (tổng 777, 99 s)
+  8/59  kb_0004.pkl  111 bản ghi  92 s  (tổng 888, 104 s)
+  9/59  kb_0008.pkl  111 bản ghi  51 s  (tổng 999, 125 s)
+  10/59  kb_0009.pkl  111 bản ghi  47 s  (tổng 1110, 134 s)
+  11/59  kb_0012.pkl  111 bản ghi  45 s  (tổng 1221, 134 s)
+  12/59  kb_0013.pkl  111 bản ghi  39 s  (tổng 1332, 135 s)
+  13/59  kb_0011.pkl  111 bản ghi  52 s  (tổng 1443, 140 s)
+  14/59  kb_0015.pkl  111 bản ghi  43 s  (tổng 1554, 147 s)
+  15/59  kb_0014.pkl  111 bản ghi  71 s  (tổng 1665, 170 s)
+  16/59  kb_0010.pkl  111 bản ghi  85 s  (tổng 1776, 173 s)
+  17/59  kb_0016.pkl  111 bản ghi  82 s  (tổng 1887, 208 s)
+  18/59  kb_0022.pkl  111 bản ghi  42 s  (tổng 1998, 212 s)
+  19/59  kb_0023.pkl  111 bản ghi  46 s  (tổng 2109, 219 s)
+  20/59  kb_0019.pkl  111 bản ghi  104 s  (tổng 2220, 239 s)
+  21/59  kb_0017.pkl  111 bản ghi  105 s  (tổng 2331, 239 s)
+  22/59  kb_0024.pkl  111 bản ghi  41 s  (tổng 2442, 249 s)
+  23/59  kb_0018.pkl  111 bản ghi  122 s  (tổng 2553, 256 s)
+  24/59  kb_0020.pkl  111 bản ghi  123 s  (tổng 2664, 263 s)
+  25/59  kb_0025.pkl  111 bản ghi  59 s  (tổng 2775, 270 s)
+  26/59  kb_0021.pkl  111 bản ghi  128 s  (tổng 2886, 275 s)
+  27/59  kb_0027.pkl  111 bản ghi  44 s  (tổng 2997, 283 s)
+  28/59  kb_0026.pkl  111 bản ghi  65 s  (tổng 3108, 284 s)
+  29/59  kb_0032.pkl  111 bản ghi  33 s  (tổng 3219, 303 s)
+  30/59  kb_0033.pkl  111 bản ghi  32 s  (tổng 3330, 307 s)
+  31/59  kb_0028.pkl  111 bản ghi  73 s  (tổng 3441, 312 s)
+  32/59  kb_0031.pkl  111 bản ghi  55 s  (tổng 3552, 318 s)
+  33/59  kb_0034.pkl  111 bản ghi  37 s  (tổng 3663, 320 s)
+  34/59  kb_0030.pkl  111 bản ghi  82 s  (tổng 3774, 338 s)
+  35/59  kb_0035.pkl  111 bản ghi  62 s  (tổng 3885, 346 s)
+  36/59  kb_0029.pkl  111 bản ghi  106 s  (tổng 3996, 355 s)
+  37/59  kb_0036.pkl  111 bản ghi  78 s  (tổng 4107, 381 s)
+  38/59  kb_0038.pkl  111 bản ghi  73 s  (tổng 4218, 385 s)
+  39/59  kb_0039.pkl  111 bản ghi  67 s  (tổng 4329, 385 s)
+  40/59  kb_0037.pkl  111 bản ghi  80 s  (tổng 4440, 387 s)
+  41/59  kb_0043.pkl  111 bản ghi  50 s  (tổng 4551, 405 s)
+  42/59  kb_0040.pkl  111 bản ghi  109 s  (tổng 4662, 430 s)
+  43/59  kb_0044.pkl  111 bản ghi  54 s  (tổng 4773, 435 s)
+  44/59  kb_0046.pkl  111 bản ghi  62 s  (tổng 4884, 447 s)
+  45/59  kb_0047.pkl  111 bản ghi  63 s  (tổng 4995, 450 s)
+  46/59  kb_0045.pkl  111 bản ghi  71 s  (tổng 5106, 456 s)
+  47/59  kb_0041.pkl  111 bản ghi  136 s  (tổng 5217, 474 s)
+  48/59  kb_0050.pkl  111 bản ghi  42 s  (tổng 5328, 478 s)
+  49/59  kb_0042.pkl  111 bản ghi  140 s  (tổng 5439, 486 s)
+  50/59  kb_0049.pkl  111 bản ghi  57 s  (tổng 5550, 487 s)
+  51/59  kb_0048.pkl  111 bản ghi  86 s  (tổng 5661, 491 s)
+  52/59  kb_0051.pkl  111 bản ghi  47 s  (tổng 5772, 495 s)
+  53/59  kb_0052.pkl  111 bản ghi  44 s  (tổng 5883, 495 s)
+  54/59  kb_0053.pkl  111 bản ghi  49 s  (tổng 5994, 505 s)
+  55/59  kb_0058.pkl  111 bản ghi  49 s  (tổng 6105, 540 s)
+  56/59  kb_0057.pkl  111 bản ghi  60 s  (tổng 6216, 547 s)
+  57/59  kb_0055.pkl  111 bản ghi  70 s  (tổng 6327, 547 s)
+  58/59  kb_0054.pkl  111 bản ghi  77 s  (tổng 6438, 550 s)
+  59/59  kb_0056.pkl  111 bản ghi  71 s  (tổng 6549, 557 s)
+xong
+[32/39] sinh dữ liệu train6_b10 4-5 luồng
+    python -m src.nhieu_luong.tao_du_lieu_dt --tap train6_b10 --K 4-5 --tien-trinh 8
+train6_b10 K=4-5: 60 cửa sổ × 37 mốc, còn 60
+  1/60  kb_0003.pkl  111 bản ghi  63 s  (tổng 111, 71 s)
+  2/60  kb_0004.pkl  111 bản ghi  88 s  (tổng 222, 96 s)
+  3/60  kb_0007.pkl  111 bản ghi  90 s  (tổng 333, 99 s)
+  4/60  kb_0002.pkl  111 bản ghi  93 s  (tổng 444, 101 s)
+  5/60  kb_0005.pkl  111 bản ghi  97 s  (tổng 555, 106 s)
+  6/60  kb_0000.pkl  111 bản ghi  100 s  (tổng 666, 108 s)
+  7/60  kb_0006.pkl  111 bản ghi  106 s  (tổng 777, 115 s)
+  8/60  kb_0001.pkl  111 bản ghi  108 s  (tổng 888, 117 s)
+  9/60  kb_0008.pkl  111 bản ghi  91 s  (tổng 999, 162 s)
+  10/60  kb_0015.pkl  111 bản ghi  70 s  (tổng 1110, 187 s)
+  11/60  kb_0009.pkl  111 bản ghi  94 s  (tổng 1221, 189 s)
+  12/60  kb_0010.pkl  111 bản ghi  95 s  (tổng 1332, 193 s)
+  13/60  kb_0012.pkl  111 bản ghi  88 s  (tổng 1443, 193 s)
+  14/60  kb_0011.pkl  111 bản ghi  94 s  (tổng 1554, 195 s)
+  15/60  kb_0013.pkl  111 bản ghi  118 s  (tổng 1665, 226 s)
+  16/60  kb_0016.pkl  111 bản ghi  65 s  (tổng 1776, 227 s)
+  17/60  kb_0014.pkl  111 bản ghi  125 s  (tổng 1887, 240 s)
+  18/60  kb_0020.pkl  111 bản ghi  47 s  (tổng 1998, 241 s)
+  19/60  kb_0018.pkl  111 bản ghi  71 s  (tổng 2109, 261 s)
+  20/60  kb_0021.pkl  111 bản ghi  84 s  (tổng 2220, 280 s)
+  21/60  kb_0024.pkl  111 bản ghi  49 s  (tổng 2331, 289 s)
+  22/60  kb_0017.pkl  111 bản ghi  107 s  (tổng 2442, 294 s)
+  23/60  kb_0026.pkl  111 bản ghi  38 s  (tổng 2553, 299 s)
+  24/60  kb_0019.pkl  111 bản ghi  116 s  (tổng 2664, 310 s)
+  25/60  kb_0022.pkl  111 bản ghi  85 s  (tổng 2775, 311 s)
+  26/60  kb_0023.pkl  111 bản ghi  128 s  (tổng 2886, 355 s)
+  27/60  kb_0030.pkl  111 bản ghi  73 s  (tổng 2997, 372 s)
+  28/60  kb_0027.pkl  111 bản ghi  96 s  (tổng 3108, 376 s)
+  29/60  kb_0025.pkl  111 bản ghi  139 s  (tổng 3219, 380 s)
+  30/60  kb_0031.pkl  111 bản ghi  77 s  (tổng 3330, 387 s)
+  31/60  kb_0028.pkl  111 bản ghi  105 s  (tổng 3441, 394 s)
+  32/60  kb_0032.pkl  111 bản ghi  88 s  (tổng 3552, 399 s)
+  33/60  kb_0029.pkl  111 bản ghi  141 s  (tổng 3663, 435 s)
+  34/60  kb_0036.pkl  111 bản ghi  110 s  (tổng 3774, 490 s)
+  35/60  kb_0039.pkl  111 bản ghi  112 s  (tổng 3885, 511 s)
+  36/60  kb_0033.pkl  111 bản ghi  156 s  (tổng 3996, 511 s)
+  37/60  kb_0040.pkl  111 bản ghi  90 s  (tổng 4107, 525 s)
+  38/60  kb_0037.pkl  111 bản ghi  142 s  (tổng 4218, 528 s)
+  39/60  kb_0035.pkl  111 bản ghi  167 s  (tổng 4329, 543 s)
+  40/60  kb_0038.pkl  111 bản ghi  150 s  (tổng 4440, 544 s)
+  41/60  kb_0034.pkl  111 bản ghi  173 s  (tổng 4551, 545 s)
+  42/60  kb_0041.pkl  111 bản ghi  72 s  (tổng 4662, 561 s)
+  43/60  kb_0044.pkl  111 bản ghi  55 s  (tổng 4773, 581 s)
+  44/60  kb_0043.pkl  111 bản ghi  90 s  (tổng 4884, 601 s)
+  45/60  kb_0045.pkl  111 bản ghi  84 s  (tổng 4995, 612 s)
+  46/60  kb_0047.pkl  111 bản ghi  104 s  (tổng 5106, 649 s)
+  47/60  kb_0042.pkl  111 bản ghi  139 s  (tổng 5217, 650 s)
+  48/60  kb_0046.pkl  111 bản ghi  114 s  (tổng 5328, 657 s)
+  49/60  kb_0048.pkl  111 bản ghi  113 s  (tổng 5439, 658 s)
+  50/60  kb_0050.pkl  111 bản ghi  80 s  (tổng 5550, 661 s)
+  51/60  kb_0049.pkl  111 bản ghi  123 s  (tổng 5661, 684 s)
+  52/60  kb_0053.pkl  111 bản ghi  39 s  (tổng 5772, 688 s)
+  53/60  kb_0054.pkl  111 bản ghi  78 s  (tổng 5883, 729 s)
+  54/60  kb_0052.pkl  111 bản ghi  117 s  (tổng 5994, 729 s)
+  55/60  kb_0051.pkl  111 bản ghi  130 s  (tổng 6105, 731 s)
+  56/60  kb_0055.pkl  111 bản ghi  82 s  (tổng 6216, 740 s)
+  57/60  kb_0058.pkl  111 bản ghi  60 s  (tổng 6327, 744 s)
+  58/60  kb_0057.pkl  111 bản ghi  90 s  (tổng 6438, 750 s)
+  59/60  kb_0056.pkl  111 bản ghi  95 s  (tổng 6549, 754 s)
+  60/60  kb_0059.pkl  111 bản ghi  152 s  (tổng 6660, 840 s)
+xong
+[33/39] bước 4: nhãn thầy 64 cho tập học B (nếu bước 3 chọn)
+    python -m scripts.tn10 sinh --buoc 4 --tien-trinh 8
+bước 4: nhãn thầy 32 → dùng train_b10, train6_b10
+[34/39] bước 4: huấn luyện 4 phần trên A + B
+    python -m scripts.tn10 huan-luyen --buoc 4 --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  23:43:36 huấn luyện e120h128_ab_p0 → logs/tn10_e120h128_ab_p0.log
+  23:43:36 huấn luyện e120h128_ab_p1 → logs/tn10_e120h128_ab_p1.log
+  23:43:36 huấn luyện e120h128_ab_p2 → logs/tn10_e120h128_ab_p2.log
+  02:58:17 xong e120h128_ab_p0
+  02:58:17 xong e120h128_ab_p1
+  02:59:46 xong e120h128_ab_p2
+  02:59:46 huấn luyện e120h128_ab_p3 → logs/tn10_e120h128_ab_p3.log
+  03:19:27 xong e120h128_ab_p3
+[35/39] bước 4: chọn (kiểm thử chéo A + B)
+    python -m scripts.tn10 chon --buoc 4 --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  kiểm thử chéo: e120h128_ab S = 32 trên train10_k4_5+train6_10_k4_5+train_b10_k4_5+train6_b10_k4_5: mất DV 24.260 (26418 bản ghi, 4188 s)
+  kiểm thử chéo: e120h128 S = 32 trên train10_k4_5+train6_10_k4_5+train_b10_k4_5+train6_b10_k4_5: mất DV 24.306 (26418 bản ghi, 4249 s)
+  kiểm thử chéo: e120h128_ab S = 32 trên train10_k4_5+train6_10_k4_5: mất DV 28.475 (13209 bản ghi, 2204 s)
+  Kết quả chọn sau kiểm thử chéo A + B: e120h128.
+[36/39] huấn luyện DM10 và DM6r trên toàn bộ tập học (3 seed)
+    python -m scripts.tn10 huan-luyen --buoc day --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  06:17:07 huấn luyện e20h64_day_s0 → logs/tn10_e20h64_day_s0.log
+  06:17:07 huấn luyện e20h64_day_s1 → logs/tn10_e20h64_day_s1.log
+  06:17:07 huấn luyện e20h64_day_s2 → logs/tn10_e20h64_day_s2.log
+  06:27:23 xong e20h64_day_s0
+  06:27:23 xong e20h64_day_s1
+  06:27:23 xong e20h64_day_s2
+  06:27:23 huấn luyện e120h128_day_s0 → logs/tn10_e120h128_day_s0.log
+  06:27:23 huấn luyện e120h128_day_s1 → logs/tn10_e120h128_day_s1.log
+  06:27:23 huấn luyện e120h128_day_s2 → logs/tn10_e120h128_day_s2.log
+  08:17:59 xong e120h128_day_s0
+  08:18:00 xong e120h128_day_s1
+  08:18:00 xong e120h128_day_s2
+[37/39] chốt DM10, DM6r
+    python -m scripts.tn10 chon --buoc chot --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  Đã chốt DM10 = e120h128, S = 32.
+[38/39] chấm kiểm tra Lai(DM6r), Lai(DM10)
+    python -m scripts.tn10 cham --tien-trinh 4 --song-song 3 --luong-cpu 5 --thiet-bi cpu
+  08:18:01 chấm r6 trên c6 4-5 luồng
+c6 K=4-5: 13 tệp, mô hình r6_s0 → khoá r6
+  1/13  kb_0000.pkl  144 bản ghi  (35 s)
+  2/13  kb_0002.pkl  144 bản ghi  (42 s)
+  3/13  kb_0003.pkl  144 bản ghi  (46 s)
+  4/13  kb_0001.pkl  144 bản ghi  (46 s)
+  5/13  kb_0004.pkl  144 bản ghi  (66 s)
+  6/13  kb_0005.pkl  144 bản ghi  (66 s)
+  7/13  kb_0006.pkl  144 bản ghi  (81 s)
+  8/13  kb_0007.pkl  144 bản ghi  (82 s)
+  9/13  kb_0009.pkl  144 bản ghi  (100 s)
+  10/13  kb_0008.pkl  144 bản ghi  (100 s)
+  11/13  kb_0011.pkl  144 bản ghi  (108 s)
+  12/13  kb_0010.pkl  144 bản ghi  (111 s)
+  13/13  kb_0012.pkl  144 bản ghi  (132 s)
+xong
+  08:20:16 chấm r6_s1 trên c6 4-5 luồng
+c6 K=4-5: 13 tệp, mô hình r6_s1 → khoá r6_s1
+  1/13  kb_0000.pkl  144 bản ghi  (31 s)
+  2/13  kb_0002.pkl  144 bản ghi  (38 s)
+  3/13  kb_0001.pkl  144 bản ghi  (42 s)
+  4/13  kb_0003.pkl  144 bản ghi  (43 s)
+  5/13  kb_0005.pkl  144 bản ghi  (62 s)
+  6/13  kb_0004.pkl  144 bản ghi  (62 s)
+  7/13  kb_0006.pkl  144 bản ghi  (78 s)
+  8/13  kb_0007.pkl  144 bản ghi  (80 s)
+  9/13  kb_0008.pkl  144 bản ghi  (97 s)
+  10/13  kb_0009.pkl  144 bản ghi  (97 s)
+  11/13  kb_0011.pkl  144 bản ghi  (107 s)
+  12/13  kb_0010.pkl  144 bản ghi  (108 s)
+  13/13  kb_0012.pkl  144 bản ghi  (132 s)
+xong
+  08:22:30 chấm r6_s2 trên c6 4-5 luồng
+c6 K=4-5: 13 tệp, mô hình r6_s2 → khoá r6_s2
+  1/13  kb_0000.pkl  144 bản ghi  (33 s)
+  2/13  kb_0002.pkl  144 bản ghi  (40 s)
+  3/13  kb_0003.pkl  144 bản ghi  (44 s)
+  4/13  kb_0001.pkl  144 bản ghi  (45 s)
+  5/13  kb_0004.pkl  144 bản ghi  (64 s)
+  6/13  kb_0005.pkl  144 bản ghi  (65 s)
+  7/13  kb_0006.pkl  144 bản ghi  (80 s)
+  8/13  kb_0007.pkl  144 bản ghi  (81 s)
+  9/13  kb_0009.pkl  144 bản ghi  (100 s)
+  10/13  kb_0008.pkl  144 bản ghi  (100 s)
+  11/13  kb_0011.pkl  144 bản ghi  (108 s)
+  12/13  kb_0010.pkl  144 bản ghi  (111 s)
+  13/13  kb_0012.pkl  144 bản ghi  (132 s)
+xong
+  08:24:45 chấm d10 trên c6 4-5 luồng
+c6 K=4-5: 13 tệp, mô hình d10_s0 → khoá d10
+  1/13  kb_0000.pkl  144 bản ghi  (112 s)
+  2/13  kb_0002.pkl  144 bản ghi  (120 s)
+  3/13  kb_0001.pkl  144 bản ghi  (125 s)
+  4/13  kb_0003.pkl  144 bản ghi  (127 s)
+  5/13  kb_0005.pkl  144 bản ghi  (220 s)
+  6/13  kb_0004.pkl  144 bản ghi  (221 s)
+  7/13  kb_0006.pkl  144 bản ghi  (238 s)
+  8/13  kb_0007.pkl  144 bản ghi  (242 s)
+  9/13  kb_0008.pkl  144 bản ghi  (325 s)
+  10/13  kb_0009.pkl  144 bản ghi  (327 s)
+  11/13  kb_0011.pkl  144 bản ghi  (337 s)
+  12/13  kb_0010.pkl  144 bản ghi  (338 s)
+  13/13  kb_0012.pkl  144 bản ghi  (425 s)
+xong
+  08:31:53 chấm d10_s1 trên c6 4-5 luồng
+c6 K=4-5: 13 tệp, mô hình d10_s1 → khoá d10_s1
+  1/13  kb_0000.pkl  144 bản ghi  (104 s)
+  2/13  kb_0002.pkl  144 bản ghi  (112 s)
+  3/13  kb_0001.pkl  144 bản ghi  (116 s)
+  4/13  kb_0003.pkl  144 bản ghi  (118 s)
+  5/13  kb_0005.pkl  144 bản ghi  (203 s)
+  6/13  kb_0004.pkl  144 bản ghi  (205 s)
+  7/13  kb_0006.pkl  144 bản ghi  (222 s)
+  8/13  kb_0007.pkl  144 bản ghi  (226 s)
+  9/13  kb_0008.pkl  144 bản ghi  (309 s)
+  10/13  kb_0009.pkl  144 bản ghi  (312 s)
+  11/13  kb_0011.pkl  144 bản ghi  (321 s)
+  12/13  kb_0010.pkl  144 bản ghi  (322 s)
+  13/13  kb_0012.pkl  144 bản ghi  (407 s)
+xong
+  08:38:42 chấm d10_s2 trên c6 4-5 luồng
+c6 K=4-5: 13 tệp, mô hình d10_s2 → khoá d10_s2
+  1/13  kb_0000.pkl  144 bản ghi  (116 s)
+  2/13  kb_0002.pkl  144 bản ghi  (124 s)
+  3/13  kb_0001.pkl  144 bản ghi  (129 s)
+  4/13  kb_0003.pkl  144 bản ghi  (130 s)
+  5/13  kb_0005.pkl  144 bản ghi  (225 s)
+  6/13  kb_0004.pkl  144 bản ghi  (226 s)
+  7/13  kb_0006.pkl  144 bản ghi  (244 s)
+  8/13  kb_0007.pkl  144 bản ghi  (249 s)
+  9/13  kb_0008.pkl  144 bản ghi  (340 s)
+  10/13  kb_0009.pkl  144 bản ghi  (342 s)
+  11/13  kb_0011.pkl  144 bản ghi  (352 s)
+  12/13  kb_0010.pkl  144 bản ghi  (354 s)
+  13/13  kb_0012.pkl  144 bản ghi  (443 s)
+xong
+  08:46:07 chấm r6 trên yagi5 4-5 luồng
+yagi5 K=4-5: 13 tệp, mô hình r6_s0 → khoá r6
+  1/13  kb_0002.pkl  144 bản ghi  (16 s)
+  2/13  kb_0003.pkl  144 bản ghi  (16 s)
+  3/13  kb_0001.pkl  144 bản ghi  (18 s)
+  4/13  kb_0000.pkl  144 bản ghi  (21 s)
+  5/13  kb_0004.pkl  144 bản ghi  (34 s)
+  6/13  kb_0005.pkl  144 bản ghi  (34 s)
+  7/13  kb_0006.pkl  144 bản ghi  (36 s)
+  8/13  kb_0007.pkl  144 bản ghi  (40 s)
+  9/13  kb_0008.pkl  144 bản ghi  (56 s)
+  10/13  kb_0009.pkl  144 bản ghi  (61 s)
+  11/13  kb_0010.pkl  144 bản ghi  (70 s)
+  12/13  kb_0011.pkl  144 bản ghi  (73 s)
+  13/13  kb_0012.pkl  144 bản ghi  (88 s)
+xong
+  08:47:38 chấm r6_s1 trên yagi5 4-5 luồng
+yagi5 K=4-5: 13 tệp, mô hình r6_s1 → khoá r6_s1
+  1/13  kb_0002.pkl  144 bản ghi  (16 s)
+  2/13  kb_0003.pkl  144 bản ghi  (16 s)
+  3/13  kb_0001.pkl  144 bản ghi  (18 s)
+  4/13  kb_0000.pkl  144 bản ghi  (21 s)
+  5/13  kb_0004.pkl  144 bản ghi  (33 s)
+  6/13  kb_0005.pkl  144 bản ghi  (34 s)
+  7/13  kb_0006.pkl  144 bản ghi  (36 s)
+  8/13  kb_0007.pkl  144 bản ghi  (39 s)
+  9/13  kb_0008.pkl  144 bản ghi  (56 s)
+  10/13  kb_0009.pkl  144 bản ghi  (60 s)
+  11/13  kb_0010.pkl  144 bản ghi  (69 s)
+  12/13  kb_0011.pkl  144 bản ghi  (73 s)
+  13/13  kb_0012.pkl  144 bản ghi  (88 s)
+xong
+  08:49:08 chấm r6_s2 trên yagi5 4-5 luồng
+yagi5 K=4-5: 13 tệp, mô hình r6_s2 → khoá r6_s2
+  1/13  kb_0002.pkl  144 bản ghi  (16 s)
+  2/13  kb_0003.pkl  144 bản ghi  (16 s)
+  3/13  kb_0001.pkl  144 bản ghi  (18 s)
+  4/13  kb_0000.pkl  144 bản ghi  (20 s)
+  5/13  kb_0004.pkl  144 bản ghi  (33 s)
+  6/13  kb_0005.pkl  144 bản ghi  (34 s)
+  7/13  kb_0006.pkl  144 bản ghi  (36 s)
+  8/13  kb_0007.pkl  144 bản ghi  (39 s)
+  9/13  kb_0008.pkl  144 bản ghi  (56 s)
+  10/13  kb_0009.pkl  144 bản ghi  (61 s)
+  11/13  kb_0010.pkl  144 bản ghi  (70 s)
+  12/13  kb_0011.pkl  144 bản ghi  (73 s)
+  13/13  kb_0012.pkl  144 bản ghi  (88 s)
+xong
+  08:50:38 chấm d10 trên yagi5 4-5 luồng
+yagi5 K=4-5: 13 tệp, mô hình d10_s0 → khoá d10
+  1/13  kb_0002.pkl  144 bản ghi  (85 s)
+  2/13  kb_0003.pkl  144 bản ghi  (87 s)
+  3/13  kb_0001.pkl  144 bản ghi  (92 s)
+  4/13  kb_0000.pkl  144 bản ghi  (93 s)
+  5/13  kb_0004.pkl  144 bản ghi  (172 s)
+  6/13  kb_0005.pkl  144 bản ghi  (174 s)
+  7/13  kb_0006.pkl  144 bản ghi  (180 s)
+  8/13  kb_0007.pkl  144 bản ghi  (180 s)
+  9/13  kb_0008.pkl  144 bản ghi  (266 s)
+  10/13  kb_0009.pkl  144 bản ghi  (276 s)
+  11/13  kb_0011.pkl  144 bản ghi  (289 s)
+  12/13  kb_0010.pkl  144 bản ghi  (289 s)
+  13/13  kb_0012.pkl  144 bản ghi  (350 s)
+xong
+  08:56:30 chấm d10_s1 trên yagi5 4-5 luồng
+yagi5 K=4-5: 13 tệp, mô hình d10_s1 → khoá d10_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  144 bản ghi  (24 s)
+  2/13  kb_0003.pkl  144 bản ghi  (25 s)
+  3/13  kb_0001.pkl  144 bản ghi  (26 s)
+  4/13  kb_0000.pkl  144 bản ghi  (27 s)
+  5/13  kb_0004.pkl  144 bản ghi  (47 s)
+  6/13  kb_0005.pkl  144 bản ghi  (47 s)
+  7/13  kb_0006.pkl  144 bản ghi  (49 s)
+  8/13  kb_0007.pkl  144 bản ghi  (49 s)
+  9/13  kb_0008.pkl  144 bản ghi  (72 s)
+  10/13  kb_0009.pkl  144 bản ghi  (75 s)
+  11/13  kb_0010.pkl  144 bản ghi  (79 s)
+  12/13  kb_0011.pkl  144 bản ghi  (79 s)
+  13/13  kb_0012.pkl  144 bản ghi  (95 s)
+xong
+  08:58:08 chấm d10_s2 trên yagi5 4-5 luồng
+yagi5 K=4-5: 13 tệp, mô hình d10_s2 → khoá d10_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  144 bản ghi  (24 s)
+  2/13  kb_0003.pkl  144 bản ghi  (24 s)
+  3/13  kb_0001.pkl  144 bản ghi  (26 s)
+  4/13  kb_0000.pkl  144 bản ghi  (27 s)
+  5/13  kb_0004.pkl  144 bản ghi  (47 s)
+  6/13  kb_0005.pkl  144 bản ghi  (47 s)
+  7/13  kb_0006.pkl  144 bản ghi  (49 s)
+  8/13  kb_0007.pkl  144 bản ghi  (49 s)
+  9/13  kb_0008.pkl  144 bản ghi  (72 s)
+  10/13  kb_0009.pkl  144 bản ghi  (74 s)
+  11/13  kb_0010.pkl  144 bản ghi  (78 s)
+  12/13  kb_0011.pkl  144 bản ghi  (79 s)
+  13/13  kb_0012.pkl  144 bản ghi  (95 s)
+xong
+  08:59:46 chấm r6 trên c6_b 4-5 luồng
+c6_b K=4-5: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (13 s)
+  2/13  kb_0002.pkl  144 bản ghi  (16 s)
+  3/13  kb_0003.pkl  144 bản ghi  (19 s)
+  4/13  kb_0001.pkl  144 bản ghi  (19 s)
+  5/13  kb_0004.pkl  144 bản ghi  (23 s)
+  6/13  kb_0005.pkl  144 bản ghi  (23 s)
+  7/13  kb_0006.pkl  144 bản ghi  (28 s)
+  8/13  kb_0007.pkl  144 bản ghi  (29 s)
+  9/13  kb_0008.pkl  144 bản ghi  (33 s)
+  10/13  kb_0009.pkl  144 bản ghi  (33 s)
+  11/13  kb_0011.pkl  144 bản ghi  (35 s)
+  12/13  kb_0010.pkl  144 bản ghi  (35 s)
+  13/13  kb_0012.pkl  144 bản ghi  (39 s)
+xong
+  09:00:28 chấm r6_s1 trên c6_b 4-5 luồng
+c6_b K=4-5: 13 tệp, mô hình r6_s1 → khoá r6_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (11 s)
+  2/13  kb_0002.pkl  144 bản ghi  (13 s)
+  3/13  kb_0001.pkl  144 bản ghi  (15 s)
+  4/13  kb_0003.pkl  144 bản ghi  (15 s)
+  5/13  kb_0004.pkl  144 bản ghi  (19 s)
+  6/13  kb_0005.pkl  144 bản ghi  (20 s)
+  7/13  kb_0006.pkl  144 bản ghi  (25 s)
+  8/13  kb_0007.pkl  144 bản ghi  (26 s)
+  9/13  kb_0008.pkl  144 bản ghi  (32 s)
+  10/13  kb_0009.pkl  144 bản ghi  (33 s)
+  11/13  kb_0011.pkl  144 bản ghi  (35 s)
+  12/13  kb_0010.pkl  144 bản ghi  (35 s)
+  13/13  kb_0012.pkl  144 bản ghi  (39 s)
+xong
+  09:01:10 chấm r6_s2 trên c6_b 4-5 luồng
+c6_b K=4-5: 13 tệp, mô hình r6_s2 → khoá r6_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (11 s)
+  2/13  kb_0002.pkl  144 bản ghi  (13 s)
+  3/13  kb_0003.pkl  144 bản ghi  (15 s)
+  4/13  kb_0001.pkl  144 bản ghi  (15 s)
+  5/13  kb_0004.pkl  144 bản ghi  (18 s)
+  6/13  kb_0005.pkl  144 bản ghi  (19 s)
+  7/13  kb_0006.pkl  144 bản ghi  (24 s)
+  8/13  kb_0007.pkl  144 bản ghi  (25 s)
+  9/13  kb_0008.pkl  144 bản ghi  (29 s)
+  10/13  kb_0009.pkl  144 bản ghi  (29 s)
+  11/13  kb_0011.pkl  144 bản ghi  (31 s)
+  12/13  kb_0010.pkl  144 bản ghi  (31 s)
+  13/13  kb_0012.pkl  144 bản ghi  (35 s)
+xong
+  09:01:48 chấm d10 trên c6_b 4-5 luồng
+c6_b K=4-5: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (30 s)
+  2/13  kb_0002.pkl  144 bản ghi  (33 s)
+  3/13  kb_0001.pkl  144 bản ghi  (34 s)
+  4/13  kb_0003.pkl  144 bản ghi  (35 s)
+  5/13  kb_0004.pkl  144 bản ghi  (56 s)
+  6/13  kb_0005.pkl  144 bản ghi  (56 s)
+  7/13  kb_0006.pkl  144 bản ghi  (62 s)
+  8/13  kb_0007.pkl  144 bản ghi  (63 s)
+  9/13  kb_0008.pkl  144 bản ghi  (86 s)
+  10/13  kb_0009.pkl  144 bản ghi  (86 s)
+  11/13  kb_0011.pkl  144 bản ghi  (88 s)
+  12/13  kb_0010.pkl  144 bản ghi  (89 s)
+  13/13  kb_0012.pkl  144 bản ghi  (106 s)
+xong
+  09:03:37 chấm d10_s1 trên c6_b 4-5 luồng
+c6_b K=4-5: 13 tệp, mô hình d10_s1 → khoá d10_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (30 s)
+  2/13  kb_0002.pkl  144 bản ghi  (32 s)
+  3/13  kb_0001.pkl  144 bản ghi  (34 s)
+  4/13  kb_0003.pkl  144 bản ghi  (34 s)
+  5/13  kb_0004.pkl  144 bản ghi  (57 s)
+  6/13  kb_0005.pkl  144 bản ghi  (57 s)
+  7/13  kb_0006.pkl  144 bản ghi  (64 s)
+  8/13  kb_0007.pkl  144 bản ghi  (65 s)
+  9/13  kb_0008.pkl  144 bản ghi  (88 s)
+  10/13  kb_0009.pkl  144 bản ghi  (88 s)
+  11/13  kb_0011.pkl  144 bản ghi  (90 s)
+  12/13  kb_0010.pkl  144 bản ghi  (91 s)
+  13/13  kb_0012.pkl  144 bản ghi  (109 s)
+xong
+  09:05:28 chấm d10_s2 trên c6_b 4-5 luồng
+c6_b K=4-5: 13 tệp, mô hình d10_s2 → khoá d10_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (31 s)
+  2/13  kb_0002.pkl  144 bản ghi  (33 s)
+  3/13  kb_0001.pkl  144 bản ghi  (35 s)
+  4/13  kb_0003.pkl  144 bản ghi  (35 s)
+  5/13  kb_0004.pkl  144 bản ghi  (58 s)
+  6/13  kb_0005.pkl  144 bản ghi  (58 s)
+  7/13  kb_0006.pkl  144 bản ghi  (65 s)
+  8/13  kb_0007.pkl  144 bản ghi  (66 s)
+  9/13  kb_0009.pkl  144 bản ghi  (89 s)
+  10/13  kb_0008.pkl  144 bản ghi  (89 s)
+  11/13  kb_0011.pkl  144 bản ghi  (92 s)
+  12/13  kb_0010.pkl  144 bản ghi  (92 s)
+  13/13  kb_0012.pkl  144 bản ghi  (114 s)
+xong
+  09:07:25 chấm r6 trên yagi5_b 4-5 luồng
+yagi5_b K=4-5: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  144 bản ghi  (7 s)
+  2/13  kb_0003.pkl  144 bản ghi  (7 s)
+  3/13  kb_0001.pkl  144 bản ghi  (8 s)
+  4/13  kb_0000.pkl  144 bản ghi  (9 s)
+  5/13  kb_0005.pkl  144 bản ghi  (13 s)
+  6/13  kb_0004.pkl  144 bản ghi  (13 s)
+  7/13  kb_0006.pkl  144 bản ghi  (14 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (20 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (24 s)
+  12/13  kb_0011.pkl  144 bản ghi  (26 s)
+  13/13  kb_0012.pkl  144 bản ghi  (29 s)
+xong
+  09:07:57 chấm r6_s1 trên yagi5_b 4-5 luồng
+yagi5_b K=4-5: 13 tệp, mô hình r6_s1 → khoá r6_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  144 bản ghi  (7 s)
+  2/13  kb_0003.pkl  144 bản ghi  (7 s)
+  3/13  kb_0001.pkl  144 bản ghi  (8 s)
+  4/13  kb_0000.pkl  144 bản ghi  (9 s)
+  5/13  kb_0004.pkl  144 bản ghi  (12 s)
+  6/13  kb_0005.pkl  144 bản ghi  (12 s)
+  7/13  kb_0006.pkl  144 bản ghi  (13 s)
+  8/13  kb_0007.pkl  144 bản ghi  (14 s)
+  9/13  kb_0008.pkl  144 bản ghi  (19 s)
+  10/13  kb_0009.pkl  144 bản ghi  (21 s)
+  11/13  kb_0010.pkl  144 bản ghi  (23 s)
+  12/13  kb_0011.pkl  144 bản ghi  (25 s)
+  13/13  kb_0012.pkl  144 bản ghi  (28 s)
+xong
+  09:08:28 chấm r6_s2 trên yagi5_b 4-5 luồng
+yagi5_b K=4-5: 13 tệp, mô hình r6_s2 → khoá r6_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  144 bản ghi  (7 s)
+  2/13  kb_0003.pkl  144 bản ghi  (8 s)
+  3/13  kb_0001.pkl  144 bản ghi  (8 s)
+  4/13  kb_0000.pkl  144 bản ghi  (9 s)
+  5/13  kb_0004.pkl  144 bản ghi  (12 s)
+  6/13  kb_0005.pkl  144 bản ghi  (12 s)
+  7/13  kb_0006.pkl  144 bản ghi  (13 s)
+  8/13  kb_0007.pkl  144 bản ghi  (15 s)
+  9/13  kb_0008.pkl  144 bản ghi  (20 s)
+  10/13  kb_0009.pkl  144 bản ghi  (22 s)
+  11/13  kb_0010.pkl  144 bản ghi  (24 s)
+  12/13  kb_0011.pkl  144 bản ghi  (26 s)
+  13/13  kb_0012.pkl  144 bản ghi  (29 s)
+xong
+  09:09:00 chấm d10 trên yagi5_b 4-5 luồng
+yagi5_b K=4-5: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  144 bản ghi  (27 s)
+  2/13  kb_0003.pkl  144 bản ghi  (28 s)
+  3/13  kb_0001.pkl  144 bản ghi  (29 s)
+  4/13  kb_0000.pkl  144 bản ghi  (30 s)
+  5/13  kb_0004.pkl  144 bản ghi  (53 s)
+  6/13  kb_0005.pkl  144 bản ghi  (53 s)
+  7/13  kb_0006.pkl  144 bản ghi  (55 s)
+  8/13  kb_0007.pkl  144 bản ghi  (55 s)
+  9/13  kb_0008.pkl  144 bản ghi  (79 s)
+  10/13  kb_0009.pkl  144 bản ghi  (83 s)
+  11/13  kb_0010.pkl  144 bản ghi  (86 s)
+  12/13  kb_0011.pkl  144 bản ghi  (86 s)
+  13/13  kb_0012.pkl  144 bản ghi  (104 s)
+xong
+  09:10:46 chấm d10_s1 trên yagi5_b 4-5 luồng
+yagi5_b K=4-5: 13 tệp, mô hình d10_s1 → khoá d10_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  144 bản ghi  (27 s)
+  2/13  kb_0001.pkl  144 bản ghi  (29 s)
+  3/13  kb_0000.pkl  144 bản ghi  (29 s)
+  4/13  kb_0002.pkl  144 bản ghi  (30 s)
+  5/13  kb_0004.pkl  144 bản ghi  (51 s)
+  6/13  kb_0005.pkl  144 bản ghi  (52 s)
+  7/13  kb_0006.pkl  144 bản ghi  (54 s)
+  8/13  kb_0007.pkl  144 bản ghi  (56 s)
+  9/13  kb_0008.pkl  144 bản ghi  (81 s)
+  10/13  kb_0009.pkl  144 bản ghi  (86 s)
+  11/13  kb_0010.pkl  144 bản ghi  (88 s)
+  12/13  kb_0011.pkl  144 bản ghi  (93 s)
+  13/13  kb_0012.pkl  144 bản ghi  (106 s)
+xong
+  09:12:35 chấm d10_s2 trên yagi5_b 4-5 luồng
+yagi5_b K=4-5: 13 tệp, mô hình d10_s2 → khoá d10_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  144 bản ghi  (26 s)
+  2/13  kb_0003.pkl  144 bản ghi  (26 s)
+  3/13  kb_0001.pkl  144 bản ghi  (28 s)
+  4/13  kb_0000.pkl  144 bản ghi  (28 s)
+  5/13  kb_0004.pkl  144 bản ghi  (50 s)
+  6/13  kb_0005.pkl  144 bản ghi  (51 s)
+  7/13  kb_0006.pkl  144 bản ghi  (53 s)
+  8/13  kb_0007.pkl  144 bản ghi  (53 s)
+  9/13  kb_0008.pkl  144 bản ghi  (76 s)
+  10/13  kb_0009.pkl  144 bản ghi  (80 s)
+  11/13  kb_0010.pkl  144 bản ghi  (83 s)
+  12/13  kb_0011.pkl  144 bản ghi  (84 s)
+  13/13  kb_0012.pkl  144 bản ghi  (102 s)
+xong
+  09:14:19 chấm r6 trên ngay9 4-5 luồng
+ngay9 K=4-5: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (12 s)
+  2/13  kb_0001.pkl  144 bản ghi  (14 s)
+  3/13  kb_0002.pkl  144 bản ghi  (16 s)
+  4/13  kb_0003.pkl  144 bản ghi  (18 s)
+  5/13  kb_0004.pkl  144 bản ghi  (21 s)
+  6/13  kb_0005.pkl  144 bản ghi  (23 s)
+  7/13  kb_0006.pkl  144 bản ghi  (28 s)
+  8/13  kb_0007.pkl  144 bản ghi  (29 s)
+  9/13  kb_0008.pkl  144 bản ghi  (35 s)
+  10/13  kb_0009.pkl  144 bản ghi  (38 s)
+  11/13  kb_0010.pkl  144 bản ghi  (38 s)
+  12/13  kb_0011.pkl  144 bản ghi  (39 s)
+  13/13  kb_0012.pkl  144 bản ghi  (42 s)
+xong
+  09:15:04 chấm r6_s1 trên ngay9 4-5 luồng
+ngay9 K=4-5: 13 tệp, mô hình r6_s1 → khoá r6_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (12 s)
+  2/13  kb_0001.pkl  144 bản ghi  (15 s)
+  3/13  kb_0002.pkl  144 bản ghi  (17 s)
+  4/13  kb_0003.pkl  144 bản ghi  (19 s)
+  5/13  kb_0004.pkl  144 bản ghi  (21 s)
+  6/13  kb_0005.pkl  144 bản ghi  (22 s)
+  7/13  kb_0006.pkl  144 bản ghi  (26 s)
+  8/13  kb_0007.pkl  144 bản ghi  (27 s)
+  9/13  kb_0008.pkl  144 bản ghi  (32 s)
+  10/13  kb_0009.pkl  144 bản ghi  (35 s)
+  11/13  kb_0010.pkl  144 bản ghi  (35 s)
+  12/13  kb_0011.pkl  144 bản ghi  (35 s)
+  13/13  kb_0012.pkl  144 bản ghi  (39 s)
+xong
+  09:15:46 chấm r6_s2 trên ngay9 4-5 luồng
+ngay9 K=4-5: 13 tệp, mô hình r6_s2 → khoá r6_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (11 s)
+  2/13  kb_0001.pkl  144 bản ghi  (13 s)
+  3/13  kb_0002.pkl  144 bản ghi  (14 s)
+  4/13  kb_0003.pkl  144 bản ghi  (16 s)
+  5/13  kb_0004.pkl  144 bản ghi  (19 s)
+  6/13  kb_0005.pkl  144 bản ghi  (20 s)
+  7/13  kb_0006.pkl  144 bản ghi  (24 s)
+  8/13  kb_0007.pkl  144 bản ghi  (25 s)
+  9/13  kb_0008.pkl  144 bản ghi  (30 s)
+  10/13  kb_0009.pkl  144 bản ghi  (32 s)
+  11/13  kb_0011.pkl  144 bản ghi  (33 s)
+  12/13  kb_0010.pkl  144 bản ghi  (33 s)
+  13/13  kb_0012.pkl  144 bản ghi  (37 s)
+xong
+  09:16:26 chấm d10 trên ngay9 4-5 luồng
+ngay9 K=4-5: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (29 s)
+  2/13  kb_0001.pkl  144 bản ghi  (32 s)
+  3/13  kb_0002.pkl  144 bản ghi  (34 s)
+  4/13  kb_0003.pkl  144 bản ghi  (35 s)
+  5/13  kb_0004.pkl  144 bản ghi  (56 s)
+  6/13  kb_0005.pkl  144 bản ghi  (57 s)
+  7/13  kb_0006.pkl  144 bản ghi  (62 s)
+  8/13  kb_0007.pkl  144 bản ghi  (62 s)
+  9/13  kb_0008.pkl  144 bản ghi  (86 s)
+  10/13  kb_0009.pkl  144 bản ghi  (88 s)
+  11/13  kb_0011.pkl  144 bản ghi  (89 s)
+  12/13  kb_0010.pkl  144 bản ghi  (89 s)
+  13/13  kb_0012.pkl  144 bản ghi  (106 s)
+xong
+  09:18:15 chấm d10_s1 trên ngay9 4-5 luồng
+ngay9 K=4-5: 13 tệp, mô hình d10_s1 → khoá d10_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (32 s)
+  2/13  kb_0001.pkl  144 bản ghi  (35 s)
+  3/13  kb_0002.pkl  144 bản ghi  (37 s)
+  4/13  kb_0003.pkl  144 bản ghi  (39 s)
+  5/13  kb_0004.pkl  144 bản ghi  (64 s)
+  6/13  kb_0005.pkl  144 bản ghi  (65 s)
+  7/13  kb_0006.pkl  144 bản ghi  (70 s)
+  8/13  kb_0007.pkl  144 bản ghi  (70 s)
+  9/13  kb_0008.pkl  144 bản ghi  (99 s)
+  10/13  kb_0011.pkl  144 bản ghi  (101 s)
+  11/13  kb_0009.pkl  144 bản ghi  (101 s)
+  12/13  kb_0010.pkl  144 bản ghi  (102 s)
+  13/13  kb_0012.pkl  144 bản ghi  (120 s)
+xong
+  09:20:18 chấm d10_s2 trên ngay9 4-5 luồng
+ngay9 K=4-5: 13 tệp, mô hình d10_s2 → khoá d10_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  144 bản ghi  (34 s)
+  2/13  kb_0001.pkl  144 bản ghi  (37 s)
+  3/13  kb_0002.pkl  144 bản ghi  (40 s)
+  4/13  kb_0003.pkl  144 bản ghi  (42 s)
+  5/13  kb_0004.pkl  144 bản ghi  (64 s)
+  6/13  kb_0005.pkl  144 bản ghi  (65 s)
+  7/13  kb_0006.pkl  144 bản ghi  (71 s)
+  8/13  kb_0007.pkl  144 bản ghi  (71 s)
+  9/13  kb_0008.pkl  144 bản ghi  (100 s)
+  10/13  kb_0009.pkl  144 bản ghi  (103 s)
+  11/13  kb_0011.pkl  144 bản ghi  (103 s)
+  12/13  kb_0010.pkl  144 bản ghi  (104 s)
+  13/13  kb_0012.pkl  144 bản ghi  (123 s)
+xong
+  09:22:23 chấm r6 trên nam9 4-5 luồng
+nam9 K=4-5: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  144 bản ghi  (10 s)
+  2/13  kb_0001.pkl  144 bản ghi  (15 s)
+  3/13  kb_0000.pkl  144 bản ghi  (15 s)
+  4/13  kb_0002.pkl  144 bản ghi  (16 s)
+  5/13  kb_0005.pkl  144 bản ghi  (21 s)
+  6/13  kb_0004.pkl  144 bản ghi  (25 s)
+  7/13  kb_0006.pkl  144 bản ghi  (25 s)
+  8/13  kb_0007.pkl  144 bản ghi  (28 s)
+  9/13  kb_0008.pkl  144 bản ghi  (30 s)
+  10/13  kb_0009.pkl  144 bản ghi  (33 s)
+  11/13  kb_0010.pkl  144 bản ghi  (35 s)
+  12/13  kb_0012.pkl  144 bản ghi  (35 s)
+  13/13  kb_0011.pkl  144 bản ghi  (38 s)
+xong
+  09:23:04 chấm r6_s1 trên nam9 4-5 luồng
+nam9 K=4-5: 13 tệp, mô hình r6_s1 → khoá r6_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giáTN10: đã bật HighQoS cho tiến trình đánh giá
+
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  144 bản ghi  (10 s)
+  2/13  kb_0001.pkl  144 bản ghi  (15 s)
+  3/13  kb_0000.pkl  144 bản ghi  (15 s)
+  4/13  kb_0002.pkl  144 bản ghi  (16 s)
+  5/13  kb_0005.pkl  144 bản ghi  (21 s)
+  6/13  kb_0006.pkl  144 bản ghi  (24 s)
+  7/13  kb_0004.pkl  144 bản ghi  (24 s)
+  8/13  kb_0007.pkl  144 bản ghi  (28 s)
+  9/13  kb_0008.pkl  144 bản ghi  (29 s)
+  10/13  kb_0009.pkl  144 bản ghi  (32 s)
+  11/13  kb_0010.pkl  144 bản ghi  (34 s)
+  12/13  kb_0012.pkl  144 bản ghi  (34 s)
+  13/13  kb_0011.pkl  144 bản ghi  (37 s)
+xong
+  09:23:44 chấm r6_s2 trên nam9 4-5 luồng
+nam9 K=4-5: 13 tệp, mô hình r6_s2 → khoá r6_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  144 bản ghi  (11 s)
+  2/13  kb_0001.pkl  144 bản ghi  (16 s)
+  3/13  kb_0000.pkl  144 bản ghi  (17 s)
+  4/13  kb_0002.pkl  144 bản ghi  (17 s)
+  5/13  kb_0005.pkl  144 bản ghi  (23 s)
+  6/13  kb_0004.pkl  144 bản ghi  (26 s)
+  7/13  kb_0006.pkl  144 bản ghi  (26 s)
+  8/13  kb_0007.pkl  144 bản ghi  (30 s)
+  9/13  kb_0008.pkl  144 bản ghi  (31 s)
+  10/13  kb_0009.pkl  144 bản ghi  (34 s)
+  11/13  kb_0010.pkl  144 bản ghi  (36 s)
+  12/13  kb_0012.pkl  144 bản ghi  (36 s)
+  13/13  kb_0011.pkl  144 bản ghi  (39 s)
+xong
+  09:24:25 chấm d10 trên nam9 4-5 luồng
+nam9 K=4-5: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  144 bản ghi  (31 s)
+  2/13  kb_0000.pkl  144 bản ghi  (36 s)
+  3/13  kb_0001.pkl  144 bản ghi  (36 s)
+  4/13  kb_0002.pkl  144 bản ghi  (37 s)
+  5/13  kb_0005.pkl  144 bản ghi  (62 s)
+  6/13  kb_0006.pkl  144 bản ghi  (65 s)
+  7/13  kb_0004.pkl  144 bản ghi  (66 s)
+  8/13  kb_0007.pkl  144 bản ghi  (70 s)
+  9/13  kb_0008.pkl  144 bản ghi  (90 s)
+  10/13  kb_0009.pkl  144 bản ghi  (93 s)
+  11/13  kb_0010.pkl  144 bản ghi  (96 s)
+  12/13  kb_0011.pkl  144 bản ghi  (100 s)
+  13/13  kb_0012.pkl  144 bản ghi  (111 s)
+xong
+  09:26:19 chấm d10_s1 trên nam9 4-5 luồng
+nam9 K=4-5: 13 tệp, mô hình d10_s1 → khoá d10_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  144 bản ghi  (30 s)
+  2/13  kb_0000.pkl  144 bản ghi  (35 s)
+  3/13  kb_0001.pkl  144 bản ghi  (35 s)
+  4/13  kb_0002.pkl  144 bản ghi  (36 s)
+  5/13  kb_0005.pkl  144 bản ghi  (60 s)
+  6/13  kb_0006.pkl  144 bản ghi  (64 s)
+  7/13  kb_0004.pkl  144 bản ghi  (64 s)
+  8/13  kb_0007.pkl  144 bản ghi  (69 s)
+  9/13  kb_0008.pkl  144 bản ghi  (87 s)
+  10/13  kb_0009.pkl  144 bản ghi  (90 s)
+  11/13  kb_0010.pkl  144 bản ghi  (93 s)
+  12/13  kb_0011.pkl  144 bản ghi  (97 s)
+  13/13  kb_0012.pkl  144 bản ghi  (107 s)
+xong
+  09:28:08 chấm d10_s2 trên nam9 4-5 luồng
+nam9 K=4-5: 13 tệp, mô hình d10_s2 → khoá d10_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  144 bản ghi  (31 s)
+  2/13  kb_0001.pkl  144 bản ghi  (36 s)
+  3/13  kb_0000.pkl  144 bản ghi  (36 s)
+  4/13  kb_0002.pkl  144 bản ghi  (37 s)
+  5/13  kb_0005.pkl  144 bản ghi  (60 s)
+  6/13  kb_0006.pkl  144 bản ghi  (63 s)
+  7/13  kb_0004.pkl  144 bản ghi  (64 s)
+  8/13  kb_0007.pkl  144 bản ghi  (68 s)
+  9/13  kb_0008.pkl  144 bản ghi  (87 s)
+  10/13  kb_0009.pkl  144 bản ghi  (91 s)
+  11/13  kb_0010.pkl  144 bản ghi  (93 s)
+  12/13  kb_0011.pkl  144 bản ghi  (97 s)
+  13/13  kb_0012.pkl  144 bản ghi  (107 s)
+xong
+  09:29:58 chấm r6 trên bao9 4-5 luồng
+bao9 K=4-5: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0001.pkl  144 bản ghi  (8 s)
+  2/13  kb_0000.pkl  144 bản ghi  (9 s)
+  3/13  kb_0003.pkl  144 bản ghi  (14 s)
+  4/13  kb_0002.pkl  144 bản ghi  (17 s)
+  5/13  kb_0006.pkl  144 bản ghi  (20 s)
+  6/13  kb_0005.pkl  144 bản ghi  (20 s)
+  7/13  kb_0004.pkl  144 bản ghi  (24 s)
+  8/13  kb_0008.pkl  144 bản ghi  (26 s)
+  9/13  kb_0009.pkl  144 bản ghi  (26 s)
+  10/13  kb_0007.pkl  144 bản ghi  (29 s)
+  11/13  kb_0010.pkl  144 bản ghi  (29 s)
+  12/13  kb_0012.pkl  144 bản ghi  (37 s)
+  13/13  kb_0011.pkl  144 bản ghi  (40 s)
+xong
+  09:30:41 chấm r6_s1 trên bao9 4-5 luồng
+bao9 K=4-5: 13 tệp, mô hình r6_s1 → khoá r6_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0001.pkl  144 bản ghi  (9 s)
+  2/13  kb_0000.pkl  144 bản ghi  (10 s)
+  3/13  kb_0003.pkl  144 bản ghi  (14 s)
+  4/13  kb_0002.pkl  144 bản ghi  (18 s)
+  5/13  kb_0005.pkl  144 bản ghi  (20 s)
+  6/13  kb_0006.pkl  144 bản ghi  (20 s)
+  7/13  kb_0004.pkl  144 bản ghi  (24 s)
+  8/13  kb_0008.pkl  144 bản ghi  (26 s)
+  9/13  kb_0009.pkl  144 bản ghi  (27 s)
+  10/13  kb_0007.pkl  144 bản ghi  (30 s)
+  11/13  kb_0010.pkl  144 bản ghi  (30 s)
+  12/13  kb_0012.pkl  144 bản ghi  (36 s)
+  13/13  kb_0011.pkl  144 bản ghi  (40 s)
+xong
+  09:31:23 chấm r6_s2 trên bao9 4-5 luồng
+bao9 K=4-5: 13 tệp, mô hình r6_s2 → khoá r6_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0001.pkl  144 bản ghi  (8 s)
+  2/13  kb_0000.pkl  144 bản ghi  (9 s)
+  3/13  kb_0003.pkl  144 bản ghi  (15 s)
+  4/13  kb_0002.pkl  144 bản ghi  (18 s)
+  5/13  kb_0005.pkl  144 bản ghi  (21 s)
+  6/13  kb_0006.pkl  144 bản ghi  (21 s)
+  7/13  kb_0004.pkl  144 bản ghi  (25 s)
+  8/13  kb_0008.pkl  144 bản ghi  (27 s)
+  9/13  kb_0009.pkl  144 bản ghi  (28 s)
+  10/13  kb_0007.pkl  144 bản ghi  (30 s)
+  11/13  kb_0010.pkl  144 bản ghi  (30 s)
+  12/13  kb_0012.pkl  144 bản ghi  (37 s)
+  13/13  kb_0011.pkl  144 bản ghi  (41 s)
+xong
+  09:32:06 chấm d10 trên bao9 4-5 luồng
+bao9 K=4-5: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0001.pkl  144 bản ghi  (28 s)
+  2/13  kb_0000.pkl  144 bản ghi  (31 s)
+  3/13  kb_0003.pkl  144 bản ghi  (34 s)
+  4/13  kb_0002.pkl  144 bản ghi  (38 s)
+  5/13  kb_0006.pkl  144 bản ghi  (59 s)
+  6/13  kb_0005.pkl  144 bản ghi  (64 s)
+  7/13  kb_0004.pkl  144 bản ghi  (66 s)
+  8/13  kb_0007.pkl  144 bản ghi  (70 s)
+  9/13  kb_0008.pkl  144 bản ghi  (83 s)
+  10/13  kb_0010.pkl  144 bản ghi  (90 s)
+  11/13  kb_0009.pkl  144 bản ghi  (91 s)
+  12/13  kb_0011.pkl  144 bản ghi  (105 s)
+  13/13  kb_0012.pkl  144 bản ghi  (110 s)
+xong
+  09:34:00 chấm d10_s1 trên bao9 4-5 luồng
+bao9 K=4-5: 13 tệp, mô hình d10_s1 → khoá d10_s1
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0001.pkl  144 bản ghi  (28 s)
+  2/13  kb_0000.pkl  144 bản ghi  (29 s)
+  3/13  kb_0003.pkl  144 bản ghi  (34 s)
+  4/13  kb_0002.pkl  144 bản ghi  (38 s)
+  5/13  kb_0005.pkl  144 bản ghi  (60 s)
+  6/13  kb_0006.pkl  144 bản ghi  (60 s)
+  7/13  kb_0004.pkl  144 bản ghi  (65 s)
+  8/13  kb_0007.pkl  144 bản ghi  (71 s)
+  9/13  kb_0008.pkl  144 bản ghi  (85 s)
+  10/13  kb_0009.pkl  144 bản ghi  (86 s)
+  11/13  kb_0010.pkl  144 bản ghi  (88 s)
+  12/13  kb_0011.pkl  144 bản ghi  (105 s)
+  13/13  kb_0012.pkl  144 bản ghi  (110 s)
+xong
+  09:35:52 chấm d10_s2 trên bao9 4-5 luồng
+bao9 K=4-5: 13 tệp, mô hình d10_s2 → khoá d10_s2
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0001.pkl  144 bản ghi  (29 s)
+  2/13  kb_0000.pkl  144 bản ghi  (31 s)
+  3/13  kb_0003.pkl  144 bản ghi  (36 s)
+  4/13  kb_0002.pkl  144 bản ghi  (40 s)
+  5/13  kb_0005.pkl  144 bản ghi  (62 s)
+  6/13  kb_0006.pkl  144 bản ghi  (62 s)
+  7/13  kb_0004.pkl  144 bản ghi  (67 s)
+  8/13  kb_0007.pkl  144 bản ghi  (73 s)
+  9/13  kb_0008.pkl  144 bản ghi  (88 s)
+  10/13  kb_0009.pkl  144 bản ghi  (89 s)
+  11/13  kb_0010.pkl  144 bản ghi  (92 s)
+  12/13  kb_0011.pkl  144 bản ghi  (109 s)
+  13/13  kb_0012.pkl  144 bản ghi  (114 s)
+xong
+  09:37:49 chấm r6 trên c6 10 luồng
+c6 K=10: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  72 bản ghi  (22 s)
+  2/13  kb_0002.pkl  72 bản ghi  (23 s)
+  3/13  kb_0001.pkl  72 bản ghi  (25 s)
+  4/13  kb_0003.pkl  72 bản ghi  (26 s)
+  5/13  kb_0005.pkl  72 bản ghi  (35 s)
+  6/13  kb_0004.pkl  72 bản ghi  (36 s)
+  7/13  kb_0006.pkl  72 bản ghi  (43 s)
+  8/13  kb_0007.pkl  72 bản ghi  (45 s)
+  9/13  kb_0008.pkl  72 bản ghi  (50 s)
+  10/13  kb_0009.pkl  72 bản ghi  (55 s)
+  11/13  kb_0011.pkl  72 bản ghi  (58 s)
+  12/13  kb_0010.pkl  72 bản ghi  (59 s)
+  13/13  kb_0012.pkl  72 bản ghi  (67 s)
+xong
+  09:38:58 chấm d10 trên c6 10 luồng
+c6 K=10: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  72 bản ghi  (50 s)
+  2/13  kb_0002.pkl  72 bản ghi  (51 s)
+  3/13  kb_0001.pkl  72 bản ghi  (53 s)
+  4/13  kb_0003.pkl  72 bản ghi  (53 s)
+  5/13  kb_0005.pkl  72 bản ghi  (84 s)
+  6/13  kb_0004.pkl  72 bản ghi  (86 s)
+  7/13  kb_0006.pkl  72 bản ghi  (93 s)
+  8/13  kb_0007.pkl  72 bản ghi  (96 s)
+  9/13  kb_0008.pkl  72 bản ghi  (122 s)
+  10/13  kb_0009.pkl  72 bản ghi  (126 s)
+  11/13  kb_0011.pkl  72 bản ghi  (129 s)
+  12/13  kb_0010.pkl  72 bản ghi  (130 s)
+  13/13  kb_0012.pkl  72 bản ghi  (151 s)
+xong
+  09:41:32 chấm r6 trên yagi5 10 luồng
+yagi5 K=10: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  72 bản ghi  (8 s)
+  2/13  kb_0002.pkl  72 bản ghi  (9 s)
+  3/13  kb_0001.pkl  72 bản ghi  (11 s)
+  4/13  kb_0000.pkl  72 bản ghi  (14 s)
+  5/13  kb_0004.pkl  72 bản ghi  (14 s)
+  6/13  kb_0005.pkl  72 bản ghi  (15 s)
+  7/13  kb_0006.pkl  72 bản ghi  (17 s)
+  8/13  kb_0007.pkl  72 bản ghi  (21 s)
+  9/13  kb_0008.pkl  72 bản ghi  (24 s)
+  10/13  kb_0009.pkl  72 bản ghi  (28 s)
+  11/13  kb_0010.pkl  72 bản ghi  (34 s)
+  12/13  kb_0011.pkl  72 bản ghi  (39 s)
+  13/13  kb_0012.pkl  72 bản ghi  (40 s)
+xong
+  09:42:15 chấm d10 trên yagi5 10 luồng
+yagi5 K=10: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  72 bản ghi  (29 s)
+  2/13  kb_0002.pkl  72 bản ghi  (30 s)
+  3/13  kb_0001.pkl  72 bản ghi  (33 s)
+  4/13  kb_0000.pkl  72 bản ghi  (37 s)
+  5/13  kb_0004.pkl  72 bản ghi  (56 s)
+  6/13  kb_0005.pkl  72 bản ghi  (57 s)
+  7/13  kb_0006.pkl  72 bản ghi  (59 s)
+  8/13  kb_0007.pkl  72 bản ghi  (65 s)
+  9/13  kb_0008.pkl  72 bản ghi  (88 s)
+  10/13  kb_0009.pkl  72 bản ghi  (94 s)
+  11/13  kb_0010.pkl  72 bản ghi  (99 s)
+  12/13  kb_0011.pkl  72 bản ghi  (106 s)
+  13/13  kb_0012.pkl  72 bản ghi  (121 s)
+xong
+  09:44:19 chấm r6 trên c6_b 10 luồng
+c6_b K=10: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  72 bản ghi  (19 s)
+  2/13  kb_0000.pkl  72 bản ghi  (21 s)
+  3/13  kb_0001.pkl  72 bản ghi  (21 s)
+  4/13  kb_0003.pkl  72 bản ghi  (22 s)
+  5/13  kb_0004.pkl  72 bản ghi  (31 s)
+  6/13  kb_0005.pkl  72 bản ghi  (32 s)
+  7/13  kb_0006.pkl  72 bản ghi  (39 s)
+  8/13  kb_0007.pkl  72 bản ghi  (40 s)
+  9/13  kb_0008.pkl  72 bản ghi  (47 s)
+  10/13  kb_0011.pkl  72 bản ghi  (51 s)
+  11/13  kb_0009.pkl  72 bản ghi  (51 s)
+  12/13  kb_0010.pkl  72 bản ghi  (52 s)
+  13/13  kb_0012.pkl  72 bản ghi  (58 s)
+xong
+  09:45:19 chấm d10 trên c6_b 10 luồng
+c6_b K=10: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  72 bản ghi  (43 s)
+  2/13  kb_0000.pkl  72 bản ghi  (44 s)
+  3/13  kb_0001.pkl  72 bản ghi  (45 s)
+  4/13  kb_0003.pkl  72 bản ghi  (47 s)
+  5/13  kb_0004.pkl  72 bản ghi  (76 s)
+  6/13  kb_0005.pkl  72 bản ghi  (76 s)
+  7/13  kb_0006.pkl  72 bản ghi  (84 s)
+  8/13  kb_0007.pkl  72 bản ghi  (86 s)
+  9/13  kb_0008.pkl  72 bản ghi  (1759 s)
+  10/13  kb_0009.pkl  72 bản ghi  (1764 s)
+  11/13  kb_0011.pkl  72 bản ghi  (1765 s)
+  12/13  kb_0010.pkl  72 bản ghi  (1765 s)
+  13/13  kb_0012.pkl  72 bản ghi  (1791 s)
+xong
+  10:15:13 chấm r6 trên yagi5_b 10 luồng
+yagi5_b K=10: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  72 bản ghi  (7 s)
+  2/13  kb_0002.pkl  72 bản ghi  (8 s)
+  3/13  kb_0001.pkl  72 bản ghi  (11 s)
+  4/13  kb_0000.pkl  72 bản ghi  (13 s)
+  5/13  kb_0004.pkl  72 bản ghi  (14 s)
+  6/13  kb_0005.pkl  72 bản ghi  (14 s)
+  7/13  kb_0006.pkl  72 bản ghi  (16 s)
+  8/13  kb_0007.pkl  72 bản ghi  (19 s)
+  9/13  kb_0008.pkl  72 bản ghi  (22 s)
+  10/13  kb_0009.pkl  72 bản ghi  (26 s)
+  11/13  kb_0010.pkl  72 bản ghi  (31 s)
+  12/13  kb_0011.pkl  72 bản ghi  (36 s)
+  13/13  kb_0012.pkl  72 bản ghi  (37 s)
+xong
+  10:15:53 chấm d10 trên yagi5_b 10 luồng
+yagi5_b K=10: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  72 bản ghi  (27 s)
+  2/13  kb_0002.pkl  72 bản ghi  (28 s)
+  3/13  kb_0001.pkl  72 bản ghi  (31 s)
+  4/13  kb_0000.pkl  72 bản ghi  (35 s)
+  5/13  kb_0004.pkl  72 bản ghi  (59 s)
+  6/13  kb_0005.pkl  72 bản ghi  (60 s)
+  7/13  kb_0006.pkl  72 bản ghi  (62 s)
+  8/13  kb_0007.pkl  72 bản ghi  (70 s)
+  9/13  kb_0008.pkl  72 bản ghi  (96 s)
+  10/13  kb_0009.pkl  72 bản ghi  (102 s)
+  11/13  kb_0010.pkl  72 bản ghi  (109 s)
+  12/13  kb_0011.pkl  72 bản ghi  (115 s)
+  13/13  kb_0012.pkl  72 bản ghi  (132 s)
+xong
+  10:18:07 chấm r6 trên c6 20 luồng
+c6 K=20: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  36 bản ghi  (29 s)
+  2/13  kb_0002.pkl  36 bản ghi  (29 s)
+  3/13  kb_0001.pkl  36 bản ghi  (33 s)
+  4/13  kb_0003.pkl  36 bản ghi  (36 s)
+  5/13  kb_0005.pkl  36 bản ghi  (45 s)
+  6/13  kb_0004.pkl  36 bản ghi  (50 s)
+  7/13  kb_0007.pkl  36 bản ghi  (54 s)
+  8/13  kb_0008.pkl  36 bản ghi  (63 s)
+  9/13  kb_0006.pkl  36 bản ghi  (64 s)
+  10/13  kb_0010.pkl  36 bản ghi  (68 s)
+  11/13  kb_0009.pkl  36 bản ghi  (73 s)
+  12/13  kb_0012.pkl  36 bản ghi  (79 s)
+  13/13  kb_0011.pkl  36 bản ghi  (81 s)
+xong
+  10:19:30 chấm d10 trên c6 20 luồng
+c6 K=20: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  36 bản ghi  (51 s)
+  2/13  kb_0002.pkl  36 bản ghi  (51 s)
+  3/13  kb_0001.pkl  36 bản ghi  (52 s)
+  4/13  kb_0003.pkl  36 bản ghi  (56 s)
+  5/13  kb_0005.pkl  36 bản ghi  (86 s)
+  6/13  kb_0004.pkl  36 bản ghi  (91 s)
+  7/13  kb_0007.pkl  36 bản ghi  (96 s)
+  8/13  kb_0006.pkl  36 bản ghi  (104 s)
+  9/13  kb_0008.pkl  36 bản ghi  (124 s)
+  10/13  kb_0010.pkl  36 bản ghi  (130 s)
+  11/13  kb_0009.pkl  36 bản ghi  (132 s)
+  12/13  kb_0011.pkl  36 bản ghi  (142 s)
+  13/13  kb_0012.pkl  36 bản ghi  (156 s)
+xong
+  10:22:09 chấm r6 trên yagi5 20 luồng
+yagi5 K=20: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  36 bản ghi  (10 s)
+  2/13  kb_0002.pkl  36 bản ghi  (11 s)
+  3/13  kb_0001.pkl  36 bản ghi  (14 s)
+  4/13  kb_0004.pkl  36 bản ghi  (17 s)
+  5/13  kb_0000.pkl  36 bản ghi  (19 s)
+  6/13  kb_0005.pkl  36 bản ghi  (20 s)
+  7/13  kb_0006.pkl  36 bản ghi  (22 s)
+  8/13  kb_0007.pkl  36 bản ghi  (27 s)
+  9/13  kb_0008.pkl  36 bản ghi  (33 s)
+  10/13  kb_0009.pkl  36 bản ghi  (40 s)
+  11/13  kb_0010.pkl  36 bản ghi  (52 s)
+  12/13  kb_0011.pkl  36 bản ghi  (55 s)
+  13/13  kb_0012.pkl  36 bản ghi  (60 s)
+xong
+  10:23:11 chấm d10 trên yagi5 20 luồng
+yagi5 K=20: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  36 bản ghi  (30 s)
+  2/13  kb_0002.pkl  36 bản ghi  (31 s)
+  3/13  kb_0001.pkl  36 bản ghi  (36 s)
+  4/13  kb_0000.pkl  36 bản ghi  (41 s)
+  5/13  kb_0004.pkl  36 bản ghi  (61 s)
+  6/13  kb_0005.pkl  36 bản ghi  (64 s)
+  7/13  kb_0006.pkl  36 bản ghi  (67 s)
+  8/13  kb_0007.pkl  36 bản ghi  (75 s)
+  9/13  kb_0008.pkl  36 bản ghi  (98 s)
+  10/13  kb_0009.pkl  36 bản ghi  (107 s)
+  11/13  kb_0010.pkl  36 bản ghi  (118 s)
+  12/13  kb_0011.pkl  36 bản ghi  (123 s)
+  13/13  kb_0012.pkl  36 bản ghi  (141 s)
+xong
+  10:25:35 chấm r6 trên c6_b 20 luồng
+c6_b K=20: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0000.pkl  36 bản ghi  (27 s)
+  2/13  kb_0002.pkl  36 bản ghi  (27 s)
+  3/13  kb_0003.pkl  36 bản ghi  (33 s)
+  4/13  kb_0001.pkl  36 bản ghi  (34 s)
+  5/13  kb_0005.pkl  36 bản ghi  (43 s)
+  6/13  kb_0004.pkl  36 bản ghi  (50 s)
+  7/13  kb_0007.pkl  36 bản ghi  (54 s)
+  8/13  kb_0006.pkl  36 bản ghi  (63 s)
+  9/13  kb_0008.pkl  36 bản ghi  (67 s)
+  10/13  kb_0010.pkl  36 bản ghi  (71 s)
+  11/13  kb_0009.pkl  36 bản ghi  (75 s)
+  12/13  kb_0011.pkl  36 bản ghi  (80 s)
+  13/13  kb_0012.pkl  36 bản ghi  (82 s)
+xong
+  10:26:59 chấm d10 trên c6_b 20 luồng
+c6_b K=20: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0002.pkl  36 bản ghi  (52 s)
+  2/13  kb_0000.pkl  36 bản ghi  (52 s)
+  3/13  kb_0001.pkl  36 bản ghi  (56 s)
+  4/13  kb_0003.pkl  36 bản ghi  (58 s)
+  5/13  kb_0005.pkl  36 bản ghi  (88 s)
+  6/13  kb_0004.pkl  36 bản ghi  (93 s)
+  7/13  kb_0007.pkl  36 bản ghi  (97 s)
+  8/13  kb_0006.pkl  36 bản ghi  (106 s)
+  9/13  kb_0008.pkl  36 bản ghi  (129 s)
+  10/13  kb_0010.pkl  36 bản ghi  (134 s)
+  11/13  kb_0009.pkl  36 bản ghi  (137 s)
+  12/13  kb_0011.pkl  36 bản ghi  (142 s)
+  13/13  kb_0012.pkl  36 bản ghi  (159 s)
+xong
+  10:29:41 chấm r6 trên yagi5_b 20 luồng
+yagi5_b K=20: 13 tệp, mô hình r6_s0 → khoá r6
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  36 bản ghi  (10 s)
+  2/13  kb_0002.pkl  36 bản ghi  (11 s)
+  3/13  kb_0001.pkl  36 bản ghi  (15 s)
+  4/13  kb_0004.pkl  36 bản ghi  (18 s)
+  5/13  kb_0005.pkl  36 bản ghi  (19 s)
+  6/13  kb_0000.pkl  36 bản ghi  (19 s)
+  7/13  kb_0006.pkl  36 bản ghi  (23 s)
+  8/13  kb_0007.pkl  36 bản ghi  (27 s)
+  9/13  kb_0008.pkl  36 bản ghi  (33 s)
+  10/13  kb_0009.pkl  36 bản ghi  (40 s)
+  11/13  kb_0011.pkl  36 bản ghi  (53 s)
+  12/13  kb_0010.pkl  36 bản ghi  (54 s)
+  13/13  kb_0012.pkl  36 bản ghi  (58 s)
+xong
+  10:30:41 chấm d10 trên yagi5_b 20 luồng
+yagi5_b K=20: 13 tệp, mô hình d10_s0 → khoá d10
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+TN10: đã bật HighQoS cho tiến trình đánh giá
+  1/13  kb_0003.pkl  36 bản ghi  (31 s)
+  2/13  kb_0002.pkl  36 bản ghi  (32 s)
+  3/13  kb_0001.pkl  36 bản ghi  (36 s)
+  4/13  kb_0000.pkl  36 bản ghi  (42 s)
+  5/13  kb_0004.pkl  36 bản ghi  (59 s)
+  6/13  kb_0005.pkl  36 bản ghi  (60 s)
+  7/13  kb_0006.pkl  36 bản ghi  (64 s)
+  8/13  kb_0007.pkl  36 bản ghi  (72 s)
+  9/13  kb_0008.pkl  36 bản ghi  (96 s)
+  10/13  kb_0009.pkl  36 bản ghi  (105 s)
+  11/13  kb_0010.pkl  36 bản ghi  (118 s)
+  12/13  kb_0011.pkl  36 bản ghi  (120 s)
+  13/13  kb_0012.pkl  36 bản ghi  (137 s)
+xong
+[39/39] phân tích thí nghiệm 10
+    python -m scripts.phan_tich_10
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\PBL4_v3\scripts\phan_tich_10.py", line 20, in <module>
+    from scripts.kiem_dinh_boi_9 import ALPHA, bh, holm, p_mot_phia
+ModuleNotFoundError: No module named 'scripts.kiem_dinh_boi_9'
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\PBL4_v3\scripts\chay_tn10.py", line 20, in <module>
+    main()
+  File "D:\PBL4_v3\scripts\chay_thi_nghiem.py", line 324, in main
+    subprocess.run([sys.executable, "-W", "ignore", *lenh], cwd=GOC, check=True)
+  File "C:\Users\OS\AppData\Local\Programs\Python\Python311\Lib\subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['D:\\PBL4\\venv\\Scripts\\python.exe', '-W', 'ignore', '-m', 'scripts.phan_tich_10']' returned non-zero exit status 1.
+
+=== Retry step 39 after adding missing statistical helpers 2026-11-11T10:37:27.216818+07:00 ===
+[39/39] phân tích thí nghiệm 10
+    python -m scripts.phan_tich_10
+Matplotlib is building the font cache; this may take a moment.
+  Kết luận: H10.1: ĐẠT; H10.2: ĐẠT; H10.3: ĐẠT.
+xong — 0 bước đã có sẵn được bỏ qua
+
+=== Rerun step 39 with user-supplied original statistical module 2026-11-11T10:46:17.160287+07:00 ===
+[39/39] phân tích thí nghiệm 10
+    python -m scripts.phan_tich_10
+Matplotlib is building the font cache; this may take a moment.
+  Kết luận: H10.1: ĐẠT; H10.2: ĐẠT; H10.3: ĐẠT.
+xong — 0 bước đã có sẵn được bỏ qua

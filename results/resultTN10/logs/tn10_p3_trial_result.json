@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-11T00:57:47.743933+07:00",
+  "decision": "keep four processes running",
+  "models": [
+    {
+      "model": "e120h128_ab_p0_nhat_ky",
+      "epoch": 37,
+      "mean_seconds": 95.07,
+      "slowdown_percent": 16.8
+    },
+    {
+      "model": "e120h128_ab_p1_nhat_ky",
+      "epoch": 38,
+      "mean_seconds": 94.3,
+      "slowdown_percent": 15.5
+    },
+    {
+      "model": "e120h128_ab_p2_nhat_ky",
+      "epoch": 37,
+      "mean_seconds": 98.05,
+      "slowdown_percent": 17.6
+    },
+    {
+      "model": "e120h128_ab_p3_nhat_ky",
+      "epoch": 3,
+      "mean_seconds": 93.5,
+      "slowdown_percent": null
+    }
+  ],
+  "estimated_aggregate_epoch_rate_gain_percent": 15.0,
+  "guard_tests": [
+    "concurrent requests execute only once",
+    "lock released after killed holder",
+    "completed TN10 model skipped"
+  ],
+  "p3_status": {
+    "pid": 31268,
+    "started_at": "2026-11-11T00:52:13.624266+07:00",
+    "model": "e120h128_ab_p3",
+    "status": "running",
+    "high_qos": true
+  },
+  "checkpoint_exists": true
+}

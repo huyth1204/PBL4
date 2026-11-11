@@ -1,0 +1,30 @@
+{
+  "runner_pid": 27988,
+  "python": "D:\\PBL4\\venv\\Scripts\\python.exe",
+  "started_at": "2026-11-11T10:46:17.160287+07:00",
+  "status": "completed",
+  "workers": 8,
+  "parallel_training": 3,
+  "training_cpu_threads": 5,
+  "command": [
+    "D:\\PBL4\\venv\\Scripts\\python.exe",
+    "-u",
+    "-m",
+    "scripts.chay_tn10",
+    "--tu-buoc",
+    "39",
+    "--tien-trinh",
+    "8",
+    "--song-song",
+    "3",
+    "--luong-cpu",
+    "5"
+  ],
+  "sleep_inhibition_active": false,
+  "resumed_from_step": 39,
+  "previous_run_status": "D:\\PBL4_v3\\logs\\tn10_before_received_module_20261111_104617\\tn10_status.json",
+  "statistics_module": "original file supplied by user",
+  "experiment_pid": 42784,
+  "exit_code": 0,
+  "finished_at": "2026-11-11T10:47:14.089265+07:00"
+}

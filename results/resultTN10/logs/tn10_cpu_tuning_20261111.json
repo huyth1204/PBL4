@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-11T00:43:43.439971",
+  "affinity": "restored to original all 20 logical processors",
+  "power_qos": "HighQoS; ControlMask=1, StateMask=0 for PIDs 4504,29184,41612 only",
+  "processes_restarted": false,
+  "before_epoch24_seconds": [
+    287.4,
+    289.0,
+    289.2
+  ],
+  "after": [
+    {
+      "model": "e120h128_ab_p0_nhat_ky",
+      "epoch": 27,
+      "latest_seconds": 79.73170900344849
+    },
+    {
+      "model": "e120h128_ab_p1_nhat_ky",
+      "epoch": 28,
+      "latest_seconds": 77.23724579811096
+    },
+    {
+      "model": "e120h128_ab_p2_nhat_ky",
+      "epoch": 28,
+      "latest_seconds": 77.39203143119812
+    }
+  ],
+  "backup": "logs/tn10_qos_before_20261111.json",
+  "scope": "current three training processes; future processes not configured"
+}
