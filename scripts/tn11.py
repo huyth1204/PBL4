@@ -61,6 +61,33 @@ def py(*a):
     return [sys.executable, "-W", "ignore", *a]
 
 
+def chay(lenh):
+    """Chạy tiến trình con; mọi dòng đầu ra đi qua print → vào cả màn hình lẫn logs/tn11.log."""
+    env = {**os.environ, "PBL4_KHONG_LOG": "1", "PYTHONIOENCODING": "utf-8"}
+    p = subprocess.Popen(lenh, cwd=GOC, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                         encoding="utf-8", errors="replace", bufsize=1)
+    for dong in p.stdout:
+        print(dong.rstrip("\n"), flush=True)
+    if p.wait():
+        raise SystemExit(f"lỗi (mã {p.returncode}): {' '.join(lenh[3:])}")
+
+
+class _Tee:
+    """Ghi đồng thời ra màn hình và tệp log."""
+
+    def __init__(self, *dich):
+        self.dich = dich
+
+    def write(self, x):
+        for d in self.dich:
+            d.write(x)
+        return len(x)
+
+    def flush(self):
+        for d in self.dich:
+            d.flush()
+
+
 # ============================================================================================ sinh dữ liệu
 def lenh_sinh(a):
     can = [(t, "4-5", True) for t in (*TAP_HOC.values(), *TAP_VAL.values())]
@@ -71,7 +98,7 @@ def lenh_sinh(a):
             continue
         lenh = py("-m", "src.nhieu_luong.tao_du_lieu_dt", "--tap", tap, "--K", K, "--tien-trinh", str(a.tien_trinh))
         print(f"  sinh {d.name}{'' if thay else ' (không thầy)'}", flush=True)
-        subprocess.run(lenh + ([] if thay else ["--khong-thay"]), cwd=GOC, check=True)
+        chay(lenh + ([] if thay else ["--khong-thay"]))
 
 
 # ============================================================================================ làm sạch + chia phần
@@ -701,6 +728,23 @@ def lenh_phan_tich(a):
         ve_thoi_gian(tg)
     viet_md(ra, kt)
     print("  " + "; ".join(f"{k}: {'ĐẠT' if v['dat'] else 'KHÔNG ĐẠT'}" for k, v in gt.items()), flush=True)
+    dong_goi()
+
+
+def dong_goi():
+    """Một tệp để gửi lại: kết quả, biểu đồ, kiểm tra dữ liệu, phần, đường học mọi mô hình, mọi log TN11 (không kèm
+    tệp đệm chấm cv_tep / cham_tep, có thể tạo lại)."""
+    import zipfile
+    tep = KQ / "TN11_ket_qua.zip"
+    gom = [(f, Path("tn11") / f.name) for f in sorted(RA.iterdir()) if f.is_file()]
+    gom += [(f, Path("mo_hinh11") / f.name) for f in sorted(M11.glob("*_nhat_ky.json"))]
+    gom += [(f, Path("logs") / f.name) for f in sorted(LOG.glob("tn11*.log"))]
+    with zipfile.ZipFile(tep, "w", zipfile.ZIP_DEFLATED) as z:
+        for f, ten in gom:
+            z.write(f, str(ten))
+    so = {k: sum(str(t).startswith(k) for _, t in gom) for k in ("tn11", "mo_hinh11", "logs")}
+    print(f"  đã gói {len(gom)} tệp ({so['tn11']} kết quả, {so['mo_hinh11']} đường học, {so['logs']} log) → {tep}",
+          flush=True)
 
 
 def _dong_ro_ri(tap, v):
@@ -827,7 +871,7 @@ def lenh_toi_da(a):
           f"chấm {p['cham']} tiến trình", flush=True)
     a.tien_trinh = p["sinh"]
     buoc("sinh", lenh_sinh, a)
-    buoc("chuan-bi", lambda _: subprocess.run(py("-m", "scripts.tn11", "chuan-bi"), cwd=GOC, check=True), a)
+    buoc("chuan-bi", lambda _: chay(py("-m", "scripts.tn11", "chuan-bi")), a)
     a.song_song, a.luong_cpu, a.thiet_bi = p["hoc"], p["luong"], p["thiet_bi"]
     buoc("huan-luyen", lenh_huan_luyen, a)
     a.tien_trinh = p["cham"]
@@ -858,6 +902,11 @@ def main():
     ap.add_argument("--S", type=int, default=CFG["S"])
     a = ap.parse_args()
     CFG.update(epochs=a.epochs, H=a.H, dung_som=a.dung_som, S=a.S)
+    if not os.environ.get("PBL4_KHONG_LOG"):
+        LOG.mkdir(parents=True, exist_ok=True)
+        f = open(LOG / "tn11.log", "a", encoding="utf-8", buffering=1)
+        sys.stdout, sys.stderr = _Tee(sys.stdout, f), _Tee(sys.stderr, f)
+        print(f"\n##### {time.strftime('%Y-%m-%d %H:%M:%S')}  python -m scripts.tn11 {' '.join(sys.argv[1:])}", flush=True)
     {"sinh": lenh_sinh, "chuan-bi": lenh_chuan_bi, "huan-luyen": lenh_huan_luyen, "cv": lenh_cv, "cham": lenh_cham,
      "phan-tich": lenh_phan_tich, "toi-da": lenh_toi_da}[a.viec](a)
     print("xong", flush=True)
