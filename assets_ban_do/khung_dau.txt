@@ -101,6 +101,12 @@
   .lg.bam:hover{background:rgba(255,255,255,.07)}
   .lg.bam.tat{opacity:.3}
   .lbl .r{color:#8fd8ff;margin-left:4px}
+  .panel-tt{background:rgba(8,16,28,.9);border:1px solid var(--line);border-radius:8px;
+    padding:6px 8px;margin:0 0 8px;max-height:190px;overflow:auto;font-size:11px;line-height:1.5}
+  .panel-tt .tt-dau{color:#7f93a8;margin-bottom:4px;font-weight:600}
+  .panel-tt .tt-dong{padding:3px 0;border-top:1px solid rgba(255,255,255,.06)}
+  .panel-tt .tt-ten{font-weight:600}
+  .panel-tt .tt-chuoi{color:#b9c7d6;word-break:break-word}
   #tip{position:fixed;left:50%;top:14px;transform:translateX(-50%);font-size:11.5px;color:var(--mut);
     pointer-events:none;opacity:.9}
   @media (max-width:900px){#legend{display:none}#hud{width:calc(100% - 32px)}}

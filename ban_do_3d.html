@@ -101,6 +101,12 @@
   .lg.bam:hover{background:rgba(255,255,255,.07)}
   .lg.bam.tat{opacity:.3}
   .lbl .r{color:#8fd8ff;margin-left:4px}
+  .panel-tt{background:rgba(8,16,28,.9);border:1px solid var(--line);border-radius:8px;
+    padding:6px 8px;margin:0 0 8px;max-height:190px;overflow:auto;font-size:11px;line-height:1.5}
+  .panel-tt .tt-dau{color:#7f93a8;margin-bottom:4px;font-weight:600}
+  .panel-tt .tt-dong{padding:3px 0;border-top:1px solid rgba(255,255,255,.06)}
+  .panel-tt .tt-ten{font-weight:600}
+  .panel-tt .tt-chuoi{color:#b9c7d6;word-break:break-word}
   #tip{position:fixed;left:50%;top:14px;transform:translateX(-50%);font-size:11.5px;color:var(--mut);
     pointer-events:none;opacity:.9}
   @media (max-width:900px){#legend{display:none}#hud{width:calc(100% - 32px)}}
@@ -120,6 +126,7 @@
   <div class="chonNut"><label>Nguồn <select id="selNguon"></select></label>
     <label>Đích <select id="selDich"></select></label></div>
   <div id="kqChon" style="font-size:11.5px;color:#8fa3b8;margin:2px 0 6px"></div>
+  <div id="thuTu" class="panel-tt" style="display:none"></div>
   <div class="row"><span class="k"><span class="dot" style="background:var(--green)"></span>Độ trễ đường đi</span><b id="aCost">–</b></div>
   <div class="row"><span class="k"><span class="dot" style="background:var(--blue)"></span>Mưa lớn nhất</span><b id="rainMax">–</b></div>
   <div class="row" id="hangTuyen"><span class="k"><span class="dot" style="background:#00e676"></span>Đường đi: dài · góc ngẩng · băng thông · mất gói</span><b id="tuyenInfo">–</b></div>
@@ -151,6 +158,7 @@
 <div class="lg bam" data-layer="dao"><span class="ic" style="color:#ffe082">◆</span>Quần đảo Hoàng Sa / Trường Sa</div>
   <div class="tg">
     <label><input type="checkbox" id="tLbl" checked>Hiện tên nút</label>
+    <label><input type="checkbox" id="tChieu" checked>Hiện thứ tự đi (chuỗi nút)</label>
   </div>
 </div>
 
@@ -1615,7 +1623,8 @@ function updateHud(fi){ if (fi === lastFi) return; lastFi = fi; const f = F[fi];
   }
 
 /* ---------- chọn NGUỒN / ĐÍCH để xem đường đi ---------- */
-let SRC_CHON = -1, DST_CHON = -1;     // -1 = không lọc (dùng mặc định M.src/M.dst)
+let SRC_CHON = -1, DST_CHON = -1;
+let HIEN_THU_TU = true;      // công tắc: hiện bảng thứ tự đi của tuyến     // -1 = không lọc (dùng mặc định M.src/M.dst)
 /* Hai danh sách chọn, đúng vai trò trong dữ liệu:
    - NGUỒN: nút điểm cuối (user + gateway) — bộ sinh nhãn chỉ chọn src từ đây.
    - ĐÍCH : chỉ gateway (tao_tinh_huong luôn đặt đích ở gateway).
@@ -1702,6 +1711,34 @@ function timDuong(fi, a, b){
 const poolSP = mkPool(0xab47bc, 1.0, 40), poolSDP = mkPool(0x00e676, 1.0, 40),
       poolSDJ = mkPool(0x42a5f5, 1.0, 40);
 
+/* Bảng "THỨ TỰ ĐI" cho cặp đang chọn: mỗi loại tuyến 1 dòng A → B → C …
+   Dùng chung cho DM / dphat / Dijkstra / thầy — nhìn là biết đi qua nút nào, theo thứ tự.
+   Bật/tắt bằng ô "Hiện thứ tự đi" ở Chú thích. */
+const MAU_LOAI = { dm: '#d891ee', dphat: '#7ee8a0', dijkstra: '#7fc4ff', thay: '#cfd8dc' };
+function capNhatThuTu(info){
+  const el = document.getElementById('thuTu');
+  if (!el) return;
+  if (!HIEN_THU_TU || SRC_CHON < 0 || DST_CHON < 0 || !info){
+    el.style.display = 'none';
+    el.innerHTML = '';
+    return;
+  }
+  const dong = [];
+  const them = (ten, loai, d) => {
+    if (!d || !d.nut || d.nut.length < 2) return;
+    const ds = d.nut.map(i => vn(M.names[i]));
+    const chuoi = ds.map((x, k) => `<b style="color:#e8eef5">${k + 1}. ${x}</b>`).join(' → ');
+    dong.push(`<div class="tt-dong"><span class="tt-ten" style="color:${MAU_LOAI[loai] || '#cfd8dc'}">` +
+      `${ten}${d.motLuong ? ' *' : ''} · ${ds.length - 1} chặng</span><div class="tt-chuoi">${chuoi}</div></div>`);
+  };
+  them('DM', 'dm', info.dm);
+  them('dphat', 'dphat', info.dphat);
+  them('Dijkstra', 'dijkstra', info.dij);
+  el.innerHTML = `<div class="tt-dau">Thứ tự đi · ${vn(M.names[SRC_CHON])} → ${vn(M.names[DST_CHON])}</div>` +
+    (dong.length ? dong.join('') : '<div class="tt-dong">không có đường ở mốc này</div>');
+  el.style.display = 'block';
+}
+
 function veDuongChon(fi, r){
   if (SRC_CHON < 0 || DST_CHON < 0){
     setPool(poolSP, [], r); setPool(poolSDP, [], r); setPool(poolSDJ, [], r);
@@ -1768,6 +1805,8 @@ $('vVN').onclick = () => goTo('vn'); $('vGL').onclick = () => goTo('gl');
 /* ISL rất dày (1.850 cạnh) nên ẩn mặc định; liên kết nối đất giữ mờ để thấy mạng. */
 Lisl.l.visible = false; Lacc.l.visible = true;
 $('tLbl').onchange = e => { showLabels = e.target.checked; };
+{ const c = document.getElementById('tChieu');
+  if (c) c.onchange = () => { HIEN_THU_TU = c.checked; lastFi = -1; }; }
 
 /* ---------- bấm vào nút trên quả cầu: hiện bảng thông số ---------- */
 /* Thông số nút thay đổi theo khung -> tra trong F[f0].nuts mỗi lần bấm. */
@@ -1946,9 +1985,15 @@ function frame(now){
   /* Đường đi của cặp NGUỒN/ĐÍCH đang chọn: ống vàng. Không có tuyến -> không vẽ
      và ghi rõ "không có đường đi" (dữ liệu không chứa cặp đó, không bịa đường). */
   { const dChon = veDuongChon(fi, r);
-    if (SRC_CHON >= 0 && DST_CHON >= 0){
-      const o = document.getElementById('kqChon');
-      if (o){
+    capNhatThuTu(dChon);
+    const o = document.getElementById('kqChon');
+    if (o){
+      /* Chưa chọn đủ 2 nút -> xoá hẳn dòng kết quả, không để lại nội dung cũ. */
+      if (SRC_CHON < 0 || DST_CHON < 0){
+        o.textContent = '';
+        o.style.display = 'none';
+      } else {
+        o.style.display = '';
         if (!dChon){
           o.textContent = vn(M.names[SRC_CHON]) + ' → ' + vn(M.names[DST_CHON]) +
             ': không có đường đi ở mốc này';

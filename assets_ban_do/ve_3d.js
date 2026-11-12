@@ -385,7 +385,8 @@ function updateHud(fi){ if (fi === lastFi) return; lastFi = fi; const f = F[fi];
   }
 
 /* ---------- chọn NGUỒN / ĐÍCH để xem đường đi ---------- */
-let SRC_CHON = -1, DST_CHON = -1;     // -1 = không lọc (dùng mặc định M.src/M.dst)
+let SRC_CHON = -1, DST_CHON = -1;
+let HIEN_THU_TU = true;      // công tắc: hiện bảng thứ tự đi của tuyến     // -1 = không lọc (dùng mặc định M.src/M.dst)
 /* Hai danh sách chọn, đúng vai trò trong dữ liệu:
    - NGUỒN: nút điểm cuối (user + gateway) — bộ sinh nhãn chỉ chọn src từ đây.
    - ĐÍCH : chỉ gateway (tao_tinh_huong luôn đặt đích ở gateway).
@@ -472,6 +473,34 @@ function timDuong(fi, a, b){
 const poolSP = mkPool(0xab47bc, 1.0, 40), poolSDP = mkPool(0x00e676, 1.0, 40),
       poolSDJ = mkPool(0x42a5f5, 1.0, 40);
 
+/* Bảng "THỨ TỰ ĐI" cho cặp đang chọn: mỗi loại tuyến 1 dòng A → B → C …
+   Dùng chung cho DM / dphat / Dijkstra / thầy — nhìn là biết đi qua nút nào, theo thứ tự.
+   Bật/tắt bằng ô "Hiện thứ tự đi" ở Chú thích. */
+const MAU_LOAI = { dm: '#d891ee', dphat: '#7ee8a0', dijkstra: '#7fc4ff', thay: '#cfd8dc' };
+function capNhatThuTu(info){
+  const el = document.getElementById('thuTu');
+  if (!el) return;
+  if (!HIEN_THU_TU || SRC_CHON < 0 || DST_CHON < 0 || !info){
+    el.style.display = 'none';
+    el.innerHTML = '';
+    return;
+  }
+  const dong = [];
+  const them = (ten, loai, d) => {
+    if (!d || !d.nut || d.nut.length < 2) return;
+    const ds = d.nut.map(i => vn(M.names[i]));
+    const chuoi = ds.map((x, k) => `<b style="color:#e8eef5">${k + 1}. ${x}</b>`).join(' → ');
+    dong.push(`<div class="tt-dong"><span class="tt-ten" style="color:${MAU_LOAI[loai] || '#cfd8dc'}">` +
+      `${ten}${d.motLuong ? ' *' : ''} · ${ds.length - 1} chặng</span><div class="tt-chuoi">${chuoi}</div></div>`);
+  };
+  them('DM', 'dm', info.dm);
+  them('dphat', 'dphat', info.dphat);
+  them('Dijkstra', 'dijkstra', info.dij);
+  el.innerHTML = `<div class="tt-dau">Thứ tự đi · ${vn(M.names[SRC_CHON])} → ${vn(M.names[DST_CHON])}</div>` +
+    (dong.length ? dong.join('') : '<div class="tt-dong">không có đường ở mốc này</div>');
+  el.style.display = 'block';
+}
+
 function veDuongChon(fi, r){
   if (SRC_CHON < 0 || DST_CHON < 0){
     setPool(poolSP, [], r); setPool(poolSDP, [], r); setPool(poolSDJ, [], r);
@@ -538,6 +567,8 @@ $('vVN').onclick = () => goTo('vn'); $('vGL').onclick = () => goTo('gl');
 /* ISL rất dày (1.850 cạnh) nên ẩn mặc định; liên kết nối đất giữ mờ để thấy mạng. */
 Lisl.l.visible = false; Lacc.l.visible = true;
 $('tLbl').onchange = e => { showLabels = e.target.checked; };
+{ const c = document.getElementById('tChieu');
+  if (c) c.onchange = () => { HIEN_THU_TU = c.checked; lastFi = -1; }; }
 
 /* ---------- bấm vào nút trên quả cầu: hiện bảng thông số ---------- */
 /* Thông số nút thay đổi theo khung -> tra trong F[f0].nuts mỗi lần bấm. */
@@ -716,9 +747,15 @@ function frame(now){
   /* Đường đi của cặp NGUỒN/ĐÍCH đang chọn: ống vàng. Không có tuyến -> không vẽ
      và ghi rõ "không có đường đi" (dữ liệu không chứa cặp đó, không bịa đường). */
   { const dChon = veDuongChon(fi, r);
-    if (SRC_CHON >= 0 && DST_CHON >= 0){
-      const o = document.getElementById('kqChon');
-      if (o){
+    capNhatThuTu(dChon);
+    const o = document.getElementById('kqChon');
+    if (o){
+      /* Chưa chọn đủ 2 nút -> xoá hẳn dòng kết quả, không để lại nội dung cũ. */
+      if (SRC_CHON < 0 || DST_CHON < 0){
+        o.textContent = '';
+        o.style.display = 'none';
+      } else {
+        o.style.display = '';
         if (!dChon){
           o.textContent = vn(M.names[SRC_CHON]) + ' → ' + vn(M.names[DST_CHON]) +
             ': không có đường đi ở mốc này';
