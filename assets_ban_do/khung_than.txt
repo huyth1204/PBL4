@@ -6,6 +6,8 @@
 
 <div id="hud" class="panel">
   <h1>Mạng SAGSIN Việt Nam · 3D</h1>
+  <a id="thongKeTN" href="results/bao_da_tuyen/demo_thong_ke/index.html" target="_blank" rel="noopener" style="display:inline-block;margin:8px 0;padding:7px 10px;border:1px solid #4fc3f7;border-radius:8px;color:#4fc3f7;text-decoration:none;font-size:12px">Thống kê TN6 / TN11 ↗</a>
+  <a id="chaySoSanhTN" href="results/bao_da_tuyen/demo_thong_ke/chay_so_sanh.html" target="_blank" rel="noopener" style="display:inline-block;margin:0 0 8px;padding:7px 10px;border:1px solid #00e676;border-radius:8px;color:#9fffc5;text-decoration:none;font-size:12px">▶ Chạy so sánh TN6 / TN11</a>
   <div class="ev" id="ev"></div>
   <div id="clock">--<small>giờ VN</small></div>
   <div id="hangLuong"></div>
