@@ -446,6 +446,7 @@ a{color:#2563a6}nav a{display:block;padding:5px}.tag{color:#12836a;font-weight:7
 </style><main><header><span class="tag">PBL4 · DEMO KẾT QUẢ ĐÃ CHẠY</span>
 <h1>Từ tuyến minh họa<br>đến bằng chứng thống kê</h1>
 <p>TN6 trên nhánh demo và TN11 trên máy nhóm. Hình từ số liệu thật; không huấn luyện lại.</p>
+<a class="button" href="chay_so_sanh.html">▶ Chạy so sánh & xuất dữ liệu</a>
 <a class="button" href="duong_hoc_tuong_tac.html">Chọn mô hình & xem đường học</a>
 <a href="HUONG_DAN_DEMO.md">Kịch bản thuyết trình & giới hạn</a>
 <p class="note">TN6 gốc: chưa có nhật ký DM6 và kết quả 4-fold trong gói demo đã kiểm tra.

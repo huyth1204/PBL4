@@ -2,6 +2,9 @@
 
 ## Mở và sử dụng
 
+- Mở `chay_so_sanh.html`: chọn TN11 test / TN11 cross-validation / TN6 gốc, chọn dữ liệu và hai phương pháp, rồi bấm **Chạy so sánh**. Kết quả chưa được tính cho đến khi bấm nút. Đổi lựa chọn sẽ xóa kết quả cũ để tránh xuất nhầm.
+- Tải CSV tổng hợp, CSV theo cửa sổ/dải tải, JSON cấu hình lần chạy hoặc SVG bằng các nút dưới kết quả. File CSV ghi đủ bộ lọc và nguồn SHA-256.
+- Trang so sánh tự chứa dữ liệu và mã, chạy offline khi gửi riêng file HTML; không cần Python, GPU hoặc mạng. Nút không huấn luyện, không sinh thời tiết, không suy luận lại mô hình.
 - Mở `index.html`: bộ hình và lời dẫn; ảnh được nhúng nên xem được offline.
 - Mở `duong_hoc_tuong_tac.html`: chọn một trong 21 mô hình TN11, rê chuột đọc số, zoom và xuất SVG bằng nút máy ảnh. Trang này cũng chạy offline.
 - PNG độ phân giải cao dùng cho slide; SVG dùng khi cần phóng to. Bảng số nằm trong `csv/`.
@@ -23,6 +26,18 @@ Bản đồ `ban_do_3d.html` và template `assets_ban_do/khung_than.txt` đã c�
 Đường dẫn trên dùng khi bản đồ HTML ở gốc repo. Có thể mở sẵn hai tab thay vì sửa template: một tab bản đồ, một tab báo cáo này. Khi chia sẻ, tải nhánh `demo` bằng Code → Download ZIP, giải nén toàn bộ rồi mở `ban_do_3d.html` hoặc `results/bao_da_tuyen/demo_thong_ke/index.html`. GitHub xem mã nguồn HTML; muốn xem bằng một URL trực tiếp cần hosting riêng.
 
 ## Kịch bản thuyết trình 6–8 phút
+
+### Thao tác chạy so sánh trực tiếp
+
+1. Từ bản đồ bấm **Chạy so sánh TN6 / TN11**.
+2. Giữ **TN11 · tập kiểm tra độc lập**, bộ **C · cực đoan WH · K=4–5**, A = **Lai(DM11)**, B = **Dijkstra phạt**, trung bình 3 seed, 10.000 lần bootstrap.
+3. Bấm **Chạy so sánh**: số tình huống là 1.872, 13 cửa sổ, hiệu mất dịch vụ khoảng −1,516 điểm %. CI được tính mới và có thể lệch nhẹ với báo cáo Python do bộ sinh số ngẫu nhiên khác.
+4. Đổi B sang **Lai(DM10c)**, chạy lại để phân biệt lợi ích so với đối chứng định tuyến và lợi ích riêng của bổ sung dữ liệu cực đoan. Có thể đổi dải tải, seed mô hình hoặc bỏ cửa sổ kề ngày học; mỗi lần phải chạy lại.
+5. Chọn **TN11 · cross-validation**, giữ **CV · cực đoan**, A = **SM11 ngoài fold**, B = **SM11 đã học** để xem chênh lệch chẩn đoán học thuộc. Có thể chọn fold; nếu chỉ còn một cửa sổ, không xuất CI giả.
+6. Chọn **TN6 · báo cáo gốc**, **C · K=4–5**, tải thấp, **Lai6 − Dijkstra phạt**. Trang lấy đúng CI gốc. Gộp tải hoặc chọn cặp chưa có CI thì chỉ hiển thị trung bình/chênh lệch, ghi rõ thiếu dữ liệu cửa sổ để bootstrap lại.
+7. Bấm **Bảng kết quả CSV** hoặc **Biểu đồ SVG** để xuất kết quả đúng cấu hình đang xem.
+
+Lưu ý: dải tải TN6 phân theo `rho_hat`, TN11 phân theo `muc`; không coi các nhãn thấp/giữa/cao ở hai thí nghiệm là cùng một cách chia. CI trên trang là CI từng phép so sánh, chưa hiệu chỉnh đa kiểm định; không thay kết luận H11.1–H11.4 bằng lựa chọn thuận lợi sau khi xem kết quả. Bootstrap dùng Mulberry32, seed mặc định 0, percentile nội suy tuyến tính. Đơn vị lấy mẫu lại vẫn là cửa sổ, không phải cơn bão hay seed mô hình.
 
 ### 1. Bản đồ TN6: cơ chế, khoảng 45 giây
 
