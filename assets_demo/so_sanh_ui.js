@@ -77,7 +77,7 @@
     const x = v => 510 + v / deltaMax * 320;
     const text = (xx, yy, s, extra = '') => `<text x="${xx}" y="${yy}" ${extra}>${esc(s)}</text>`;
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 480" role="img" aria-label="So sánh trung bình và khoảng tin cậy" style="font:14px system-ui,sans-serif;fill:#203047"><rect width="940" height="480" fill="white"/>`;
-    svg += text(26, 32, `${$('dataset').selectedOptions[0].textContent} · ${$('metric').selectedOptions[0].textContent}`, 'font-size="18" font-weight="650"');
+    svg += text(26, 32, `${$('dataset').selectedOptions[0].textContent} · ${$('metric').selectedOptions[0].textContent}`, 'font-size="16" font-weight="600"');
     const filters = `Tải: ${$('band').selectedOptions[0].textContent}`
       + (c.kind === 'test' ? ` · ${$('seed').selectedOptions[0].textContent}` : c.kind === 'cv' ? ` · ${$('fold').selectedOptions[0].textContent}` : ' · TN6 gốc')
       + (c.excludeAdjacent ? ' · bỏ cửa sổ kề ngày học' : '');
@@ -85,7 +85,7 @@
     [result.meanA, result.meanB].forEach((v, i) => {
       const yy = 88 + i * 66;
       svg += text(26, yy + 23, i === 0 ? A : B, 'font-size="13"');
-      svg += `<rect x="190" y="${yy}" width="${bar(v)}" height="34" rx="4" fill="${i === 0 ? '#2563a6' : '#8495a9'}"/>`;
+      svg += `<rect x="190" y="${yy}" width="${bar(v)}" height="34" rx="4" fill="${i === 0 ? '#365977' : '#8c959d'}"/>`;
       svg += text(198 + bar(v), yy + 23, `${fmt(v)} ${u}`, 'font-size="13"');
     });
     svg += text(26, 250, `Hiệu A − B (${du})`, 'font-size="16" font-weight="650"');
@@ -94,11 +94,11 @@
     svg += text(510, 347, '0', 'text-anchor="middle"');
     svg += text(830, 347, fmt(deltaMax), 'text-anchor="middle"');
     if (result.ci) {
-      const color = result.ci[1] < 0 ? '#137b65' : result.ci[0] > 0 ? '#b24937' : '#637087';
+      const color = result.ci[1] < 0 ? '#466b58' : result.ci[0] > 0 ? '#9d433a' : '#637087';
       svg += `<line x1="${x(result.ci[0])}" y1="300" x2="${x(result.ci[1])}" y2="300" stroke="${color}" stroke-width="5"/>`;
       for (const v of result.ci) svg += `<line x1="${x(v)}" y1="289" x2="${x(v)}" y2="311" stroke="${color}" stroke-width="2"/>`;
     }
-    svg += `<circle cx="${x(result.delta)}" cy="300" r="7" fill="#2563a6"/>`;
+    svg += `<circle cx="${x(result.delta)}" cy="300" r="7" fill="#365977"/>`;
     svg += text(26, 389, `Hiệu: ${fmt(result.delta)} ${du} · ${result.ci ? 'CI 95% [' + result.ci.map(v => fmt(v)).join('; ') + ']' : 'Chưa có CI phù hợp'}`);
     svg += text(26, 420, `n=${result.n} · ${result.clusters === null ? 'TN6: tổng hợp từ báo cáo gốc' : result.clusters + ' cửa sổ · bootstrap ' + c.repetitions + ' lần · seed ' + c.rngSeed}`, 'font-size="12" fill="#607087"');
     svg += text(26, 446, 'Phân tích lại kết quả đã lưu · CI chưa hiệu chỉnh đa kiểm định · không phải huấn luyện lại', 'font-size="12" fill="#607087"');
