@@ -239,7 +239,8 @@ def epoch_tot(thu_muc, ch):
 
 
 def nhan():
-    """Mã cửa sổ, phần, mức tải (0 thấp / 1 vừa / 2 cao) của từng bản ghi — cùng thứ tự với cham()."""
+    """Mã cửa sổ, phần, dải tải (0 thấp [0,5; 0,75) / 1 giữa [0,75; 1) / 2 cao [1; 1,3], như ô tiêu chí) của từng bản ghi
+    — cùng thứ tự với cham(). train10: 3 mức nhe / vua / nang (0,6 / 0,9 / 1,2); train6_10: hệ số tải liên tục."""
     from src.nhieu_luong.bai_toan import MUC_TAI
     from src.nhieu_luong.huan_luyen_dt import phan_cua
     ma, ph, mu = [], [], []
@@ -248,7 +249,8 @@ def nhan():
             for r in pickle.load(open(t, "rb")):
                 ma.append(i * 10_000 + int(r["kb"]))
                 ph.append(phan_cua(d, r["kb"]))
-                mu.append(list(MUC_TAI).index(r["muc"]))
+                he_so = MUC_TAI[r["muc"]] if isinstance(r["muc"], str) else float(r["muc"])
+                mu.append(int(np.searchsorted([0.75, 1.0], he_so, side="right")))
     return np.array(ma), np.array(ph), np.array(mu)
 
 

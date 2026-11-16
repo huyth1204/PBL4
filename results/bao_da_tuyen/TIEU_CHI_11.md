@@ -115,3 +115,7 @@ Kết luận dựa trên một nơi. Bước / giả thuyết nào có hiệu c�
      sổ đó. Giả thuyết nào đổi kết luận khi bỏ thì ghi "phụ thuộc cửa sổ kề ngày".
    - val6 chỉ dùng chọn checkpoint / dừng sớm, nên chỉ ghi nhận.
    - Luật chính không đổi.
+3. **12/11/2026, sau khi chạy (ghi nhận, không đổi luật):**
+   - Lỗi code chọn cửa sổ `x11` (thiếu khởi tạo mạng) làm lần chạy đầu dừng. Máy chạy sửa tại chỗ.
+   - Repo đã sửa. Hàm đã sửa cho đúng 6 cửa sổ như danh sách lần chạy dùng để chia phần.
+   - Máy chạy bật HighQoS, chỉ ảnh hưởng số đo thời gian.

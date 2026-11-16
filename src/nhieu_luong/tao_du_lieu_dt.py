@@ -152,7 +152,10 @@ def anh_xa(bt, sol):
 
 
 def _mot_cua_so(job):
-    tap, K_rg, i, ten, h0, seed, moc, tep, mo_hinh, co_thay, lien_tuc = job
+    """job[11] (tuỳ chọn, TN13): {"muc_tieu": mục tiêu của nhãn, "them": [mục tiêu thầy thêm], "luoi": lưới β, γ của
+    Dijkstra phạt, "chi_nhan": bỏ thế giới chấm}. Thiếu → đúng đường cũ, bản ghi cũ không đổi."""
+    tap, K_rg, i, ten, h0, seed, moc, tep, mo_hinh, co_thay, lien_tuc = job[:11]
+    tc = job[11] if len(job) > 11 else {}
     if td._g is None:
         td._khoi_tao()
     if Path(tep).exists():
@@ -188,7 +191,11 @@ def _mot_cua_so(job):
             s = time.perf_counter()
             DP = dt.dijkstra_phat(th, lam, *BETA_GAMMA)
             tg_dp = time.perf_counter() - s
-            bt = dt.BaiToan(th, muc, [Y[k] + DP[k] for k in range(len(lam))])
+            luoi = {}
+            if tc.get("luoi"):                              # TN13: Dijkstra phạt trên lưới β, γ (thêm tuyến vào bảng)
+                luoi = {f"dp_{b:g}_{g_:g}": dt.dijkstra_phat(th, lam, b, g_) for b in dt.BETA for g_ in dt.GAMMA}
+            them_tuyen = [Y[k] + DP[k] + [r for x in luoi.values() for r in x[k]] for k in range(len(lam))]
+            bt = dt.BaiToan(th, muc, them_tuyen)
             gon = dt.BaiToanGon(bt)
             gon.dac_trung_canh = dac_trung_canh(g, q, mg, gon.U, o, cape_luc(h0, o, tep_thoi_tiet(tap)))
             gon.dac_trung_uv = [dac_trung_uv(g, th, k) for k in range(bt.K)]
@@ -199,14 +206,38 @@ def _mot_cua_so(job):
             tg_on = time.perf_counter() - s
             sol = {"yen": bt.loi_giai(Y), "suurballe": bt.loi_giai(S), "dphat": bt.loi_giai(DP),
                    "online_tkcb": bt.tu_lua_chon(a_on)}
+            for k_, x in luoi.items():
+                sol[k_] = bt.loi_giai(x)
             dau = [a_on] + [a for a in (anh_xa(bt, sol["suurballe"]), anh_xa(bt, sol["dphat"])) if a is not None]
+            dau0 = list(dau)                                 # TN13: điểm xuất phát chung cho các thầy thêm
             r_thay = np.random.default_rng([seed, t, 6, so_muc]) if tap in TAP_10 else rng   # TN10: thầy không chạm rng
-            a_thay, J_thay = thay(bt, En, dau, r_thay) if co_thay else (None, float("nan"))
+            mt = tc.get("muc_tieu")
+            if co_thay and (mt is None or tap not in TAP_10):  # TN13: thầy gốc vẫn chạy khi nó dùng chung rng tình huống
+                a_thay, J_thay = thay(bt, En, dau, r_thay)
+            else:
+                a_thay, J_thay = None, float("nan")
+            a_goc = a_thay
+            if co_thay and mt is not None:                   # TN13: nhãn theo mục tiêu mt, bộ sinh riêng
+                En.muc_tieu = mt
+                a_thay, J_thay = thay(bt, En, list(dau0), np.random.default_rng([seed, t, 8, so_muc]))
+                En.muc_tieu = None
             rec = {"gon": gon, "nhan": None if a_thay is None else a_thay.astype(np.int16), "J_nhan": float(J_thay),
                    "kb": i, "bao": ten,
                    "t": t, "muc": muc, "K": bt.K, "nguon": th["nguon"],
                    "tg_ms": {"yen": tg_yen * 1e3, "dphat": tg_dp * 1e3, "online_tkcb": tg_on * 1e3}}
-            if tap not in TAP_TRAIN:
+            if mt is not None:
+                rec["muc_tieu"] = dt.ten_muc_tieu(mt)
+                if a_goc is not None:
+                    rec["nhan_goc"] = a_goc.astype(np.int16)  # để kiểm tình huống tái lập đúng bản gốc
+            if co_thay and tc.get("them"):                   # TN13 giai đoạn A: thầy theo từng mục tiêu, cùng thế giới nhãn
+                rec["lua_chon_them"] = {}
+                for j, mt_j in enumerate(tc["them"]):
+                    En.muc_tieu = mt_j
+                    a_j, _ = thay(bt, En, list(dau0), np.random.default_rng([seed, t, 7, so_muc, j]))
+                    En.muc_tieu = None
+                    rec["lua_chon_them"][dt.ten_muc_tieu(mt_j)] = a_j.astype(np.int16)
+                    sol[f"thay_{dt.ten_muc_tieu(mt_j)}"] = bt.tu_lua_chon(a_j)
+            if tap not in TAP_TRAIN and not tc.get("chi_nhan"):
                 Ec = dt.TheGioi.ensemble(bt, g, pl, p_sim, sc)
                 Q = dt.TheGioi.quan_sat(bt, Wn, q)
                 if co_thay:
@@ -220,10 +251,15 @@ def _mot_cua_so(job):
                 if so % 4 == 0 and tap == "val":                 # test: đo cùng DM trong cham_mo_hinh_dt (C5)
                     rec["tg_ms"]["online_tkcb10"] = tkcb10(bt, np.random.default_rng([seed, t, 3]))[1]
                 rec["ens"], rec["qs"] = {}, {}
+                ds_mt = tc.get("danh_gia_mt") or []          # TN13: J của mọi lời giải theo từng mục tiêu (thế giới chấm)
+                if ds_mt:
+                    rec["J_mt"] = {"_ten": [dt.ten_muc_tieu(m) for m in ds_mt]}
                 for ten_pp, x in sol.items():
                     for ten_tg, tgw in (("ens", Ec), ("qs", Q)):
                         c = tgw.cham(x)
                         rec[ten_tg][ten_pp] = {k: c[k] for k in SO_DO}
+                        if ds_mt and ten_tg == "ens":
+                            rec["J_mt"][ten_pp] = [tgw.J_theo(c, m) for m in ds_mt]
                 for ten_tg, tgw in (("cham", Ec), ("cham_qs", Q)):
                     du = np.maximum((tgw.Cw * (1 - tgw.rw)).min(1), 1e-9)
                     rec[ten_tg] = {"song": tgw.song[:, gon.cot], "du": du[:, gon.cot].astype(np.float32)}
@@ -285,6 +321,8 @@ TAP_TRAIN |= {t for t, (_, _, cham) in TAP_10.items() if not cham}          # ch
 #   xc11, xy11: bộ kiểm tra — đúng cửa sổ của c6 / yagi5, seed mới, k riêng từng cửa sổ.
 TAP_11 = {"x11": "train", "xc11": "c6", "xy11": "yagi5"}
 HE_SO_11, SEED_11, SO_X11 = (1.3, 1.5), 1100, 6
+# Thí nghiệm 13 (results/bao_da_tuyen/TIEU_CHI_13.md): các mục tiêu J được thử — w·Ĥ + (1 − w)·T̂ và J vật lý 100·H + d / X
+MUC_TIEU_13 = ("w0.3", "w0.5", "w0.6", "w0.7", "w0.8", "w0.9", "w1", "x1", "x3", "x10", "x30")
 
 
 def he_so_11(tap, kb):
@@ -302,6 +340,8 @@ def do_du_doi(tt, h0, so_gio):
 def cua_so_x11():
     """[(tên, h0, seed, (tập nguồn, kb nguồn), độ dữ dội)] — SO_X11 cửa sổ dữ dội nhất của train + train6, mỗi nhóm (cơn
     bão ở train, ngày ở train6) tối đa một cửa sổ. Tất định."""
+    if td._g is None:                                  # main() chỉ khởi tạo nhẹ — cần mạng để biết độ dài cửa sổ
+        td._khoi_tao()
     so_gio = int(np.ceil(td._g.T * td._p.dt_s / 3600)) + 1
     ung = []
     for nguon in ("train", "train6"):
@@ -521,6 +561,11 @@ def main():
     ap.add_argument("--tien-trinh", type=int, default=3)
     ap.add_argument("--mo-hinh", action="store_true", help="chấm cả DM và softmax (results/bao_da_tuyen/mo_hinh)")
     ap.add_argument("--khong-thay", action="store_true", help="bỏ thầy (chỉ chấm, ví dụ quy mô ngoài tiêu chí)")
+    ap.add_argument("--ra", default=None, help="TN13: thư mục gốc ghi kết quả (mặc định data/bao_da_tuyen)")
+    ap.add_argument("--muc-tieu", default=None, help="TN13: mục tiêu J của nhãn thầy (w0.9, x10; mặc định 7/3)")
+    ap.add_argument("--muc-tieu-them", default="", help="TN13: thầy thêm theo các mục tiêu (phẩy ngăn cách)")
+    ap.add_argument("--luoi-dphat", action="store_true", help="TN13: chấm Dijkstra phạt trên lưới β, γ")
+    ap.add_argument("--chi-nhan", action="store_true", help="TN13: chỉ nhãn, không sinh thế giới chấm")
     a = ap.parse_args()
     K_rg = phan_tich_K(a.K)
     td._khoi_tao_nhe()
@@ -531,12 +576,19 @@ def main():
     if a.buoc_moc:
         moc = moc[::a.buoc_moc]
     ra = thu_muc(a.tap, K_rg)
+    if a.ra:
+        ra = Path(a.ra) / ra.name
     ra.mkdir(parents=True, exist_ok=True)
     if a.khong_thay and a.tap in TAP_TRAIN:
         raise SystemExit("train cần nhãn thầy")
     lien_tuc = goc in HINH_HOC                            # thí nghiệm 5: tải liên tục
+    them = [dt.doc_muc_tieu(s) for s in a.muc_tieu_them.split(",") if s.strip()]
+    tc = {k: v for k, v in {"muc_tieu": dt.doc_muc_tieu(a.muc_tieu), "them": them, "luoi": a.luoi_dphat,
+                            "chi_nhan": a.chi_nhan, "danh_gia_mt": them or None}.items() if v}
+    if a.luoi_dphat and not them:                         # TN13 giai đoạn B, bộ kiểm tra: J theo mọi mục tiêu đã thử ở A
+        tc["danh_gia_mt"] = [dt.doc_muc_tieu(s) for s in MUC_TIEU_13]
     jobs = [(a.tap, K_rg, i, ten, h0, seed, moc, ra / f"kb_{i:04d}.pkl", a.mo_hinh, not a.khong_thay, lien_tuc)
-            for i, (ten, h0, seed) in enumerate(cac_cua_so_tap(a.tap))]
+            + ((tc,) if tc else ()) for i, (ten, h0, seed) in enumerate(cac_cua_so_tap(a.tap))]
     con = [j for j in jobs if not Path(j[7]).exists()]
     print(f"{a.tap} K={a.K}: {len(jobs)} cửa sổ × {len(moc)} mốc, còn {len(con)}", flush=True)
     t0, n = time.time(), 0

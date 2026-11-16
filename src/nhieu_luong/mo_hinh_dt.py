@@ -147,17 +147,43 @@ class LoDT:
         return uv, lk, Ps * lamk, Fp + Fb, i_nghen, Ps
 
 
+def mlp_dt(a, H, b, p=0.0):
+    """Như mo_hinh.mlp; p > 0 (TN12, softmax chống quá khớp): thêm Dropout sau SiLU. p = 0 → đúng cấu trúc cũ (nạp được
+    mọi checkpoint cũ)."""
+    if not p:
+        return mlp(a, H, b)
+    return nn.Sequential(nn.Linear(a, H), nn.LayerNorm(H), nn.SiLU(), nn.Dropout(p), nn.Linear(H, b))
+
+
+def lich_nhieu(lich):
+    """ᾱ(t): 'cos' = cos²(πt/2) (mặc định, mọi mô hình trước TN12); 'tuyen_tinh' = 1 − t (TN12, đối chứng lịch nhiễu)."""
+    return alpha_bar if lich == "cos" else (lambda t: (1 - t).clamp(0, 1))
+
+
 class MangDT(nn.Module):
-    def __init__(self, H=64, so_lop=3, t_dim=8, them=False):
+    """phoi_hop=False (TN12): mỗi luồng KHÔNG thấy lựa chọn tạm của các luồng khác — tải của luồng khác, trọng số tin nhắn
+    trên liên kết và mọi thứ đi qua liên kết đều tính từ trạng thái 'chưa biết' X_deu (dòng công khai); dòng riêng của
+    ứng viên chỉ thêm trạng thái của CHÍNH luồng đó (X, phần trùng cạnh / trùng loại với tuyến khác cùng luồng, ngữ cảnh
+    cùng luồng). lich: lịch nhiễu (lich_nhieu). dropout: chỉ dùng cho softmax chống quá khớp của TN12."""
+
+    def __init__(self, H=64, so_lop=3, t_dim=8, them=False, phoi_hop=True, lich="cos", dropout=0.0):
         super().__init__()
         self.H, self.t_dim, self.them = H, t_dim, (2 if them == 2 else bool(them))     # 2: TN11a nhìn trước
+        self.phoi_hop, self.lich, self.dropout = bool(phoi_hop), str(lich), float(dropout)
         self.cau_hinh = dict(H=H, so_lop=so_lop, t_dim=t_dim, them=self.them)
-        self.vao_uv = mlp(SO_UV_TINH + SO_UV_DONG + t_dim, H, H)
-        self.vao_lk = mlp(SO_LK_TINH + len(dac_trung_them(self.them)) + SO_LK_DONG, H, H)
+        if not self.phoi_hop or self.lich != "cos" or self.dropout:                     # chỉ ghi khi khác mặc định
+            self.cau_hinh.update(phoi_hop=self.phoi_hop, lich=self.lich, dropout=self.dropout)
+        p = self.dropout
+        self.vao_uv = mlp_dt(SO_UV_TINH + SO_UV_DONG + t_dim, H, H, p)
+        self.vao_lk = mlp_dt(SO_LK_TINH + len(dac_trung_them(self.them)) + SO_LK_DONG, H, H, p)
         self.gui = nn.ModuleList([nn.Linear(H, H) for _ in range(so_lop)])
-        self.cap_lk = nn.ModuleList([mlp(2 * H, H, H) for _ in range(so_lop)])
-        self.cap_uv = nn.ModuleList([mlp(4 * H, H, H) for _ in range(so_lop)])
-        self.ra = nn.Sequential(nn.SiLU(), nn.Linear(H, 3))
+        self.cap_lk = nn.ModuleList([mlp_dt(2 * H, H, H, p) for _ in range(so_lop)])
+        self.cap_uv = nn.ModuleList([mlp_dt(4 * H, H, H, p) for _ in range(so_lop)])
+        self.ra = nn.Sequential(nn.SiLU(), nn.Linear(H, 3)) if not p else nn.Sequential(nn.SiLU(), nn.Dropout(p),
+                                                                                        nn.Linear(H, 3))
+
+    def ab(self, t):
+        return lich_nhieu(self.lich)(t)
 
     def t_emb(self, t):
         f = torch.exp(torch.arange(self.t_dim // 2, device=t.device).float() * -math.log(100.0) / (self.t_dim // 2))
@@ -166,6 +192,8 @@ class MangDT(nn.Module):
 
     def forward(self, lo: LoDT, X, t):
         """X [B,K,P,3], t [B] → logit [B,K,P,3]."""
+        if not self.phoi_hop:
+            return self._khong_phoi_hop(lo, X, t)
         B, K, H = lo.B, lo.K, self.H
         uv_d, lk_d, XL, Fl, i_nghen, Ps = lo.dong(X)
         te = self.t_emb(t)[:, None, None].expand(B, K, P, self.t_dim)
@@ -182,6 +210,34 @@ class MangDT(nn.Module):
             nghen = torch.gather(he, 1, idx).view(B, K, P, H)
             ngu_canh = ((Ps[..., None] * hc).sum(2, keepdim=True) / tong_chon).expand_as(hc)
             hc = hc + cu(torch.cat([hc, tb, nghen, ngu_canh], -1))
+        return self.ra(hc)
+
+    def _khong_phoi_hop(self, lo, X, t):
+        """TN12 · DM không phối hợp: cùng trọng số cho hai dòng. Dòng công khai hp (từ X_deu) dựng tin nhắn liên kết; dòng
+        riêng hc chỉ khác hp ở phần thuộc chính luồng: X, trùng cạnh / trùng loại với tuyến khác của luồng, ngữ cảnh luồng."""
+        B, K, H = lo.B, lo.K, self.H
+        Xu = X_deu(lo)
+        uv_u, lk_u, XLu, Flu, ig_u, Psu = lo.dong(Xu)
+        uv_x, _, _, _, _, Ps = lo.dong(X)
+        uv_p = torch.cat([uv_u[..., :4], uv_x[..., 4:]], -1)        # D, T, ρ chính, ρ dự phòng: chỉ phụ thuộc luồng khác
+        te = self.t_emb(t)[:, None, None].expand(B, K, P, self.t_dim)
+        hp = self.vao_uv(torch.cat([lo.dt_uv_tinh, uv_u, te], -1))
+        hc = self.vao_uv(torch.cat([lo.dt_uv_tinh, uv_p, te], -1))
+        he = self.vao_lk(torch.cat([lo.dt_lk_tinh, lk_u], -1))
+        inc = lo.inc
+        chia = (Flu + 1e-6)[..., None]
+        idx = ig_u.reshape(B, K * P, 1).expand(B, K * P, H)
+        tc_u = Psu.sum(2, keepdim=True).clamp(min=1)[..., None]
+        tc_x = Ps.sum(2, keepdim=True).clamp(min=1)[..., None]
+        for gui, cl, cu in zip(self.gui, self.cap_lk, self.cap_uv):
+            m_e = torch.einsum("bkpe,bkph->beh", inc, XLu[..., None] * gui(hp)) / chia
+            he = he + cl(torch.cat([he, m_e], -1))
+            tb = torch.einsum("bkpe,beh->bkph", inc, he) / lo.so_hop[..., None]
+            nghen = torch.gather(he, 1, idx).view(B, K, P, H)
+            ctx_u = ((Psu[..., None] * hp).sum(2, keepdim=True) / tc_u).expand_as(hp)
+            ctx_x = ((Ps[..., None] * hc).sum(2, keepdim=True) / tc_x).expand_as(hc)
+            hp = hp + cu(torch.cat([hp, tb, nghen, ctx_u], -1))
+            hc = hc + cu(torch.cat([hc, tb, nghen, ctx_x], -1))
         return self.ra(hc)
 
 
@@ -210,9 +266,9 @@ def ngau_nhien(lo, gen=None):
     return x
 
 
-def nhieu(lo, y, t, gen=None):
-    """Giữ lựa chọn của mỗi luồng với xác suất ᾱ(t), còn lại một lựa chọn ngẫu nhiên."""
-    giu = _rand((lo.B, lo.K), gen, t.device) < alpha_bar(t)[:, None]
+def nhieu(lo, y, t, gen=None, ab=alpha_bar):
+    """Giữ lựa chọn của mỗi luồng với xác suất ᾱ(t), còn lại một lựa chọn ngẫu nhiên. ab: lịch nhiễu (TN12)."""
+    giu = _rand((lo.B, lo.K), gen, t.device) < ab(t)[:, None]
     return torch.where(giu[..., None], y, ngau_nhien(lo, gen))
 
 
@@ -224,7 +280,7 @@ def _ce(logit, y, lo):
 
 def mat_mat_dm(net, lo, y, gen=None):
     t = _rand((lo.B,), gen, lo.inc.device)
-    return _ce(net(lo, Fn.one_hot(nhieu(lo, y, t, gen), 3).float(), t), y, lo)
+    return _ce(net(lo, Fn.one_hot(nhieu(lo, y, t, gen, getattr(net, "ab", alpha_bar)), 3).float(), t), y, lo)
 
 
 def X_deu(lo):
@@ -281,7 +337,7 @@ def chon_dm(net, gon, S=8, so_buoc=5, gen=None):
         cuoi = i == so_buoc - 1
         x0, lp = giai_ma(lo, logit, lay_mau=not cuoi, gen=gen)
         if not cuoi:
-            giu = _rand((S, lo.K), gen, dev) < alpha_bar(torch.tensor(1 - (i + 1) / so_buoc))
+            giu = _rand((S, lo.K), gen, dev) < getattr(net, "ab", alpha_bar)(torch.tensor(1 - (i + 1) / so_buoc))
             x = torch.where(giu[..., None], x0, ngau_nhien(lo, gen))
     j = int(lp.argmax())
     return lua_chon_tu_trang_thai(gon, x0[j, :gon.K].cpu().numpy())
@@ -293,6 +349,19 @@ def chon_softmax(net, gon):
     lo = LoDT([gon], them=net.them, dev=None if dev.type == "cpu" else dev)
     x, _ = giai_ma(lo, net(lo, X_deu(lo), torch.ones(1, device=dev)))
     return lua_chon_tu_trang_thai(gon, x[0, :gon.K].cpu().numpy())
+
+
+@torch.no_grad()
+def chon_softmax_mau(net, gon, S=32, gen=None):
+    """TN12 bậc 3: softmax đoán MỘT lần (cùng logit), giải mã S mẫu có nhiễu Gumbel, giữ mẫu có log-xác suất (theo chính
+    mô hình) cao nhất — cùng luật chọn chuỗi với DM, nhưng không sửa dần."""
+    dev = next(net.parameters()).device
+    lo = LoDT([gon], them=net.them, dev=None if dev.type == "cpu" else dev)
+    logit = net(lo, X_deu(lo), torch.ones(1, device=dev)).expand(S, -1, -1, -1)
+    lo_s = LoDT([gon], lap=S, them=net.them, dev=None if dev.type == "cpu" else dev)
+    x, lp = giai_ma(lo_s, logit, lay_mau=True, gen=gen)
+    j = int(lp.argmax())
+    return lua_chon_tu_trang_thai(gon, x[j, :gon.K].cpu().numpy())
 
 
 def nap(kieu, thu_muc=None):

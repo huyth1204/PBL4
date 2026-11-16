@@ -63,6 +63,22 @@ _KQ11 = Path(os.environ.get("PBL4_KQ", GOC / "results" / "bao_da_tuyen"))      #
 _M11, _PHAN11 = _KQ11 / "mo_hinh11", _KQ11 / "tn11" / "phan.json"
 THI_NGHIEM.update({15: {"train": _HA + ("x11_k4_5",), "val": _VA, "thu_muc": _M11, "phan": _PHAN11, "sach": True},
                    16: {"train": _HA, "val": _VA, "thu_muc": _M11, "phan": _PHAN11, "sach": True}})
+# thí nghiệm 12 (TIEU_CHI_12.md): cùng dữ liệu với DM11 (A + x11), biến thể mô hình (--khong-phoi-hop, --lich, --dropout)
+THI_NGHIEM[17] = {"train": _HA + ("x11_k4_5",), "val": _VA, "thu_muc": _KQ11 / "mo_hinh12", "sach": True}
+# thí nghiệm 13 (TIEU_CHI_13.md): nhãn thầy theo mục tiêu J khác (--muc-tieu w0.9 / x10). Tập học gán nhãn lại ở
+# data/bao_da_tuyen/tn13/<mục tiêu>/, val có lời giải thầy theo mọi mục tiêu ở data/bao_da_tuyen/tn13/ (giai đoạn A).
+THI_NGHIEM[18] = {"train": (), "val": ("tn13/val_k4_5", "tn13/val6_k4_5"), "thu_muc": _KQ11 / "mo_hinh13", "sach": True}
+
+
+def cau_hinh_tn(tn, muc_tieu=None):
+    cfg = dict(THI_NGHIEM[tn])
+    if tn == 18:
+        if not muc_tieu:
+            raise SystemExit("thí nghiệm 13 cần --muc-tieu (vd w0.9, x10)")
+        cfg["train"] = tuple(f"tn13/{muc_tieu}/{d}" for d in _HA + ("x11_k4_5",))
+    return cfg
+
+
 SO_PHAN, HAT_PHAN = 4, 10
 _SO_CUA_SO_GOC = {"train": 59, "train6": 60}
 
@@ -113,15 +129,20 @@ def val_tron(cac_val, n=300):
     return [r for va in cac_val for r in val_co_dinh(va, n // len(cac_val))]
 
 
-def danh_gia(net, kieu, ds, so_buoc=5, seed=0):
-    """J trung bình (thế giới chấm) của lời giải mô hình, và của thầy trên cùng thế giới."""
+def danh_gia(net, kieu, ds, so_buoc=5, seed=0, muc_tieu=None):
+    """J trung bình (thế giới chấm) của lời giải mô hình, và của thầy trên cùng thế giới. muc_tieu (TN13, 'w0.9' / 'x10'):
+    J theo mục tiêu đó; J thầy lấy từ lời giải thầy cùng mục tiêu đã lưu ở val giai đoạn A (lua_chon_them)."""
     net.eval()
     gen = torch.Generator().manual_seed(seed)
+    mt = dt.doc_muc_tieu(muc_tieu)
     J, Jt = [], []
     for r in ds:
         a = md.chon_dm(net, r["gon"], S, so_buoc, gen) if kieu == "dm" else md.chon_softmax(net, r["gon"])
-        J.append(the_gioi_cham(r).cham(r["gon"].tu_lua_chon(a))["J"])
-        Jt.append(r["ens"]["thay"]["J"])
+        tgw = the_gioi_cham(r)
+        tgw.muc_tieu = mt
+        J.append(tgw.cham(r["gon"].tu_lua_chon(a))["J"])
+        a_t = r.get("lua_chon_them", {}).get(muc_tieu) if muc_tieu else None
+        Jt.append(tgw.cham(r["gon"].tu_lua_chon(a_t))["J"] if a_t is not None else r["ens"]["thay"]["J"])
     net.train()
     return float(np.mean(J)), float(np.mean(Jt))
 
@@ -137,11 +158,12 @@ def chia_lo(ds, B, rng):
 
 
 def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, them=False, ti_le=1.0, gap_doi=False,
-               luong=1, moi_epoch=False, bo_phan=None, thiet_bi="cpu", dung_som=0):
+               luong=1, moi_epoch=False, bo_phan=None, thiet_bi="cpu", dung_som=0, phoi_hop=True, lich="cos",
+               dropout=0.0, weight_decay=0.0, muc_tieu=None):
     torch.set_num_threads(luong)
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
-    cfg = THI_NGHIEM[tn]
+    cfg = cau_hinh_tn(tn, muc_tieu)
     ra, ten = cfg["thu_muc"], ten or kieu
     ra.mkdir(parents=True, exist_ok=True)
     cac_train = cfg["train"] + (GAP_DOI if gap_doi else ())
@@ -158,9 +180,13 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
     vl = [(r["gon"], r["nhan"]) for va in cac_val for r in va]
     print(f"{ten} ({kieu}, đặc trưng mới: {them}, tỉ lệ {ti_le}, gấp đôi {gap_doi}): train {len(tr)}, val {len(vl)}",
           flush=True)
-    net = md.MangDT(H=H, them=them)
+    net = md.MangDT(H=H, them=them, phoi_hop=phoi_hop, lich=lich, dropout=dropout)
+    if not phoi_hop or lich != "cos" or dropout or weight_decay or muc_tieu:
+        print(f"  TN12/13: phối hợp {phoi_hop}, lịch {lich}, dropout {dropout}, weight decay {weight_decay}, "
+              f"mục tiêu {muc_tieu or 'gốc 7/3'}", flush=True)
     dev = chon_thiet_bi(thiet_bi, net, tr, B, them, md.mat_mat_dm if kieu == "dm" else md.mat_mat_softmax)
-    opt = torch.optim.Adam(net.parameters(), lr=lr)
+    opt = (torch.optim.AdamW(net.parameters(), lr=lr, weight_decay=weight_decay) if weight_decay
+           else torch.optim.Adam(net.parameters(), lr=lr))
     so_lo = math.ceil(len(tr) / B) * epochs
     sch = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: 0.01 + 0.99 * 0.5 * (1 + math.cos(math.pi * min(s / so_lo, 1))))
     mat = md.mat_mat_dm if kieu == "dm" else md.mat_mat_softmax
@@ -185,7 +211,7 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
                 lo = md.LoDT([x for x, _ in d], them=them, dev=dev)
                 Lv.append(mat(net.eval(), lo, md._den(md.trang_thai_nhan(d, lo.K), dev), g).item())
             net.train()
-        J, Jt = danh_gia(net, kieu, va_nho)
+        J, Jt = danh_gia(net, kieu, va_nho, muc_tieu=muc_tieu)
         nk.append({"epoch": ep + 1, "loss_train": float(np.mean(L)), "loss_val": float(np.mean(Lv)), "J_val": J,
                    "J_thay_val": Jt, "giay": time.time() - t0})
         print(f"  ep {ep + 1:2d}  loss {np.mean(L):.4f}  val {np.mean(Lv):.4f}  J val {J:.4f} (thầy {Jt:.4f})  "
@@ -271,6 +297,11 @@ if __name__ == "__main__":
     ap.add_argument("--dung-som", type=int, default=0, help="thí nghiệm 11: dừng nếu J val không tốt lên sau N epoch")
     ap.add_argument("--nhin-truoc", action="store_true",
                     help="thí nghiệm 11a: thêm 3 đặc trưng tương lai thật (chẩn đoán; cần scripts.tn11a bo-sung trước)")
+    ap.add_argument("--khong-phoi-hop", action="store_true", help="TN12: luồng không thấy lựa chọn tạm của luồng khác")
+    ap.add_argument("--lich", default="cos", choices=["cos", "tuyen_tinh"], help="TN12: lịch nhiễu ᾱ(t)")
+    ap.add_argument("--dropout", type=float, default=0.0, help="TN12: dropout (softmax chống quá khớp)")
+    ap.add_argument("--weight-decay", type=float, default=0.0, help="TN12: weight decay (AdamW)")
+    ap.add_argument("--muc-tieu", default=None, help="TN13: mục tiêu J của nhãn / chọn checkpoint (w0.9, x10)")
     a = ap.parse_args()
     if a.nhin_truoc:
         a.them = 2
@@ -279,4 +310,5 @@ if __name__ == "__main__":
     else:
         huan_luyen(a.viec, epochs=a.epochs, H=a.H, tn=a.thi_nghiem, ten=a.ten, them=a.them, ti_le=a.ti_le,
                    gap_doi=a.gap_doi, seed=a.seed, luong=a.luong_cpu, moi_epoch=a.moi_epoch, bo_phan=a.bo_phan,
-                   thiet_bi=a.thiet_bi, dung_som=a.dung_som)
+                   thiet_bi=a.thiet_bi, dung_som=a.dung_som, phoi_hop=not a.khong_phoi_hop, lich=a.lich,
+                   dropout=a.dropout, weight_decay=a.weight_decay, muc_tieu=a.muc_tieu)

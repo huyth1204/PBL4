@@ -13,6 +13,8 @@ Từng bước (chạy lại an toàn — phần đã xong tự bỏ qua):
     cham         bộ kiểm tra (4–5 luồng: 3 seed; 10 / 20 luồng: seed 0): Dijkstra phạt, Dijkstra (Yen), SM11, DM10c,
                  DM11, Lai(·), thời gian
     phan-tich    → tn11/KET_QUA_11.md, ket_qua_11.json, hinh_11_*.png (đường học, kiểm thử chéo, kiểm tra, thời gian…)
+                 rồi gói tất cả + đường học + mọi log vào results/bao_da_tuyen/TN11_ket_qua.zip (tệp duy nhất cần gửi)
+Log: mọi thứ in ra màn hình tự ghi vào logs/tn11.log (không cần chuyển hướng); mỗi mô hình có logs/tn11_<tên>.log.
 """
 
 from __future__ import annotations
@@ -642,8 +644,8 @@ def ve_kiem_tra(bo45):
     ax.set_yticks(range(len(bo)), [TEN_BO[b] for b in bo])
     ax.invert_yaxis()
     ax.set_xlabel("hiệu mất DV so với Dijkstra phạt (điểm %, CI 95%); âm = tốt hơn")
-    ax.legend(fontsize=8, ncol=4, loc="lower center", bbox_to_anchor=(0.5, 1.06))
-    ax.set_title("TN11 — bộ kiểm tra, 4–5 luồng (trung bình 3 seed)", loc="left", fontsize=10, pad=28)
+    ax.legend(fontsize=8, ncol=4, loc="upper center", bbox_to_anchor=(0.5, -0.11))
+    ax.set_title("TN11 — bộ kiểm tra, 4–5 luồng (trung bình 3 seed)", loc="left", fontsize=10)
     fig.tight_layout()
     fig.savefig(RA / "hinh_11_kiem_tra.png", bbox_inches="tight")
     plt.close(fig)

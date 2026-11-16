@@ -432,10 +432,24 @@ class TheGioi:
         lost = ~co | (self._qua_tai(self.bt.lam[k] * inc) & inc).any(-1)
         return lost.mean(0)
 
+    muc_tieu = None             # TN13: None = J gốc 0,7·Ĥ + 0,3·T̂; ("w", w) = w·Ĥ + (1 − w)·T̂; ("x", X) = 100·H + d / X
+
     def _J(self, H, d, lam):
+        mt = self.muc_tieu
+        if mt is not None and mt[0] == "x":                       # đơn vị vật lý: điểm % mất DV + ms trễ / X
+            return ((100.0 * H + d / mt[1]) * lam).sum(-1) / lam.sum()
+        w = W_RR if mt is None else mt[1]
         Hn = (H - self.Hmin) / np.maximum(self.Hmax - self.Hmin, SAN_H)
         T = (d - self.bt.dmin) / self.bt.drange
-        return ((W_RR * Hn + (1 - W_RR) * T) * lam).sum(-1) / lam.sum()
+        return ((w * Hn + (1 - w) * T) * lam).sum(-1) / lam.sum()
+
+    def J_theo(self, c, mt):
+        """J của một lời giải đã chấm (c = kết quả cham) theo mục tiêu mt, không chấm lại."""
+        cu, self.muc_tieu = self.muc_tieu, mt
+        try:
+            return float(self._J(c["H"], c["d"], c["lam"]))
+        finally:
+            self.muc_tieu = cu
 
     def cham(self, sol, chon=None):
         """Số đo của một lời giải (mảng chỉ số bảng mỗi luồng); chon [K] bool: chỉ tính các luồng được chọn."""
@@ -456,7 +470,7 @@ class TheGioi:
         return {"J": J, "mat_dv_%": float((H * lam).sum() / lam.sum() * 100),
                 "khong_tuyen_song_%": float((a.mean(1) * lam).sum() / lam.sum() * 100),
                 "du_phong_qua_tai_%": float((b.mean(1) * lam).sum() / lam.sum() * 100),
-                "tre_chinh_ms": float((d * lam).sum() / lam.sum()), "H": H}
+                "tre_chinh_ms": float((d * lam).sum() / lam.sum()), "H": H, "d": d, "lam": lam}
 
     def J_lua_chon(self, a, k, chon=None):
         """J của mọi lựa chọn của luồng k (các luồng khác giữ theo a, chỉ số lựa chọn). Trả [n]."""
@@ -487,6 +501,19 @@ class TheGioi:
         for j in khac:
             d[:, j] = (lat * P[j]).sum(1)
         return self._J(H, d, lam)
+
+
+def doc_muc_tieu(s):
+    """TN13: 'w0.9' → ("w", 0.9); 'x10' → ("x", 10.0); None / '' / 'goc' → None (J gốc 7/3)."""
+    if not s or s == "goc":
+        return None
+    if s[0] not in "wx":
+        raise ValueError(f"mục tiêu không hợp lệ: {s} (dạng w0.7 hoặc x10)")
+    return (s[0], float(s[1:]))
+
+
+def ten_muc_tieu(mt):
+    return "goc" if mt is None else f"{mt[0]}{mt[1]:g}"
 
 
 # ---------------------------------------------------------------- chọn trong kho theo J
