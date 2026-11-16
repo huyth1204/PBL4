@@ -51,6 +51,26 @@ git push
    và trọng số các mô hình mới, mọi log. Nếu bị dừng trước bước cuối: `python -m scripts.tn12 phan-tich` /
    `python -m scripts.tn13 phan-tich` để gói lại phần đã xong.
 
+## Chạy trên máy KHÁC máy đã chạy TN11
+
+Máy mới không có mô hình và dữ liệu TN11 (lỗi "thiếu mô hình TN11 ở …mo_hinh11"). Chép bằng một file zip:
+
+1. **Trên máy đã chạy TN11** (sau `git pull`):
+   ```
+   python -m scripts.tn12 goi-tn11
+   ```
+   Tạo `results/bao_da_tuyen/TN11_cho_TN12_TN13.zip` (khoảng 1 GB): mô hình `mo_hinh11/`, kết quả `tn11/`, dữ liệu `train10`,
+   `train6_10`, `x11`, `val`, `val6` và 11 bộ kiểm tra.
+2. Chép file zip sang máy mới (Google Drive, USB…), để ở đâu cũng được, ví dụ `E:\TN11_cho_TN12_TN13.zip`.
+3. **Trên máy mới**, thêm `--tn11 <đường dẫn file zip>` — script tự giải nén những file còn thiếu vào đúng chỗ rồi chạy:
+   ```
+   python -m scripts.tn12 toi-da --tn11 E:\TN11_cho_TN12_TN13.zip
+   ```
+   Lần sau không cần `--tn11` nữa.
+
+Máy không GPU, RAM ít hơn 20 GB thì vẫn chạy được nhưng chậm hơn: học bằng CPU, và TN13 chỉ sinh dữ liệu được ~2 tiến trình
+với 14 GB RAM. Nếu được, chạy TN13 trên máy có GPU và 20 GB RAM.
+
 ## Pipeline làm gì
 
 **TN12** (`python -m scripts.tn12 <bước>`):

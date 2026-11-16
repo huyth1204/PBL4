@@ -60,11 +60,53 @@ DL_TN11 = ("train10_k4_5", "train6_10_k4_5", "x11_k4_5", "val_k4_5", "val6_k4_5"
     t11.thu_muc_bo(b, "4-5") for b in BO_45)
 
 
+TEP_GOI_TN11 = "TN11_cho_TN12_TN13.zip"
+
+
+def goi_tn11(a=None):
+    """Chạy trên MÁY ĐÃ CHẠY TN11: gói mô hình mo_hinh11/, kết quả tn11/ và dữ liệu DL_TN11 thành một zip (đường dẫn tương
+    đối results/bao_da_tuyen/…, data/bao_da_tuyen/…) để chép sang máy khác."""
+    import zipfile
+    tep = KQ / TEP_GOI_TN11
+    cap = [(M11, "results/bao_da_tuyen/mo_hinh11"), (KQ / "tn11", "results/bao_da_tuyen/tn11")]
+    cap += [(DL / d, f"data/bao_da_tuyen/{d}") for d in DL_TN11]
+    thieu = [d.name for d, _ in cap if not d.exists()]
+    if not (M11 / "dm11_s0.pt").exists():
+        raise SystemExit(f"không thấy mô hình TN11 ở {M11} — chạy lệnh này trên máy đã chạy TN11")
+    so = 0
+    with zipfile.ZipFile(tep, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as z:
+        for d, ten in cap:
+            for f in sorted(d.rglob("*")) if d.exists() else []:
+                if f.is_file() and not f.name.endswith(".tam"):
+                    z.write(f, f"{ten}/{f.relative_to(d).as_posix()}")
+                    so += 1
+    print(f"  đã gói {so} tệp → {tep} ({tep.stat().st_size / 1e9:.2f} GB)" + (f"; không có: {thieu}" if thieu else ""),
+          flush=True)
+
+
 def lay_tn11(nguon):
-    """--tn11 <thư mục đã chạy TN11>: chép sang repo này những gì CÒN THIẾU — mô hình mo_hinh11/, kết quả tn11/ (cham_tep để
-    kiểm lặp lại) và các thư mục dữ liệu DL_TN11. Tệp đã có thì giữ nguyên; chạy lại an toàn."""
+    """--tn11 <thư mục đã chạy TN11 | tệp TN11_cho_TN12_TN13.zip>: chép sang repo này những gì CÒN THIẾU — mô hình
+    mo_hinh11/, kết quả tn11/ (cham_tep để kiểm lặp lại) và các thư mục dữ liệu DL_TN11. Tệp đã có thì giữ nguyên; chạy lại an
+    toàn."""
     import shutil
     g = Path(nguon).resolve()
+    if g.suffix.lower() == ".zip":
+        import zipfile
+        goc_tuong_doi = {"results/bao_da_tuyen/": KQ, "data/bao_da_tuyen/": DL}
+        so = 0
+        with zipfile.ZipFile(g) as z:
+            for ten in z.namelist():
+                tien_to = next((p for p in goc_tuong_doi if ten.startswith(p)), None)
+                if tien_to is None or ten.endswith("/"):
+                    continue
+                dich = goc_tuong_doi[tien_to] / ten[len(tien_to):]
+                if not dich.exists():
+                    dich.parent.mkdir(parents=True, exist_ok=True)
+                    with z.open(ten) as nguon_f, open(dich, "wb") as dich_f:
+                        shutil.copyfileobj(nguon_f, dich_f)
+                    so += 1
+        print(f"  lấy dữ liệu TN11 từ {g.name}: giải nén {so} tệp còn thiếu", flush=True)
+        return
     if g == GOC.resolve():
         return
     kq_g, dl_g = g / "results" / "bao_da_tuyen", g / "data" / "bao_da_tuyen"
@@ -492,7 +534,7 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
-    ap.add_argument("viec", choices=["huan-luyen", "cham", "phan-tich", "toi-da"])
+    ap.add_argument("viec", choices=["huan-luyen", "cham", "phan-tich", "toi-da", "goi-tn11"])
     ap.add_argument("--tien-trinh", type=int, default=4)
     ap.add_argument("--song-song", type=int, default=2)
     ap.add_argument("--luong-cpu", type=int, default=4)
@@ -504,7 +546,8 @@ def main():
     mo_log("tn12", sys.argv[1:])
     if a.tn11:
         lay_tn11(a.tn11)
-    {"huan-luyen": lenh_huan_luyen, "cham": lenh_cham, "phan-tich": lenh_phan_tich, "toi-da": lenh_toi_da}[a.viec](a)
+    {"huan-luyen": lenh_huan_luyen, "cham": lenh_cham, "phan-tich": lenh_phan_tich, "toi-da": lenh_toi_da,
+     "goi-tn11": goi_tn11}[a.viec](a)
     print("xong", flush=True)
 
 
