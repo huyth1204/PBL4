@@ -74,17 +74,35 @@ def lenh_sinh_a(a):
         sinh(tap, DL13, a, "--muc-tieu-them", ",".join(MT), "--luoi-dphat")
 
 
-def _so_khop(goc, moi, kiem_nhan):
-    """So từng bản ghi: cùng mốc, mức tải, cạnh của kho, tải luồng (và nhãn thầy gốc nếu có)."""
-    ok = len(goc) == len(moi)
+def _ly_do_lech(x, y, kiem_nhan):
+    """Lý do bản ghi sinh lại khác bản gốc (None = khớp): mốc, mức tải, số luồng, cạnh của kho, tải luồng, nhãn."""
+    if x["t"] != y["t"]:
+        return "moc"
+    if x["muc"] != y["muc"]:
+        return "muc_tai"
+    if x["gon"].K != y["gon"].K:
+        return "so_luong"
+    if not np.array_equal(x["gon"].U, y["gon"].U):
+        return "canh_kho"
+    if not np.allclose(np.asarray(x["gon"].lam, float), np.asarray(y["gon"].lam, float)):
+        return "tai_luong"
+    if kiem_nhan is not None and not kiem_nhan(x, y):
+        return "nhan"
+    return None
+
+
+def _so_khop(goc, moi, kiem_nhan, dem_ly_do):
+    """So từng bản ghi theo thứ tự; số bản ghi khác nhau thì phần dư tính là lệch."""
     n = 0
     for x, y in zip(goc, moi):
-        dung = (x["t"] == y["t"] and x["muc"] == y["muc"] and np.array_equal(x["gon"].U, y["gon"].U)
-                and np.allclose(x["gon"].lam, y["gon"].lam))
-        if dung and kiem_nhan is not None:
-            dung = kiem_nhan(x, y)
-        n += bool(dung)
-    return ok, n
+        ly_do = _ly_do_lech(x, y, kiem_nhan)
+        if ly_do is None:
+            n += 1
+        else:
+            dem_ly_do[ly_do] = dem_ly_do.get(ly_do, 0) + 1
+    if len(goc) != len(moi):
+        dem_ly_do["so_ban_ghi"] = dem_ly_do.get("so_ban_ghi", 0) + abs(len(goc) - len(moi))
+    return len(goc) == len(moi), n
 
 
 def kiem_tai_lap(cap, ten):
@@ -95,16 +113,19 @@ def kiem_tai_lap(cap, ten):
         if not tg:
             ra[str(moi.name)] = "không có bản gốc để so"
             continue
-        n_d, k_d, lech_so = 0, 0, 0
+        n_d, k_d, lech_so, ly_do = 0, 0, 0, {}
         for f in tg:
             g = Path(f)
             m = moi / g.name
             if not m.exists():
                 continue
             x, y = pickle.load(open(g, "rb")), pickle.load(open(m, "rb"))
-            ok, k = _so_khop(x, y, kn)
+            ok, k = _so_khop(x, y, kn, ly_do)
             n_d, k_d, lech_so = n_d + len(x), k_d + k, lech_so + (not ok)
-        ra[f"{moi.parent.name}/{moi.name}"] = {"so_ban_ghi": n_d, "khop": k_d, "tep_lech_so_luong": lech_so}
+        ra[f"{moi.parent.name}/{moi.name}"] = {"so_ban_ghi": n_d, "khop": k_d, "tep_lech_so_ban_ghi": lech_so,
+                                               "ly_do_lech": ly_do}
+        if ly_do:
+            print(f"    {moi.parent.name}/{moi.name}: khớp {k_d}/{n_d}; lệch do {ly_do}", flush=True)
         tong, khop = tong + n_d, khop + k_d
     ti_le = khop / tong if tong else float("nan")
     RA.mkdir(parents=True, exist_ok=True)
@@ -544,8 +565,11 @@ def main():
     ap.add_argument("--thiet-bi", default="auto", choices=["cpu", "auto", "cuda"])
     ap.add_argument("--ram", type=float, default=20.0, help="ngân sách RAM (GB) cho toi-da")
     ap.add_argument("--vram", type=float, default=8.0, help="ngân sách VRAM (GB) cho toi-da")
+    ap.add_argument("--tn11", default=None, help="thư mục repo đã chạy TN11: chép mô hình + dữ liệu TN11 còn thiếu")
     a = ap.parse_args()
     t12.mo_log("tn13", sys.argv[1:])
+    if a.tn11:
+        t12.lay_tn11(a.tn11)
     VIEC[a.viec](a)
     print("xong", flush=True)
 

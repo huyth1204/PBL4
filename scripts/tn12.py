@@ -55,6 +55,38 @@ def py(*a):
     return t11.py(*a)
 
 
+# dữ liệu TN11 mà TN12 / TN13 đọc: tập học (TN13 so tái lập), val, 11 bộ kiểm tra 4–5 luồng
+DL_TN11 = ("train10_k4_5", "train6_10_k4_5", "x11_k4_5", "val_k4_5", "val6_k4_5") + tuple(
+    t11.thu_muc_bo(b, "4-5") for b in BO_45)
+
+
+def lay_tn11(nguon):
+    """--tn11 <thư mục đã chạy TN11>: chép sang repo này những gì CÒN THIẾU — mô hình mo_hinh11/, kết quả tn11/ (cham_tep để
+    kiểm lặp lại) và các thư mục dữ liệu DL_TN11. Tệp đã có thì giữ nguyên; chạy lại an toàn."""
+    import shutil
+    g = Path(nguon).resolve()
+    if g == GOC.resolve():
+        return
+    kq_g, dl_g = g / "results" / "bao_da_tuyen", g / "data" / "bao_da_tuyen"
+    if not (kq_g / "mo_hinh11").exists():
+        raise SystemExit(f"--tn11: không thấy {kq_g / 'mo_hinh11'}")
+    cap = [(kq_g / "mo_hinh11", M11), (kq_g / "tn11", KQ / "tn11")]
+    cap += [(dl_g / d, DL / d) for d in DL_TN11]
+    so, dung_luong, thieu = 0, 0, []
+    for nguon_d, dich_d in cap:
+        if not nguon_d.exists():
+            thieu.append(nguon_d.name)
+            continue
+        for f in nguon_d.rglob("*"):
+            dich = dich_d / f.relative_to(nguon_d)
+            if f.is_file() and not dich.exists():
+                dich.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(f, dich)
+                so, dung_luong = so + 1, dung_luong + f.stat().st_size
+    print(f"  lấy dữ liệu TN11 từ {g}: chép {so} tệp ({dung_luong / 1e9:.2f} GB)"
+          + (f"; nguồn không có: {thieu}" if thieu else ""), flush=True)
+
+
 # ============================================================================================ huấn luyện (dùng chung TN13)
 def hang_doi(viec, song_song, thu_muc_mh, tien_to):
     """viec = [(tên, lệnh)]; luôn giữ song_song mô hình chạy; bỏ qua mô hình đã có <tên>.xong."""
@@ -467,8 +499,11 @@ def main():
     ap.add_argument("--thiet-bi", default="auto", choices=["cpu", "auto", "cuda"])
     ap.add_argument("--ram", type=float, default=20.0, help="ngân sách RAM (GB) cho toi-da")
     ap.add_argument("--vram", type=float, default=8.0, help="ngân sách VRAM (GB) cho toi-da")
+    ap.add_argument("--tn11", default=None, help="thư mục repo đã chạy TN11: chép mô hình + dữ liệu TN11 còn thiếu")
     a = ap.parse_args()
     mo_log("tn12", sys.argv[1:])
+    if a.tn11:
+        lay_tn11(a.tn11)
     {"huan-luyen": lenh_huan_luyen, "cham": lenh_cham, "phan-tich": lenh_phan_tich, "toi-da": lenh_toi_da}[a.viec](a)
     print("xong", flush=True)
 
