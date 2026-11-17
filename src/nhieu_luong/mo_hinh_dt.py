@@ -296,6 +296,25 @@ def mat_mat_softmax(net, lo, y, gen=None):
     return _ce(net(lo, X_deu(lo), torch.ones(lo.B, device=lo.inc.device)), y, lo)
 
 
+SO_BUOC_SUA_DAN = 5
+
+
+def mat_mat_sua_dan(net, lo, y, gen=None, K=SO_BUOC_SUA_DAN):
+    """TN12b — học SỬA DẦN KHÔNG có quá trình nhiễu (đối chứng của khuếch tán). Bắt đầu từ một lựa chọn hợp lệ ngẫu nhiên, mạng
+    tự chạy i bước của chính nó (không lấy gradient, giải mã có lấy mẫu như lúc dùng), rồi học bước thứ i + 1 đoán nhãn thầy.
+    i bốc đều trong 0..K−1 cho cả lô. Khác DM: đầu vào khi học là lời giải của CHÍNH mô hình, không phải nhãn thầy bị làm
+    nhiễu theo lịch ᾱ(t). Cùng mạng, cùng đặc trưng phối hợp, cùng mã hoá bước t = 1 − i/K như lúc giải mã DM."""
+    dev = lo.inc.device
+    i = min(int(float(_rand((1,), gen, None)[0]) * K), K - 1)
+    x = ngau_nhien(lo, gen)
+    if i:
+        with torch.no_grad():
+            for b in range(i):
+                lg = net(lo, Fn.one_hot(x, 3).float(), torch.full((lo.B,), 1 - b / K, device=dev))
+                x, _ = giai_ma(lo, lg, lay_mau=True, gen=gen)
+    return _ce(net(lo, Fn.one_hot(x, 3).float(), torch.full((lo.B,), 1 - i / K, device=dev)), y, lo)
+
+
 # ---------------------------------------------------------------- giải mã, lấy mẫu
 def giai_ma(lo, logit, lay_mau=False, gen=None):
     """logit → trạng thái hợp lệ [B,K,P] (1 tuyến chính + m − 1 dự phòng mỗi luồng) và log-xác suất [B]."""
@@ -341,6 +360,21 @@ def chon_dm(net, gon, S=8, so_buoc=5, gen=None):
             x = torch.where(giu[..., None], x0, ngau_nhien(lo, gen))
     j = int(lp.argmax())
     return lua_chon_tu_trang_thai(gon, x0[j, :gon.K].cpu().numpy())
+
+
+@torch.no_grad()
+def chon_sua_dan(net, gon, S=32, so_buoc=SO_BUOC_SUA_DAN, gen=None, lay_mau=True):
+    """TN12b — giải mã sửa dần KHÔNG tái nhiễu: mỗi bước lấy lời giải vừa giải mã làm đầu vào bước sau (DM thì trộn lại về lựa
+    chọn ngẫu nhiên theo ᾱ). lay_mau: bước giữa giải mã có lấy mẫu (S chuỗi khác nhau); False → luôn argmax (tất định, chỉ
+    điểm xuất phát ngẫu nhiên). Giữ chuỗi có log-xác suất cao nhất như chon_dm. Dùng được cho mạng sửa dần và cho DM11."""
+    dev = next(net.parameters()).device
+    lo = LoDT([gon], lap=S, them=net.them, dev=None if dev.type == "cpu" else dev)
+    x = ngau_nhien(lo, gen)
+    for i in range(so_buoc):
+        logit = net(lo, Fn.one_hot(x, 3).float(), torch.full((S,), 1 - i / so_buoc, device=dev))
+        x, lp = giai_ma(lo, logit, lay_mau=lay_mau and i < so_buoc - 1, gen=gen)
+    j = int(lp.argmax())
+    return lua_chon_tu_trang_thai(gon, x[j, :gon.K].cpu().numpy())
 
 
 @torch.no_grad()

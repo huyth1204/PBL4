@@ -16,10 +16,12 @@ Thế giới: ensemble rẽ nhánh tại o (the_gioi_rr) để làm nhãn / ch�
 from __future__ import annotations
 
 import itertools
+import time
 
 import networkx as nx
 import numpy as np
 import scipy.sparse as sp
+from scipy.sparse.csgraph import dijkstra as _dijkstra
 from scipy.sparse.csgraph import maximum_flow
 
 from src.ngau_nhien.kich_ban import PKT, PROC, loai_lien_ket
@@ -141,6 +143,60 @@ def suurballe(mg, s, d, m):
     return sorted(tuyen, key=lambda r: float(mg.d0[mg.dt.canh_cua(r)].sum()))
 
 
+SUURBALLE_NHANH = False      # TN14: kho tuyến dùng suurballe_nhanh (mặc định False = đúng như mọi thí nghiệm trước)
+
+
+def suurballe_nhanh(mg, s, d, m):
+    """TN14 — cùng bài toán với suurballe(): ≤ m tuyến rời cạnh s → d có tổng trễ nền (µs, làm tròn nguyên như bản cũ) nhỏ
+    nhất, giải bằng đường tăng ngắn nhất trên đồ thị dư có thế vị (Dijkstra của scipy) thay cho network simplex của networkx.
+    Tổng chi phí bằng đúng lời giải cũ (luồng chi phí nhỏ nhất với k = min(m, số đường rời cạnh) đơn vị); khi nhiều lời giải
+    cùng chi phí thì tập tuyến có thể khác."""
+    i = mg.dt._giu(s)
+    u, v = mg.eu[i], mg.ev[i]
+    if not ((u == s).any() or (v == s).any()) or not ((u == d).any() or (v == d).any()):
+        return []
+    w = np.round(mg.d0[i] * 1000).astype(np.int64)
+    N = mg.dt.N
+    f = np.zeros(len(i), bool)                       # cạnh đang mang luồng
+    pi = np.zeros(N, np.int64)                       # thế vị (khoảng cách nguyên của lần trước)
+    toi = np.ones(N, bool)                           # nút tới được ở lần trước (lần đầu: mọi nút)
+    so = 0
+    for _ in range(m):
+        a, b = np.where(f, v, u), np.where(f, u, v)                      # cung dư: thuận (f = 0) hoặc ngược (f = 1)
+        c = np.where(f, -w, w) + pi[a] - pi[b]                           # giá rút gọn, ≥ 0 trên các nút tới được
+        giu = toi[a] & toi[b]
+        a, b, c, e = a[giu], b[giu], np.maximum(c[giu], 0), np.flatnonzero(giu)
+        tt = np.lexsort((c, b, a))
+        dau = np.ones(len(tt), bool)
+        dau[1:] = (a[tt][1:] != a[tt][:-1]) | (b[tt][1:] != b[tt][:-1])
+        tt = tt[dau]                                                     # mỗi cặp nút giữ cung rẻ nhất
+        M = sp.csr_matrix((c[tt] + 1e-6, (a[tt], b[tt])), shape=(N, N))  # +1e-6: giữ cung giá 0; tổng ≪ 1 µs
+        dist, pred = _dijkstra(M, directed=True, indices=int(s), return_predecessors=True)
+        if not np.isfinite(dist[d]):
+            break
+        cung = {(int(x), int(y)): int(z) for x, y, z in zip(a[tt], b[tt], e[tt])}
+        n = int(d)
+        while n != s:
+            p = int(pred[n])
+            f[cung[(p, n)]] ^= True
+            n = p
+        toi = np.isfinite(dist)
+        pi = pi + np.where(toi, np.round(np.where(toi, dist, 0)), 0).astype(np.int64)
+        so += 1
+    if so == 0:
+        return []
+    ra_khoi = {}
+    for j in np.flatnonzero(f):
+        ra_khoi.setdefault(int(u[j]), []).append(int(v[j]))
+    tuyen = []
+    for _ in range(so):
+        r = [s]
+        while r[-1] != d:
+            r.append(ra_khoi[r[-1]].pop())
+        tuyen.append(_bo_vong(r))
+    return sorted(tuyen, key=lambda r: float(mg.d0[mg.dt.canh_cua(r)].sum()))
+
+
 def kho_tuyen(mg, s, d):
     """Kho ≤ 12 tuyến của cặp (s, d). Trả dict(kho, i_suurballe, m, so_loai, min_cut) hoặc None."""
     g = mg.g
@@ -163,7 +219,7 @@ def kho_tuyen(mg, s, d):
             theo_loai.append(r)
     mc = so_duong_roi(mg, s, d)
     m = max(1, min(M_MAX, mc, len(loai) + 1))
-    S = suurballe(mg, s, d, m)
+    S = (suurballe_nhanh if SUURBALLE_NHANH else suurballe)(mg, s, d, m)
     kho, thay = [], set()
 
     def them(r):
@@ -216,6 +272,7 @@ def tao_tinh_huong(g, q, r_online, t, rng, so_luong=(4, 5), so_nguon=3):
     K = int(rng.integers(so_luong[0], so_luong[1] + 1))
     pn = (diem[nguon] + 0.5) / (diem[nguon] + 0.5).sum()
     cap, kho, src, dst, lam = {}, [], [], [], []
+    ms_kho = 0.0                                     # TN14: thời gian dựng kho (mọi cặp), chỉ đo — không đổi kết quả
     for _ in range(20 * K):
         if len(src) == K:
             break
@@ -225,7 +282,9 @@ def tao_tinh_huong(g, q, r_online, t, rng, so_luong=(4, 5), so_nguon=3):
             continue
         d = int(rng.choice(dich))
         if (s, d) not in cap:
+            s_ = time.perf_counter()
             kt = kho_tuyen(mg, s, d)
+            ms_kho += (time.perf_counter() - s_) * 1e3
             cap[(s, d)] = None if kt is None else len(kho)
             if kt is not None:
                 kho.append(kt)
@@ -238,7 +297,7 @@ def tao_tinh_huong(g, q, r_online, t, rng, so_luong=(4, 5), so_nguon=3):
         return None
     th = {"mg": mg, "src": np.array(src), "dst": np.array(dst), "lam": np.array(lam), "kho": kho,
           "cap": np.array([cap[(s, d)] for s, d in zip(src, dst)]), "t": int(t),
-          "nguon": [g.names[n] for n in nguon], "diem_nguon": [float(diem[n]) for n in nguon]}
+          "nguon": [g.names[n] for n in nguon], "diem_nguon": [float(diem[n]) for n in nguon], "ms_kho": ms_kho}
     # hệ số mức tải: như thí nghiệm 3, mọi luồng đi tuyến nhanh nhất trong kho
     F0 = np.zeros(len(mg.eu))
     for k, c in enumerate(th["cap"]):
@@ -380,13 +439,14 @@ class BaiToanGon:
 class TheGioi:
     """Một bộ W thế giới trên các cạnh U của bài toán: song [W, U] (sống suốt cửa sổ), Cw / rw [W, S, U]."""
 
-    def __init__(self, bt, song, Cw, rw):
+    def __init__(self, bt, song, Cw, rw, chuan_hoa=True):
+        """chuan_hoa=False (TN14): bỏ tính Hmin / Hmax — chỉ dùng khi không cần J chuẩn hoá (Hd_lua_chon, cham thô)."""
         self.bt, self.song, self.Cw, self.rw = bt, song, Cw, rw
         self.W = len(song)
         chet = (~song).astype(np.int32)
         self.alive = [(chet @ M.T.astype(np.int32)) == 0 for M in bt.inc]                 # [W, số tuyến]
         self.Hmin, self.Hmax = np.zeros(bt.K), np.ones(bt.K)
-        for k in range(bt.K):
+        for k in range(bt.K) if chuan_hoa else ():
             H = self._mat_mot_minh(k)
             self.Hmin[k], self.Hmax[k] = H.min(), H.max()
 
@@ -409,6 +469,26 @@ class TheGioi:
         """Ước lượng online: cạnh hỏng độc lập theo bảng rủi ro, dung lượng / tải nền = quan sát ở o."""
         song = rng.random((W, len(bt.U))) >= bt.risk[None]
         return cls(bt, song, np.broadcast_to(bt.C, (W, 1, len(bt.U))), np.broadcast_to(bt.rho0, (W, 1, len(bt.U))))
+
+    @classmethod
+    def tu_bang_nhom(cls, bt, nhom, rng, rho, W=64):
+        """TN14 — như tu_bang (xác suất hỏng của TỪNG cạnh giữ đúng bảng rủi ro, dung lượng / tải nền = quan sát ở o) nhưng
+        các cạnh chung nhóm rủi ro (cùng điểm thời tiết + băng tần, cùng UAV / trạm mặt đất) hỏng TƯƠNG QUAN: ở mỗi thế
+        giới, với xác suất rho, cạnh dùng số ngẫu nhiên chung của một nhóm của nó (bốc đều trong các nhóm), còn lại số
+        riêng. Số ngẫu nhiên vẫn đều trên [0, 1) nên biên không đổi. nhom: [U, 3] chỉ số nhóm (−1 = trống) hoặc None.
+        rho = 0 hoặc không có nhóm → trùng từng bit với tu_bang(bt, rng, W). Không chuẩn hoá J (chuan_hoa=False)."""
+        U = len(bt.U)
+        u = rng.random((W, U))
+        if nhom is not None and rho > 0 and nhom.size and nhom.max() >= 0:
+            nhom = np.asarray(nhom, np.int64)
+            ng = (nhom >= 0).sum(1)
+            u_nhom = rng.random((W, int(nhom.max()) + 1))
+            j = np.minimum((rng.random((W, U)) * np.maximum(ng, 1)).astype(np.int64), np.maximum(ng, 1) - 1)
+            gid = np.maximum(nhom[np.arange(U)[None], j], 0)
+            dung = (rng.random((W, U)) < rho) & (ng > 0)[None]
+            u = np.where(dung, u_nhom[np.arange(W)[:, None], gid], u)
+        song = u >= bt.risk[None]
+        return cls(bt, song, np.broadcast_to(bt.C, (W, 1, U)), np.broadcast_to(bt.rho0, (W, 1, U)), chuan_hoa=False)
 
     def _qua_tai(self, F):
         """F [W, ..., U] → bool cùng shape: liên kết có ρ ≥ 1 ở một mốc nào đó."""
@@ -472,13 +552,18 @@ class TheGioi:
                 "du_phong_qua_tai_%": float((b.mean(1) * lam).sum() / lam.sum() * 100),
                 "tre_chinh_ms": float((d * lam).sum() / lam.sum()), "H": H, "d": d, "lam": lam}
 
-    def J_lua_chon(self, a, k, chon=None):
-        """J của mọi lựa chọn của luồng k (các luồng khác giữ theo a, chỉ số lựa chọn). Trả [n]."""
+    def J_lua_chon(self, a, k, chon=None, chi=None):
+        """J của mọi lựa chọn của luồng k (các luồng khác giữ theo a, chỉ số lựa chọn). Trả [n].
+        chi (TN14): chỉ tính các lựa chọn có chỉ số trong chi (mặc định tất cả)."""
+        return self._J(*self.Hd_lua_chon(a, k, chon, chi))
+
+    def Hd_lua_chon(self, a, k, chon=None, chi=None):
+        """Như J_lua_chon nhưng trả (H [n, K] xác suất mất DV, d [n, K] trễ tuyến chính, λ [K]) chưa gộp."""
         bt = self.bt
         chon = np.ones(bt.K, bool) if chon is None else chon.copy()
         chon[k] = True
         lam = np.where(chon, bt.lam, 0.0)
-        O = bt.opts[k]
+        O = bt.opts[k] if chi is None else bt.opts[k][np.asarray(chi, np.int64)]
         n = len(O)
         khac = [j for j in range(bt.K) if j != k and chon[j]]
         dd = {j: self._dang_dung(j, bt.opts[j][a[j]]) for j in khac}
@@ -500,7 +585,7 @@ class TheGioi:
         d[:, k] = (lat * bt.inc[k][O[:, 0]]).sum(1)
         for j in khac:
             d[:, j] = (lat * P[j]).sum(1)
-        return self._J(H, d, lam)
+        return H, d, lam
 
 
 def doc_muc_tieu(s):

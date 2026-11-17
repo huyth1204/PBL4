@@ -68,6 +68,9 @@ THI_NGHIEM[17] = {"train": _HA + ("x11_k4_5",), "val": _VA, "thu_muc": _KQ11 / "
 # thí nghiệm 13 (TIEU_CHI_13.md): nhãn thầy theo mục tiêu J khác (--muc-tieu w0.9 / x10). Tập học gán nhãn lại ở
 # data/bao_da_tuyen/tn13/<mục tiêu>/, val có lời giải thầy theo mọi mục tiêu ở data/bao_da_tuyen/tn13/ (giai đoạn A).
 THI_NGHIEM[18] = {"train": (), "val": ("tn13/val_k4_5", "tn13/val6_k4_5"), "thu_muc": _KQ11 / "mo_hinh13", "sach": True}
+# thí nghiệm 12b (TIEU_CHI_12B.md): cùng dữ liệu với DM11; kiểu "sua_dan" = học sửa dần không có quá trình nhiễu
+THI_NGHIEM[19] = {"train": _HA + ("x11_k4_5",), "val": _VA, "thu_muc": _KQ11 / "mo_hinh12b", "sach": True}
+MAT_MAT = {"dm": md.mat_mat_dm, "softmax": md.mat_mat_softmax, "sua_dan": md.mat_mat_sua_dan}
 
 
 def cau_hinh_tn(tn, muc_tieu=None):
@@ -137,7 +140,8 @@ def danh_gia(net, kieu, ds, so_buoc=5, seed=0, muc_tieu=None):
     mt = dt.doc_muc_tieu(muc_tieu)
     J, Jt = [], []
     for r in ds:
-        a = md.chon_dm(net, r["gon"], S, so_buoc, gen) if kieu == "dm" else md.chon_softmax(net, r["gon"])
+        a = (md.chon_dm(net, r["gon"], S, so_buoc, gen) if kieu == "dm" else
+             md.chon_sua_dan(net, r["gon"], S, so_buoc, gen) if kieu == "sua_dan" else md.chon_softmax(net, r["gon"]))
         tgw = the_gioi_cham(r)
         tgw.muc_tieu = mt
         J.append(tgw.cham(r["gon"].tu_lua_chon(a))["J"])
@@ -184,12 +188,14 @@ def huan_luyen(kieu, epochs=20, B=32, H=64, lr=1e-3, seed=0, tn=4, ten=None, the
     if not phoi_hop or lich != "cos" or dropout or weight_decay or muc_tieu:
         print(f"  TN12/13: phối hợp {phoi_hop}, lịch {lich}, dropout {dropout}, weight decay {weight_decay}, "
               f"mục tiêu {muc_tieu or 'gốc 7/3'}", flush=True)
-    dev = chon_thiet_bi(thiet_bi, net, tr, B, them, md.mat_mat_dm if kieu == "dm" else md.mat_mat_softmax)
+    if kieu == "sua_dan":
+        print("  TN12b: học sửa dần không có quá trình nhiễu", flush=True)
+    dev = chon_thiet_bi(thiet_bi, net, tr, B, them, MAT_MAT[kieu])
     opt = (torch.optim.AdamW(net.parameters(), lr=lr, weight_decay=weight_decay) if weight_decay
            else torch.optim.Adam(net.parameters(), lr=lr))
     so_lo = math.ceil(len(tr) / B) * epochs
     sch = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: 0.01 + 0.99 * 0.5 * (1 + math.cos(math.pi * min(s / so_lo, 1))))
-    mat = md.mat_mat_dm if kieu == "dm" else md.mat_mat_softmax
+    mat = MAT_MAT[kieu]
     nk, tot, ep_tot, t0 = [], np.inf, 0, time.time()
     for ep in range(epochs):
         L = []
@@ -281,7 +287,7 @@ if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
-    ap.add_argument("viec", choices=["dm", "softmax", "chon-buoc"])
+    ap.add_argument("viec", choices=["dm", "softmax", "sua_dan", "chon-buoc"])
     ap.add_argument("--thi-nghiem", type=int, default=4, choices=sorted(THI_NGHIEM))
     ap.add_argument("--ten", default=None)
     ap.add_argument("--them", action="store_true", help="thêm 3 đặc trưng giông quanh UAV (thí nghiệm 6)")

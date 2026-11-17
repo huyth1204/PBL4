@@ -156,6 +156,7 @@ def _mot_cua_so(job):
     Dijkstra phạt, "chi_nhan": bỏ thế giới chấm}. Thiếu → đúng đường cũ, bản ghi cũ không đổi."""
     tap, K_rg, i, ten, h0, seed, moc, tep, mo_hinh, co_thay, lien_tuc = job[:11]
     tc = job[11] if len(job) > 11 else {}
+    dt.SUURBALLE_NHANH = bool(tc.get("kho_nhanh"))       # TN14: kho dùng Suurballe nhanh (mặc định: bản cũ)
     if td._g is None:
         td._khoi_tao()
     if Path(tep).exists():
@@ -224,7 +225,8 @@ def _mot_cua_so(job):
             rec = {"gon": gon, "nhan": None if a_thay is None else a_thay.astype(np.int16), "J_nhan": float(J_thay),
                    "kb": i, "bao": ten,
                    "t": t, "muc": muc, "K": bt.K, "nguon": th["nguon"],
-                   "tg_ms": {"yen": tg_yen * 1e3, "dphat": tg_dp * 1e3, "online_tkcb": tg_on * 1e3}}
+                   "tg_ms": {"yen": tg_yen * 1e3, "dphat": tg_dp * 1e3, "online_tkcb": tg_on * 1e3,
+                             "kho": th["ms_kho"]}}
             if mt is not None:
                 rec["muc_tieu"] = dt.ten_muc_tieu(mt)
                 if a_goc is not None:
@@ -566,6 +568,7 @@ def main():
     ap.add_argument("--muc-tieu-them", default="", help="TN13: thầy thêm theo các mục tiêu (phẩy ngăn cách)")
     ap.add_argument("--luoi-dphat", action="store_true", help="TN13: chấm Dijkstra phạt trên lưới β, γ")
     ap.add_argument("--chi-nhan", action="store_true", help="TN13: chỉ nhãn, không sinh thế giới chấm")
+    ap.add_argument("--kho-nhanh", action="store_true", help="TN14: dựng kho bằng Suurballe nhanh (da_tuyen.suurballe_nhanh)")
     a = ap.parse_args()
     K_rg = phan_tich_K(a.K)
     td._khoi_tao_nhe()
@@ -584,7 +587,7 @@ def main():
     lien_tuc = goc in HINH_HOC                            # thí nghiệm 5: tải liên tục
     them = [dt.doc_muc_tieu(s) for s in a.muc_tieu_them.split(",") if s.strip()]
     tc = {k: v for k, v in {"muc_tieu": dt.doc_muc_tieu(a.muc_tieu), "them": them, "luoi": a.luoi_dphat,
-                            "chi_nhan": a.chi_nhan, "danh_gia_mt": them or None}.items() if v}
+                            "chi_nhan": a.chi_nhan, "danh_gia_mt": them or None, "kho_nhanh": a.kho_nhanh}.items() if v}
     if a.luoi_dphat and not them:                         # TN13 giai đoạn B, bộ kiểm tra: J theo mọi mục tiêu đã thử ở A
         tc["danh_gia_mt"] = [dt.doc_muc_tieu(s) for s in MUC_TIEU_13]
     jobs = [(a.tap, K_rg, i, ten, h0, seed, moc, ra / f"kb_{i:04d}.pkl", a.mo_hinh, not a.khong_thay, lien_tuc)
