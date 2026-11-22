@@ -285,11 +285,17 @@ TAI_LIEN_TUC = (0.5, 1.3)
 # có thầy, 13 cửa sổ, 4–5 luồng. hoc9: đúng tình huống đã học (cửa sổ + seed của train6); seed9: seed mới; hinh9: thêm
 # split hình học test; ngay9: ngày mới 2024–2025 (cửa sổ C); nam9 / bao9: thời tiết 2017–2021 (ngày xấu / đợt mạnh).
 TAP_9 = {"hoc9": "train", "seed9": "train", "hinh9": "test", "ngay9": "test", "nam9": "test", "bao9": "test"}
-NAM_9 = ("nam9", "bao9")
+# Thí nghiệm 15b (results/bao_da_tuyen/TIEU_CHI_15B.md) — bộ kiểm chứng MỚI, thời tiết 2017–2021 chưa dùng ở bất kỳ TN nào:
+#   bao15b: 20 đợt bão xếp hạng 14–33 theo cường độ (bao9 đã lấy hạng 1–13), bỏ đợt có giờ mạnh nhất cách đợt đã có ≤ 1 ngày;
+#   ngay15b: 20 ngày xấu bốc bằng default_rng(SEED_15B), ngoài ngày của nam9 và ngoài mọi đợt bão trên (±1 ngày);
+#   k15b: 6 đợt đầu của bao15b + 6 ngày đầu của ngay15b (theo thời gian), dùng cho 10 luồng.
+TAP_15B = {"bao15b": "test", "ngay15b": "test", "k15b": "test"}
+SEED_15B, SO_BAO_15B, SO_NGAY_15B, SO_K_15B = 15026, 20, 20, 6
+NAM_9 = ("nam9", "bao9", *TAP_15B)
 SO_CUA_SO_9 = 13
 HINH_HOC = {"val5": "val", "yagi5": "test", "mua5": "test",        # tập của thí nghiệm 5–7 → split hình học v5
             "train6": "train", "val6": "val", "c6": "test", "train7s": "train", "train7x": "train",
-            **{f"{b}7{s}": "test" for b in ("c", "y") for s in ("w", "h", "wh")}, **TAP_9}
+            **{f"{b}7{s}": "test" for b in ("c", "y") for s in ("w", "h", "wh")}, **TAP_9, **TAP_15B}
 SEED_6 = {"c6": 720000, "val6": 710000, "train6": 700000, "train7x": 730000}
 TAP_TRAIN = {"train", "train6", "train7s", "train7x", "train_b", "train6_b"}
 # Thí nghiệm 7a — thế giới cực đoan giả lập (nhãn synthetic_stress, không phải cường độ đo được). Bộ định tuyến không
@@ -462,6 +468,14 @@ def ngay_xau(tt, loai_them=()):
     cửa sổ bắt đầu ở giờ chia hết cho 3 chứa giờ nặng nhất. Xáo bằng default_rng(2026): 13 → c6, 16 → val6, 60 → train6.
     loai_them (thí nghiệm 9, năm 2017–2021): chỉ số giờ của các đợt bão đã lấy — loại thêm ngày của chúng (±1).
     Trả {tập: [(ngày, h0)]}."""
+    ds = _ds_ngay_xau(tt, loai_them)
+    perm = np.random.default_rng(2026).permutation(len(ds))
+    return {"c6": [ds[i] for i in perm[:13]], "val6": [ds[i] for i in perm[13:29]], "train6": [ds[i] for i in perm[29:89]],
+            "train7x": [ds[i] for i in perm[89:149]]}         # thí nghiệm 7b: 60 ngày tiếp theo
+
+
+def _ds_ngay_xau(tt, loai_them=()):
+    """Danh sách đầy đủ [(ngày, h0)] theo thời gian của ngay_xau (trước khi xáo) — tách ra cho TN15b, không đổi kết quả cũ."""
     import json
     from src.ngau_nhien.thoi_tiet import GIONG
     T = [str(x) for x in tt.time_utc]
@@ -483,9 +497,7 @@ def ngay_xau(tt, loai_them=()):
             continue
         hm = idx[np.argmax(nang[idx])]
         ds.append((str(d), int(max(idx[0], (hm // 3) * 3))))
-    perm = np.random.default_rng(2026).permutation(len(ds))
-    return {"c6": [ds[i] for i in perm[:13]], "val6": [ds[i] for i in perm[13:29]], "train6": [ds[i] for i in perm[29:89]],
-            "train7x": [ds[i] for i in perm[89:149]]}         # thí nghiệm 7b: 60 ngày tiếp theo
+    return ds
 
 
 def dot_bao_17(tt, so=SO_CUA_SO_9):
@@ -523,10 +535,46 @@ def cua_so_9(tap):
     return [("xau17_" + d, h, 990000 + i) for i, (d, h) in enumerate(ds)]
 
 
+def cua_so_15b(tap):
+    """Thí nghiệm 15b: [(tên, h0, seed)] của bộ kiểm chứng mới (xem TAP_15B). Tất định; không trùng ngày với nam9 / bao9."""
+    if tap == "k15b":
+        b, n = cua_so_15b("bao15b"), cua_so_15b("ngay15b")
+        return [(ten, h0, seed + 3000) for ten, h0, seed in b[:SO_K_15B] + n[:SO_K_15B]]
+    tt = thoi_tiet_9()
+    T = [str(x) for x in tt.time_utc]
+    ngay = np.array([x[:10] for x in T]).astype("datetime64[D]")
+    cd = np.maximum((tt.precip > 11).mean(1) / 0.05, (tt.gust > 15).mean(1) / 0.20)
+    tat_ca = sorted(dot_bao_17(tt, so=10 ** 6), key=lambda x: -cd[x[1]].max())        # mọi đợt, mạnh trước
+    cu = tat_ca[:SO_CUA_SO_9]                                                       # = bao9
+    chon = []
+    for hm, d in tat_ca[SO_CUA_SO_9:]:
+        if all(abs(int((ngay[hm] - ngay[h]).astype(int))) > 1 for h, _ in cu + chon):
+            chon.append((hm, d))
+        if len(chon) == SO_BAO_15B:
+            break
+    chon = sorted(chon)
+    if tap == "bao15b":
+        return [("bao17b_" + T[hm][:10], (hm // 3) * 3, 1_510_000 + i) for i, (hm, _) in enumerate(chon)]
+    loai = [h for _, d in cu + chon for h in d]
+    nam9 = {np.datetime64(ten[len("xau17_"):]) for ten, _, _ in cua_so_9("nam9")}
+    mot = np.timedelta64(1, "D")
+    ds = [(d, h) for d, h in _ds_ngay_xau(tt, loai_them=loai)
+          if all(abs(np.datetime64(d) - x) > mot for x in nam9)]
+    lay = []                                    # bốc theo hoán vị, mỗi ngày cách các ngày đã lấy > 1 ngày (cửa sổ độc lập)
+    for i in np.random.default_rng(SEED_15B).permutation(len(ds)):
+        if all(abs(np.datetime64(ds[i][0]) - np.datetime64(ds[j][0])) > mot for j in lay):
+            lay.append(int(i))
+        if len(lay) == SO_NGAY_15B:
+            break
+    return [("xau17b_" + ds[i][0], ds[i][1], 1_520_000 + j) for j, i in enumerate(sorted(lay))]
+
+
 def cac_cua_so_tap(tap):
     """[(tên, h0, seed)] — thêm các tập của thí nghiệm 5, 6 (seed mới) vào các tập cũ."""
     if tap in TAP_9:
         return cua_so_9(tap)
+    if tap in TAP_15B:
+        return cua_so_15b(tap)
     if tap == "x11":
         return [x[:3] for x in cua_so_x11()]
     if tap in TAP_11:                                  # xc11 / xy11: cửa sổ của bộ kiểm tra gốc, seed mới
