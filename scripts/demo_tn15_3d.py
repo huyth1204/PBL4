@@ -31,7 +31,15 @@ CSS = r"""
 #bar15{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:40;display:flex;gap:8px}
 #bar15 button,.p15 button,.p15 select{font:inherit;font-size:12.5px;padding:6px 10px;border-radius:9px;border:1px solid rgba(255,255,255,.18);
   background:rgba(8,16,28,.82);color:#e8eef5;cursor:pointer}
-#bar15 button:hover,.p15 button:hover{border-color:#4fc3f7}
+@media (hover:hover) and (pointer:fine){#bar15 button:hover,.p15 button:hover{border-color:#4fc3f7}}
+#bar15 button,.p15 button{transition:transform 160ms cubic-bezier(.23,1,.32,1),border-color 150ms ease,background-color 150ms ease}
+#bar15 button:active,.p15 button:active{transform:scale(.97)}
+#bar15 button,.p15 button{display:inline-flex;align-items:center;gap:6px}
+.i15{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.i15.dac{fill:currentColor;stroke:none}
+#bd15ct{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:4px;color:#9fb0c2;font-size:11.5px}
+#bd15ct i{display:inline-block;width:14px;height:0;border-top:2px solid;vertical-align:3px;margin-right:5px}
+#bd15ct .cot{width:10px;height:10px;border:0;background:rgba(255,255,255,.14);vertical-align:-1px}
 #bar15 .chinh{border-color:#ff8a3d;color:#ffd2b3}
 .p15 button.dang{background:#e8eef5;color:#0b1320;border-color:#e8eef5}
 #ov15{position:fixed;inset:18px;z-index:60;display:none;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.15);
@@ -71,9 +79,20 @@ body.cd15 #k15{display:flex}
 """
 
 HTML_PHAN = r"""
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="j-cau" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.8"/><path d="M2.4 8h11.2M8 2.2c1.9 2.1 1.9 9.5 0 11.6M8 2.2c-1.9 2.1-1.9 9.5 0 11.6"/></symbol>
+  <symbol id="j-bang" viewBox="0 0 16 16"><path d="M3 13V8M6.5 13V4M10 13V9.5M13.5 13V6"/></symbol>
+  <symbol id="j-chia" viewBox="0 0 16 16"><rect x="2.5" y="3" width="11" height="10" rx="2"/><path d="M8 3v10"/></symbol>
+  <symbol id="j-chong" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="8" height="8" rx="1.8"/><rect x="5.5" y="5.5" width="8" height="8" rx="1.8"/></symbol>
+  <symbol id="j-ve" viewBox="0 0 16 16"><path d="M9.5 3.8L5.3 8l4.2 4.2"/></symbol>
+  <symbol id="j-lui" viewBox="0 0 16 16"><path d="M4.5 3.8v8.4M11.5 3.8L7.3 8l4.2 4.2"/></symbol>
+  <symbol id="j-toi" viewBox="0 0 16 16"><path d="M11.5 3.8v8.4M4.5 3.8L8.7 8l-4.2 4.2"/></symbol>
+  <symbol id="j-chay" viewBox="0 0 16 16"><path d="M5.2 3.6v8.8L12 8z"/></symbol>
+  <symbol id="j-dung" viewBox="0 0 16 16"><rect x="4.3" y="3.6" width="2.6" height="8.8" rx=".8"/><rect x="9.1" y="3.6" width="2.6" height="8.8" rx=".8"/></symbol>
+</svg>
 <div id="bar15">
-  <button class="chinh" id="b15so">🌐 So sánh DM 7/3 ↔ DM x10 (TN15b)</button>
-  <button id="b15demo">📊 Demo TN15 → TN15b</button>
+  <button class="chinh" id="b15so"><svg class="i15"><use href="#j-cau"/></svg>So sánh DM 7/3 ↔ DM x10 (TN15b)</button>
+  <button id="b15demo"><svg class="i15"><use href="#j-bang"/></svg>Demo TN15 → TN15b</button>
 </div>
 <div id="k15" class="p15">
   <div class="hang"><b>TN15b · <span style="color:#7fb6ff">DM 7/3</span> ↔ <span style="color:#ffb37a">DM x10</span></b>
@@ -81,15 +100,15 @@ HTML_PHAN = r"""
     <label>Điểm đầu <select id="k15dau"></select></label>
     <label>Điểm cuối <select id="k15cuoi"></select></label>
     <span class="ngan"></span>
-    <button id="k15chia" class="dang" title="Mỗi mô hình một nửa màn hình">◧ Chia đôi</button>
-    <button id="k15chong" title="Hai tuyến trên cùng một bản đồ">⧉ Chồng</button>
+    <button id="k15chia" class="dang" title="Mỗi mô hình một nửa màn hình"><svg class="i15"><use href="#j-chia"/></svg>Chia đôi</button>
+    <button id="k15chong" title="Hai tuyến trên cùng một bản đồ"><svg class="i15"><use href="#j-chong"/></svg>Chồng</button>
     <span class="ngan"></span>
-    <button id="k15demo">📊 Bảng demo</button>
-    <button id="k15thoat">← Về bản đồ bão</button></div>
+    <button id="k15demo"><svg class="i15"><use href="#j-bang"/></svg>Bảng demo</button>
+    <button id="k15thoat"><svg class="i15"><use href="#j-ve"/></svg>Về bản đồ bão</button></div>
   <div class="hang">
-    <button id="k15lui" title="Mốc trước">⏮</button>
-    <button id="k15choi" title="Chạy / dừng (phím Space)">▶ Chạy</button>
-    <button id="k15toi" title="Mốc sau">⏭</button>
+    <button id="k15lui" title="Mốc trước" aria-label="Mốc trước"><svg class="i15"><use href="#j-lui"/></svg></button>
+    <button id="k15choi" title="Chạy / dừng (phím Space)"><svg class="i15 dac"><use href="#j-chay"/></svg>Chạy</button>
+    <button id="k15toi" title="Mốc sau" aria-label="Mốc sau"><svg class="i15"><use href="#j-toi"/></svg></button>
     <input id="k15tua" type="range" min="0" max="1" step="0.001" value="0" title="Kéo để tua">
     <label>Tốc độ <select id="k15toc"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
     <span class="moc" id="k15moc"></span></div>
@@ -98,7 +117,9 @@ HTML_PHAN = r"""
   <div class="dau"><b style="color:#4fc3f7">Cặp đang chọn theo thời gian</b>
     <button id="bd15tre" class="dang">trễ tuyến chính</button><button id="bd15mat">mất dịch vụ</button>
     <button class="gon" id="bd15gon" title="Thu gọn / mở">▾</button></div>
-  <div class="than"><svg id="bd15" width="430" height="64" viewBox="0 0 430 64" style="width:100%;height:auto"></svg>
+  <div class="than"><svg id="bd15" width="430" height="96" viewBox="0 0 430 96" style="width:100%;height:auto" role="img" aria-label="Chỉ số của cặp đang chọn qua các mốc"></svg>
+    <div id="bd15ct"><span><i style="color:#7fb6ff"></i>DM 7/3</span><span><i style="color:#ffb37a"></i>DM x10</span>
+      <span><i class="cot"></i>hai mô hình khác tuyến chính</span><span><b style="color:#ff8fa3">×</b> không còn đường sống</span><span>bấm vào biểu đồ để nhảy tới mốc</span></div>
     <div id="tong15"></div>
     <div class="chong-only"><span style="color:#7fb6ff">━ DM 7/3</span> ống rộng, mờ · <span style="color:#ffb37a">━ DM x10</span> ống hẹp, đậm ·
       nét đứt = dự phòng · đi trùng thì thấy ống cam nằm trong ống xanh</div></div>
@@ -233,36 +254,51 @@ function capNhatBang(td, cap){
     <b class="${cl(d1,2)}">${fs(d1)}%</b>, trễ <b class="${cl(d2,1)}">${fs(d2,1)} ms</b>
     <br><span style="color:#8fa3b8">luồng nền của kịch bản ở mốc này: ${td.luong_goc.map(x => vn(x[0]) + "→" + vn(x[1])).join(", ")} · mỗi mốc chỉ là một tình huống minh hoạ</span>`;
 }
+const BD = {W:430, H:96, l:34, r:34, t:10, b:20};
 function veBieuDo(){
-  const svg = $("bd15"), W = 430, H = 64, l = 30, r = 8, t = 6, b = 14; svg.innerHTML = "";
+  const svg = $("bd15"), {W, H, l, r, t, b} = BD; svg.innerHTML = "";
   const tds = KB().thoi_diem, n = tds.length, khoa = dau + "|" + cuoi, mk = bdKieu === "tre" ? "tre_luong" : "mat_luong";
   const v = MH.map(mh => tds.map(td => td.cap[khoa] ? td.cap[khoa][mh][mk] : null));
-  const vs = v.flat().filter(x => x != null); if (!vs.length){ svg.innerHTML = `<text x="${W/2}" y="36" fill="#8fa3b8" font-size="11" text-anchor="middle">cặp này không tới được ở mốc nào</text>`; return; }
-  let lo = Math.min(...vs), hi = Math.max(...vs); if (hi - lo < 1e-6){ lo -= 1; hi += 1; }
+  const vs = v.flat().filter(x => x != null);
+  const NS = "http://www.w3.org/2000/svg", el = (tag, at, txt) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; svg.appendChild(e); return e; };
+  if (!vs.length){ el("text", {x: W/2, y: 50, fill:"#8fa3b8", "font-size":11, "text-anchor":"middle"}, "cặp này không tới được ở mốc nào"); return; }
+  let lo = Math.min(...vs), hi = Math.max(...vs); if (hi - lo < 1e-6){ lo -= 1; hi += 1; } const pd = (hi - lo) * .08; lo -= pd; hi += pd;
   const X = j => l + (W-l-r) * (n > 1 ? j/(n-1) : .5), Y = x => t + (H-t-b) * (1 - (x-lo)/(hi-lo));
-  const NS = "http://www.w3.org/2000/svg", el = (tag, at) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); svg.appendChild(e); return e; };
-  el("text", {x: 2, y: t+8, fill:"#8fa3b8", "font-size":10}).textContent = f2(hi, 1);
-  el("text", {x: 2, y: H-b, fill:"#8fa3b8", "font-size":10}).textContent = f2(lo, 1);
-  el("text", {x: W-r, y: H-2, fill:"#8fa3b8", "font-size":10, "text-anchor":"end"}).textContent = bdKieu === "tre" ? "ms · từng mốc" : "% · từng mốc";
+  const so = bdKieu === "tre" ? 1 : 2;
+  [hi - pd, (lo + hi)/2, lo + pd].forEach(q => { el("line", {x1: l, x2: W-r, y1: Y(q), y2: Y(q), stroke:"rgba(255,255,255,.07)"});
+    el("text", {x: l-5, y: Y(q)+3.5, fill:"#8fa3b8", "font-size":9.5, "text-anchor":"end"}, f2(q, so)); });
   tds.forEach((td, j) => { const c = td.cap[khoa]; if (c && c["7/3"].tuyen[0] !== c["x10"].tuyen[0])
-    el("rect", {x: X(j)-3, y: t, width: 6, height: H-t-b, fill:"rgba(255,255,255,.08)"}); });
-  [["7/3","#7fb6ff",2.6],["x10","#ffb37a",1.6]].forEach(([mh, c, w], i) => {
-    let d = ""; v[i].forEach((x, j) => { if (x == null) return; d += (d ? "L" : "M") + X(j).toFixed(1) + " " + Y(x).toFixed(1); });
-    el("path", {d, fill:"none", stroke:c, "stroke-width":w, "stroke-opacity": mh === "7/3" ? .75 : 1});
-    v[i].forEach((x, j) => { if (x != null) el("circle", {cx: X(j), cy: Y(x), r: 2.4, fill: c}); }); });
-  el("line", {id:"bd15vach", x1: X(tf), x2: X(tf), y1: t-2, y2: H-b+2, stroke:"#fff", "stroke-width":1.2});
+    el("rect", {x: X(j)-4, y: t, width: 8, height: H-t-b, rx: 2, fill:"rgba(255,255,255,.10)"}); });
+  const cuoiD = [];
+  [["7/3","#7fb6ff",2.6,.85],["x10","#ffb37a",1.8,1]].forEach(([mh, c, w, op], i) => {
+    let d = "", jc = -1, ngat = true;   // mốc không tới được thì ngắt đường, không nối qua
+    v[i].forEach((x, j) => { if (x == null){ ngat = true; return; } d += (ngat ? "M" : "L") + X(j).toFixed(1) + " " + Y(x).toFixed(1); ngat = false; jc = j; });
+    el("path", {d, fill:"none", stroke:c, "stroke-width":w, "stroke-opacity":op, "stroke-linejoin":"round"});
+    v[i].forEach((x, j) => { if (x != null) el("circle", {cx: X(j), cy: Y(x), r: 2.6, fill: c}); });
+    if (jc >= 0) cuoiD.push({y: Y(v[i][jc]) + 3.5, c, ten: mh});
+  });
+  if (cuoiD.length === 2 && Math.abs(cuoiD[0].y - cuoiD[1].y) < 11){ const g = (cuoiD[0].y + cuoiD[1].y)/2, tren = cuoiD[0].y <= cuoiD[1].y ? 0 : 1; cuoiD[tren].y = g - 5.5; cuoiD[1-tren].y = g + 5.5; }
+  cuoiD.forEach(q => el("text", {x: W-r+5, y: q.y, fill: q.c, "font-size":10.5, "font-weight":600}, q.ten));
+  tds.forEach((td, j) => { if (!td.cap[khoa]) el("text", {x: X(j), y: H-b-2, fill:"#ff8fa3", "font-size":12, "font-weight":700, "text-anchor":"middle"}, "×"); });
+  el("text", {x: l, y: H-5, fill:"#8fa3b8", "font-size":9.5}, "mốc 1");
+  el("text", {x: W-r, y: H-5, fill:"#8fa3b8", "font-size":9.5, "text-anchor":"end"}, `mốc ${n} · ${bdKieu === "tre" ? "trễ tuyến chính (ms)" : "mất dịch vụ của luồng (%)"}`);
+  el("line", {id:"bd15vach", x1: X(tf), x2: X(tf), y1: t-3, y2: H-b+3, stroke:"#fff", "stroke-width":1.3});
   svg.dataset.n = n;
 }
-function capNhatVachBd(){ const v = $("bd15vach"); if (!v) return; const n = soMoc(), x = 30 + (430-30-8) * (n > 1 ? tf/(n-1) : .5); v.setAttribute("x1", x); v.setAttribute("x2", x); }
+function capNhatVachBd(){ const v = $("bd15vach"); if (!v) return; const n = soMoc(), {W, l, r} = BD, x = l + (W-l-r) * (n > 1 ? tf/(n-1) : .5); v.setAttribute("x1", x); v.setAttribute("x2", x); }
 const _v = new THREE.Vector3();
 function nhan(w0, ww, i, ds, cp, cam, h){
-  let html = "";
+  const ds2 = [];
   for (const ni of ds){ P3(ni, _a); if (_a.clone().normalize().dot(cp) < .12) continue;
     _v.copy(_a).project(cam); if (_v.z > 1) continue;
     const x = (_v.x + 1) / 2 * ww + w0, y = (1 - _v.y) / 2 * h; if (x < w0 || x > w0 + ww - 20) continue;
     const ten = T.ten_nut[ni], dam = (ten === dau || ten === cuoi);
     if (T.loai[ni] === 0 && !dam) continue;
-    html += `<div style="left:${x}px;top:${y}px;${dam ? "font-size:12.5px;color:#fff" : ""}">${tenNut(ni).replace("HAPS ","H·").replace("UAV ","U·")}</div>`; }
+    ds2.push({x, y, dam, chu: tenNut(ni).replace("HAPS ","H·").replace("UAV ","U·")}); }
+  // điểm đầu / cuối đặt nhãn trước; nhãn sau dịch xuống cho khỏi chồng
+  ds2.sort((p, q) => q.dam - p.dam); const dat = []; let html = "";
+  for (const n of ds2){ let y = n.y; while (dat.some(([a, b]) => Math.abs(a - n.x) < 70 && Math.abs(b - y) < 14)) y += 14; dat.push([n.x, y]);
+    html += `<div style="left:${n.x}px;top:${y}px;${n.dam ? "font-size:12.5px;color:#fff" : ""}">${n.chu}</div>`; }
   return html;
 }
 
@@ -304,7 +340,7 @@ function napChon(){
   sd.value = dau; sc.value = cuoi;
 }
 function denMocGoc(){ const k = KB(); tf = Math.max(0, k.thoi_diem.findIndex(td => td.t === k.moc_goc)); }
-function datChoi(p){ choi = p; $("k15choi").textContent = p ? "⏸ Dừng" : "▶ Chạy"; $("k15choi").classList.toggle("dang", p); }
+function datChoi(p){ choi = p; $("k15choi").innerHTML = p ? '<svg class="i15 dac"><use href="#j-dung"/></svg>Dừng' : '<svg class="i15 dac"><use href="#j-chay"/></svg>Chạy'; $("k15choi").classList.toggle("dang", p); }
 function datChe(c){ che = c; $("k15chia").classList.toggle("dang", c === "chia"); $("k15chong").classList.toggle("dang", c === "chong");
   document.body.classList.toggle("chia15", c === "chia"); document.body.classList.toggle("chong15", c === "chong"); apMauChe(); canVe = true; }
 function batSoSanh(k_, d_, c_, veMocGoc){
@@ -330,8 +366,8 @@ $("k15tua").oninput = () => { datChoi(false); tf = +$("k15tua").value * (soMoc()
 $("k15toc").onchange = () => { toc = +$("k15toc").value; };
 $("bd15tre").onclick = () => { bdKieu = "tre"; $("bd15tre").classList.add("dang"); $("bd15mat").classList.remove("dang"); veBieuDo(); };
 $("bd15mat").onclick = () => { bdKieu = "mat"; $("bd15mat").classList.add("dang"); $("bd15tre").classList.remove("dang"); veBieuDo(); };
-$("bd15").addEventListener("click", e => { const rc = $("bd15").getBoundingClientRect(), n = soMoc();
-  const u = Math.min(Math.max((e.clientX - rc.left) / rc.width * 430 - 30, 0) / (430 - 38), 1); datChoi(false); tf = Math.round(u * (n - 1)); });
+$("bd15").addEventListener("click", e => { const rc = $("bd15").getBoundingClientRect(), n = soMoc(), {W, l, r} = BD;
+  const u = Math.min(Math.max((e.clientX - rc.left) / rc.width * W - l, 0) / (W - l - r), 1); datChoi(false); tf = Math.round(u * (n - 1)); });
 $("b15so").onclick = () => batSoSanh(); $("k15thoat").onclick = tatSoSanh;
 $("bd15gon").onclick = () => { const p = $("bd15p"); p.classList.toggle("thu"); $("bd15gon").textContent = p.classList.contains("thu") ? "▸" : "▾"; };
 addEventListener("keydown", e => { if (!bat || e.code !== "Space" || /SELECT|INPUT/.test((e.target || {}).tagName || "")) return;

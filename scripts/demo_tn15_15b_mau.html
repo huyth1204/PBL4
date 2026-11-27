@@ -2,184 +2,365 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Demo TN15 → TN15b</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700&display=swap">
 <style>
-:root{--nen:#f6f7f9;--the:#ffffff;--chu:#1d2430;--phu:#5b6575;--mo:#8a93a3;--vien:#e2e5ea;--luoi:#eef0f3;
---w05:#a493e6;--w07:#2a78d6;--w09:#5b3fb5;--x3:#1a9c8c;--x10:#eb6834;--dm:#7a8aa0;--dp:#444b57;--tot:#2e9d6a;--xau:#c4302b;--vang:#c98a00;
---dat:#e7f5ee;--truot:#fdecea;--chua:#fff6e0}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--nen:#14171c;--the:#1c2027;--chu:#e6e9ee;--phu:#a8b0bd;--mo:#7d8694;--vien:#2c323c;--luoi:#252a33;
---w07:#5a9cf0;--w09:#8c74e0;--dm:#97a6bb;--dp:#c4c9d2;--dat:#183326;--truot:#3a1d1b;--chua:#352c12}}
-:root[data-theme="dark"]{--nen:#14171c;--the:#1c2027;--chu:#e6e9ee;--phu:#a8b0bd;--mo:#7d8694;--vien:#2c323c;--luoi:#252a33;
---w07:#5a9cf0;--w09:#8c74e0;--dm:#97a6bb;--dp:#c4c9d2;--dat:#183326;--truot:#3a1d1b;--chua:#352c12}
+/* Bố cục: một khung đọc rộng 1200px, thanh tab dính đầu trang; mỗi tab là chuỗi "hình" (tiêu đề, hình, phần đọc).
+   Dấu ấn riêng: "thước khoảng tin cậy" (chấm ước lượng + vạch CI + mốc 0 + ngưỡng) dùng cho mọi kết luận.
+   Màu theo vai: xanh = J 7/3 (họ w, đậm dần theo w), cam = J x10 (họ x), xám = DM11 / Dijkstra;
+   xanh ngọc chỉ có trong sơ đồ mạng = "thứ tính lại mỗi bước"; lục / hổ phách / hồng = kết luận, luôn kèm biểu tượng và chữ.
+   Bảng màu đã kiểm độ tách cho người mù màu (OKLab, mô phỏng Machado) và độ tương phản ở cả hai nền. */
+:root{
+  --nen:#f3f5f8;--the:#ffffff;--nen2:#f6f7fa;--chu:#17202c;--phu:#4c5768;--mo:#667183;--vien:#dde2e9;--luoi:#e9edf2;
+  --w05:#7fa8ec;--w07:#2563d6;--w09:#1a3a7e;--x3:#f0a05a;--x10:#dd5a12;--dm:#8a94a6;--dp:#3b414c;
+  --tot:#13693f;--chua:#a8740a;--bac:#e8606e;--dong:#0a7ea4;
+  --f-tieu:"Be Vietnam Pro","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --f-than:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r-sm:8px;--r-md:12px;
+  --ra:cubic-bezier(.23,1,.32,1);--di:cubic-bezier(.77,0,.175,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --nen:#101318;--the:#181c23;--nen2:#1d222a;--chu:#e8ecf2;--phu:#adb6c3;--mo:#8a93a2;--vien:#2a303a;--luoi:#232832;
+  --w05:#3463b8;--w07:#4f9dff;--w09:#b3d0ff;--x3:#b8622a;--x10:#ff8a3d;--dm:#6f7a8c;--dp:#d3d8e0;
+  --tot:#2e9e63;--chua:#f2c14e;--bac:#ff9db2;--dong:#45c4e6;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --nen:#101318;--the:#181c23;--nen2:#1d222a;--chu:#e8ecf2;--phu:#adb6c3;--mo:#8a93a2;--vien:#2a303a;--luoi:#232832;
+  --w05:#3463b8;--w07:#4f9dff;--w09:#b3d0ff;--x3:#b8622a;--x10:#ff8a3d;--dm:#6f7a8c;--dp:#d3d8e0;
+  --tot:#2e9e63;--chua:#f2c14e;--bac:#ff9db2;--dong:#45c4e6;color-scheme:dark}
 *{box-sizing:border-box}
-body{margin:0;background:var(--nen);color:var(--chu);font:15px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
-header{padding:22px 24px 8px;max-width:1280px;margin:auto}
-h1{font-size:24px;margin:0 0 4px}
-h2{font-size:19px;margin:28px 0 8px}
-h3{font-size:16px;margin:18px 0 6px}
-.phu{color:var(--phu)}
-nav{position:sticky;top:0;z-index:20;background:var(--nen);border-bottom:1px solid var(--vien)}
-nav .trong{max-width:1280px;margin:auto;display:flex;gap:4px;padding:8px 16px;flex-wrap:wrap}
-nav button{border:1px solid var(--vien);background:var(--the);color:var(--chu);padding:8px 14px;border-radius:8px;cursor:pointer;font:inherit}
-nav button.dang{background:var(--chu);color:var(--the);border-color:var(--chu)}
-main{max-width:1280px;margin:auto;padding:0 16px 60px}
-section{display:none}section.dang{display:block}
-.the{background:var(--the);border:1px solid var(--vien);border-radius:12px;padding:16px 18px;margin:14px 0}
-.luoi2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.luoi3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media (max-width:900px){.luoi2,.luoi3{grid-template-columns:1fr}}
-.doc{border-left:4px solid var(--w07);background:color-mix(in srgb,var(--w07) 7%,var(--the));padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0}
-.doc b{color:var(--chu)}
-.vd{border-left:4px solid var(--x3);background:color-mix(in srgb,var(--x3) 7%,var(--the));padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0}
-.canh{border-left:4px solid var(--vang);background:color-mix(in srgb,var(--vang) 8%,var(--the));padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{border-bottom:1px solid var(--vien);padding:6px 8px;text-align:left;vertical-align:top}
-th{color:var(--phu);font-weight:600}
-td.so,th.so{text-align:right;font-variant-numeric:tabular-nums}
-.nhan{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12.5px;font-weight:600;white-space:nowrap}
-.nhan.dat{background:var(--dat);color:var(--tot)}.nhan.truot{background:var(--truot);color:var(--xau)}.nhan.chua{background:var(--chua);color:var(--vang)}
-.tom{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media (max-width:900px){.tom{grid-template-columns:1fr 1fr}}
-.o{background:var(--the);border:1px solid var(--vien);border-radius:12px;padding:12px 14px}
-.o .lon{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
-.o .nho{color:var(--phu);font-size:13px}
-.dk{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 10px}
-.dk select,.dk button{font:inherit;padding:6px 10px;border-radius:8px;border:1px solid var(--vien);background:var(--the);color:var(--chu)}
-.dk button.dang{background:var(--chu);color:var(--the)}
-.chu-thich{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--phu);margin:4px 0}
-.chu-thich span{display:inline-flex;align-items:center;gap:6px}
-.chu-thich i{display:inline-block;width:14px;height:3px;border-radius:2px}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;scrollbar-color:var(--mo) var(--nen)}
+body{margin:0;background:var(--nen);color:var(--chu);font:15px/1.6 var(--f-than);caret-color:var(--w07)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--nen)}
+::selection{background:color-mix(in srgb,var(--w07) 28%,transparent)}
+.khung{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-tieu);text-wrap:balance;letter-spacing:-.01em;margin:0}
+h1{font-size:clamp(23px,2.5vw,30px);line-height:1.25;font-weight:700}
+h2{font-size:21px;line-height:1.3;font-weight:700}
+h3{font-size:16.5px;line-height:1.35;font-weight:600}
+p{margin:0}
+.chu{max-width:74ch}
+.phu{color:var(--phu)}.mo{color:var(--mo)}.nho{font-size:13px}
+b,strong{font-weight:650}
+code{font:12.5px ui-monospace,"Cascadia Mono",Consolas,monospace;background:var(--luoi);padding:1px 5px;border-radius:5px}
+header.dau{padding-block:28px 18px;display:grid;gap:10px}
+.danh-tinh{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:var(--phu)}
+.danh-tinh span{display:inline-flex;align-items:center;gap:7px}
+.danh-tinh b{white-space:nowrap}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
+nav.tab{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--nen) 90%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--vien)}
+nav .hang{position:relative;display:flex;gap:2px;padding-block:8px;overflow-x:auto;scrollbar-width:none}
+nav .hang::-webkit-scrollbar{display:none}
+.chi{position:absolute;left:0;top:8px;height:36px;width:100px;border-radius:var(--r-sm);background:var(--chu);transform-origin:0 0;
+  transition:transform 240ms var(--di);pointer-events:none}
+nav button{position:relative;z-index:1;flex:none;height:36px;padding:0 14px;border:0;border-radius:var(--r-sm);background:none;color:var(--phu);
+  font:500 14.5px var(--f-tieu);cursor:pointer;transition:color 150ms ease}
+nav button[aria-selected="true"]{color:var(--the)}
+@media (hover:hover) and (pointer:fine){nav button:not([aria-selected="true"]):hover{color:var(--chu)}}
+main{padding-block:6px 72px}
+section.tab-noi{display:grid;gap:18px}
+.dau-tab{display:grid;gap:8px;padding-top:22px}
+.the{background:var(--the);border:1px solid var(--vien);border-radius:var(--r-md);padding:18px 20px;min-width:0}
+figure.the{margin:0;display:grid;gap:12px;align-content:start}
+figure.the>figcaption{display:grid;gap:4px}
+.luoi2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.luoi3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.luoi2,.luoi3{grid-template-columns:minmax(0,1fr)}}
+.doc{background:var(--nen2);border-radius:var(--r-sm);padding:12px 14px;display:grid;gap:8px;font-size:14.5px}
+.doc p,.doc div{max-width:80ch}
+.vd{border:1px dashed var(--vien);border-radius:var(--r-sm);padding:10px 12px;font-size:14px}
+.canh{display:flex;gap:10px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--chua) 45%,var(--vien));
+  background:color-mix(in srgb,var(--chua) 7%,var(--the));border-radius:var(--r-sm);padding:12px 14px;font-size:14.5px}
+.canh>.ic{color:var(--chua);margin-top:3px}
+.cuon{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cuon>svg{min-width:var(--toi-thieu,0)}
 svg{display:block;max-width:100%;height:auto}
-svg text{fill:var(--phu);font-size:12px;font-family:inherit}
-.tip{position:fixed;pointer-events:none;background:var(--chu);color:var(--the);padding:6px 9px;border-radius:6px;font-size:12.5px;z-index:50;display:none;max-width:320px;line-height:1.4}
+svg text{fill:var(--phu);font:12px var(--f-than)}
+svg .t-mo{fill:var(--mo)} svg .t-dam{fill:var(--chu);font-weight:600} svg .t-tren{fill:var(--the)} svg .t-tren-mo{fill:var(--the);opacity:.72}
+svg .nho{font-size:11px} svg .lon{font-size:14px} svg .t-bac{fill:var(--bac)} svg .t-dong{fill:var(--dong)}
+svg .t-nhan{fill:var(--mo);font:600 11px var(--f-tieu);letter-spacing:.08em}
+svg .vien{paint-order:stroke;stroke:var(--the);stroke-width:4px;stroke-linejoin:round}
+.l-luoi{stroke:var(--luoi)} .l-truc{stroke:var(--mo);stroke-opacity:.55}
+.l-ray{stroke:var(--luoi);stroke-width:10;stroke-linecap:round} .l-ci{stroke-width:6;stroke-linecap:round}
+.l-0{stroke:var(--phu);stroke-width:1.5} .l-ng{stroke:var(--bac);stroke-width:1.5;stroke-dasharray:4 3}
+.vong{stroke:var(--the);stroke-width:2}
+.l-thay{stroke:var(--phu);stroke-width:1.5;stroke-dasharray:6 4}
+.l-hoc{fill:none;stroke-linejoin:round;stroke-linecap:round}
+.l-chu-thap{stroke:var(--chu);stroke-opacity:.35;stroke-width:1}
+.vung-bat{fill:transparent;pointer-events:all;cursor:crosshair}
+.l-noi{fill:none;stroke:var(--mo);stroke-width:1.5}
+.m-phu{fill:var(--mo)} .m-dong{fill:var(--dong)} .m-chu{fill:var(--chu)}
+.ic{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+.nhan{display:inline-flex;align-items:center;gap:4px;padding:2px 9px 2px 6px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap;color:var(--chu)}
+.nhan .ic{width:14px;height:14px}
+.nhan.tot{background:color-mix(in srgb,var(--tot) 14%,var(--the))}.nhan.tot .ic{color:var(--tot)}
+.nhan.chua{background:color-mix(in srgb,var(--chua) 17%,var(--the))}.nhan.chua .ic{color:var(--chua)}
+.nhan.bac{background:color-mix(in srgb,var(--bac) 17%,var(--the))}.nhan.bac .ic{color:var(--bac)}
+.nhan.phu{background:var(--luoi)}.nhan.phu .ic{color:var(--phu)}
+.dk{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.nut{display:inline-flex;align-items:center;gap:7px;font:500 14px var(--f-than);line-height:1.3;padding:7px 13px;border-radius:var(--r-sm);
+  border:1px solid var(--vien);background:var(--the);color:var(--chu);cursor:pointer;
+  transition:transform 160ms var(--ra),background-color 150ms ease,border-color 150ms ease,color 150ms ease}
+.nut.nho{padding:5px 10px;font-size:13px}
+@media (hover:hover) and (pointer:fine){.nut:hover{border-color:color-mix(in srgb,var(--chu) 32%,var(--vien));background:color-mix(in srgb,var(--chu) 4%,var(--the))}}
+.nut:active{transform:scale(.97)}
+.nut.dang,.nut[aria-pressed="true"]{background:var(--chu);color:var(--the);border-color:var(--chu)}
+:focus-visible{outline:2px solid var(--w07);outline-offset:2px}
+select{font:inherit;font-size:14px;padding:6px 10px;border-radius:var(--r-sm);border:1px solid var(--vien);background:var(--the);color:var(--chu)}
+label{display:inline-flex;gap:6px;align-items:center;font-size:14px;color:var(--phu)}
+.ct{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--phu)}
+.ct span{display:inline-flex;align-items:center;gap:6px}
+.ct .k-duong{width:16px;height:0;border-top:2px solid currentColor}.ct .k-net{width:16px;height:0;border-top:2px dashed currentColor}
+.ct .k-vuong{width:9px;height:9px;background:currentColor}.ct .k-thoi{width:9px;height:9px;border:2px solid currentColor;transform:rotate(45deg)}
+.ct .k-cham{width:9px;height:9px;border-radius:50%;background:currentColor}.ct .k-cham-nho{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5}
+.bang{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--vien);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--phu);font-weight:600;font-size:13px}
+td.so,th.so{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.so-sanh td.hon{color:var(--tot);font-weight:650}.so-sanh td.kem{color:var(--bac);font-weight:650}
+.tip{position:fixed;z-index:60;left:0;top:0;pointer-events:none;max-width:340px;padding:8px 11px;border-radius:var(--r-sm);background:var(--chu);color:var(--the);
+  font-size:12.5px;line-height:1.5;box-shadow:0 8px 24px rgb(0 0 0 / .2);opacity:0;transform:scale(.97);transform-origin:0 0;
+  transition:opacity 125ms var(--ra),transform 125ms var(--ra)}
+.tip.hien{opacity:1;transform:none}.tip.ngay{transition:none}
+.tip .sw{width:8px;height:8px;margin-right:5px;vertical-align:0}
+.tip table{font-size:12.5px}.tip td{border:0;padding:1px 8px 1px 0}
+/* tóm tắt: danh sách kết luận */
+.kq-ds{display:grid}
+.kq-hang{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1.35fr) minmax(0,.75fr) minmax(0,1fr);gap:8px 22px;align-items:center;
+  padding-block:14px;border-bottom:1px solid var(--vien)}
+.kq-hang:last-child{border-bottom:0}
+.kq-hang.dau-cot{padding-block:0 8px;font-size:12.5px;color:var(--mo);font-weight:600}
+.kq-ten{display:grid;gap:2px}.kq-ten b{font-family:var(--f-tieu);font-weight:600;font-size:15.5px}
+.kq-so{display:grid;font-variant-numeric:tabular-nums}.kq-so .lon{font:700 22px/1.2 var(--f-tieu)}
+.kq-so .dv{font-size:13px;color:var(--phu);font-weight:500;margin-left:4px}
+.kq-nhan{display:grid;gap:4px;justify-items:start}
+@media (max-width:900px){.kq-hang{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.kq-hang.dau-cot{display:none}.kq-thuoc{grid-column:1/-1;order:3}}
+.so-tile{display:grid;gap:2px;padding:14px 16px;border:1px solid var(--vien);border-radius:var(--r-md);background:var(--the)}
+.so-tile .lon{font:700 22px/1.25 var(--f-tieu);font-variant-numeric:tabular-nums}
+.chi-so{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.chi-so{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* chọn tuyến */
 .ban-do{background:color-mix(in srgb,var(--w07) 4%,var(--the));border-radius:10px}
-.ten-mh{font-weight:700;font-size:16px}
-.so-sanh td.hon{color:var(--tot);font-weight:600}.so-sanh td.kem{color:var(--xau);font-weight:600}
-code{background:var(--luoi);padding:1px 5px;border-radius:4px;font-size:13px}
-.nut-chu{font-size:12px;color:var(--mo)}
+.ten-mh{font:600 16px var(--f-tieu)}
+/* cấu trúc mạng */
+.bang-nhan{display:grid;gap:8px;font-size:13.5px}
+.bn-hang{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 84px;gap:10px;align-items:center}
+.bn-thanh{display:flex;gap:2px;height:12px;border-radius:6px;overflow:hidden;background:var(--luoi)}
+.bn-thanh i{display:block;height:100%;transition:flex-grow 300ms var(--ra)}
+.bn-thanh .k{background:var(--luoi)}.bn-thanh .d{background:var(--mo)}.bn-thanh .c{background:var(--chu)}
+.bn-chon{font-weight:600;font-size:13px}
+.buoc-so{display:flex;gap:6px;flex-wrap:wrap}
+.loi-buoc{min-height:4.8em}
+details{border-top:1px solid var(--vien);padding-top:10px}
+summary{cursor:pointer;font-weight:600;font-family:var(--f-tieu)}
+.l-canh{stroke:var(--vien);stroke-width:4;stroke-linecap:round}
+.l-nong{stroke:var(--chua);stroke-width:16;stroke-linecap:round;opacity:.3}
+.l-tuyen{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.l-tuyen.chinh{stroke-width:4.5}.l-tuyen.dp{stroke-width:2;stroke-dasharray:7 5}
+.luong-A{stroke:var(--chu)}.luong-B{stroke:var(--mo)}
+.xung{fill:var(--dong)}
+.o-tinh{fill:var(--mo);opacity:.4}.o-dong{fill:var(--dong)}.o-buoc{fill:var(--chu);opacity:.75}
+.hop{fill:var(--the);stroke:var(--vien);stroke-width:1.5}.hop-toi{fill:var(--chu)}
+.khung-lap{fill:none;stroke:var(--mo);stroke-width:1.5;stroke-dasharray:7 6}
+.mui{fill:none;stroke:var(--mo);stroke-width:1.6}.mui-dong{fill:none;stroke:var(--dong);stroke-width:1.8;stroke-dasharray:6 5}
+.b-sang{fill:var(--mo)}.b-toi{fill:var(--the);opacity:.75}
+@media (prefers-reduced-motion:reduce){.chi,.nut,.bn-thanh i{transition:none}.tip{transition:opacity 125ms ease;transform:none}}
 </style>
 </head>
 <body>
-<header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-dat" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.8"/></symbol>
+  <symbol id="i-chua" viewBox="0 0 16 16"><path d="M8 3.6v5.6"/><path d="M8 12.2v.3"/></symbol>
+  <symbol id="i-bac" viewBox="0 0 16 16"><path d="M4.6 4.6l6.8 6.8M11.4 4.6l-6.8 6.8"/></symbol>
+  <symbol id="i-phu" viewBox="0 0 16 16"><path d="M3.5 8h9"/></symbol>
+  <symbol id="i-cau" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.8"/><path d="M2.4 8h11.2M8 2.2c1.9 2.1 1.9 9.5 0 11.6M8 2.2c-1.9 2.1-1.9 9.5 0 11.6"/></symbol>
+  <symbol id="i-chay" viewBox="0 0 16 16"><path d="M5.2 3.6v8.8L12 8z"/></symbol>
+  <symbol id="i-dung" viewBox="0 0 16 16"><path d="M5.5 3.8v8.4M10.5 3.8v8.4"/></symbol>
+  <symbol id="i-lui" viewBox="0 0 16 16"><path d="M10 3.8L5.8 8l4.2 4.2"/></symbol>
+  <symbol id="i-toi" viewBox="0 0 16 16"><path d="M6 3.8L10.2 8 6 12.2"/></symbol>
+  <symbol id="i-lai" viewBox="0 0 16 16"><path d="M3.5 8a4.5 4.5 0 1 0 1.4-3.3"/><path d="M3.4 2.8v2.6H6"/></symbol>
+</svg>
+
+<header class="khung dau">
   <h1>TN15 → TN15b: mô hình cải thiện thế nào, và bằng chứng chặt lên ra sao</h1>
-  <div class="phu">DM (khuếch tán + mạng đồ thị) chọn tuyến chính + dự phòng cho SAGSIN khi thời tiết xấu. So hai mục tiêu học:
-    <b style="color:var(--w07)">J 7/3</b> (chuẩn hoá theo từng luồng) và <b style="color:var(--x10)">J vật lý x10</b> (1 điểm % mất dịch vụ = 10 ms trễ).
-    Mọi số ở đây là dữ liệu đã chạy thật; không có số minh hoạ.</div>
+  <p class="phu chu">DM (khuếch tán + mạng đồ thị) chọn tuyến chính và tuyến dự phòng cho SAGSIN khi thời tiết xấu. Trang này so hai
+    mục tiêu học. Mọi con số lấy từ dữ liệu đã chạy thật; riêng hai sơ đồ ví dụ ở tab Cấu trúc mạng là minh hoạ cơ chế.</p>
+  <div class="danh-tinh">
+    <span><i class="sw" style="background:var(--w07)"></i><b style="color:var(--chu)">J 7/3</b> chuẩn hoá theo từng luồng (họ w)</span>
+    <span><i class="sw" style="background:var(--x10)"></i><b style="color:var(--chu)">J x10</b> vật lý: 1 điểm % mất dịch vụ = 10 ms trễ (họ x)</span>
+    <span><i class="sw" style="background:var(--dm)"></i>DM11 · cấu hình của TN11</span>
+  </div>
 </header>
-<nav><div class="trong">
-  <button data-tab="tong" class="dang">Tóm tắt</button>
-  <button data-tab="hoc">1 · Quá trình học</button>
-  <button data-tab="kq">2 · Kết quả chấm</button>
-  <button data-tab="tuyen">3 · Mô hình chọn tuyến</button>
-  <button data-tab="mang">4 · Cấu trúc mạng</button>
-</div></nav>
-<main>
+<nav class="tab" aria-label="Các phần của demo"><div class="khung"><div class="hang" role="tablist">
+  <span class="chi" aria-hidden="true"></span>
+  <button role="tab" id="nut-tong" data-tab="tong" aria-selected="true" aria-controls="tong">Tóm tắt</button>
+  <button role="tab" id="nut-hoc" data-tab="hoc" aria-selected="false" aria-controls="hoc">1 · Quá trình học</button>
+  <button role="tab" id="nut-kq" data-tab="kq" aria-selected="false" aria-controls="kq">2 · Kết quả chấm</button>
+  <button role="tab" id="nut-tuyen" data-tab="tuyen" aria-selected="false" aria-controls="tuyen">3 · Mô hình chọn tuyến</button>
+  <button role="tab" id="nut-mang" data-tab="mang" aria-selected="false" aria-controls="mang">4 · Cấu trúc mạng</button>
+</div></div></nav>
 
-<section id="tong" class="dang">
-  <h2>Tóm tắt một trang</h2>
-  <div class="tom" id="tom-o"></div>
-  <div class="the">
-    <h3>Câu chuyện</h3>
-    <p><b>TN15</b> học DM theo J vật lý x10 và kết luận "nhanh hơn mà không kém an toàn". Bản đánh giá sau đó chỉ ra lập luận còn
-      nông: dùng lại một bộ kiểm tra nhiều lần, coi 11 bộ là độc lập (thực ra chỉ 4 nguồn thời tiết, Yagi là một cơn bão),
-      chỉ 3 seed, vài "xác nhận" thật ra là chạy lại, cơ chế chỉ là phỏng đoán.</p>
-    <p><b>TN15b</b> kiểm lại tất cả: <b>40 cửa sổ thời tiết chưa từng dùng</b>, luật phân tích <b>chốt trước</b> (khoá mã băm),
-      <b>DM 7/3 học lại cùng máy, cùng code</b> với x10, <b>5 seed</b>, khoảng tin cậy tính cả dao động giữa seed, hiệu chỉnh
-      Holm, phép thử A/A làm đối chứng âm, và <b>chứng minh toán</b> cho cơ chế.</p>
-    <div class="doc"><b>Kết quả:</b> 7/8 giả thuyết chính đạt. "Bớt nghẽn / nhanh hơn" đứng vững (25/25 cặp seed). "Không kém an
-      toàn" <b>chưa chứng minh được</b> ở ngưỡng 0,10 điểm — không phải vì x10 kém, mà vì dao động giữa seed lớn hơn dự tính.
-      Ba phỏng đoán cũ bị bác. Một phương pháp tự bác được kết luận của chính mình là dấu hiệu nó đã chặt.</div>
+<main class="khung">
+<!-- ================================================================== TÓM TẮT -->
+<section id="tong" class="tab-noi" role="tabpanel" aria-labelledby="nut-tong">
+  <div class="dau-tab">
+    <h2>Bốn kết quả chính của TN15b</h2>
+    <p class="phu chu" id="tong-mo"></p>
   </div>
-  <div class="the"><h3>Kết luận nào đứng, nào đổ</h3><div id="so-cai"></div></div>
+  <div class="the"><div class="kq-ds" id="tong-ds"></div>
+    <p class="mo nho" style="margin-top:10px">Mỗi hàng có thang riêng. Chấm là ước lượng, vạch là khoảng tin cậy 95% tính cả dao động giữa các seed;
+      âm nghĩa là mô hình mới tốt hơn. Muốn chứng minh "không kém an toàn" thì cả vạch phải nằm bên trái ngưỡng.</p></div>
+  <div style="display:grid;gap:18px">
+    <figure class="the"><figcaption><h3>TN15 và TN15b kiểm khác nhau ở đâu</h3>
+      <p class="phu nho">TN15 kết luận "x10 nhanh hơn mà không kém an toàn". Bản đánh giá chỉ ra lập luận còn nông; TN15b sửa từng chỗ.</p></figcaption>
+      <div class="bang" id="tong-pp"></div></figure>
+    <figure class="the"><figcaption><h3>Kết luận nào đứng, nào đổ</h3>
+      <p class="phu nho" id="tong-dem"></p></figcaption>
+      <div class="bang" id="so-cai"></div></figure>
+  </div>
 </section>
 
-<section id="hoc">
-  <h2>1 · Quá trình học</h2>
-  <p class="phu">Đường học của 18 mô hình: DM x10 (5 seed), DM 7/3 học lại cùng đường ống (5 seed), DM x3 (3 seed), DM w0,5 /
-    w0,9 (3 seed mỗi loại). Mỗi epoch: mất mát (loss) trên tập học và val, và J trên val so với thầy. Checkpoint được giữ ở
-    epoch có J val tốt nhất; dừng khi 20 epoch liền không tốt lên.</p>
-  <div class="dk" id="hoc-chon"></div>
-  <div class="luoi2">
-    <div class="the"><h3>J trên val theo epoch (thấp là tốt)</h3><div id="hoc-J"></div>
-      <div class="chu-thich"><span><i style="background:var(--phu);height:0;border-top:2px dashed var(--phu)"></i>thầy (mức cần bắt chước)</span><span>● epoch được giữ</span></div></div>
-    <div class="the"><h3>Mất mát học (nét đứt) và val (nét liền)</h3><div id="hoc-loss"></div></div>
+<!-- ================================================================== 1. HỌC -->
+<section id="hoc" class="tab-noi" role="tabpanel" aria-labelledby="nut-hoc" hidden>
+  <div class="dau-tab">
+    <h2>Quá trình học</h2>
+    <p class="phu chu">19 mô hình, 3–5 seed mỗi mục tiêu. Giữ checkpoint ở epoch có J val tốt nhất, dừng sau 20 epoch không tốt lên. Rê chuột để đọc từng epoch.</p>
+  </div>
+  <div class="the dk-the" style="display:grid;gap:10px">
+    <div class="dk" id="hoc-mh" role="group" aria-label="Chọn mục tiêu học"></div>
+    <div class="dk" id="hoc-seed" role="group" aria-label="Làm nổi một seed"></div>
   </div>
   <div class="luoi2">
-    <div class="the"><h3>J val có báo trước kết quả trên dữ liệu mới không?</h3><div id="hoc-val-test"></div><div id="hoc-r" class="phu"></div></div>
-    <div class="the"><h3>Đọc đường học</h3><div id="hoc-doc"></div></div>
+    <figure class="the"><figcaption><h3>J trên val theo epoch</h3><p class="phu nho">Chấm = epoch được giữ · nét đứt = J của thầy (mức cần bắt chước).</p></figcaption>
+      <div id="hoc-J"></div></figure>
+    <figure class="the"><figcaption><h3>Mất mát khi học</h3><p class="phu nho">Seed đang nổi: nét liền = val, nét đứt = tập học. Các seed khác chỉ vẽ val.</p></figcaption>
+      <div id="hoc-loss"></div></figure>
   </div>
-  <div class="the"><h3>Bảng tóm tắt 18 mô hình</h3><div id="hoc-bang"></div></div>
+  <p class="doc" id="hoc-ghi" style="display:block"></p>
+  <div class="luoi2">
+    <figure class="the"><figcaption><h3>J val có báo trước kết quả trên dữ liệu mới không?</h3></figcaption>
+      <div id="hoc-val-test"></div><p class="phu nho" id="hoc-r"></p></figure>
+    <figure class="the"><figcaption><h3 id="hoc-so-tieu">Số chính</h3></figcaption><div id="hoc-so" style="display:grid;gap:12px"></div></figure>
+  </div>
+  <figure class="the"><figcaption><h3>Bảng tóm tắt 19 mô hình</h3>
+    <p class="phu nho">Cột "Đường chạy": vạch dài tới epoch dừng, chấm là epoch được giữ (thang chung 0–100 epoch).</p></figcaption>
+    <div class="bang" id="hoc-bang"></div></figure>
 </section>
 
-<section id="kq">
-  <h2>2 · Kết quả chấm</h2>
-  <p class="phu">Mọi số chấm trên bộ kiểm chứng mới của TN15b (40 cửa sổ thời tiết 2017–2021, 5 760 tình huống), cùng dữ liệu
-    cho mọi mô hình. "Mất" = % mất dịch vụ; "đuôi" = % tình huống trễ tuyến chính > 100 ms (nghẽn nặng).</p>
+<!-- ================================================================== 2. KẾT QUẢ -->
+<section id="kq" class="tab-noi" role="tabpanel" aria-labelledby="nut-kq" hidden>
+  <div class="dau-tab">
+    <h2>Kết quả chấm</h2>
+    <p class="phu chu" id="kq-mo"></p>
+  </div>
+  <figure class="the"><figcaption><h3>2a · Hành trình tinh chỉnh: mỗi bậc đổi một thứ</h3>
+    <p class="phu nho">Mũi tên đi từ cấu hình trước sang cấu hình sau, kèm mức thay đổi. Bộ A và bộ B dựng kho tuyến khác nhau nên chỉ so trong cùng bộ.</p></figcaption>
+    <div class="cuon" style="--toi-thieu:760px"><div id="kq-bac"></div></div>
+    <div class="ct" id="kq-bac-ct"></div>
+    <div class="doc" id="kq-bac-doc"></div></figure>
 
-  <div class="the"><h3>2a · Hành trình tinh chỉnh: mỗi bậc thêm một cải tiến</h3>
-    <div class="luoi2"><div id="kq-bac-mat"></div><div id="kq-bac-duoi"></div></div>
-    <div class="doc" id="kq-bac-doc"></div></div>
+  <figure class="the"><figcaption><h3>2b · Bản đồ các J: an toàn và tốc độ của từng mục tiêu học</h3></figcaption>
+    <div class="dk"><span class="phu nho">Trục ngang:</span>
+      <button class="nut nho dang" data-truc="duoi" aria-pressed="true">đuôi nghẽn (%)</button>
+      <button class="nut nho" data-truc="tre" aria-pressed="false">trễ trung bình (ms)</button>
+      <span class="phu nho" style="margin-left:10px">Khung:</span>
+      <button class="nut nho dang" data-phong="0" aria-pressed="true">toàn cảnh</button>
+      <button class="nut nho" data-phong="1" aria-pressed="false">phóng to cụm DM</button></div>
+    <div id="kq-bien"></div><div class="ct" id="kq-bien-ct"></div>
+    <div class="doc" id="kq-bien-doc"></div></figure>
 
-  <div class="the"><h3>2b · Bản đồ các J: an toàn và tốc độ của từng mục tiêu học</h3>
-    <div class="dk"><span class="phu">Trục ngang:</span><button data-truc="duoi" class="dang">đuôi nghẽn (%)</button><button data-truc="tre">trễ trung bình (ms)</button></div>
-    <div id="kq-bien"></div><div class="chu-thich" id="kq-bien-ct"></div>
-    <div class="doc" id="kq-bien-doc"></div></div>
-
-  <div class="the"><h3>2c · Tám giả thuyết đăng ký trước (CI 95% tính cả dao động giữa seed)</h3>
-    <div class="luoi2"><div id="kq-rung-mat"></div><div id="kq-rung-duoi"></div></div>
-    <div id="kq-gt"></div><div class="doc" id="kq-gt-doc"></div></div>
+  <figure class="the"><figcaption><h3>2c · Tám giả thuyết chốt trước khi có dữ liệu mới</h3>
+    <p class="phu nho">Khoảng tin cậy 95% tính cả dao động giữa các seed, p đã hiệu chỉnh Holm.</p></figcaption>
+    <div class="cuon" style="--toi-thieu:680px"><div id="kq-rung-mat"></div></div><div class="cuon" style="--toi-thieu:680px"><div id="kq-rung-duoi"></div></div>
+    <div class="bang" id="kq-gt"></div><div class="doc" id="kq-gt-doc"></div></figure>
 
   <div class="luoi2">
-    <div class="the"><h3>2d · Vì sao "không kém an toàn" chưa chứng minh được</h3><div id="kq-seed"></div><div class="doc" id="kq-seed-doc"></div></div>
-    <div class="the"><h3>2e · Cơ chế: tỷ giá ngầm của J 7/3</h3><div id="kq-coche"></div><div class="doc" id="kq-coche-doc"></div></div>
+    <figure class="the"><figcaption><h3>2d · Vì sao "không kém an toàn" chưa chứng minh được</h3></figcaption>
+      <div id="kq-seed"></div><div id="kq-seed-hieu"></div><div class="doc" id="kq-seed-doc"></div></figure>
+    <figure class="the"><figcaption><h3>2e · Cơ chế: tỷ giá ngầm của J 7/3</h3>
+      <p class="phu nho">Nền xám nhạt cho biết toán học dự đoán hiệu nằm ở phía nào của 0.</p></figcaption>
+      <div id="kq-coche"></div><div class="ct" id="kq-coche-ct"></div><div class="doc" id="kq-coche-doc"></div></figure>
   </div>
-  <div class="the"><h3>2f · "Nhanh hơn" nghĩa là gì: trễ danh định và trễ thực</h3><div id="kq-thuc"></div><div class="canh" id="kq-thuc-doc"></div></div>
+  <figure class="the"><figcaption><h3>2f · "Nhanh hơn" nghĩa là gì: trễ danh định và trễ thực</h3></figcaption>
+    <div class="luoi3" id="kq-thuc"></div><div class="canh" id="kq-thuc-doc"></div></figure>
 </section>
 
-<section id="tuyen">
-  <h2>3 · Mô hình chọn tuyến</h2>
-  <p class="phu">Hai mô hình nạp từ hai tệp <code>.pt</code>: <b style="color:var(--w07)">DM 7/3</b> (<code id="ten-73"></code>) và
-    <b style="color:var(--x10)">DM x10</b> (<code id="ten-x10"></code>), cùng seed 1 — cặp seed ở <i>giữa</i> trong 5 cặp, không
-    chọn cặp đẹp nhất. Chọn điểm đầu (điểm người dùng) và điểm cuối (trạm mặt đất) ở ô chọn hoặc bấm thẳng lên bản đồ (bấm
-    vào một điểm người dùng = điểm đầu, bấm vào một trạm mặt đất = điểm cuối). Luồng được chọn thay cho một trong 4–5 luồng của kịch bản; các luồng
-    khác giữ nguyên, nên hai mô hình vẫn phải phối hợp tải như thật.</p>
-  <div class="dk">
-    <label>Kịch bản <select id="t-kb"></select></label>
-    <label>Điểm đầu <select id="t-dau"></select></label>
-    <label>Điểm cuối <select id="t-cuoi"></select></label>
-    <button id="t-3d" style="display:none">🌐 Xem cặp này trên quả địa cầu 3D</button>
-    <span class="phu" id="t-gio"></span>
+<!-- ================================================================== 3. CHỌN TUYẾN -->
+<section id="tuyen" class="tab-noi" role="tabpanel" aria-labelledby="nut-tuyen" hidden>
+  <div class="dau-tab">
+    <h2>Mô hình chọn tuyến</h2>
+    <p class="phu chu">Hai mô hình nạp từ hai tệp <code>.pt</code>: <b style="color:var(--w07)">DM 7/3</b> (<code id="ten-73"></code>) và
+      <b style="color:var(--x10)">DM x10</b> (<code id="ten-x10"></code>), cùng seed 1, là cặp seed ở <i>giữa</i> trong 5 cặp, không phải cặp đẹp nhất.
+      Chọn điểm đầu (điểm người dùng) và điểm cuối (trạm mặt đất) ở ô chọn, hoặc bấm thẳng lên bản đồ. Luồng được chọn thay cho một trong 4–5 luồng
+      của kịch bản; các luồng khác giữ nguyên, nên hai mô hình vẫn phải phối hợp tải như thật.</p>
   </div>
-  <div class="chu-thich">
-    <span><i style="height:5px"></i><b>nét đậm</b> = tuyến chính</span><span><i style="height:0;border-top:3px dashed var(--phu)"></i>nét đứt = tuyến dự phòng</span>
-    <span><i style="background:var(--vien)"></i>xám mảnh = các tuyến khác trong kho (lựa chọn có thể)</span>
-    <span>● người dùng · ■ trạm mặt đất · ▲ UAV · ◆ HAPS · ✦ vệ tinh LEO (ngoài khung thì ghim ở mép)</span>
+  <div class="the" style="display:grid;gap:10px">
+    <div class="dk">
+      <label>Kịch bản <select id="t-kb"></select></label>
+      <label>Điểm đầu <select id="t-dau"></select></label>
+      <label>Điểm cuối <select id="t-cuoi"></select></label>
+      <button class="nut" id="t-3d" hidden><svg class="ic"><use href="#i-cau"/></svg>Xem cặp này trên quả địa cầu 3D</button>
+    </div>
+    <span class="phu nho" id="t-gio"></span>
+    <div class="ct">
+      <span><i class="k-duong" style="border-top-width:5px"></i>nét đậm = tuyến chính</span><span><i class="k-net"></i>nét đứt = tuyến dự phòng</span>
+      <span><i class="k-duong" style="color:var(--vien)"></i>xám mảnh = tuyến khác trong kho</span>
+      <span>● người dùng · ■ trạm mặt đất · ▲ UAV · ◆ HAPS · ✦ vệ tinh LEO (ngoài khung thì ghim ở mép)</span>
+    </div>
   </div>
   <div class="luoi2">
-    <div class="the"><div class="ten-mh" style="color:var(--w07)">DM 7/3 (cùng đường ống)</div><div id="t-map-73" class="ban-do"></div><div id="t-info-73"></div></div>
-    <div class="the"><div class="ten-mh" style="color:var(--x10)">DM x10</div><div id="t-map-x10" class="ban-do"></div><div id="t-info-x10"></div></div>
+    <div class="the" style="display:grid;gap:8px"><div class="ten-mh" style="color:var(--w07)">DM 7/3 (cùng đường ống)</div><div id="t-map-73" class="ban-do"></div><div id="t-info-73" class="bang"></div></div>
+    <div class="the" style="display:grid;gap:8px"><div class="ten-mh" style="color:var(--x10)">DM x10</div><div id="t-map-x10" class="ban-do"></div><div id="t-info-x10" class="bang"></div></div>
   </div>
-  <div class="the"><h3>So sánh cặp đang chọn</h3><div id="t-so"></div><div class="doc" id="t-doc"></div></div>
-  <div class="the"><h3>Trên mọi cặp của kịch bản</h3><div id="t-tong"></div></div>
+  <figure class="the"><figcaption><h3>So sánh cặp đang chọn</h3></figcaption><div class="bang" id="t-so"></div><div class="doc" id="t-doc"></div></figure>
+  <figure class="the"><figcaption><h3>Trên mọi cặp của kịch bản</h3></figcaption><div id="t-tong" style="display:grid;gap:12px"></div></figure>
 </section>
 
-<section id="mang">
-  <h2>4 · Cấu trúc mạng (MangDT)</h2>
-  <p class="phu">Mọi mô hình ở đây (7/3, x10, x3, w0,5, w0,9) có <b>cùng một kiến trúc</b>; chúng chỉ khác nhãn thầy và tiêu chí chọn
-    checkpoint. Vì vậy khác biệt giữa các mô hình đến từ <b>mục tiêu học</b>, không từ kiến trúc.</p>
-  <div class="the"><div id="m-so-do"></div></div>
-  <div class="luoi2">
-    <div class="the"><h3>Tham số theo khối</h3><div id="m-tham-so"></div></div>
-    <div class="the"><h3>Đọc sơ đồ</h3><div id="m-doc"></div></div>
+<!-- ================================================================== 4. MẠNG -->
+<section id="mang" class="tab-noi" role="tabpanel" aria-labelledby="nut-mang" hidden>
+  <div class="dau-tab">
+    <h2>Cấu trúc mạng (MangDT)</h2>
+    <p class="phu chu">Mọi mô hình ở đây (7/3, x10, x3, w0,5, w0,9) dùng <b>cùng một kiến trúc</b>; chúng chỉ khác nhãn của thầy và tiêu chí chọn
+      checkpoint. Vì vậy khác biệt giữa các mô hình đến từ <b>mục tiêu học</b>, không đến từ kiến trúc. Số tham số đếm thẳng từ checkpoint.</p>
   </div>
+  <div class="chi-so" id="m-chi-so"></div>
+  <figure class="the"><figcaption><h3>Một lần chạy mạng: từ tình huống tới nhãn của từng tuyến</h3>
+    <p class="phu nho">Chấm xanh ngọc chạy theo đường đi của thông tin. Thứ màu xanh ngọc là thứ được tính lại ở mỗi bước giải mã.</p></figcaption>
+    <div class="dk"><button class="nut nho" id="m-xung-nut"></button></div>
+    <div class="cuon" style="--toi-thieu:900px"><div id="m-ong"></div></div>
+    <div class="doc" id="m-ong-doc"></div></figure>
+  <figure class="the"><figcaption><h3>Trao đổi tin trên một ví dụ nhỏ</h3>
+    <p class="phu nho">Ví dụ minh hoạ cơ chế với hai luồng, không phải một tình huống thật. Bấm từng bước, hoặc cho chạy lần lượt.</p></figcaption>
+    <div class="dk"><div class="buoc-so" id="m-buoc" role="group" aria-label="Các bước"></div>
+      <button class="nut nho" id="m-buoc-lui" aria-label="Bước trước"><svg class="ic"><use href="#i-lui"/></svg></button>
+      <button class="nut nho" id="m-buoc-toi" aria-label="Bước sau"><svg class="ic"><use href="#i-toi"/></svg></button>
+      <button class="nut nho" id="m-buoc-chay"><svg class="ic"><use href="#i-chay"/></svg>Xem lần lượt</button></div>
+    <div class="cuon" style="--toi-thieu:620px"><div id="m-dochoi" style="max-width:1000px;margin:0 auto"></div></div>
+    <div class="luoi2" style="align-items:start">
+        <div class="doc loi-buoc" id="m-buoc-loi" aria-live="polite"></div>
+        <div style="display:grid;gap:8px"><b class="nho">Nhãn mạng chấm cho từng tuyến</b><div class="bang-nhan" id="m-bang-nhan"></div>
+          <div class="ct"><span><i class="k-vuong" style="color:var(--luoi);outline:1px solid var(--vien)"></i>không chọn</span><span><i class="k-vuong" style="color:var(--mo)"></i>dự phòng</span><span><i class="k-vuong" style="color:var(--chu)"></i>chính</span></div></div>
+    </div></figure>
+  <figure class="the"><figcaption><h3>Giải mã: 5 bước sửa dần, 32 chuỗi song song</h3>
+    <p class="phu nho">Hai cách nối các bước. TN15b dùng cách thứ hai.</p></figcaption>
+    <div class="cuon" style="--toi-thieu:820px"><div id="m-giai-ma"></div></div>
+    <div class="doc" id="m-giai-ma-doc"></div></figure>
   <div class="luoi2">
-    <div class="the"><h3>Mỗi tuyến ứng viên "nhìn thấy" gì (32 số)</h3><div id="m-uv"></div></div>
-    <div class="the"><h3>Mỗi liên kết "nhìn thấy" gì (24 số)</h3><div id="m-lk"></div></div>
+    <figure class="the"><figcaption><h3>487 nghìn tham số nằm ở đâu</h3></figcaption><div id="m-tham-so"></div><div class="bang" id="m-tham-so-bang"></div></figure>
+    <figure class="the"><figcaption><h3>Đọc sơ đồ</h3></figcaption><div id="m-doc" style="display:grid;gap:10px"></div></figure>
   </div>
+  <figure class="the"><figcaption><h3>Đầu vào chi tiết</h3></figcaption>
+    <details><summary>Mỗi tuyến ứng viên "nhìn thấy" gì (32 số)</summary><div class="bang" id="m-uv" style="margin-top:8px"></div></details>
+    <details><summary>Mỗi liên kết "nhìn thấy" gì (24 số)</summary><div class="bang" id="m-lk" style="margin-top:8px"></div></details></figure>
 </section>
 </main>
-<div class="tip" id="tip"></div>
+<div class="tip" id="tip" role="tooltip"></div>
 <script>
 /*__DU_LIEU__*/
 </script>
@@ -187,282 +368,466 @@ code{background:var(--luoi);padding:1px 5px;border-radius:4px;font-size:13px}
 "use strict";
 // ============================================================ tiện ích
 const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const f = (x, n=2) => (x===null||x===undefined||Number.isNaN(x)) ? "—" : Number(x).toLocaleString("vi-VN",{minimumFractionDigits:n,maximumFractionDigits:n});
+const f = (x, n=2) => (x===null||x===undefined||Number.isNaN(x)) ? "—" : (Math.abs(x)<0.5*Math.pow(10,-n) ? 0 : Number(x)).toLocaleString("vi-VN",{minimumFractionDigits:n,maximumFractionDigits:n}).replace("-","−");
 const fs = (x, n=2) => (x>0?"+":"") + f(x,n);
 const ci = (d, n=2) => `${fs(d.diem,n)} [${fs(d.ci[0],n)}; ${fs(d.ci[1],n)}]`;
-const MAU = {w05:"--w05", w07:"--w07", w09:"--w09", x3:"--x3", x10:"--x10", dm:"--dm", dp:"--dp", thay_73:"--w07", thay_x10:"--x10"};
+const kN = n => (n/1000).toLocaleString("vi-VN",{maximumFractionDigits:1}) + " nghìn";
+const MAUK = {w05:"w05",w07:"w07",w09:"w09",x3:"x3",x10:"x10",dm:"dm",dm_ktn:"dm",dp:"dp",thay_73:"w07",thay_x10:"x10",w07_ktn:"w07",x10_ktn:"x10",x10_nhanh:"x10",de_xuat:"x10"};
+const vm = k => `var(--${MAUK[k]||"phu"})`;
+const mau = k => css("--" + (MAUK[k]||"phu"));
 const TEN = {w05:"DM w0,5", w07:"DM 7/3 cùng đường ống", w09:"DM w0,9", x3:"DM x3", x10:"DM x10", dm:"DM11 (TN11)", dp:"Dijkstra phạt",
   thay_73:"thầy 7/3", thay_x10:"thầy x10", dm_ktn:"DM11 + không tái nhiễu", w07_ktn:"DM 7/3 + không tái nhiễu", x10_ktn:"DM x10 + không tái nhiễu",
   x10_nhanh:"DM x10, giải mã nhanh 5×8", de_xuat:"Đề xuất: x10 + không tái nhiễu + vá"};
-const mau = k => css(MAU[k] || "--phu");
 const NS = "http://www.w3.org/2000/svg";
-function S(tag, at={}, cha=null){const e=document.createElementNS(NS,tag);for(const k in at)e.setAttribute(k,at[k]);if(cha)cha.appendChild(e);return e;}
-function H(tag, at={}, html=""){const e=document.createElement(tag);for(const k in at)e.setAttribute(k,at[k]);e.innerHTML=html;return e;}
-const tip = $("#tip");
-function hien(e, html){tip.innerHTML=html;tip.style.display="block";const x=Math.min(e.clientX+14, innerWidth-330);tip.style.left=x+"px";tip.style.top=(e.clientY+14)+"px";}
-function an(){tip.style.display="none";}
-function treo(el, html){el.addEventListener("mousemove", e=>hien(e, typeof html==="function"?html():html));el.addEventListener("mouseleave", an);el.style.cursor="default";}
-function thang(d0,d1,r0,r1){const k=(r1-r0)/((d1-d0)||1);const fn=x=>r0+(x-d0)*k;fn.d=[d0,d1];return fn;}
-function vach(lo,hi,n=5){const b=(hi-lo)/n;const p=Math.pow(10,Math.floor(Math.log10(b||1)));const m=[1,2,2.5,5,10].find(m=>m*p>=b)*p;const ra=[];for(let v=Math.ceil(lo/m)*m;v<=hi+1e-9;v+=m)ra.push(+v.toFixed(10));return ra;}
-function truc(svg, x, y, w, h, lx, ly, opt={}){
-  const g=S("g",{},svg);
-  for(const v of vach(y.d[0],y.d[1],opt.ny||5)){S("line",{x1:x(x.d[0]),x2:x(x.d[1]),y1:y(v),y2:y(v),stroke:css("--luoi")},g);S("text",{x:x(x.d[0])-6,y:y(v)+4,"text-anchor":"end"},g).textContent=f(v, opt.dy??1);}
-  if(!opt.khongX)for(const v of vach(x.d[0],x.d[1],opt.nx||6)){S("text",{x:x(v),y:y(y.d[0])+16,"text-anchor":"middle"},g).textContent=f(v, opt.dx??0);}
-  S("line",{x1:x(x.d[0]),x2:x(x.d[1]),y1:y(y.d[0]),y2:y(y.d[0]),stroke:css("--mo")},g);
-  if(lx)S("text",{x:(x(x.d[0])+x(x.d[1]))/2,y:y(y.d[0])+34,"text-anchor":"middle"},g).textContent=lx;
-  if(ly){const t=S("text",{x:14,y:(y(y.d[0])+y(y.d[1]))/2,"text-anchor":"middle",transform:`rotate(-90 14 ${(y(y.d[0])+y(y.d[1]))/2})`},g);t.textContent=ly;}
+function S(tag, at={}, cha=null){ const e=document.createElementNS(NS,tag); for(const k in at){ if(at[k]!==undefined && at[k]!==null) e.setAttribute(k,at[k]); } if(cha) cha.appendChild(e); return e; }
+function T(cha, x, y, chu, at={}){ const e=S("text",{x,y,...at},cha); e.textContent=chu; return e; }
+function H(tag, at={}, html=""){ const e=document.createElement(tag); for(const k in at) e.setAttribute(k,at[k]); e.innerHTML=html; return e; }
+function svgMoi(box, w, h, nhan){ return S("svg",{viewBox:`0 0 ${w} ${h}`, role:"img", "aria-label":nhan||""}, box); }
+const ic = id => `<svg class="ic" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+const ICON = {tot:"dat", chua:"chua", bac:"bac", phu:"phu"};
+const nhan = (tt, chu) => `<span class="nhan ${tt}">${ic(ICON[tt])}${chu}</span>`;
+function nut(html, dang, cls=""){ const b=H("button",{class:"nut "+cls,"aria-pressed":dang?"true":"false"},html); if(dang) b.classList.add("dang"); return b; }
+function danh(cha, b){ $$("button",cha).forEach(x=>{ const d=x===b; x.classList.toggle("dang",d); x.setAttribute("aria-pressed",d?"true":"false"); }); }
+// gợi ý nổi: lần đầu hiện nhẹ, rê sang dấu kế bên thì hiện ngay
+const tip = $("#tip"); let tipTat = 0;
+function hien(e, html){
+  if(!tip.classList.contains("hien") && performance.now()-tipTat < 300) tip.classList.add("ngay");
+  tip.innerHTML = html; tip.classList.add("hien");
+  const r = tip.getBoundingClientRect(); let x = e.clientX+14, y = e.clientY+16;
+  if(x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
+  if(y + r.height > innerHeight - 8) y = e.clientY - r.height - 14;
+  tip.style.left = Math.max(8,x) + "px"; tip.style.top = Math.max(8,y) + "px";
 }
-function nhan_ket(dat, chua){return dat?'<span class="nhan dat">ĐẠT</span>':(chua?'<span class="nhan chua">CHƯA CHỨNG MINH</span>':'<span class="nhan truot">KHÔNG ĐẠT</span>');}
+function an(){ if(tip.classList.contains("hien")) tipTat = performance.now(); tip.classList.remove("hien","ngay"); }
+function treo(el, html){ const fn = e => hien(e, typeof html==="function" ? html() : html); el.addEventListener("pointermove",fn); el.addEventListener("pointerdown",fn); el.addEventListener("pointerleave",an); }
+function thang(d0,d1,r0,r1){ const k=(r1-r0)/((d1-d0)||1); const fn=x=>r0+(x-d0)*k; fn.d=[d0,d1]; fn.inv=y=>d0+(y-r0)/k; return fn; }
+let VLE=0;   // số chữ số thập phân vừa đủ cho các vạch chia vừa tính (tránh 5,25 hiện thành 5,3)
+function vach(lo,hi,n=5){ const b=(hi-lo)/n; const p=Math.pow(10,Math.floor(Math.log10(b||1))); const m=[1,2,2.5,5,10].find(m=>m*p>=b)*p; const ra=[]; for(let v=Math.ceil(lo/m)*m; v<=hi+1e-9; v+=m) ra.push(+v.toFixed(10));
+  VLE=0; while(VLE<4 && ra.some(v=>Math.abs(+v.toFixed(VLE)-v)>1e-9)) VLE++; return ra; }
+function toaDo(svg, e){ const p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+// trục: lưới ngang mờ, nhãn trục tung nằm ngang phía trên (dễ đọc hơn chữ xoay)
+function truc(svg, X, Y, o={}){
+  const g=S("g",{},svg), x0=X(X.d[0]), x1=X(X.d[1]), y0=Y(Y.d[0]), y1=Y(Y.d[1]);
+  for(const v of vach(Y.d[0],Y.d[1],o.ny||5)){ S("line",{x1:x0,x2:x1,y1:Y(v),y2:Y(v),class:"l-luoi"},g); T(g,x0-8,Y(v)+4,f(v,VLE),{"text-anchor":"end",class:"t-mo"}); }
+  if(!o.khongX) for(const v of vach(X.d[0],X.d[1],o.nx||6)){ S("line",{x1:X(v),x2:X(v),y1:y0,y2:y0+4,class:"l-truc"},g); T(g,X(v),y0+18,f(v,VLE),{"text-anchor":"middle",class:"t-mo"}); }
+  S("line",{x1:x0,x2:x1,y1:y0,y2:y0,class:"l-truc"},g);
+  if(o.lx) T(g,(x0+x1)/2,y0+36,o.lx,{"text-anchor":"middle"});
+  if(o.ly) T(g,x0,y1-14,o.ly,{class:"t-dam nho"});
+}
+// thước khoảng tin cậy: dấu ấn chung của trang
+function thuoc(box, d, o={}){
+  const coNg=o.ng!=null, w=o.w||340, h=(o.h||48)+(coNg?10:0), y=coNg?28:18; const svg=svgMoi(box,w,h,o.aria||"");
+  const vs=[d.ci[0],d.ci[1],0].concat(o.ng!=null?[o.ng]:[]); let lo=Math.min(...vs), hi=Math.max(...vs); const p=(hi-lo)*.14||.1; lo-=p; hi+=p;
+  const X=thang(lo,hi,12,w-12), tt=o.tt||"phu";
+  S("line",{x1:12,x2:w-12,y1:y,y2:y,class:"l-ray"},svg);
+  S("line",{x1:X(0),x2:X(0),y1:y-11,y2:y+11,class:"l-0"},svg); T(svg,X(0),y+27,"0",{"text-anchor":"middle",class:"t-mo nho"});
+  if(coNg){ const xn=X(o.ng); S("line",{x1:xn,x2:xn,y1:y-12,y2:y+11,class:"l-ng"},svg); T(svg,Math.min(Math.max(xn,44),w-44),9,"ngưỡng "+fs(o.ng),{class:"t-bac nho","text-anchor":"middle"}); }
+  S("line",{x1:X(d.ci[0]),x2:X(d.ci[1]),y1:y,y2:y,class:"l-ci",style:`stroke:var(--${tt})`},svg);
+  S("circle",{cx:X(d.diem),cy:y,r:6.5,class:"vong",style:`fill:var(--${tt})`},svg);
+  const bat=S("rect",{x:0,y:0,width:w,height:h,class:"vung-bat",style:"cursor:default"},svg);
+  treo(bat, `${o.ten?`<b>${o.ten}</b><br>`:""}ước lượng ${fs(d.diem,o.n??2)}${o.dv?" "+o.dv:""}<br>CI 95% [${fs(d.ci[0],o.n??2)}; ${fs(d.ci[1],o.n??2)}]`);
+  return svg;
+}
 
-// ============================================================ tab
-document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{
-  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("dang",x===b));
-  document.querySelectorAll("section").forEach(s=>s.classList.toggle("dang",s.id===b.dataset.tab));
-  ve_tab(b.dataset.tab); scrollTo({top:0});
+// ============================================================ tab (thanh chỉ trượt bằng transform)
+const chi = $(".chi");
+function datChi(b, ngay){ if(ngay) chi.style.transition="none"; chi.style.transform=`translateX(${b.offsetLeft}px) scaleX(${b.offsetWidth/100})`; if(ngay){ chi.offsetWidth; chi.style.transition=""; } }
+$$("nav button").forEach(b=>b.addEventListener("click",()=>{
+  $$("nav button").forEach(x=>x.setAttribute("aria-selected", x===b?"true":"false"));
+  $$("section.tab-noi").forEach(s=>s.hidden = s.id!==b.dataset.tab);
+  datChi(b); ve_tab(b.dataset.tab); scrollTo({top:0}); an();
 }));
+addEventListener("resize",()=>datChi($('nav button[aria-selected="true"]'),true));
 const da_ve = {};
 function ve_tab(t){ if(da_ve[t]) return; da_ve[t]=true; ({tong:veTong, hoc:veHoc, kq:veKq, tuyen:veTuyen, mang:veMang})[t](); }
 
 // ============================================================ tóm tắt
 const KQ = DL.kq, A = KQ.A, P = KQ.P, PH = KQ.phu;
+const LEDGER = [
+  ["x10 bớt nghẽn nặng, nhanh hơn 7/3", "11 bộ kiểm tra dùng lại; 3 seed; CI bỏ qua dao động giữa seed", ()=>"Dữ liệu mới, 5 + 5 seed, 7/3 học cùng máy: đuôi "+fs(P.P2.diem)+" điểm, cả 25 cặp seed cùng chiều", "tot"],
+  ["x10 không kém an toàn", "\"Đạt ở 9/11 bộ\"", ()=>"Biên trên CI "+fs(P.P1.ci[1])+" vượt ngưỡng +0,10: chưa chứng minh được, dù ước lượng nghiêng về x10", "chua"],
+  ["Giải mã không tái nhiễu tốt hơn", "\"Xác nhận\" H15.4, thật ra là chạy lại y hệt TN12b", ()=>"Xác nhận thật trên dữ liệu mới, ở cả 7/3 ("+fs(P.P3.diem)+") và x10 ("+fs(P.P4.diem)+")", "tot"],
+  ["Cơ chế: J chuẩn hoá theo luồng làm lệch tỷ giá", "Phỏng đoán qua một ví dụ", ()=>"Chứng minh toán (tỷ giá ngầm, định lý không bị trội) và dự đoán viết trước đúng chiều: hệ số "+fs(P.P5.diem,3), "tot"],
+  ["Thầy x10 tốt hơn thầy 7/3", "Tính trên đúng tập val đã dùng để chọn x10", ()=>"Trên dữ liệu không dùng để chọn: mất "+fs(P.P7.mat.diem)+", đuôi "+fs(P.P7.duoi.diem), "tot"],
+  ["Khoảng ~1 ms còn lại so với Dijkstra là do mục tiêu học", "Suy đoán", ()=>"Bị bác: DM x10 chậm hơn chính thầy x10 "+fs(PH.S6_tre.diem,1)+" ms, còn thầy chỉ chậm hơn Dijkstra "+fs(PH.S6_thay_dp.diem,1)+" ms, nên chủ yếu do bắt chước chưa khéo", "bac"],
+  ["Giải mã nhanh 5×8 không kém 5×32", "Chọn theo val (TN14)", ()=>"Bị bác: mất dịch vụ tăng "+ci(PH.S9), "bac"],
+  ["Ghép x10 + không tái nhiễu + kho nhanh + vá", "Giả định các cải tiến cộng dồn được", ()=>"Xác nhận như một khối: mất "+fs(P.P8.mat.diem)+", đuôi "+fs(P.P8.duoi.diem)+" so với DM11", "tot"]];
 function veTong(){
-  const o = [
-    ["Bớt nghẽn nặng", fs(P.P2.diem,2)+" điểm %", `đuôi x10 − 7/3, CI [${fs(P.P2.ci[0])}; ${fs(P.P2.ci[1])}] · 25/25 cặp seed`, "--tot"],
-    ["Trễ trung bình", fs(PH.S1_tre.diem,1)+" ms", `x10 − 7/3, CI [${fs(PH.S1_tre.ci[0],1)}; ${fs(PH.S1_tre.ci[1],1)}] · trung vị bằng nhau`, "--tot"],
-    ["An toàn x10 so với 7/3", fs(P.P1.diem,2)+" điểm", `CI [${fs(P.P1.ci[0])}; ${fs(P.P1.ci[1])}] — vượt ngưỡng +0,10: chưa chứng minh`, "--vang"],
-    ["Cấu hình đề xuất so với TN11", fs(P.P8.mat.diem,2)+" điểm", `mất dịch vụ, CI [${fs(P.P8.mat.ci[0])}; ${fs(P.P8.mat.ci[1])}] · đuôi ${fs(P.P8.duoi.diem)}`, "--tot"]];
-  $("#tom-o").innerHTML = o.map(([a,b,c,m])=>`<div class="o"><div class="nho">${a}</div><div class="lon" style="color:var(${m})">${b}</div><div class="nho">${c}</div></div>`).join("");
-  const dong = [
-    ["x10 bớt nghẽn / nhanh hơn 7/3", "11 bộ dùng lại nhiều lần, 3 seed, CI bỏ qua dao động seed", "Dữ liệu mới, 5 + 5 seed, 7/3 học cùng máy: đuôi "+fs(P.P2.diem)+" điểm, 25/25 cặp seed", "dat"],
-    ["x10 không kém an toàn", "\"Đạt 9/11 bộ\"", "Biên trên CI "+fs(P.P1.ci[1])+" > ngưỡng +0,10 — nói quá đã bị bắt", "chua"],
-    ["Giải mã không tái nhiễu tốt hơn", "\"Xác nhận\" — thật ra chạy lại y hệt TN12b", "Xác nhận thật trên dữ liệu mới, ở cả 7/3 ("+fs(P.P3.diem)+") và x10 ("+fs(P.P4.diem)+")", "dat"],
-    ["Cơ chế: J chuẩn hoá theo luồng làm lệch tỷ giá", "Phỏng đoán bằng một ví dụ", "Chứng minh toán (tỷ giá ngầm, định lý không bị trội) + dự đoán viết trước đúng: hệ số "+fs(P.P5.diem,3), "dat"],
-    ["Thầy x10 hơn thầy 7/3", "Tính trên đúng tập đã dùng để chọn x10", "Dữ liệu không dùng để chọn: mất "+fs(P.P7.mat.diem)+", đuôi "+fs(P.P7.duoi.diem), "dat"],
-    ["Khoảng ~1 ms còn lại so với Dijkstra do mục tiêu", "Suy đoán", "Bị bác: DM x10 chậm hơn chính thầy x10 "+fs(PH.S6_tre.diem,1)+" ms; thầy chỉ chậm hơn Dijkstra "+fs(PH.S6_thay_dp.diem,1)+" ms → chủ yếu do bắt chước", "truot"],
-    ["Cấu hình nhanh 5×8 không kém 5×32", "Chọn theo val (TN14)", "Bị bác: mất dịch vụ "+ci(PH.S9), "truot"],
-    ["Ghép x10 + không tái nhiễu + kho nhanh + vá", "Giả định cộng dồn được", "Xác nhận như một khối: mất "+fs(P.P8.mat.diem)+", đuôi "+fs(P.P8.duoi.diem)+" so với DM11", "dat"]];
-  const ten_nhan = {dat:'<span class="nhan dat">ĐỨNG VỮNG</span>', chua:'<span class="nhan chua">CHƯA CHỨNG MINH</span>', truot:'<span class="nhan truot">BỊ BÁC</span>'};
-  $("#so-cai").innerHTML = `<table><tr><th>Kết luận</th><th>Ở TN15 dựa vào</th><th>TN15b kiểm lại</th><th>Kết quả</th></tr>${dong.map(d=>`<tr><td>${d[0]}</td><td class="phu">${d[1]}</td><td>${d[2]}</td><td>${ten_nhan[d[3]]}</td></tr>`).join("")}</table>
-  <div class="phu" style="margin-top:8px">Đóng băng tiêu chí: ${KQ.dong_bang.luc}; tệp đổi sau đóng băng: ${KQ.dong_bang.tep_doi_sau_dong_bang.length?KQ.dong_bang.tep_doi_sau_dong_bang.join(", "):"không có"}.</div>`;
+  const nDat = Object.values(P).filter(v=>v.dat).length, nP = Object.keys(P).length;
+  $("#tong-mo").innerHTML = `TN15b chấm lại mọi mô hình trên <b>${KQ.so_tinh_huong.A.cua_so} cửa sổ thời tiết chưa từng dùng</b>
+    (${KQ.so_tinh_huong.A.tinh_huong.toLocaleString("vi-VN")} tình huống), với luật phân tích chốt trước. <b>${nDat}/${nP} giả thuyết chính đạt.</b>
+    "Bớt nghẽn, nhanh hơn" đứng vững; "không kém an toàn" chưa chứng minh được ở ngưỡng 0,10 điểm, không phải vì x10 kém mà vì dao động
+    giữa các seed lớn hơn dự tính. Một phương pháp tự bác được kết luận của chính mình là dấu hiệu nó đã chặt.`;
+  const ds = [
+    {ten:"x10 bớt nghẽn nặng", phu:"đuôi nghẽn (% tình huống trễ > 100 ms), x10 − 7/3", d:P.P2, dv:"điểm %", tt:P.P2.dat?"tot":"bac", chu:P.P2.dat?"đứng vững":"không đạt", ghi:"cả 25 cặp seed cùng chiều"},
+    {ten:"x10 nhanh hơn trung bình", phu:"trễ tuyến chính trung bình, x10 − 7/3 (phân tích phụ)", d:PH.S1_tre, dv:"ms", n:1, tt:"tot", chu:"đứng vững", ghi:`trung vị hai bên đều khoảng ${f(PH.S1_trung_vi[0],1)} ms`},
+    {ten:"x10 không kém an toàn", phu:"mất dịch vụ, x10 − 7/3; cần cả vạch < +0,10", d:P.P1, dv:"điểm %", ng:0.10, tt:"chua", chu:"chưa chứng minh", ghi:`biên trên ${fs(P.P1.ci[1])} vượt ngưỡng`},
+    {ten:"Cấu hình đề xuất tốt hơn TN11", phu:"mất dịch vụ, đề xuất − DM11 (cùng bộ B)", d:P.P8.mat, dv:"điểm %", tt:P.P8.dat?"tot":"bac", chu:P.P8.dat?"đứng vững":"không đạt", ghi:`đuôi nghẽn cũng giảm ${f(-P.P8.duoi.diem)} điểm`}];
+  const box = $("#tong-ds"); box.innerHTML = `<div class="kq-hang dau-cot"><span>Kết luận</span><span>Ước lượng và CI 95% · bên trái 0 là tốt hơn</span><span>Hiệu</span><span>Kết quả</span></div>`;
+  for(const r of ds){
+    const h = H("div",{class:"kq-hang"},`<div class="kq-ten"><b>${r.ten}</b><span class="phu nho">${r.phu}</span></div><div class="kq-thuoc"></div>
+      <div class="kq-so"><span><span class="lon">${fs(r.d.diem,r.n??2)}</span><span class="dv">${r.dv}</span></span><span class="mo nho">[${fs(r.d.ci[0],r.n??2)}; ${fs(r.d.ci[1],r.n??2)}]</span></div>
+      <div class="kq-nhan">${nhan(r.tt,r.chu)}<span class="phu nho">${r.ghi}</span></div>`);
+    box.appendChild(h); thuoc($(".kq-thuoc",h), r.d, {ng:r.ng, tt:r.tt, n:r.n, dv:r.dv, ten:r.ten, aria:r.ten+": "+ci(r.d,r.n??2)});
+  }
+  const pp = [
+    ["Dữ liệu chấm", "11 bộ kiểm tra đã dùng ở các TN trước; chỉ tương đương khoảng 6–7 bộ độc lập (dùng chung cụm thời tiết, chung một cơn bão Yagi)", `${KQ.so_tinh_huong.A.cua_so} cửa sổ thời tiết 2017–2021 chưa TN nào dùng`],
+    ["Mô hình để so", "DM11, học ở máy khác (máy của TN11)", "DM 7/3 học lại cùng máy, cùng code với x10"],
+    ["Số seed", "3 mỗi mô hình", "5 mỗi mô hình (x10 và 7/3)"],
+    ["Khoảng tin cậy", "chỉ bốc lại cửa sổ thời tiết, bỏ qua dao động giữa seed", "hai tầng: bốc lại cả cửa sổ lẫn seed"],
+    ["\"Xác nhận\"", "H15.4 chạy lại y hệt TN12b; H15.0 tính trên đúng tập val đã dùng để phát hiện", "xác nhận trên dữ liệu mới, ở hai mô hình"],
+    ["Cơ chế", "phỏng đoán qua một ví dụ", "chứng minh toán, rồi kiểm một dự đoán viết trước"],
+    ["Thêm ở TN15b", "", "hiệu chỉnh Holm cho 8 giả thuyết; phép thử A/A làm đối chứng âm; khoá tiêu chí bằng mã băm SHA-256"]];
+  $("#tong-pp").innerHTML = `<table><tr><th></th><th>TN15</th><th>TN15b</th></tr>${pp.map(r=>`<tr><td><b>${r[0]}</b></td><td class="phu">${r[1]||"—"}</td><td>${r[2]}</td></tr>`).join("")}</table>`;
+  const dem = {tot:0, chua:0, bac:0}; LEDGER.forEach(d=>dem[d[3]]++);
+  $("#tong-dem").textContent = `${dem.tot} kết luận đứng vững, ${dem.chua} chưa chứng minh được, ${dem.bac} phỏng đoán cũ bị bác.`;
+  const ten_nhan = {tot:nhan("tot","đứng vững"), chua:nhan("chua","chưa chứng minh"), bac:nhan("bac","bị bác")};
+  $("#so-cai").innerHTML = `<table><tr><th>Kết luận</th><th>TN15b kiểm lại</th><th>Kết quả</th></tr>${LEDGER.map(d=>`<tr><td><b>${d[0]}</b><br><span class="mo nho">TN15 dựa vào: ${d[1]}</span></td><td>${d[2]()}</td><td>${ten_nhan[d[3]]}</td></tr>`).join("")}</table>
+    <p class="mo nho" style="margin-top:8px">Đóng băng tiêu chí: ${KQ.dong_bang.luc}; tệp đổi sau đóng băng: ${KQ.dong_bang.tep_doi_sau_dong_bang.length?KQ.dong_bang.tep_doi_sau_dong_bang.join(", "):"không có"}.</p>`;
 }
 
 // ============================================================ 1. quá trình học
 const HOC = DL.hoc;
-const MH_HOC = [["x10","DM x10"],["w07","DM 7/3 cùng đường ống"],["x3","DM x3"],["w05","DM w0,5"],["w09","DM w0,9"]];
-let mh_hoc = "w07";
+const MH_HOC = [["x10","DM x10"],["w07","DM 7/3 (học lại)"],["x3","DM x3"],["w05","DM w0,5"],["w09","DM w0,9"]];
+const NOI_MD = {w07:3, x10:3};
+let mhHoc = "w07", seedNoi = 3;
 function veHoc(){
-  const dk = $("#hoc-chon"); dk.innerHTML = '<span class="phu">Mục tiêu:</span>';
-  for(const [k,t] of MH_HOC){const b=H("button",{},t); if(k===mh_hoc)b.classList.add("dang"); b.onclick=()=>{mh_hoc=k;dk.querySelectorAll("button").forEach(x=>x.classList.toggle("dang",x===b));veHocMh();}; dk.appendChild(b);}
+  const dk = $("#hoc-mh"); dk.innerHTML = '<span class="phu nho">Mục tiêu học:</span>';
+  for(const [k,t] of MH_HOC){ const b = nut(`<i class="sw" style="background:var(--${k})"></i>${t}`, k===mhHoc);
+    b.onclick = () => { mhHoc=k; seedNoi=NOI_MD[k]??0; danh(dk,b); veHocMh(); }; dk.appendChild(b); }
   veHocMh(); veHocBang();
 }
-function sac(k, i, n){ // các seed cùng màu họ, đậm nhạt khác nhau
-  const c = mau(k); const a = 0.45 + 0.55*(n>1? i/(n-1) : 1); return {c, a};
-}
 function veHocMh(){
-  const ds = HOC.filter(m=>m.mh===mh_hoc).sort((a,b)=>a.seed-b.seed);
-  // J val
-  const w=600,h=300,l=62,r=20,t=14,b=44;
-  for(const [id, khoa] of [["#hoc-J","J_val"],["#hoc-loss","loss"]]){
-    const box=$(id); box.innerHTML=""; const svg=S("svg",{viewBox:`0 0 ${w} ${h}`},box);
-    const xs = Math.max(...ds.map(m=>m.so_epoch));
-    let vs = khoa==="J_val" ? ds.flatMap(m=>m.J_val).concat(ds.map(m=>m.J_thay)) : ds.flatMap(m=>m.loss_train.concat(m.loss_val));
-    vs = vs.filter(v=>v!==null); let lo=Math.min(...vs), hi=Math.max(...vs);
-    if(khoa==="J_val"){ const tot=Math.min(...ds.map(m=>m.J_tot)); hi = Math.min(hi, tot + (Math.max(...ds.map(m=>m.J_val[0]))-tot)*0.6); }
-    const pad=(hi-lo)*0.08; lo-=pad; hi+=pad;
-    const x=thang(1,xs,l,w-r), y=thang(lo,hi,h-b,t);
-    truc(svg,x,y,w,h,"epoch",khoa==="J_val"?"J val":"mất mát",{dy: (hi-lo)<0.5?3:2});
-    if(khoa==="J_val"){const yy=y(ds[0].J_thay);S("line",{x1:l,x2:w-r,y1:yy,y2:yy,stroke:css("--phu"),"stroke-dasharray":"6 4"},svg);S("text",{x:w-r,y:yy-5,"text-anchor":"end"},svg).textContent="thầy "+f(ds[0].J_thay,3);}
-    ds.forEach((m,i)=>{
-      const {c,a}=sac(m.mh,i,ds.length);
-      const ve = (arr, dash) => { const p=arr.map((v,j)=>v===null?null:`${x(m.epoch[j])},${y(Math.min(Math.max(v,lo),hi))}`).filter(Boolean).join(" ");
-        const pl=S("polyline",{points:p,fill:"none",stroke:c,"stroke-opacity":a,"stroke-width":m.seed===3&&mh_hoc==="w07"?2.6:1.6,"stroke-dasharray":dash||""},svg);
-        treo(pl, ()=>`<b>${TEN[m.mh]} · seed ${m.seed}</b> (${m.tn})<br>epoch giữ ${m.tot}/${m.so_epoch}; J val ${f(m.J_tot,3)}`); };
-      if(khoa==="J_val"){ ve(m.J_val); const j=m.epoch.indexOf(m.tot); const dot=S("circle",{cx:x(m.tot),cy:y(Math.min(m.J_val[j],hi)),r:5,fill:c,stroke:css("--the"),"stroke-width":2},svg);
-        treo(dot, `<b>seed ${m.seed}</b>: epoch ${m.tot} được giữ, J val ${f(m.J_tot,3)} (thầy ${f(m.J_thay,3)})<br>dừng ở epoch ${m.so_epoch}`);}
-      else { ve(m.loss_train,"5 4"); ve(m.loss_val); }
-    });
-    const ct=H("div",{class:"chu-thich"}, ds.map((m,i)=>{const {c,a}=sac(m.mh,i,ds.length);return `<span><i style="background:${c};opacity:${a}"></i>seed ${m.seed}</span>`;}).join(""));
-    box.appendChild(ct);
+  const ds = HOC.filter(m=>m.mh===mhHoc).sort((a,b)=>a.seed-b.seed);
+  if(!ds.some(m=>m.seed===seedNoi)) seedNoi = ds[0].seed;
+  const dk = $("#hoc-seed"); dk.innerHTML = '<span class="phu nho">Làm nổi seed:</span>';
+  ds.forEach(m=>{ const b = nut("seed "+m.seed, m.seed===seedNoi, "nho"); b.onclick = () => { seedNoi=m.seed; veHocMh(); }; dk.appendChild(b); });
+  duongHoc($("#hoc-J"), ds, "J"); duongHoc($("#hoc-loss"), ds, "loss"); valTest(ds); docHoc(ds);
+}
+function duongHoc(box, ds, kieu){
+  box.innerHTML = ""; const w=620, h=320, l=58, r=40, t=40, b=48;
+  const xs = Math.max(...ds.map(m=>m.so_epoch));
+  let vs = ds.flatMap(m => kieu==="J" ? m.J_val : m.loss_val.concat(m.loss_train)).filter(v=>v!=null);
+  if(kieu==="J") vs.push(ds[0].J_thay);
+  let lo = Math.min(...vs), hi = Math.max(...vs);
+  const totV = Math.min(...ds.map(m => Math.min(...(kieu==="J"?m.J_val:m.loss_val).filter(v=>v!=null))));
+  const dauV = Math.max(...ds.map(m => (kieu==="J"?m.J_val:m.loss_val)[0]));
+  hi = Math.min(hi, totV + (dauV - totV) * .6);
+  const pd = (hi-lo)*.06; lo -= pd; hi += pd;
+  const X = thang(1,xs,l,w-r), Y = thang(lo,hi,h-b,t), cl = v => Math.min(Math.max(v,lo),hi);
+  const svg = svgMoi(box, w, h, kieu==="J" ? "J trên val theo epoch" : "Mất mát theo epoch");
+  truc(svg, X, Y, {dy:(hi-lo)<.3?3:2, lx:"epoch", ly:kieu==="J" ? "J trên val · thấp là tốt" : "mất mát · thấp là tốt"});
+  if(kieu==="J"){ const yy=Y(ds[0].J_thay); S("line",{x1:l,x2:w-r,y1:yy,y2:yy,class:"l-thay"},svg); T(svg,w-r,yy-6,"thầy "+f(ds[0].J_thay,3),{"text-anchor":"end",class:"nho"}); }
+  const thuTu = ds.slice().sort((a,b)=>(a.seed===seedNoi)-(b.seed===seedNoi)), cuoi = [];
+  for(const m of thuTu){
+    const noi = m.seed===seedNoi;
+    const ve = (arr, net) => { const p = arr.map((v,j)=>v==null?null:`${X(m.epoch[j]).toFixed(1)},${Y(cl(v)).toFixed(1)}`).filter(Boolean).join(" ");
+      S("polyline",{points:p,class:"l-hoc","stroke-dasharray":net||null,style:`stroke:var(--${m.mh});stroke-width:${noi?2.4:1.4};opacity:${noi?1:.3}`},svg); };
+    if(kieu==="J") ve(m.J_val); else { ve(m.loss_val); if(noi) ve(m.loss_train,"5 4"); }
+    if(kieu==="J"){ const j=m.epoch.indexOf(m.tot); S("circle",{cx:X(m.tot),cy:Y(cl(m.J_val[j])),r:noi?5.5:4,class:"vong",style:`fill:var(--${m.mh});opacity:${noi?1:.5}`},svg); }
+    const arr = kieu==="J" ? m.J_val : m.loss_val, jj = arr.length-1; cuoi.push({x:X(m.epoch[jj]), y:Y(cl(arr[jj])), s:m.seed, noi});
   }
-  // val → test
-  const box=$("#hoc-val-test"); box.innerHTML=""; const w2=560,h2=260,l2=62,b2=46;
-  const pts = ds.filter(m=>m.mat_moi!==null && m.mat_moi!==undefined);
-  if(pts.length>=3){
-    const svg=S("svg",{viewBox:`0 0 ${w2} ${h2}`},box);
-    const xv=pts.map(m=>m.J_tot), yv=pts.map(m=>m.mat_moi);
-    const px=(Math.max(...xv)-Math.min(...xv))*0.15||0.01, py=(Math.max(...yv)-Math.min(...yv))*0.2||0.05;
-    const x=thang(Math.min(...xv)-px,Math.max(...xv)+px,l2,w2-20), y=thang(Math.min(...yv)-py,Math.max(...yv)+py,h2-b2,14);
-    truc(svg,x,y,w2,h2,"J val của checkpoint được giữ","mất DV trên dữ liệu mới (%)",{dx:3,dy:2});
-    pts.forEach((m,i)=>{const {c}=sac(m.mh,i,pts.length);const e=S("circle",{cx:x(m.J_tot),cy:y(m.mat_moi),r:7,fill:c,"fill-opacity":.85,stroke:css("--the"),"stroke-width":2},svg);
-      S("text",{x:x(m.J_tot)+10,y:y(m.mat_moi)+4},svg).textContent="s"+m.seed;
-      treo(e,`<b>seed ${m.seed}</b><br>J val ${f(m.J_tot,3)}<br>mất DV dữ liệu mới ${f(m.mat_moi)}%<br>đuôi ${f(m.duoi_moi)}%`);});
-    const mx=xv.reduce((a,b)=>a+b)/xv.length,my=yv.reduce((a,b)=>a+b)/yv.length;
-    const r=xv.reduce((s,v,i)=>s+(v-mx)*(yv[i]-my),0)/Math.sqrt(xv.reduce((s,v)=>s+(v-mx)**2,0)*yv.reduce((s,v)=>s+(v-my)**2,0));
-    $("#hoc-r").innerHTML = `Tương quan giữa J val và mất dịch vụ trên dữ liệu mới: <b>r = ${f(r,2)}</b> (${pts.length} seed — quá ít để kết luận chắc).`;
-  } else { box.innerHTML='<p class="phu">Mô hình này không được chấm ở TN15b.</p>'; $("#hoc-r").innerHTML=""; }
-  // đọc
+  cuoi.sort((a,b)=>a.y-b.y);
+  for(let i=1;i<cuoi.length;i++) for(let j=0;j<i;j++) if(Math.abs(cuoi[i].x-cuoi[j].x)<26 && cuoi[i].y-cuoi[j].y<12) cuoi[i].y = cuoi[j].y+12;
+  for(const n of cuoi) T(svg, n.x+5, n.y+4, "s"+n.s, {class:n.noi?"t-dam nho":"t-mo nho"});
+  // đường dóng
+  const g = S("g",{visibility:"hidden"},svg), vl = S("line",{y1:t,y2:h-b,class:"l-chu-thap"},g); let cham = [];
+  const vung = S("rect",{x:l,y:t,width:w-l-r,height:h-t-b,class:"vung-bat"},svg);
+  vung.addEventListener("pointermove", ev => {
+    const e = Math.max(1, Math.min(xs, Math.round(X.inv(toaDo(svg,ev).x))));
+    const hang = [];
+    cham.forEach(c=>c.remove()); cham = [];
+    for(const m of ds){ const j=m.epoch.indexOf(e); if(j<0) continue; const noi=m.seed===seedNoi;
+      if(kieu==="J"){ const v=m.J_val[j]; if(v==null) continue; hang.push(`<tr><td><i class="sw" style="background:var(--${m.mh})"></i>${noi?"<b>":""}seed ${m.seed}${noi?"</b>":""}</td><td class="so">${f(v,3)}</td></tr>`);
+        cham.push(S("circle",{cx:X(e),cy:Y(cl(v)),r:noi?4.5:3,class:"vong",style:`fill:var(--${m.mh})`},g)); }
+      else if(noi){ hang.push(`<tr><td><b>seed ${m.seed}</b> · val</td><td class="so">${f(m.loss_val[j],4)}</td></tr><tr><td>seed ${m.seed} · học</td><td class="so">${f(m.loss_train[j],4)}</td></tr>`);
+        cham.push(S("circle",{cx:X(e),cy:Y(cl(m.loss_val[j])),r:4.5,class:"vong",style:`fill:var(--${m.mh})`},g)); } }
+    if(!hang.length){ g.setAttribute("visibility","hidden"); an(); return; }
+    g.setAttribute("visibility","visible"); vl.setAttribute("x1",X(e)); vl.setAttribute("x2",X(e));
+    hien(ev, `<b>epoch ${e}</b><table>${hang.join("")}${kieu==="J"?`<tr><td>thầy</td><td class="so">${f(ds[0].J_thay,3)}</td></tr>`:""}</table>`);
+  });
+  vung.addEventListener("pointerleave", () => { g.setAttribute("visibility","hidden"); an(); });
+}
+function valTest(ds){
+  const box=$("#hoc-val-test"); box.innerHTML=""; const w=580, h=270, l=62, b=48, t=40;
+  const pts = ds.filter(m=>m.mat_moi!=null);
+  if(pts.length<3){ box.innerHTML='<p class="phu">Mô hình này không được chấm ở TN15b.</p>'; $("#hoc-r").innerHTML=""; return; }
+  const svg=svgMoi(box,w,h,"J val so với mất dịch vụ trên dữ liệu mới");
+  const xv=pts.map(m=>m.J_tot), yv=pts.map(m=>m.mat_moi);
+  const px=(Math.max(...xv)-Math.min(...xv))*.18||.01, py=(Math.max(...yv)-Math.min(...yv))*.2||.05;
+  const X=thang(Math.min(...xv)-px,Math.max(...xv)+px,l,w-24), Y=thang(Math.min(...yv)-py,Math.max(...yv)+py,h-b,t);
+  truc(svg,X,Y,{dx:3,dy:2,lx:"J val của checkpoint được giữ · trái là tốt",ly:"mất dịch vụ trên dữ liệu mới (%) · thấp là tốt"});
+  pts.forEach(m=>{ const noi=m.seed===seedNoi, cx=X(m.J_tot), cy=Y(m.mat_moi);
+    S("circle",{cx,cy,r:noi?8:6,class:"vong",style:`fill:var(--${m.mh});opacity:${noi?1:.7}`},svg);
+    T(svg,cx+11,cy+4,"s"+m.seed,{class:noi?"t-dam nho":"nho"});
+    const hit=S("circle",{cx,cy,r:14,class:"vung-bat",style:"cursor:default"},svg);
+    treo(hit,`<b>seed ${m.seed}</b><br>J val ${f(m.J_tot,3)}<br>mất dịch vụ dữ liệu mới ${f(m.mat_moi)}%<br>đuôi ${f(m.duoi_moi)}%`); });
+  const mx=xv.reduce((a,b)=>a+b)/xv.length, my=yv.reduce((a,b)=>a+b)/yv.length;
+  const rr=xv.reduce((s,v,i)=>s+(v-mx)*(yv[i]-my),0)/Math.sqrt(xv.reduce((s,v)=>s+(v-mx)**2,0)*yv.reduce((s,v)=>s+(v-my)**2,0));
+  $("#hoc-r").innerHTML = `Tương quan giữa J val và mất dịch vụ trên dữ liệu mới: <b>r = ${f(rr,2)}</b> trên ${pts.length} seed, quá ít để kết luận chắc.`;
+}
+function docHoc(ds){
   const tot=ds.map(m=>m.tot), ty=ds.map(m=>m.ti_le);
   const ghi = {
-    w07:`<p>DM 7/3 học lại 5 seed. Epoch được giữ dao động từ ${Math.min(...tot)} đến ${Math.max(...tot)}. <b>Seed 3 dừng rất sớm</b>: epoch tốt nhất là 14, rồi 20 epoch liền không khá hơn nên dừng ở epoch 34. Nó có J val tệ nhất, và trên dữ liệu mới cũng mất dịch vụ cao nhất.</p>
-      <div class="vd"><b>Ví dụ:</b> năm học sinh học cùng giáo trình, một em "chững" sớm rồi bỏ cuộc. Điểm thi của em đó kéo điểm trung bình của cả nhóm xuống. Dao động kiểu này chính là lý do khoảng tin cậy về an toàn ở TN15b rộng.</div>
-      <p>J val báo trước khá tốt kết quả trên dữ liệu mới (r cao). Gợi ý: học nhiều seed rồi <b>chọn seed theo val</b> có thể giảm rủi ro "học xui".</p>`,
-    x10:`<p>DM x10: 3 seed của TN15 và 2 seed học thêm ở TN15b, cùng máy. Epoch được giữ từ ${Math.min(...tot)} đến ${Math.max(...tot)}. Tỷ lệ mất mát val / học quanh ${f(Math.min(...ty),2)}–${f(Math.max(...ty),2)}, tức không quá khớp.</p>
-      <p>Seed 3 có mất dịch vụ cao nhất trên dữ liệu mới dù J val không tệ nhất. Với x10, J val báo trước kém hơn (r thấp). Lưu ý: seed 3 của 7/3 cũng tệ — xem mục 2d.</p>`,
-    x3:`<p>DM x3 (1 điểm % = 3 ms, coi trễ "đắt" hơn x10): 3 seed, epoch được giữ ${Math.min(...tot)}–${Math.max(...tot)}. Khoảng cách tới thầy tương tự x10. Trên dữ liệu mới, x3 gần như trùng x10 về an toàn và chỉ nhanh hơn rất ít (mục 2b).</p>`,
-    w05:`<p>DM w0,5 (TN13): trọng số an toàn 0,5 — coi trễ quan trọng ngang an toàn trong J chuẩn hoá. Học ổn, không quá khớp.</p>`,
-    w09:`<p>DM w0,9 (TN13): trọng số an toàn 0,9 — gần như chỉ quan tâm an toàn. Học ổn, không quá khớp.</p>`};
-  $("#hoc-doc").innerHTML = (ghi[mh_hoc]||"") + `<div class="doc"><b>Cách đọc:</b> J của mỗi mục tiêu có thang riêng (J 7/3 khoảng 2,9; J x10 khoảng 30), nên chỉ so đường học <b>trong cùng một mục tiêu</b>. Không so tỷ lệ "cách thầy bao nhiêu %" giữa các mục tiêu: tỷ lệ đó đổi khi J bị cộng thêm một hằng số, nên không có nghĩa toán học.</div>`;
+    w07:"seed 3 dừng sớm (giữ epoch 14) và cũng tệ nhất trên dữ liệu mới; dao động kiểu này làm rộng khoảng tin cậy an toàn (mục 2d).",
+    x10:"seed 3 tệ nhất trên dữ liệu mới dù J val không tệ nhất; seed 3 của 7/3 cũng tệ, tức may rủi đi cặp theo số seed.",
+    x3:"gần như trùng x10 về an toàn, chỉ nhanh hơn rất ít.",
+    w05:"học ổn, không quá khớp.", w09:"học ổn, không quá khớp."};
+  $("#hoc-ghi").innerHTML = `<b>Ghi chú:</b> ${TEN[mhHoc]}: ${ghi[mhHoc]||""} J mỗi mục tiêu có thang riêng nên chỉ so trong cùng mục tiêu.`;
+  $("#hoc-so-tieu").textContent = "Số chính · " + TEN[mhHoc];
+  const co = ds.filter(m=>m.mat_moi!=null), te = co.length ? co.reduce((a,b)=>b.mat_moi>a.mat_moi?b:a) : null;
+  $("#hoc-so").innerHTML = [
+    ["Epoch được giữ", `${Math.min(...tot)}–${Math.max(...tot)}`, `trên ${ds.length} seed`],
+    ["Mất mát val / học", `${f(Math.min(...ty),2)}–${f(Math.max(...ty),2)}`, "quanh 1 nghĩa là không quá khớp"],
+    ["Seed tệ nhất trên dữ liệu mới", te ? `seed ${te.seed}` : "—", te ? `mất dịch vụ ${f(te.mat_moi)}% · đuôi ${f(te.duoi_moi)}%` : "không được chấm ở TN15b"]]
+    .map(([a,b,c])=>`<div class="so-tile"><span class="phu nho">${a}</span><span class="lon">${b}</span><span class="mo nho">${c}</span></div>`).join("");
 }
 function veHocBang(){
   const rows = HOC.slice().sort((a,b)=>MH_HOC.findIndex(x=>x[0]===a.mh)-MH_HOC.findIndex(x=>x[0]===b.mh)||a.seed-b.seed);
-  $("#hoc-bang").innerHTML = `<table><tr><th>Mô hình</th><th>Seed</th><th>Học ở</th><th class="so">Epoch chạy</th><th class="so">Epoch giữ</th><th class="so">J val</th><th class="so">J thầy</th><th class="so">val / học</th><th class="so">Mất DV mới %</th><th class="so">Đuôi mới %</th></tr>${
-    rows.map(m=>`<tr><td style="color:${mau(m.mh)};font-weight:600">${TEN[m.mh]}</td><td>${m.seed}</td><td class="phu">${m.tn}</td><td class="so">${m.so_epoch}</td><td class="so">${m.tot}</td><td class="so">${f(m.J_tot,3)}</td><td class="so">${f(m.J_thay,3)}</td><td class="so">${f(m.ti_le,2)}</td><td class="so">${f(m.mat_moi)}</td><td class="so">${f(m.duoi_moi)}</td></tr>`).join("")}</table>
-    <p class="phu">DM11 (TN11) không có nhật ký học ở máy này; tóm tắt của TN11: dừng ở epoch 46 / 55 / 58, giữ epoch 26 / 35 / 38.</p>`;
+  const duong = m => { const W=112, x=e=>4+e/100*(W-8);
+    return `<svg viewBox="0 0 ${W} 14" width="${W}" height="14" aria-label="dừng ở epoch ${m.so_epoch}, giữ epoch ${m.tot}" style="display:inline-block;vertical-align:-2px">
+      <line x1="4" x2="${W-4}" y1="7" y2="7" style="stroke:var(--luoi);stroke-width:4;stroke-linecap:round"/>
+      <line x1="4" x2="${x(m.so_epoch)}" y1="7" y2="7" style="stroke:var(--${m.mh});stroke-width:4;stroke-linecap:round;opacity:.45"/>
+      <circle cx="${x(m.tot)}" cy="7" r="4" style="fill:var(--${m.mh});stroke:var(--the);stroke-width:1.5"/></svg>`; };
+  $("#hoc-bang").innerHTML = `<table><tr><th>Mô hình</th><th>Seed</th><th>Học ở</th><th>Đường chạy</th><th class="so">Dừng</th><th class="so">Giữ</th><th class="so">J val</th><th class="so">J thầy</th><th class="so">val / học</th><th class="so">Mất DV mới %</th><th class="so">Đuôi mới %</th></tr>${
+    rows.map(m=>`<tr><td><i class="sw" style="background:var(--${m.mh});margin-right:6px"></i>${TEN[m.mh]}</td><td>${m.seed}</td><td class="phu">${m.tn}</td><td>${duong(m)}</td><td class="so">${m.so_epoch}</td><td class="so">${m.tot}</td><td class="so">${f(m.J_tot,3)}</td><td class="so">${f(m.J_thay,3)}</td><td class="so">${f(m.ti_le,2)}</td><td class="so">${f(m.mat_moi)}</td><td class="so">${f(m.duoi_moi)}</td></tr>`).join("")}</table>
+    <p class="mo nho" style="margin-top:8px">DM11 (TN11) không có nhật ký học ở máy này; theo tóm tắt của TN11: dừng ở epoch 46 / 55 / 58, giữ epoch 26 / 35 / 38.</p>`;
 }
 
 // ============================================================ 2. kết quả chấm
-function veKq(){ veBac(); veBien("duoi"); veRung(); veSeed(); veCoChe(); veThuc();
-  document.querySelectorAll("[data-truc]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-truc]").forEach(x=>x.classList.toggle("dang",x===b));veBien(b.dataset.truc);}); }
+let bienKieu = "duoi", bienPhong = false;
+function veKq(){
+  $("#kq-mo").innerHTML = `Mọi số chấm trên bộ kiểm chứng mới của TN15b (${KQ.so_tinh_huong.A.cua_so} cửa sổ thời tiết 2017–2021,
+    ${KQ.so_tinh_huong.A.tinh_huong.toLocaleString("vi-VN")} tình huống), cùng dữ liệu cho mọi mô hình. <b>Mất</b> = % mất dịch vụ;
+    <b>đuôi</b> = % tình huống trễ tuyến chính > 100 ms, tức nghẽn nặng. Rê chuột lên chấm, vạch hoặc cột để xem số.`;
+  veBac(); veBien(); veRung(); veSeed(); veCoChe(); veThuc();
+  $$("[data-truc]").forEach(b=>b.onclick=()=>{ $$("[data-truc]").forEach(x=>{x.classList.toggle("dang",x===b);x.setAttribute("aria-pressed",x===b);}); bienKieu=b.dataset.truc; veBien(); });
+  $$("[data-phong]").forEach(b=>b.onclick=()=>{ $$("[data-phong]").forEach(x=>{x.classList.toggle("dang",x===b);x.setAttribute("aria-pressed",x===b);}); bienPhong=b.dataset.phong==="1"; veBien(); });
+}
 function veBac(){
-  const bac = [["Dijkstra phạt","dp","A"],["DM11 (cấu hình TN11)","dm","A"],["+ giải mã không tái nhiễu","dm_ktn","A"],["DM 7/3 học lại cùng đường ống","w07","A"],
-               ["DM x10 (J vật lý)","x10","A"],["DM x10 + không tái nhiễu","x10_ktn","A"],["— bộ B (kho nhanh) —",null,"B"],["DM11 (bộ B)","dm","B"],["DM x10 + không tái nhiễu (bộ B)","x10_ktn","B"],["Đề xuất: + vá hết tuyến","de_xuat","B"]];
-  for(const [id, m, ten, lo, hi] of [["#kq-bac-mat","mat","mất dịch vụ (%) — thấp là tốt",26.0,28.4],["#kq-bac-duoi","duoi","đuôi nghẽn > 100 ms (%) — thấp là tốt",4.8,6.3]]){
-    const box=$(id); box.innerHTML=`<div class="phu" style="margin-bottom:4px">${ten}</div>`; const w=560,rh=26,l=230,h=bac.length*rh+40;
-    const svg=S("svg",{viewBox:`0 0 ${w} ${h}`},box); const x=thang(lo,hi,l,w-56);
-    for(const v of vach(lo,hi,5)){S("line",{x1:x(v),x2:x(v),y1:6,y2:h-30,stroke:css("--luoi")},svg);S("text",{x:x(v),y:h-14,"text-anchor":"middle"},svg).textContent=f(v,1);}
-    const goc = A.dm.tb[m];
-    bac.forEach(([t,k,bo],i)=>{const yy=10+i*rh;
-      if(!k){S("text",{x:8,y:yy+16,"font-weight":600},svg).textContent=t;return;}
-      const d=(bo==="A"?A:KQ.B)[k].tb; const v=d[m];
-      S("text",{x:l-8,y:yy+16,"text-anchor":"end"},svg).textContent=t;
-      const c = k==="dp"?css("--dp"):(k.startsWith("x10")||k==="de_xuat"?css("--x10"):(k==="w07"?css("--w07"):css("--dm")));
-      const r=S("rect",{x:x(lo),y:yy+4,width:Math.max(2,x(Math.min(v,hi))-x(lo)),height:rh-10,rx:3,fill:c,"fill-opacity":k==="de_xuat"?1:.82},svg);
-      S("text",{x:x(Math.min(v,hi))+5,y:yy+16},svg).textContent=f(v);
-      treo(r,`<b>${t}</b><br>mất ${f(d.mat)}% · đuôi ${f(d.duoi)}% · trễ ${f(d.tre,1)} ms`);});
-    S("text",{x:w-6,y:h-14,"text-anchor":"end"},svg).textContent="";
+  const R = [
+    {nhom:"Bộ A · kho tuyến đầy đủ"},
+    {id:"a0", ten:"DM11 · cấu hình TN11", k:"dm", bo:"A"},
+    {id:"a1", cha:"a0", ten:"+ giải mã không tái nhiễu", k:"dm_ktn", bo:"A"},
+    {id:"a2", cha:"a1", ten:"+ học lại trên máy mới, giữ J 7/3", k:"w07_ktn", bo:"A"},
+    {id:"a3", cha:"a1", ten:"+ học lại trên máy mới, đổi sang J x10", k:"x10_ktn", bo:"A"},
+    {nhom:"Bộ B · kho tuyến dựng nhanh (TN14)"},
+    {id:"b0", ten:"DM11 · cấu hình TN11", k:"dm", bo:"B"},
+    {id:"b1", cha:"b0", ten:"x10 + không tái nhiễu", k:"x10_ktn", bo:"B"},
+    {id:"b2", cha:"b1", ten:"+ vá hết tuyến = cấu hình đề xuất", k:"de_xuat", bo:"B"}];
+  const lay = r => (r.bo==="A"?A:KQ.B)[r.k].tb;
+  const thay = A.thay_x10.tb;
+  const PN = [{m:"mat", x0:340, x1:660, ten:"mất dịch vụ (%)"}, {m:"duoi", x0:720, x1:1040, ten:"đuôi nghẽn > 100 ms (%)"}];
+  for(const pn of PN){ const vs = R.filter(r=>r.k).map(r=>lay(r)[pn.m]).concat([thay[pn.m]]); const lo=Math.min(...vs), hi=Math.max(...vs), p=(hi-lo)*.1; pn.X = thang(lo-p,hi+p,pn.x0,pn.x1); }
+  const W=1060, t0=50; let y=t0; const pos={};
+  R.forEach(r=>{ r.y = y + (r.nhom?14:18); y += r.nhom?34:38; if(r.id) pos[r.id]=r; });
+  const h = y + 34; const box=$("#kq-bac"); box.innerHTML=""; const svg=svgMoi(box,W,h,"Hành trình tinh chỉnh");
+  const defs=S("defs",{},svg); const mk=S("marker",{id:"mui-bac",viewBox:"0 0 10 10",refX:9,refY:5,markerWidth:6,markerHeight:6,orient:"auto-start-reverse"},defs); S("path",{d:"M0 1L9 5L0 9Z",class:"m-phu"},mk);
+  for(const pn of PN){
+    T(svg,pn.x0,18,pn.ten,{class:"t-dam"}); T(svg,pn.x1,18,"← tốt hơn",{"text-anchor":"end",class:"t-mo nho"});
+    for(const v of vach(pn.X.d[0],pn.X.d[1],5)){ S("line",{x1:pn.X(v),x2:pn.X(v),y1:t0-8,y2:h-30,class:"l-luoi"},svg); T(svg,pn.X(v),h-12,f(v,VLE),{"text-anchor":"middle",class:"t-mo"}); }
+    const ra = R.filter(r=>r.bo==="A"&&r.k); const yt=Math.min(...ra.map(r=>r.y))-14, yd=Math.max(...ra.map(r=>r.y))+14, xt=pn.X(thay[pn.m]);
+    S("line",{x1:xt,x2:xt,y1:yt,y2:yd,class:"l-thay"},svg); T(svg,xt,yd+13,"thầy x10",{"text-anchor":"middle",class:"t-mo nho"});
   }
-  $("#kq-bac-doc").innerHTML = `<b>Đọc:</b> so với cấu hình TN11 (DM11), <b>giải mã không tái nhiễu</b> giảm mất dịch vụ ${f(A.dm.tb.mat-A.dm_ktn.tb.mat)} điểm mà không đổi gì khác.
-    <b>J x10</b> chủ yếu cắt nghẽn đuôi (${f(A.w07.tb.duoi)}% → ${f(A.x10.tb.duoi)}% so với 7/3 cùng đường ống). <b>Vá hết tuyến</b> cắt thêm ${f(-PH.S7_va.diem)} điểm mất dịch vụ.
-    Cả khối đề xuất so với DM11: mất ${ci(P.P8.mat)}, đuôi ${ci(P.P8.duoi)} — đạt giả thuyết P8.
-    <br><span class="phu">Dijkstra phạt bớt nghẽn hơn nhưng mất dịch vụ nhiều hơn khoảng 1,5 điểm. Bộ B dựng kho bằng Suurballe nhanh (TN14), nên so trong cùng bộ B.</span>`;
-}
-function veBien(kieu){
-  const box=$("#kq-bien"); box.innerHTML=""; const w=900,h=420,l=70,r=24,t=16,b=50;
-  const ds=["w05","w07","w09","x3","x10"];
-  const lay = d => kieu==="duoi"? d.duoi : d.tre;
-  let xs=[],ys=[];
-  for(const k of ds){for(const v of Object.values(A[k].seed)){xs.push(lay(v));ys.push(v.mat);}}
-  for(const k of ["thay_73","thay_x10","dp"]){xs.push(lay(A[k].tb));ys.push(A[k].tb.mat);}
-  const px=(Math.max(...xs)-Math.min(...xs))*0.06, py=(Math.max(...ys)-Math.min(...ys))*0.06;
-  const x=thang(Math.min(...xs)-px,Math.max(...xs)+px,l,w-r), y=thang(Math.min(...ys)-py,Math.max(...ys)+py,h-b,t);
-  const svg=S("svg",{viewBox:`0 0 ${w} ${h}`},box);
-  truc(svg,x,y,w,h,kieu==="duoi"?"đuôi nghẽn > 100 ms (%) — sang trái là tốt":"trễ tuyến chính trung bình (ms) — sang trái là tốt","mất dịch vụ (%) — xuống dưới là tốt",{dx:1,dy:1});
-  // đường họ w và họ x
-  for(const [ho,mm] of [[["w05","w07","w09"],"--w07"],[["x3","x10"],"--x10"]]){
-    S("polyline",{points:ho.map(k=>`${x(lay(A[k].tb))},${y(A[k].tb.mat)}`).join(" "),fill:"none",stroke:css(mm),"stroke-dasharray":"6 4","stroke-width":1.5,"stroke-opacity":.7},svg);}
-  for(const k of ds){
-    for(const [s,v] of Object.entries(A[k].seed)){const e=S("circle",{cx:x(lay(v)),cy:y(v.mat),r:4,fill:mau(k),"fill-opacity":.35},svg);treo(e,`${TEN[k]} · seed ${s}<br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`);}
-    const v=A[k].tb; const e=S("circle",{cx:x(lay(v)),cy:y(v.mat),r:9,fill:mau(k),stroke:css("--the"),"stroke-width":2.5},svg);
-    treo(e,`<b>${TEN[k]}</b> (trung bình ${Object.keys(A[k].seed).length} seed)<br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`);
-    S("text",{x:x(lay(v))+12,y:y(v.mat)+({w05:-10,w07:-12,w09:18,x3:-10,x10:18})[k],"font-weight":600,style:`fill:${mau(k)}`},svg).textContent=({w05:"w0,5",w07:"7/3",w09:"w0,9",x3:"x3",x10:"x10"})[k];
+  for(const r of R){
+    if(r.nhom){ T(svg,8,r.y+4,r.nhom,{class:"t-dam"}); S("line",{x1:8,x2:W-8,y1:r.y+12,y2:r.y+12,class:"l-luoi"},svg); continue; }
+    T(svg,22,r.y+4,r.ten,{class:r.k==="de_xuat"?"t-dam":""});
+    const v = lay(r);
+    for(const pn of PN){
+      const xc = pn.X(v[pn.m]);
+      if(r.cha){ const c=pos[r.cha], xp=pn.X(lay(c)[pn.m]), dx=xc-xp;
+        const d = Math.abs(dx)<10 ? `M${xp} ${c.y+8}V${r.y-9}` : `M${xp} ${c.y+8}V${r.y}H${xc-Math.sign(dx)*9}`;
+        S("path",{d,class:"l-noi","marker-end":"url(#mui-bac)"},svg);
+        const dd = v[pn.m]-lay(c)[pn.m], txt = Math.abs(dd)<0.005 ? "±0,00" : fs(dd);
+        const trai = dx < -10;
+        T(svg, trai ? xc-12 : xc+12, r.y+4, txt, {"text-anchor":trai?"end":"start", class:"t-dam nho vien"});
+      } else T(svg,xc+12,r.y+4,f(v[pn.m]),{class:"t-mo nho vien"});
+      S("circle",{cx:xc,cy:r.y,r:r.k==="de_xuat"?7.5:6.5,class:"vong",style:`fill:${vm(r.k)}`},svg);
+      const hit=S("circle",{cx:xc,cy:r.y,r:13,class:"vung-bat",style:"cursor:default"},svg);
+      treo(hit,`<b>${r.ten}</b> (bộ ${r.bo})<br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`);
+    }
   }
-  for(const k of ["thay_73","thay_x10"]){const v=A[k].tb;const cx=x(lay(v)),cy=y(v.mat);
-    const e=S("path",{d:`M${cx} ${cy-9}L${cx+9} ${cy}L${cx} ${cy+9}L${cx-9} ${cy}Z`,fill:css("--the"),stroke:mau(k),"stroke-width":2.5},svg);
-    treo(e,`<b>${TEN[k]}</b> (lời giải mà DM bắt chước)<br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`);
-    S("text",{x:cx+12,y:cy+4,style:`fill:${mau(k)}`},svg).textContent=TEN[k];}
-  {const v=A.dp.tb;const cx=x(lay(v)),cy=y(v.mat);const e=S("rect",{x:cx-7,y:cy-7,width:14,height:14,fill:css("--dp")},svg);
-    treo(e,`<b>Dijkstra phạt</b><br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`);S("text",{x:cx+12,y:cy+4},svg).textContent="Dijkstra phạt";}
-  $("#kq-bien-ct").innerHTML = `<span>● lớn = trung bình các seed · ● nhỏ = từng seed</span><span>◇ = thầy</span><span>■ = Dijkstra phạt</span><span><i style="height:0;border-top:2px dashed var(--w07)"></i>họ w (J chuẩn hoá)</span><span><i style="height:0;border-top:2px dashed var(--x10)"></i>họ x (J vật lý)</span>`;
-  $("#kq-bien-doc").innerHTML = `<b>Đọc:</b> họ <span style="color:var(--w07)">w</span> nằm trên một đường đánh đổi: tăng w từ 0,5 lên 0,7 (coi an toàn nặng hơn) thì an toàn hơn chút nhưng nghẽn hơn; lên 0,9 thì gần như chỉ nghẽn thêm.
-    Họ <span style="color:var(--x10)">x</span> nằm <b>bên trái</b> đường đó: ít nghẽn hơn hẳn ở cùng mức an toàn. Đổi trọng số w không làm được điều này, vì w chỉ nhân mọi "tỷ giá ngầm" lên như nhau (chứng minh ở phụ lục A2 của bản đánh giá).
-    <div class="vd"><b>Ví dụ:</b> chỉnh âm lượng (w) chỉ to nhỏ đều mọi tần số; muốn sửa tiếng bị méo phải chỉnh bộ cân bằng (đổi cách tính J).</div>
-    Thầy x10 (◇ cam) vừa an toàn hơn vừa ít nghẽn hơn thầy 7/3: mục tiêu x10 tốt hơn <i>ở mức thầy</i> (P7). DM bắt chước được phần "ít nghẽn", nhưng mất khoảng 1 điểm an toàn so với thầy ở cả hai mục tiêu.
-    x3 gần như trùng x10: hạ tỷ giá xuống 3 ms không thêm được gì đáng kể.`;
+  $("#kq-bac-ct").innerHTML = `<span><i class="k-cham" style="color:var(--dm)"></i>DM11 (J 7/3, cấu hình TN11)</span><span><i class="k-cham" style="color:var(--w07)"></i>J 7/3 học lại</span>
+    <span><i class="k-cham" style="color:var(--x10)"></i>J x10</span><span><i class="k-net" style="color:var(--phu)"></i>thầy x10: lời giải DM bắt chước</span>`;
+  const d = (a,b,m) => b[m]-a[m];
+  $("#kq-bac-doc").innerHTML = `<p><b>Đọc:</b> <b>giải mã không tái nhiễu</b> giảm mất dịch vụ ${f(-d(A.dm.tb,A.dm_ktn.tb,"mat"))} điểm mà không đổi gì khác.
+    <b>Học lại mà giữ J 7/3</b> gần như không đổi an toàn (${fs(d(A.dm_ktn.tb,A.w07_ktn.tb,"mat"))}) và còn nghẽn hơn (${fs(d(A.dm_ktn.tb,A.w07_ktn.tb,"duoi"))}).
+    <b>Học lại với J x10</b> thì cắt hẳn đuôi nghẽn (${fs(d(A.dm_ktn.tb,A.x10_ktn.tb,"duoi"))}). Hai nhánh học cùng máy, cùng code, nên khoảng cách giữa chúng
+    (đuôi ${fs(d(A.w07_ktn.tb,A.x10_ktn.tb,"duoi"))}) là phần do <b>mục tiêu học</b>.</p>
+    <p>Ở bộ B, <b>vá hết tuyến</b> cắt thêm ${f(-PH.S7_va.diem)} điểm mất dịch vụ. Cả khối đề xuất so với DM11: mất ${ci(P.P8.mat)}, đuôi ${ci(P.P8.duoi)}, đạt giả thuyết P8.</p>
+    <p class="phu nho">Dijkstra phạt không vẽ ở đây vì nằm ngoài khung: mất ${f(A.dp.tb.mat)}%, đuôi ${f(A.dp.tb.duoi)}% (bớt nghẽn hơn nhưng mất dịch vụ nhiều hơn khoảng 1,5 điểm).</p>`;
 }
+function veBien(){
+  const box=$("#kq-bien"); box.innerHTML=""; const w=900, h=440, l=66, r=24, t=40, b=54;
+  const DSM=["w05","w07","w09","x3","x10"], REF=["thay_73","thay_x10","dp"];
+  const lay = v => bienKieu==="duoi" ? v.duoi : v.tre;
+  const xs=[], ys=[];
+  for(const k of DSM){ for(const v of Object.values(A[k].seed)){ xs.push(lay(v)); ys.push(v.mat); } }
+  if(!bienPhong) for(const k of REF){ xs.push(lay(A[k].tb)); ys.push(A[k].tb.mat); }
+  const px=(Math.max(...xs)-Math.min(...xs))*.07, py=(Math.max(...ys)-Math.min(...ys))*.08;
+  const X=thang(Math.min(...xs)-px,Math.max(...xs)+px,l,w-r), Y=thang(Math.min(...ys)-py,Math.max(...ys)+py,h-b,t);
+  const svg=svgMoi(box,w,h,"Bản đồ các J");
+  truc(svg,X,Y,{dx:bienKieu==="duoi"?1:0,dy:bienPhong?2:1,lx:bienKieu==="duoi"?"đuôi nghẽn > 100 ms (%)":"trễ tuyến chính trung bình (ms)",ly:"mất dịch vụ (%)"});
+  const defs=S("defs",{},svg); const mk=S("marker",{id:"mui-bien",viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:7,markerHeight:7,orient:"auto"},defs); S("path",{d:"M0 1L9 5L0 9Z",class:"m-phu"},mk);
+  S("path",{d:`M${w-r-20} ${t+14}L${w-r-58} ${t+52}`,class:"l-noi","marker-end":"url(#mui-bien)"},svg); T(svg,w-r-14,t+12,"tốt hơn",{"text-anchor":"end",class:"t-mo nho",dy:-6});
+  for(const [ho,mm] of [[["w05","w07","w09"],"w07"],[["x3","x10"],"x10"]])
+    S("polyline",{points:ho.map(k=>`${X(lay(A[k].tb))},${Y(A[k].tb.mat)}`).join(" "),fill:"none","stroke-dasharray":"6 4",style:`stroke:var(--${mm});stroke-width:1.6;opacity:.6`},svg);
+  const NH = {w05:[13,-11,"start"],w07:[-13,-11,"end"],w09:[13,5,"start"],x3:[-13,17,"end"],x10:[13,18,"start"]};
+  const NG = {w05:"w0,5",w07:"7/3",w09:"w0,9",x3:"x3",x10:"x10"};
+  for(const k of DSM){
+    for(const [s,v] of Object.entries(A[k].seed)){ const cx=X(lay(v)), cy=Y(v.mat);
+      S("circle",{cx,cy,r:3.8,style:`fill:var(--${k});opacity:.42`},svg);
+      const hit=S("circle",{cx,cy,r:8,class:"vung-bat",style:"cursor:default"},svg);
+      treo(hit,`${TEN[k]} · seed ${s}<br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`); }
+  }
+  for(const k of DSM){ const v=A[k].tb, cx=X(lay(v)), cy=Y(v.mat);
+    S("circle",{cx,cy,r:8.5,class:"vong",style:`fill:var(--${k});stroke-width:2.5`},svg);
+    const hit=S("circle",{cx,cy,r:14,class:"vung-bat",style:"cursor:default"},svg);
+    treo(hit,`<b>${TEN[k]}</b> (trung bình ${Object.keys(A[k].seed).length} seed)<br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`);
+    const [dx,dy,an_]=NH[k]; T(svg,cx+dx,cy+dy,NG[k],{"text-anchor":an_,class:"t-dam lon"}); }
+  if(!bienPhong){
+    for(const k of ["thay_73","thay_x10"]){ const v=A[k].tb, cx=X(lay(v)), cy=Y(v.mat);
+      S("path",{d:`M${cx} ${cy-9}L${cx+9} ${cy}L${cx} ${cy+9}L${cx-9} ${cy}Z`,style:`fill:var(--the);stroke:var(--${MAUK[k]});stroke-width:2.5`},svg);
+      const phai = cx < w*.7; T(svg,phai?cx+14:cx-14,cy+4,TEN[k],{"text-anchor":phai?"start":"end",class:"t-dam nho"});
+      const hit=S("circle",{cx,cy,r:14,class:"vung-bat",style:"cursor:default"},svg);
+      treo(hit,`<b>${TEN[k]}</b> (lời giải mà DM bắt chước)<br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`); }
+    const v=A.dp.tb, cx=X(lay(v)), cy=Y(v.mat);
+    S("rect",{x:cx-7,y:cy-7,width:14,height:14,rx:2,style:"fill:var(--dp)"},svg); T(svg,cx+14,cy+4,"Dijkstra phạt",{class:"t-dam nho"});
+    const hit=S("circle",{cx,cy,r:14,class:"vung-bat",style:"cursor:default"},svg);
+    treo(hit,`<b>Dijkstra phạt</b><br>mất ${f(v.mat)}% · đuôi ${f(v.duoi)}% · trễ ${f(v.tre,1)} ms`);
+  }
+  $("#kq-bien-ct").innerHTML = `<span><i class="k-cham"></i>chấm lớn = trung bình các seed</span><span><i class="k-cham-nho"></i>chấm nhỏ = từng seed</span>
+    ${bienPhong?"":`<span><i class="k-thoi"></i>thầy</span><span><i class="k-vuong" style="color:var(--dp)"></i>Dijkstra phạt</span>`}
+    <span style="color:var(--w07)"><i class="k-net"></i><span style="color:var(--phu)">họ w: J chuẩn hoá, w0,5 → 0,7 → 0,9 đậm dần</span></span>
+    <span style="color:var(--x10)"><i class="k-net"></i><span style="color:var(--phu)">họ x: J vật lý, x3 và x10</span></span>`;
+  $("#kq-bien-doc").innerHTML = `<p><b>Đọc:</b> họ <b style="color:var(--w07)">w</b> nằm trên một đường đánh đổi: tăng w từ 0,5 lên 0,7 (coi an toàn nặng hơn) thì an toàn hơn chút nhưng nghẽn hơn; lên 0,9 thì gần như chỉ nghẽn thêm.
+    Họ <b style="color:var(--x10)">x</b> nằm <b>bên trái</b> đường đó: ít nghẽn hơn hẳn ở cùng mức an toàn. Đổi trọng số w không làm được điều này, vì w chỉ nhân mọi "tỷ giá ngầm" lên như nhau (chứng minh ở phụ lục A2 của bản đánh giá).</p>
+    <div class="vd"><b>Ví dụ:</b> chỉnh âm lượng (w) chỉ to nhỏ đều mọi tần số; muốn sửa tiếng bị méo phải chỉnh bộ cân bằng, tức đổi cách tính J.</div>
+    <p>${bienPhong?"Ở khung phóng to, các chấm nhỏ cho thấy dao động giữa seed lớn cỡ khoảng cách giữa các mục tiêu theo trục an toàn, nhưng theo trục nghẽn thì hai họ tách hẳn.":
+      "Thầy x10 vừa an toàn hơn vừa ít nghẽn hơn thầy 7/3: mục tiêu x10 tốt hơn ngay ở mức thầy (P7). DM bắt chước được phần \"ít nghẽn\", nhưng mất khoảng 1 điểm an toàn so với thầy ở cả hai mục tiêu."}
+    x3 gần như trùng x10: hạ tỷ giá xuống 3 ms không thêm được gì đáng kể.</p>`;
+}
+const TT_TEN = {dat:["tot","đạt"], chua:["chua","chưa"], truot:["bac","không đạt"], aa:["phu","chứa 0"], phu:["phu","phụ"]};
 function rung(box, ds, ten, nguong){
-  box.innerHTML=`<div class="phu" style="margin-bottom:4px">${ten}</div>`;
-  const w=560,rh=30,l=250,h=ds.length*rh+44;
-  const vs=ds.flatMap(d=>[d[1].ci[0],d[1].ci[1]]).concat([0, nguong||0]);
-  const lo=Math.min(...vs), hi=Math.max(...vs), pad=(hi-lo)*0.08;
-  const x=thang(lo-pad,hi+pad,l,w-16); const svg=S("svg",{viewBox:`0 0 ${w} ${h}`},box);
-  for(const v of vach(lo-pad,hi+pad,5)){S("line",{x1:x(v),x2:x(v),y1:6,y2:h-30,stroke:css("--luoi")},svg);S("text",{x:x(v),y:h-12,"text-anchor":"middle"},svg).textContent=f(v,2);}
-  S("line",{x1:x(0),x2:x(0),y1:4,y2:h-30,stroke:css("--mo")},svg);
-  if(nguong){S("line",{x1:x(nguong),x2:x(nguong),y1:4,y2:h-30,stroke:css("--xau"),"stroke-dasharray":"5 4"},svg);S("text",{x:x(nguong)+4,y:14,style:`fill:${css("--xau")}`},svg).textContent="ngưỡng không kém";}
-  ds.forEach(([t,d,tt],i)=>{const yy=18+i*rh;
-    S("text",{x:l-10,y:yy+4,"text-anchor":"end"},svg).textContent=t;
-    const c = tt==="aa"?css("--mo"):(tt==="dat"?css("--tot"):(tt==="truot"?css("--xau"):css("--vang")));
-    S("line",{x1:x(d.ci[0]),x2:x(d.ci[1]),y1:yy,y2:yy,stroke:c,"stroke-width":3,"stroke-linecap":"round"},svg);
-    const e=S("circle",{cx:x(d.diem),cy:yy,r:6,fill:c,stroke:css("--the"),"stroke-width":2},svg);
-    treo(e,`<b>${t}</b><br>${ci(d)}`);});
+  box.innerHTML=""; const w=1000, rh=34, l=300, pr=120, t=44, h=t+ds.length*rh+42;
+  const vs=ds.flatMap(d=>d[1].ci).concat([0]).concat(nguong!=null?[nguong]:[]); let lo=Math.min(...vs), hi=Math.max(...vs); const p=(hi-lo)*.08; lo-=p; hi+=p;
+  const X=thang(lo,hi,l,w-pr), svg=svgMoi(box,w,h,ten);
+  T(svg,0,16,ten,{class:"t-dam"});
+  for(const v of vach(lo,hi,5)){ S("line",{x1:X(v),x2:X(v),y1:t-10,y2:h-34,class:"l-luoi"},svg); T(svg,X(v),h-18,f(v,VLE),{"text-anchor":"middle",class:"t-mo"}); }
+  S("line",{x1:X(0),x2:X(0),y1:t-12,y2:h-34,class:"l-0"},svg); T(svg,X(0),t-16,"0 = không khác",{"text-anchor":"middle",class:"t-mo nho"});
+  if(nguong!=null){ S("line",{x1:X(nguong),x2:X(nguong),y1:t-12,y2:h-34,class:"l-ng"},svg); T(svg,X(nguong)+5,t-28,"ngưỡng "+fs(nguong),{class:"t-bac nho"}); }
+  T(svg,l,h-2,"← tốt hơn",{class:"t-mo nho"}); T(svg,w-pr,h-2,"kém hơn →",{"text-anchor":"end",class:"t-mo nho"});
+  ds.forEach(([tn,d,tt],i)=>{ const y=t+i*rh+rh/2, [cm,chu]=TT_TEN[tt];
+    T(svg,l-12,y+4,tn,{"text-anchor":"end",class:tt==="aa"||tt==="phu"?"":"t-dam"});
+    S("line",{x1:X(d.ci[0]),x2:X(d.ci[1]),y1:y,y2:y,class:"l-ci",style:`stroke:var(--${cm});stroke-width:5;opacity:${cm==="phu"?.6:1}`},svg);
+    S("circle",{cx:X(d.diem),cy:y,r:6,class:"vong",style:`fill:var(--${cm})`},svg);
+    const g=S("g",{transform:`translate(${w-pr+14} ${y-11})`},svg);
+    S("rect",{width:80,height:22,rx:11,style:`fill:${cm==="phu"?"var(--luoi)":`color-mix(in srgb,var(--${cm}) 16%,var(--the))`}`},g);
+    const u=S("use",{href:`#i-${ICON[cm]}`,x:6,y:4,width:14,height:14,class:"ic",style:`color:var(--${cm})`},g);
+    T(g,24,15,chu,{class:"t-dam nho"});
+    const hit=S("rect",{x:l-6,y:y-rh/2,width:w-pr-l+12,height:rh,class:"vung-bat",style:"cursor:default"},svg);
+    treo(hit,`<b>${tn}</b><br>${ci(d)}`); });
 }
 function veRung(){
-  const kt = (p, chua) => p.dat?"dat":(chua?"chua":"truot");
-  rung($("#kq-rung-mat"),[["P1 x10 − 7/3",P.P1,kt(P.P1,true)],["P3 7/3: ktn − đầy đủ",P.P3,kt(P.P3)],["P4 x10: ktn − đầy đủ",P.P4,kt(P.P4)],
-    ["P6 x10 − Dijkstra",P.P6,kt(P.P6)],["P7 thầy x10 − thầy 7/3",P.P7.mat,kt(P.P7)],["P8 đề xuất − DM11",P.P8.mat,kt(P.P8)],["P0 A/A (phải chứa 0)",KQ.P0.mat,"aa"]],
-    "hiệu mất dịch vụ (điểm %) — bên trái 0 là tốt", 0.10);
-  rung($("#kq-rung-duoi"),[["P2 x10 − 7/3",P.P2,kt(P.P2)],["P7 thầy x10 − thầy 7/3",P.P7.duoi,kt(P.P7)],["P8 đề xuất − DM11",P.P8.duoi,kt(P.P8)],
-    ["x10 − 7/3, ngưỡng 50 ms",PH.S1_d50,"dat"],["x10 − 7/3, ngưỡng 200 ms",PH.S1_d200,"dat"],["P0 A/A (phải chứa 0)",KQ.P0.duoi,"aa"]],
-    "hiệu đuôi nghẽn (điểm %) — bên trái 0 là tốt");
+  const kt=(p,chua)=>p.dat?"dat":(chua?"chua":"truot");
+  rung($("#kq-rung-mat"),[["P1 · x10 − 7/3",P.P1,kt(P.P1,true)],["P3 · 7/3: ktn − đầy đủ",P.P3,kt(P.P3)],["P4 · x10: ktn − đầy đủ",P.P4,kt(P.P4)],
+    ["P7 · thầy x10 − thầy 7/3",P.P7.mat,kt(P.P7)],["P8 · đề xuất − DM11",P.P8.mat,kt(P.P8)],["P0 · A/A, phải chứa 0",KQ.P0.mat,"aa"]],
+    "Hiệu mất dịch vụ (điểm %)", 0.10);
+  rung($("#kq-rung-duoi"),[["P2 · x10 − 7/3",P.P2,kt(P.P2)],["P7 · thầy x10 − thầy 7/3",P.P7.duoi,kt(P.P7)],["P8 · đề xuất − DM11",P.P8.duoi,kt(P.P8)],
+    ["x10 − 7/3, ngưỡng 50 ms",PH.S1_d50,"phu"],["x10 − 7/3, ngưỡng 200 ms",PH.S1_d200,"phu"],["P0 · A/A, phải chứa 0",KQ.P0.duoi,"aa"]],
+    "Hiệu đuôi nghẽn (điểm %)");
   const mo={P1:"x10 không kém an toàn so với 7/3 cùng đường ống (< +0,10)",P2:"x10 bớt đuôi nghẽn",P3:"7/3: không tái nhiễu tốt hơn",P4:"x10: không tái nhiễu tốt hơn",
-    P5:"cơ chế: tỷ giá ngầm cao → x10 kém an toàn hơn (hệ số > 0)",P6:"x10 an toàn hơn Dijkstra phạt",P7:"thầy x10 vs thầy 7/3: không kém an toàn và bớt đuôi",P8:"đề xuất tốt hơn cấu hình TN11"};
+    P5:"cơ chế: tỷ giá ngầm cao → x10 kém an toàn hơn (hệ số > 0)",P6:"x10 an toàn hơn Dijkstra phạt",P7:"thầy x10 so với thầy 7/3: không kém an toàn và bớt đuôi",P8:"đề xuất tốt hơn cấu hình TN11"};
+  const nk=(v,k)=>v.dat?nhan("tot","đạt"):(k==="P1"?nhan("chua","chưa chứng minh"):nhan("bac","không đạt"));
   $("#kq-gt").innerHTML=`<table><tr><th>Mã</th><th>Giả thuyết (chốt trước khi có dữ liệu mới)</th><th>Ước lượng [CI 95%]</th><th class="so">p sau Holm</th><th>Kết quả</th></tr>${
-    Object.entries(P).map(([k,v])=>`<tr><td><b>${k}</b></td><td>${mo[k]}</td><td>${k==="P7"||k==="P8"?`mất ${ci(v.mat)}<br>đuôi ${ci(v.duoi)}`:ci(v, k==="P5"?3:2)}</td><td class="so">${v.p_holm<0.001?"&lt; 0,001":f(v.p_holm,3)}</td><td>${nhan_ket(v.dat, k==="P1")}</td></tr>`).join("")}</table>`;
-  $("#kq-gt-doc").innerHTML=`<b>Đọc:</b> mỗi chấm là ước lượng, vạch ngang là khoảng tin cậy 95% tính cả "học xui / học may" giữa các seed.
-    Muốn chứng minh "không kém an toàn", <b>cả vạch</b> phải nằm bên trái đường đỏ +0,10. Vạch P1 chạm tới ${fs(P.P1.ci[1])}, nên chưa đạt — dù chấm ước lượng nghiêng về phía x10 tốt hơn.
-    Phép thử <b>A/A</b> (cùng mô hình chạy hai lần, chỉ khác số ngẫu nhiên) cho vạch chứa 0, đúng như phải thế: thước đo không tự tạo ra khác biệt giả.`;
+    Object.entries(P).map(([k,v])=>`<tr><td><b>${k}</b></td><td>${mo[k]}</td><td style="font-variant-numeric:tabular-nums">${k==="P7"||k==="P8"?`mất ${ci(v.mat)}<br>đuôi ${ci(v.duoi)}`:ci(v,k==="P5"?3:2)}</td><td class="so">${v.p_holm<0.001?"&lt; 0,001":f(v.p_holm,3)}</td><td>${nk(v,k)}</td></tr>`).join("")}</table>`;
+  $("#kq-gt-doc").innerHTML=`<p><b>Đọc:</b> mỗi chấm là ước lượng, vạch ngang là khoảng tin cậy 95% tính cả "học xui, học may" giữa các seed.
+    Muốn chứng minh "không kém an toàn", <b>cả vạch</b> phải nằm bên trái đường ngưỡng +0,10. Vạch P1 chạm tới ${fs(P.P1.ci[1])}, nên chưa đạt, dù chấm ước lượng nghiêng về phía x10 tốt hơn.
+    Phép thử <b>A/A</b> (cùng mô hình chạy hai lần, chỉ khác số ngẫu nhiên) cho vạch chứa 0, đúng như phải thế: thước đo không tự tạo ra khác biệt giả.
+    Hai giả thuyết không vẽ chung thang: P5 là một hệ số, còn P6 (x10 − Dijkstra phạt, ${ci(P.P6)}) lớn tới mức sẽ ép mọi vạch khác thành chấm; cả hai có ở bảng.</p>`;
 }
+const GHEP_CAP = {ci:[-0.16, 0.06]};   // CI ghép cặp theo seed: tính sau khi xem kết quả (bản phân tích TN15b), chỉ tham khảo
 function veSeed(){
-  const box=$("#kq-seed"); box.innerHTML=""; const w=520,h=300,l=64,b=40;
+  const box=$("#kq-seed"); box.innerHTML=""; const w=540, h=290, l=62, b=40, t=34;
   const s73=A.w07.seed, sx=A.x10.seed; const vs=Object.values(s73).concat(Object.values(sx)).map(v=>v.mat);
-  const y=thang(Math.min(...vs)-0.05,Math.max(...vs)+0.05,h-b,16); const svg=S("svg",{viewBox:`0 0 ${w} ${h}`},box);
-  const x0=180,x1=380; const fake=thang(0,1,x0,x1);
-  for(const v of vach(y.d[0],y.d[1],5)){S("line",{x1:l,x2:w-20,y1:y(v),y2:y(v),stroke:css("--luoi")},svg);S("text",{x:l-6,y:y(v)+4,"text-anchor":"end"},svg).textContent=f(v,2);}
-  S("text",{x:x0,y:h-14,"text-anchor":"middle","font-weight":600,style:`fill:${css("--w07")}`},svg).textContent="DM 7/3";
-  S("text",{x:x1,y:h-14,"text-anchor":"middle","font-weight":600,style:`fill:${css("--x10")}`},svg).textContent="DM x10";
-  const t=S("text",{x:14,y:(h-b+16)/2,"text-anchor":"middle",transform:`rotate(-90 14 ${(h-b+16)/2})`},svg);t.textContent="mất dịch vụ (%)";
-  for(const s of Object.keys(s73)){const a=s73[s].mat,c=sx[s].mat;const nhan=s==="3";
-    const ln=S("line",{x1:x0,x2:x1,y1:y(a),y2:y(c),stroke:nhan?css("--xau"):css("--mo"),"stroke-width":nhan?2.5:1.5},svg);
-    treo(ln,`<b>seed ${s}</b>: 7/3 ${f(a)}% → x10 ${f(c)}% (hiệu ${fs(c-a)})`);
-    S("circle",{cx:x0,cy:y(a),r:6,fill:css("--w07")},svg);S("circle",{cx:x1,cy:y(c),r:6,fill:css("--x10")},svg);
-    S("text",{x:x0-12,y:y(a)+4,"text-anchor":"end"},svg).textContent="s"+s;S("text",{x:x1+12,y:y(c)+4},svg).textContent="s"+s;}
-  const hieu=Object.keys(s73).map(s=>sx[s].mat-s73[s].mat);
-  $("#kq-seed-doc").innerHTML=`<b>Đọc:</b> mỗi đường nối là một seed (cùng số thì cùng khởi tạo và cùng thứ tự dữ liệu khi học). Hiệu từng cặp: ${hieu.map(v=>fs(v)).join(", ")}.
-    Seed 3 (đỏ) tệ ở <b>cả hai</b> mô hình: may rủi của lần học "đi cặp" theo số seed (tương quan 0,85).
-    Phân tích chốt trước coi hai bên độc lập, nên dao động seed làm khoảng tin cậy rộng: biên trên ${fs(P.P1.ci[1])}.
-    Nếu ghép cặp theo seed thì biên trên còn khoảng +0,06, tức đạt; nhưng cách này nghĩ ra <b>sau khi xem kết quả</b>, nên chỉ là gợi ý để thiết kế lần sau, không được dùng để lật kết luận.
+  const Y=thang(Math.min(...vs)-.05,Math.max(...vs)+.05,h-b,t); const svg=svgMoi(box,w,h,"Mất dịch vụ theo từng seed");
+  const x0=190, x1=390;
+  for(const v of vach(Y.d[0],Y.d[1],5)){ S("line",{x1:l,x2:w-20,y1:Y(v),y2:Y(v),class:"l-luoi"},svg); T(svg,l-8,Y(v)+4,f(v,VLE),{"text-anchor":"end",class:"t-mo"}); }
+  T(svg,l,t-16,"mất dịch vụ (%) · thấp là tốt",{class:"t-dam nho"});
+  T(svg,x0,h-12,"DM 7/3",{"text-anchor":"middle",class:"t-dam",style:"fill:var(--w07)"}); T(svg,x1,h-12,"DM x10",{"text-anchor":"middle",class:"t-dam",style:"fill:var(--x10)"});
+  const gian = vals => { const o=vals.slice().sort((p,q)=>p.y-q.y); for(let i=1;i<o.length;i++) if(o[i].y-o[i-1].y<12) o[i].y=o[i-1].y+12; return o; };
+  gian(Object.keys(s73).map(s=>({s,y:Y(s73[s].mat)+4}))).forEach(n=>T(svg,x0-12,n.y,"s"+n.s,{"text-anchor":"end",class:n.s==="3"?"t-dam nho":"nho"}));
+  gian(Object.keys(sx).map(s=>({s,y:Y(sx[s].mat)+4}))).forEach(n=>T(svg,x1+12,n.y,"s"+n.s,{class:n.s==="3"?"t-dam nho":"nho"}));
+  for(const s of Object.keys(s73)){ const a=s73[s].mat, c=sx[s].mat, dam=s==="3";
+    S("line",{x1:x0,x2:x1,y1:Y(a),y2:Y(c),style:`stroke:var(--${dam?"chu":"mo"});stroke-width:${dam?2.6:1.5};opacity:${dam?1:.7}`},svg);
+    S("circle",{cx:x0,cy:Y(a),r:6,class:"vong",style:"fill:var(--w07)"},svg); S("circle",{cx:x1,cy:Y(c),r:6,class:"vong",style:"fill:var(--x10)"},svg);
+    const hit=S("line",{x1:x0,x2:x1,y1:Y(a),y2:Y(c),style:"stroke:transparent;stroke-width:14"},svg);
+    treo(hit,`<b>seed ${s}</b>: 7/3 ${f(a)}% → x10 ${f(c)}%<br>hiệu ${fs(c-a)} điểm`); }
+  T(svg,(x0+x1)/2,Math.min(Y(s73["3"].mat),Y(sx["3"].mat))-10,"seed 3: tệ ở cả hai mô hình",{"text-anchor":"middle",class:"t-dam nho vien"});
+  // dải hiệu từng cặp
+  const hieu=Object.keys(s73).map(s=>[s,sx[s].mat-s73[s].mat]);
+  const b2=$("#kq-seed-hieu"); b2.innerHTML=""; const w2=540, h2=150, l2=150;
+  const v2=hieu.map(x=>x[1]).concat(P.P1.ci, GHEP_CAP.ci, [0.10]); const X=thang(Math.min(...v2)-.03,Math.max(...v2)+.03,l2,w2-18);
+  const s2=svgMoi(b2,w2,h2,"Hiệu x10 − 7/3 từng cặp seed");
+  T(s2,0,14,"Hiệu x10 − 7/3 theo từng cặp seed (điểm %)",{class:"t-dam nho"});
+  for(const v of vach(X.d[0],X.d[1],5)){ S("line",{x1:X(v),x2:X(v),y1:26,y2:h2-26,class:"l-luoi"},s2); T(s2,X(v),h2-10,f(v,VLE),{"text-anchor":"middle",class:"t-mo"}); }
+  S("line",{x1:X(0),x2:X(0),y1:24,y2:h2-26,class:"l-0"},s2); S("line",{x1:X(.1),x2:X(.1),y1:24,y2:h2-26,class:"l-ng"},s2); T(s2,X(.1)+4,34,"ngưỡng +0,10",{class:"t-bac nho"});
+  T(s2,l2-10,48,"từng cặp",{"text-anchor":"end",class:"nho"});
+  hieu.forEach(([s,v])=>{ S("circle",{cx:X(v),cy:44,r:5.5,class:"vong",style:`fill:var(--${s==="3"?"chu":"mo"})`},s2);
+    const hit=S("circle",{cx:X(v),cy:44,r:10,class:"vung-bat",style:"cursor:default"},s2); treo(hit,`seed ${s}: ${fs(v)} điểm`); });
+  const dai=(y,d,ten,cm,mo_)=>{ T(s2,l2-10,y+4,ten,{"text-anchor":"end",class:"nho"});
+    S("line",{x1:X(d.ci[0]),x2:X(d.ci[1]),y1:y,y2:y,class:"l-ci",style:`stroke:var(--${cm});stroke-width:5;opacity:${mo_}`},s2);
+    const hit=S("rect",{x:X(d.ci[0])-4,y:y-8,width:X(d.ci[1])-X(d.ci[0])+8,height:16,class:"vung-bat",style:"cursor:default"},s2); treo(hit,`${ten}: [${fs(d.ci[0])}; ${fs(d.ci[1])}]`); };
+  dai(76,P.P1,"chốt trước","chua",1); dai(100,GHEP_CAP,"ghép cặp (sau)","phu",.6);
+  $("#kq-seed-doc").innerHTML=`<p><b>Đọc:</b> mỗi đường nối là một seed (cùng số thì cùng khởi tạo và cùng thứ tự dữ liệu khi học). Hiệu từng cặp: ${hieu.map(x=>fs(x[1])).join(", ")}.
+    Seed 3 (nét đậm) tệ ở <b>cả hai</b> mô hình: may rủi của lần học "đi cặp" theo số seed (tương quan 0,85).
+    Phân tích chốt trước coi hai bên độc lập, nên dao động seed làm khoảng tin cậy rộng: biên trên ${fs(P.P1.ci[1])}, vượt ngưỡng.
+    Ghép cặp theo seed thì khoảng hẹp lại còn [${fs(GHEP_CAP.ci[0])}; ${fs(GHEP_CAP.ci[1])}], tức đạt; nhưng cách này nghĩ ra <b>sau khi xem kết quả</b>, nên chỉ là gợi ý thiết kế cho lần sau, không được dùng để lật kết luận.</p>
     <div class="vd"><b>Ví dụ:</b> so hai cách học trên các đề thi khác độ khó; đề khó làm cả hai cùng thấp điểm. So từng cặp cùng đề thì thấy rõ hơn nhiều.</div>`;
 }
 function veCoChe(){
-  const box=$("#kq-coche"); box.innerHTML=""; const w=520,h=300,l=64,b=56;
-  const nhom=["< 3","3–10","10–30","> 30"]; const c15=KQ.co_che_15, c15b=PH.S3;
-  const vs=[]; for(const n of nhom){for(const c of [c15[n],c15b[n]]) if(c){vs.push(c.ci[0],c.ci[1]);}} vs.push(0);
-  const y=thang(Math.min(...vs)-0.05,Math.max(...vs)+0.05,h-b,14); const svg=S("svg",{viewBox:`0 0 ${w} ${h}`},box);
-  const x=thang(0,nhom.length,l,w-16);
-  for(const v of vach(y.d[0],y.d[1],5)){S("line",{x1:l,x2:w-16,y1:y(v),y2:y(v),stroke:css("--luoi")},svg);S("text",{x:l-6,y:y(v)+4,"text-anchor":"end"},svg).textContent=f(v,1);}
-  S("line",{x1:l,x2:w-16,y1:y(0),y2:y(0),stroke:css("--mo")},svg);
-  nhom.forEach((n,i)=>{for(const [j,c,ten,mm] of [[0,c15[n],"TN15 (x10 − DM11)","--dm"],[1,c15b[n],"TN15b (x10 − 7/3, dữ liệu mới)","--x10"]]){ if(!c) continue;
-      const cx=x(i)+28+j*34; const col=css(mm);
-      const r=S("rect",{x:cx-12,y:Math.min(y(0),y(c.diem)),width:24,height:Math.abs(y(c.diem)-y(0)),fill:col,"fill-opacity":.8,rx:2},svg);
-      S("line",{x1:cx,x2:cx,y1:y(c.ci[0]),y2:y(c.ci[1]),stroke:css("--chu"),"stroke-width":1.2},svg);
-      treo(r,`<b>${ten}</b><br>nhóm tỷ giá ngầm ${n} ms/điểm (${f(c.ti_le,0)}% tình huống)<br>hiệu mất ${ci(c)}`);}
-    S("text",{x:x(i)+45,y:h-b+18,"text-anchor":"middle"},svg).textContent=n;});
-  S("text",{x:(l+w)/2,y:h-12,"text-anchor":"middle"},svg).textContent="tỷ giá ngầm của J 7/3 trong tình huống (ms trễ cho 1 điểm % mất DV)";
-  const t=S("text",{x:14,y:(h-b)/2,"text-anchor":"middle",transform:`rotate(-90 14 ${(h-b)/2})`},svg);t.textContent="hiệu mất DV (điểm %)";
-  box.appendChild(H("div",{class:"chu-thich"},`<span><i style="background:var(--dm)"></i>TN15 (phát hiện, kiểm sau)</span><span><i style="background:var(--x10)"></i>TN15b (dự đoán viết trước, dữ liệu mới)</span>`));
-  $("#kq-coche-doc").innerHTML=`<b>Đọc:</b> J 7/3 chuẩn hoá theo từng luồng, nên mỗi luồng ngầm đổi an toàn lấy trễ theo một "tỷ giá" riêng; trên dữ liệu, các tỷ giá chênh nhau khoảng 27 lần.
-    J x10 dùng một tỷ giá chung (10 ms / điểm). Toán học dự đoán: ở tình huống tỷ giá ngầm < 10, x10 sẽ an toàn hơn; ở tình huống > 10, x10 nhanh hơn và kém an toàn hơn một chút.
-    Hai thí nghiệm đều cho đúng chiều đó; TN15b xác nhận như một dự đoán viết trước (hệ số ${ci(P.P5,3)}).
-    <div class="vd"><b>Ví dụ:</b> một công ty đổi điểm thưởng ra tiền theo tỷ giá riêng cho từng chi nhánh. Dùng một tỷ giá chung thì vừa có thêm điểm ở chỗ này, vừa đỡ tốn ở chỗ kia.</div>`;
+  const box=$("#kq-coche"); box.innerHTML=""; const w=540, h=320, l=60, b=60, t=40;
+  const nhom=["< 3","3–10","10–30","> 30"], c15=KQ.co_che_15, c15b=PH.S3;
+  const vs=[0]; for(const n of nhom) for(const c of [c15[n],c15b[n]]) if(c) vs.push(c.ci[0],c.ci[1]);
+  const Y=thang(Math.min(...vs)-.06,Math.max(...vs)+.06,h-b,t), X=thang(0,nhom.length,l,w-14), svg=svgMoi(box,w,h,"Hiệu mất dịch vụ theo tỷ giá ngầm");
+  S("rect",{x:X(0),y:Y(0),width:X(2)-X(0),height:Y(Y.d[0])-Y(0),style:"fill:var(--luoi);opacity:.8"},svg);
+  S("rect",{x:X(2),y:Y(Y.d[1]),width:X(4)-X(2),height:Y(0)-Y(Y.d[1]),style:"fill:var(--luoi);opacity:.8"},svg);
+  for(const v of vach(Y.d[0],Y.d[1],5)){ S("line",{x1:l,x2:w-14,y1:Y(v),y2:Y(v),class:"l-luoi",style:"opacity:.6"},svg); T(svg,l-8,Y(v)+4,f(v,VLE),{"text-anchor":"end",class:"t-mo"}); }
+  S("line",{x1:l,x2:w-14,y1:Y(0),y2:Y(0),class:"l-0"},svg);
+  S("line",{x1:X(2),x2:X(2),y1:t-6,y2:h-b,class:"l-ng",style:"stroke:var(--phu)"},svg); T(svg,X(2),t-12,"X = 10 ms/điểm, tỷ giá của x10",{"text-anchor":"middle",class:"t-dam nho"});
+  T(svg,X(0)+6,Y(Y.d[0])-8,"dự đoán: x10 an toàn hơn",{class:"t-mo nho"}); T(svg,X(4)-6,Y(Y.d[1])+14,"dự đoán: x10 kém an toàn hơn",{"text-anchor":"end",class:"t-mo nho"});
+  T(svg,l,t-26,"hiệu mất dịch vụ (điểm %)",{class:"t-dam nho"});
+  const cot=(cx,v,cm)=>{ const y0=Y(0), y1=Y(v), r=3, hh=Math.abs(y1-y0), wv=24, x=cx-wv/2;
+    if(hh<r*2) return S("rect",{x,y:Math.min(y0,y1),width:wv,height:Math.max(hh,1),style:`fill:var(--${cm})`},svg);
+    const d = v>=0 ? `M${x} ${y0}V${y1+r}Q${x} ${y1} ${x+r} ${y1}H${x+wv-r}Q${x+wv} ${y1} ${x+wv} ${y1+r}V${y0}Z`
+                   : `M${x} ${y0}V${y1-r}Q${x} ${y1} ${x+r} ${y1}H${x+wv-r}Q${x+wv} ${y1} ${x+wv} ${y1-r}V${y0}Z`;
+    return S("path",{d,style:`fill:var(--${cm})`},svg); };
+  nhom.forEach((n,i)=>{ const xc=(X(i)+X(i+1))/2;
+    for(const [j,c,ten,cm] of [[-1,c15[n],"TN15: x10 − DM11, phát hiện rồi kiểm sau","dm"],[1,c15b[n],"TN15b: x10 − 7/3, dự đoán viết trước, dữ liệu mới","dp"]]){ if(!c) continue;
+      const cx=xc+j*15; const el=cot(cx,c.diem,cm);
+      S("line",{x1:cx,x2:cx,y1:Y(c.ci[0]),y2:Y(c.ci[1]),style:"stroke:var(--chu);stroke-width:1.3"},svg);
+      const hit=S("rect",{x:cx-13,y:Math.min(Y(c.ci[1]),Y(0))-4,width:26,height:Math.abs(Y(c.ci[0])-Y(c.ci[1]))+8,class:"vung-bat",style:"cursor:default"},svg);
+      treo(hit,`<b>${ten}</b><br>nhóm tỷ giá ngầm ${n} ms/điểm (${f(c.ti_le,0)}% tình huống)<br>hiệu mất ${ci(c)}`); }
+    T(svg,xc,h-b+18,n,{"text-anchor":"middle",class:"t-dam nho"}); T(svg,xc,h-b+33,`${f(c15b[n]?.ti_le,0)}% tình huống`,{"text-anchor":"middle",class:"t-mo nho"}); });
+  T(svg,(l+w)/2,h-6,"tỷ giá ngầm của J 7/3 (ms trễ đổi lấy 1 điểm % mất dịch vụ)",{"text-anchor":"middle",class:"nho"});
+  $("#kq-coche-ct").innerHTML=`<span><i class="k-vuong" style="color:var(--dm)"></i>TN15 (phát hiện, kiểm sau)</span><span><i class="k-vuong" style="color:var(--dp)"></i>TN15b (dự đoán viết trước, dữ liệu mới)</span><span>tỷ lệ tình huống theo TN15b</span>`;
+  $("#kq-coche-doc").innerHTML=`<p><b>Đọc:</b> J 7/3 chuẩn hoá theo từng luồng, nên mỗi luồng ngầm đổi an toàn lấy trễ theo một "tỷ giá" riêng; trên dữ liệu, các tỷ giá chênh nhau khoảng 27 lần.
+    J x10 dùng một tỷ giá chung (10 ms cho 1 điểm). Toán học dự đoán: ở tình huống tỷ giá ngầm dưới 10, x10 sẽ an toàn hơn; trên 10, x10 nhanh hơn và kém an toàn hơn một chút.
+    Hai thí nghiệm đều ra đúng chiều đó; TN15b xác nhận như một dự đoán viết trước (hệ số ${ci(P.P5,3)}). Từng nhóm của TN15b còn rộng vì dữ liệu mới có ít tình huống tỷ giá cao.</p>
+    <div class="vd"><b>Ví dụ:</b> một công ty đổi điểm thưởng ra tiền theo tỷ giá riêng cho từng chi nhánh. Dùng một tỷ giá chung thì vừa thêm điểm ở chỗ này, vừa đỡ tốn ở chỗ kia.</div>`;
 }
 function veThuc(){
-  const ds=[["Đuôi danh định","điểm %",P.P2,"CI hai tầng","--tot"],["Trễ danh định trung bình","ms",PH.S1_tre,"CI hai tầng","--tot"],["Trễ thực của lưu lượng được phục vụ","ms",{diem:0.022,ci:[0.010,0.035]},"CI theo cửa sổ","--vang"]];
-  $("#kq-thuc").innerHTML=`<div class="luoi3">${ds.map(([t,dv,d,g,m])=>`<div class="o"><div class="nho">x10 − 7/3 · ${t}</div><div class="lon" style="color:var(${m})">${fs(d.diem,2)} ${dv}</div><div class="nho">[${fs(d.ci[0],2)}; ${fs(d.ci[1],2)}] · ${g}</div></div>`).join("")}</div>`;
-  $("#kq-thuc-doc").innerHTML=`<b>Lưu ý quan trọng:</b> "trễ" trong mọi kết quả là <b>trễ danh định tính lúc quyết định</b> (mô hình hàng đợi với dung lượng và tải nền đo được lúc đó).
+  const ds=[["Đuôi danh định","điểm %",P.P2,"CI hai tầng","tot"],["Trễ danh định trung bình","ms",PH.S1_tre,"CI hai tầng","tot"],["Trễ thực của lưu lượng được phục vụ","ms",{diem:0.022,ci:[0.010,0.035]},"CI theo cửa sổ","chua"]];
+  const box=$("#kq-thuc"); box.innerHTML="";
+  for(const [t_,dv,d,g,tt] of ds){ const o=H("div",{class:"so-tile"},`<span class="phu nho">x10 − 7/3 · ${t_}</span><span class="lon">${fs(d.diem,2)} <span class="nho phu" style="font-weight:500">${dv}</span></span>
+      <span class="mo nho">[${fs(d.ci[0],2)}; ${fs(d.ci[1],2)}] · ${g}</span><div class="th"></div>`); box.appendChild(o); thuoc($(".th",o),d,{tt,w:300,dv,ten:t_}); }
+  $("#kq-thuc-doc").innerHTML=`${ic("chua")}<div><b>Lưu ý quan trọng:</b> "trễ" trong mọi kết quả là <b>trễ danh định tính lúc quyết định</b> (mô hình hàng đợi với dung lượng và tải nền đo được lúc đó).
     Theo trễ đó, x10 bớt hẳn nghẽn nặng. Nhưng khi đo <b>trễ thực</b> của lưu lượng còn được phục vụ trong 32 thế giới chấm (có chuyển sang dự phòng khi tuyến chính hỏng),
     hai mô hình gần như bằng nhau (x10 chậm hơn 0,02 ms). Lý do: những ca "nghẽn danh định" trong thế giới thật thường thành <i>mất dịch vụ do quá tải</i> chứ không thành "chậm".
-    Vì vậy nên nói: "x10 tránh đặt tuyến chính lên liên kết gần bão hoà lúc quyết định". Còn lợi ích này có thành lợi ích thật không là câu hỏi đang mở.
-    Số trễ thực được tính lại sau khi bỏ 57/5 760 tình huống không có luồng nào được phục vụ.`;
+    Vì vậy nên nói: "x10 tránh đặt tuyến chính lên liên kết gần bão hoà lúc quyết định". Lợi ích này có thành lợi ích thật hay không là câu hỏi còn mở.
+    Số trễ thực được tính lại sau khi bỏ 57/5 760 tình huống không có luồng nào được phục vụ.</div>`;
 }
 
 // ============================================================ 3. chọn tuyến
@@ -471,134 +836,270 @@ const VUNG = {lon:[101.6,117.4], lat:[7.6,23.6]};
 const BO_BIEN = [[108.05,21.55],[107.4,21.25],[107.0,20.95],[106.75,20.7],[106.55,20.3],[106.2,20.0],[105.95,19.75],[105.8,19.3],[105.75,18.95],[105.95,18.6],[106.25,18.15],[106.5,17.75],[106.85,17.25],[107.2,16.85],[107.65,16.45],[108.2,16.08],[108.55,15.6],[108.85,15.2],[109.05,14.6],[109.2,13.9],[109.3,13.3],[109.4,12.8],[109.2,12.25],[109.05,11.75],[108.95,11.35],[108.55,11.1],[108.1,10.9],[107.6,10.65],[107.15,10.4],[106.75,10.3],[106.55,9.95],[106.25,9.55],[105.85,9.25],[105.45,8.85],[105.1,8.6],[104.8,8.65],[104.85,9.2],[104.85,9.75],[104.6,10.2],[104.45,10.42],[104.95,10.85],[105.6,11.0],[106.1,11.4],[106.45,11.75],[107.0,11.9],[107.45,12.25],[107.55,12.8],[107.5,13.5],[107.45,14.2],[107.55,14.7],[107.35,15.2],[107.15,15.6],[107.35,15.95],[106.9,16.3],[106.6,16.6],[106.4,17.05],[105.9,17.6],[105.55,18.1],[105.15,18.6],[104.6,18.95],[104.05,19.25],[104.3,19.65],[104.6,19.95],[104.2,20.3],[103.5,20.6],[103.15,20.85],[102.65,21.15],[102.2,21.7],[102.1,22.4],[102.6,22.75],[103.25,22.65],[103.95,22.5],[104.45,22.8],[104.85,22.95],[105.35,23.3],[105.85,22.95],[106.55,22.95],[106.75,22.65],[106.65,22.2],[107.15,21.85],[107.65,21.6],[108.05,21.55]];
 let tKb=0, tDau=null, tCuoi=null;
 function veTuyen(){
-  if(!TU){$("#tuyen").insertAdjacentHTML("beforeend",'<p class="canh">Chưa có dữ liệu tuyến — chạy <code>python -m scripts.demo_tn15_tuyen</code> rồi dựng lại.</p>');return;}
+  if(!TU){ $("#tuyen").insertAdjacentHTML("beforeend",'<div class="canh">Chưa có dữ liệu tuyến. Chạy <code>python -m scripts.demo_tn15_tuyen</code> rồi dựng lại.</div>'); return; }
   $("#ten-73").textContent=TU.mo_hinh["7/3"]+".pt"; $("#ten-x10").textContent=TU.mo_hinh["x10"]+".pt";
-  const sk=$("#t-kb"); TU.kich_ban.forEach((k,i)=>sk.appendChild(new Option(`${k.nhan} — ${k.cua_so} (mốc ${k.t})`, i)));
-  sk.onchange=()=>{tKb=+sk.value; napChon(); veCap();};
-  $("#t-dau").onchange=()=>{tDau=$("#t-dau").value;veCap();}; $("#t-cuoi").onchange=()=>{tCuoi=$("#t-cuoi").value;veCap();};
+  const sk=$("#t-kb"); TU.kich_ban.forEach((k,i)=>sk.appendChild(new Option(`${k.nhan} · ${k.cua_so} (mốc ${k.t})`, i)));
+  sk.onchange=()=>{ tKb=+sk.value; napChon(); veCap(); };
+  $("#t-dau").onchange=()=>{ tDau=$("#t-dau").value; veCap(); }; $("#t-cuoi").onchange=()=>{ tCuoi=$("#t-cuoi").value; veCap(); };
   napChon(); veCap();
-  if (window.parent !== window){ const b=$("#t-3d"); b.style.display="";
-    b.onclick=()=>window.parent.postMessage({loai:"d15_3d", kb:tKb, dau:tDau, cuoi:tCuoi}, "*"); }
+  if(window.parent !== window){ const b=$("#t-3d"); b.hidden=false; b.onclick=()=>window.parent.postMessage({loai:"d15_3d", kb:tKb, dau:tDau, cuoi:tCuoi}, "*"); }
 }
 function napChon(){
   const kb=TU.kich_ban[tKb]; const dau=new Set(), cuoi=new Set();
-  for(const k of Object.keys(kb.cap)){const [a,b]=k.split("|");dau.add(a);cuoi.add(b);}
+  for(const k of Object.keys(kb.cap)){ const [a,b]=k.split("|"); dau.add(a); cuoi.add(b); }
   const sd=$("#t-dau"), sc=$("#t-cuoi"); sd.innerHTML=""; sc.innerHTML="";
   [...dau].sort().forEach(n=>sd.appendChild(new Option(n,n))); [...cuoi].sort().forEach(n=>sc.appendChild(new Option(n,n)));
-  // mặc định: cặp đầu tiên mà hai mô hình chọn khác tuyến chính (nếu có), không thì cặp đầu tiên tới được
   const ok=Object.entries(kb.cap).filter(([k,v])=>v);
   const khac=ok.find(([k,v])=>v["7/3"].tuyen[0]!==v["x10"].tuyen[0]) || ok[0];
   [tDau,tCuoi]=khac[0].split("|"); sd.value=tDau; sc.value=tCuoi;
-  $("#t-gio").textContent=`giờ (UTC): ${kb.gio_utc} · luồng gốc của kịch bản: ${kb.luong_goc.map(x=>x.join("→")).join(", ")}`;
+  $("#t-gio").textContent=`Giờ (UTC): ${kb.gio_utc} · luồng gốc của kịch bản: ${kb.luong_goc.map(x=>x.join(" → ")).join(", ")}`;
   veTongTuyen();
 }
-function chieu(w,h){const sx=thang(VUNG.lon[0],VUNG.lon[1],8,w-8), sy=thang(VUNG.lat[0],VUNG.lat[1],h-8,8);
-  return ([la,lo])=>{let X=sx(lo),Y=sy(la),ngoai=false; if(X<8||X>w-8||Y<8||Y>h-8){ngoai=true;X=Math.min(Math.max(X,14),w-14);Y=Math.min(Math.max(Y,14),h-14);} return [X,Y,ngoai];};}
+function chieu(w,h){ const sx=thang(VUNG.lon[0],VUNG.lon[1],8,w-8), sy=thang(VUNG.lat[0],VUNG.lat[1],h-8,8);
+  return ([la,lo])=>{ let X=sx(lo), Y=sy(la), ngoai=false; if(X<8||X>w-8||Y<8||Y>h-8){ ngoai=true; X=Math.min(Math.max(X,14),w-14); Y=Math.min(Math.max(Y,14),h-14); } return [X,Y,ngoai]; }; }
 function kyHieu(svg, loai, X, Y, c, r=5){
-  if(loai==="user") return S("circle",{cx:X,cy:Y,r,fill:c},svg);
-  if(loai==="gateway") return S("rect",{x:X-r,y:Y-r,width:2*r,height:2*r,fill:c},svg);
-  if(loai==="uav") return S("path",{d:`M${X} ${Y-r-1}L${X+r} ${Y+r-1}L${X-r} ${Y+r-1}Z`,fill:c},svg);
-  if(loai==="haps") return S("path",{d:`M${X} ${Y-r-1}L${X+r+1} ${Y}L${X} ${Y+r+1}L${X-r-1} ${Y}Z`,fill:c},svg);
-  return S("path",{d:`M${X} ${Y-r-2}L${X+2} ${Y-2}L${X+r+2} ${Y}L${X+2} ${Y+2}L${X} ${Y+r+2}L${X-2} ${Y+2}L${X-r-2} ${Y}L${X-2} ${Y-2}Z`,fill:c},svg);
+  const st=`fill:${c}`;
+  if(loai==="user") return S("circle",{cx:X,cy:Y,r,style:st},svg);
+  if(loai==="gateway") return S("rect",{x:X-r,y:Y-r,width:2*r,height:2*r,rx:1.5,style:st},svg);
+  if(loai==="uav") return S("path",{d:`M${X} ${Y-r-1}L${X+r} ${Y+r-1}L${X-r} ${Y+r-1}Z`,style:st},svg);
+  if(loai==="haps") return S("path",{d:`M${X} ${Y-r-1}L${X+r+1} ${Y}L${X} ${Y+r+1}L${X-r-1} ${Y}Z`,style:st},svg);
+  return S("path",{d:`M${X} ${Y-r-2}L${X+2} ${Y-2}L${X+r+2} ${Y}L${X+2} ${Y+2}L${X} ${Y+r+2}L${X-2} ${Y+2}L${X-r-2} ${Y}L${X-2} ${Y-2}Z`,style:st},svg);
 }
 function veBanDo(box, kb, cap, mh){
-  box.innerHTML=""; const w=560,h=580; const pr=chieu(w,h); const svg=S("svg",{viewBox:`0 0 ${w} ${h}`},box);
+  box.innerHTML=""; const w=560, h=580; const pr=chieu(w,h); const svg=svgMoi(box,w,h,"Bản đồ tuyến của "+mh);
   const sx=thang(VUNG.lon[0],VUNG.lon[1],8,w-8), sy=thang(VUNG.lat[0],VUNG.lat[1],h-8,8);
-  S("polygon",{points:BO_BIEN.map(([lo,la])=>`${sx(lo)},${sy(la)}`).join(" "),fill:css("--luoi"),stroke:css("--vien")},svg);
-  S("text",{x:w-10,y:h-10,"text-anchor":"end",style:"font-size:10px"},svg).textContent="đường bờ biển phác hoạ";
+  S("polygon",{points:BO_BIEN.map(([lo,la])=>`${sx(lo)},${sy(la)}`).join(" "),style:"fill:var(--luoi);stroke:var(--vien)"},svg);
+  T(svg,w-10,h-10,"đường bờ biển phác hoạ",{"text-anchor":"end",class:"t-mo nho"});
   const vt=kb.vi_tri, loai=kb.loai;
-  // các nút mặt đất
   for(const [n,l] of Object.entries(loai)){ if(l!=="user"&&l!=="gateway") continue; const [X,Y]=pr(vt[n]);
-    const e=kyHieu(svg,l,X,Y,css("--mo"),l==="gateway"?6:4); e.style.cursor="pointer";
-    e.addEventListener("click",ev=>{ if(l==="gateway"||ev.shiftKey){ if(l==="gateway"){tCuoi=n;$("#t-cuoi").value=n;} } else { tDau=n;$("#t-dau").value=n; } veCap(); });
+    const e=kyHieu(svg,l,X,Y,"var(--mo)",l==="gateway"?6:4); e.style.cursor="pointer";
+    e.addEventListener("click",()=>{ if(l==="gateway"){ tCuoi=n; $("#t-cuoi").value=n; } else { tDau=n; $("#t-dau").value=n; } veCap(); });
     treo(e,`<b>${n}</b> (${l==="user"?"điểm người dùng":"trạm mặt đất"})<br>${l==="user"?"bấm: chọn làm điểm đầu":"bấm: chọn làm điểm cuối"}`); }
-  if(!cap){S("text",{x:w/2,y:h/2,"text-anchor":"middle","font-size":15},svg).textContent="Cặp này không tới được lúc này";return;}
-  const ve_tuyen=(tuyen, c, rong, dash, op)=>{const p=tuyen.map(n=>pr(vt[n])); S("polyline",{points:p.map(q=>q[0]+","+q[1]).join(" "),fill:"none",stroke:c,"stroke-width":rong,"stroke-dasharray":dash||"","stroke-opacity":op,"stroke-linejoin":"round","stroke-linecap":"round"},svg);};
-  cap.kho.forEach(tu=>ve_tuyen(tu,css("--mo"),1,"",0.35));
-  const chon=cap[mh].tuyen, c=css(mh==="x10"?"--x10":"--w07");
-  chon.slice(1).forEach(i=>ve_tuyen(cap.kho[i],c,2.4,"7 5",0.95));
+  if(!cap){ T(svg,w/2,h/2,"Cặp này không tới được lúc này",{"text-anchor":"middle",class:"t-dam lon"}); return; }
+  const ve_tuyen=(tuyen,c,rong,dash,op)=>{ const p=tuyen.map(n=>pr(vt[n])); S("polyline",{points:p.map(q=>q[0]+","+q[1]).join(" "),fill:"none","stroke-dasharray":dash||null,style:`stroke:${c};stroke-width:${rong};opacity:${op}`,"stroke-linejoin":"round","stroke-linecap":"round"},svg); };
+  cap.kho.forEach(tu=>ve_tuyen(tu,"var(--mo)",1,"",.35));
+  const chon=cap[mh].tuyen, c=mh==="x10"?"var(--x10)":"var(--w07)";
+  chon.slice(1).forEach(i=>ve_tuyen(cap.kho[i],c,2.4,"7 5",.95));
   ve_tuyen(cap.kho[chon[0]],c,5,"",1);
   const tren=new Set(chon.flatMap(i=>cap.kho[i])); const da_dat=[];
-  for(const n of tren){const [X,Y,ngoai]=pr(vt[n]); const l=loai[n]; const e=kyHieu(svg,l,X,Y,n===tDau||n===tCuoi?css("--chu"):c,l==="leo"?5:6);
+  for(const n of tren){ const [X,Y,ngoai]=pr(vt[n]); const l=loai[n]; const e=kyHieu(svg,l,X,Y,n===tDau||n===tCuoi?"var(--chu)":c,l==="leo"?5:6);
     treo(e,`<b>${n}</b> · ${({user:"người dùng",gateway:"trạm mặt đất",uav:"UAV",haps:"HAPS",leo:"vệ tinh LEO"})[l]}${ngoai?"<br>(nằm ngoài khung, ghim ở mép)":""}`);
-    if(l==="uav" && tren.has(n.replace("UAV-",""))) continue;          // UAV cùng chỗ với điểm người dùng: bỏ nhãn trùng
+    if(l==="uav" && tren.has(n.replace("UAV-",""))) continue;
     if(l!=="leo"||ngoai){ let ly=Y-7; while(da_dat.some(([a,b])=>Math.abs(a-X)<70&&Math.abs(b-ly)<12)) ly+=13; da_dat.push([X,ly]);
-      S("text",{x:X+8,y:ly,style:"font-size:11px;font-weight:600"},svg).textContent=n.replace("HAPS-","H-").replace("UAV-","U-"); } }
+      T(svg,X+8,ly,n.replace("HAPS-","H-").replace("UAV-","U-"),{class:"t-dam nho"}); } }
 }
 function moTa(cap, mh){
-  const x=cap[mh], k=cap.kho; const ten = i => k[i].join(" → ");
-  return `<table class="so-sanh"><tr><td>Tuyến chính</td><td>${ten(x.tuyen[0])}<br><span class="phu">trễ cơ sở ${f(cap.tre_kho[x.tuyen[0]],1)} ms</span></td></tr>
-    <tr><td>Dự phòng (${x.tuyen.length-1})</td><td>${x.tuyen.slice(1).map(i=>`${ten(i)} <span class="phu">(${f(cap.tre_kho[i],1)} ms)</span>`).join("<br>")||"—"}</td></tr>
-    <tr><td>Luồng này</td><td>mất dịch vụ <b>${f(x.mat_luong)}%</b> · trễ tuyến chính <b>${f(x.tre_luong,1)} ms</b></td></tr>
-    <tr><td>Cả kịch bản</td><td>mất ${f(x.mat_tong)}% (không còn tuyến sống ${f(x.a_tong)} · dự phòng quá tải ${f(x.b_tong)}) · trễ ${f(x.tre_tong,1)} ms</td></tr></table>`;
+  const x=cap[mh], k=cap.kho; const ten=i=>k[i].join(" → ");
+  return `<table class="so-sanh"><tr><td class="phu">Tuyến chính</td><td>${ten(x.tuyen[0])}<br><span class="mo nho">trễ cơ sở ${f(cap.tre_kho[x.tuyen[0]],1)} ms</span></td></tr>
+    <tr><td class="phu">Dự phòng (${x.tuyen.length-1})</td><td>${x.tuyen.slice(1).map(i=>`${ten(i)} <span class="mo nho">(${f(cap.tre_kho[i],1)} ms)</span>`).join("<br>")||"—"}</td></tr>
+    <tr><td class="phu">Luồng này</td><td>mất dịch vụ <b>${f(x.mat_luong)}%</b> · trễ tuyến chính <b>${f(x.tre_luong,1)} ms</b></td></tr>
+    <tr><td class="phu">Cả kịch bản</td><td>mất ${f(x.mat_tong)}% (không còn tuyến sống ${f(x.a_tong)} · dự phòng quá tải ${f(x.b_tong)}) · trễ ${f(x.tre_tong,1)} ms</td></tr></table>`;
 }
 function veCap(){
   const kb=TU.kich_ban[tKb]; const cap=kb.cap[`${tDau}|${tCuoi}`];
   veBanDo($("#t-map-73"),kb,cap,"7/3"); veBanDo($("#t-map-x10"),kb,cap,"x10");
-  if(!cap){$("#t-info-73").innerHTML=$("#t-info-x10").innerHTML=$("#t-so").innerHTML="";$("#t-doc").innerHTML="Cặp này không có đường nào sống lúc này.";return;}
+  if(!cap){ $("#t-info-73").innerHTML=$("#t-info-x10").innerHTML=$("#t-so").innerHTML=""; $("#t-doc").innerHTML="Cặp này không có đường nào sống lúc này."; return; }
   $("#t-info-73").innerHTML=moTa(cap,"7/3"); $("#t-info-x10").innerHTML=moTa(cap,"x10");
   const a=cap["7/3"], b=cap["x10"];
-  const o=(ten,va,vb,n,don)=>{const d=vb-va; const cl=Math.abs(d)<0.5*Math.pow(10,-n)?"":(d<0?"hon":"kem"); return `<tr><td>${ten}</td><td class="so">${f(va,n)}${don}</td><td class="so">${f(vb,n)}${don}</td><td class="so ${cl}">${fs(d,n)}${don}</td></tr>`;};
+  const o=(ten,va,vb,n,don)=>{ const d=vb-va; const cl=Math.abs(d)<0.5*Math.pow(10,-n)?"":(d<0?"hon":"kem"); return `<tr><td>${ten}</td><td class="so">${f(va,n)}${don}</td><td class="so">${f(vb,n)}${don}</td><td class="so ${cl}">${fs(d,n)}${don}</td></tr>`; };
   $("#t-so").innerHTML=`<table class="so-sanh"><tr><th></th><th class="so" style="color:var(--w07)">DM 7/3</th><th class="so" style="color:var(--x10)">DM x10</th><th class="so">x10 − 7/3</th></tr>
     ${o("Mất dịch vụ của luồng",a.mat_luong,b.mat_luong,2,"%")}${o("Trễ tuyến chính của luồng",a.tre_luong,b.tre_luong,1," ms")}
     ${o("Mất dịch vụ cả kịch bản",a.mat_tong,b.mat_tong,2,"%")}${o("Trễ trung bình cả kịch bản",a.tre_tong,b.tre_tong,1," ms")}</table>`;
   const cungChinh=a.tuyen[0]===b.tuyen[0], cungTap=[...a.tuyen].sort().join()===[...b.tuyen].sort().join();
-  $("#t-doc").innerHTML = (cungTap?"Hai mô hình chọn <b>đúng cùng một tập tuyến</b> cho cặp này.":(cungChinh?"Hai mô hình cùng tuyến chính, khác nhau ở <b>tuyến dự phòng</b>.":"Hai mô hình chọn <b>tuyến chính khác nhau</b>."))
-    + ` Kho có ${cap.kho.length} tuyến ứng viên. Đây chỉ là <b>một</b> tình huống: một lần thắng thua ở đây không nói lên mô hình nào tốt hơn — kết luận phải dựa trên 5 760 tình huống ở mục 2.`;
+  $("#t-doc").innerHTML=`<p>${cungTap?"Hai mô hình chọn <b>đúng cùng một tập tuyến</b> cho cặp này.":(cungChinh?"Hai mô hình cùng tuyến chính, khác nhau ở <b>tuyến dự phòng</b>.":"Hai mô hình chọn <b>tuyến chính khác nhau</b>.")}
+    Kho có ${cap.kho.length} tuyến ứng viên. Đây chỉ là <b>một</b> tình huống: một lần thắng thua ở đây không nói lên mô hình nào tốt hơn; kết luận phải dựa trên ${KQ.so_tinh_huong.A.tinh_huong.toLocaleString("vi-VN")} tình huống ở tab Kết quả chấm. Màu xanh lá / hồng ở bảng: x10 tốt hơn / kém hơn 7/3.</p>`;
 }
 function veTongTuyen(){
   const kb=TU.kich_ban[tKb]; const ok=Object.values(kb.cap).filter(v=>v); const n=ok.length;
   const cung=ok.filter(v=>v["7/3"].tuyen[0]===v["x10"].tuyen[0]).length, cungTap=ok.filter(v=>[...v["7/3"].tuyen].sort().join()===[...v["x10"].tuyen].sort().join()).length;
-  const tb=(fn)=>ok.reduce((s,v)=>s+fn(v),0)/n;
+  const tb=fn=>ok.reduce((s,v)=>s+fn(v),0)/n;
   $("#t-tong").innerHTML=`<div class="luoi3">
-    <div class="o"><div class="nho">Cặp tới được</div><div class="lon">${n}/${Object.keys(kb.cap).length}</div><div class="nho">đường còn sống lúc ${kb.gio_utc}</div></div>
-    <div class="o"><div class="nho">Cùng tuyến chính</div><div class="lon">${f(cung/n*100,0)}%</div><div class="nho">cùng cả tập tuyến: ${f(cungTap/n*100,0)}%</div></div>
-    <div class="o"><div class="nho">Trung bình x10 − 7/3 (mọi cặp)</div><div class="lon">${fs(tb(v=>v.x10.mat_luong-v["7/3"].mat_luong),2)} điểm</div><div class="nho">mất của luồng · trễ ${fs(tb(v=>v.x10.tre_luong-v["7/3"].tre_luong),2)} ms</div></div></div>
-    <p class="phu">Ở phần lớn các cặp, hai mô hình chọn giống nhau; khác biệt nằm ở một số ít tình huống. Điều này khớp với mục 2: x10 khác 7/3 chủ yếu ở các ca nghẽn nặng.</p>`;
+    <div class="so-tile"><span class="phu nho">Cặp tới được</span><span class="lon">${n}/${Object.keys(kb.cap).length}</span><span class="mo nho">đường còn sống lúc ${kb.gio_utc}</span></div>
+    <div class="so-tile"><span class="phu nho">Cùng tuyến chính</span><span class="lon">${f(cung/n*100,0)}%</span><span class="mo nho">cùng cả tập tuyến: ${f(cungTap/n*100,0)}%</span></div>
+    <div class="so-tile"><span class="phu nho">Trung bình x10 − 7/3 trên mọi cặp</span><span class="lon">${fs(tb(v=>v.x10.mat_luong-v["7/3"].mat_luong),2)} <span class="nho phu" style="font-weight:500">điểm</span></span><span class="mo nho">mất của luồng · trễ ${fs(tb(v=>v.x10.tre_luong-v["7/3"].tre_luong),2)} ms</span></div></div>
+    <p class="phu">Ở phần lớn các cặp, hai mô hình chọn giống nhau; khác biệt nằm ở một số ít tình huống. Điều này khớp với tab Kết quả chấm: x10 khác 7/3 chủ yếu ở các ca nghẽn nặng.</p>`;
 }
 
 // ============================================================ 4. cấu trúc mạng
 const MG = DL.mang;
+const GIAM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+// xung: chấm sáng chạy dọc các đường theo một chu kỳ chung, lệch nhịp nhau (gợn sóng); chỉ chạy khi nhìn thấy
+function xung(svg, ds, o={}){
+  const CK=o.chu_ky||3.2, g=S("g",{},svg);
+  const ch=ds.map(()=>[S("circle",{r:4.2,class:"xung",visibility:"hidden"},g),S("circle",{r:3,class:"xung",opacity:.45,visibility:"hidden"},g),S("circle",{r:2,class:"xung",opacity:.22,visibility:"hidden"},g)]);
+  let L=null, t0=performance.now(), raf=0, thay=false, chay=o.chay??!GIAM;
+  function buoc(now){
+    if(!L) L=ds.map(d=>d.p.getTotalLength());
+    const t=((now-t0)/1000)%CK;
+    ds.forEach((d,i)=>ch[i].forEach((c,j)=>{ const u=(t-d.bd-j*.05)/(d.dur||.55);
+      if(u<0||u>1){ c.setAttribute("visibility","hidden"); return; }
+      const p=d.p.getPointAtLength(u*L[i]); c.setAttribute("cx",p.x); c.setAttribute("cy",p.y); c.setAttribute("visibility","visible"); }));
+    raf=requestAnimationFrame(buoc);
+  }
+  const bat=()=>{ if(!raf && chay && thay) raf=requestAnimationFrame(buoc); };
+  const tat=()=>{ cancelAnimationFrame(raf); raf=0; ch.flat().forEach(c=>c.setAttribute("visibility","hidden")); };
+  const io=new IntersectionObserver(es=>{ thay=es[0].isIntersecting; thay?bat():tat(); }); io.observe(svg);
+  svg.addEventListener("pointerenter",()=>{ t0=performance.now(); });
+  return {dung(){ chay=false; tat(); }, chay(){ chay=true; t0=performance.now(); bat(); }, dangChay:()=>chay, huy(){ io.disconnect(); tat(); g.remove(); }};
+}
 function veMang(){
-  const ts=MG.tham_so, H_=MG.cau_hinh.H;
-  const k = n => (n/1000).toLocaleString("vi-VN",{maximumFractionDigits:1})+" nghìn";
-  const box=$("#m-so-do"); box.innerHTML=""; const w=1200,h=610; const svg=S("svg",{viewBox:`0 0 ${w} ${h}`},box);
-  const hop=(x,y,ww,hh,tieu,dong,mm)=>{const g=S("g",{},svg);S("rect",{x,y,width:ww,height:hh,rx:12,style:`fill:color-mix(in srgb, ${css(mm)} 12%, ${css("--the")})`,stroke:css(mm),"stroke-width":2},g);
-    S("text",{x:x+ww/2,y:y+24,"text-anchor":"middle","font-weight":700,style:`fill:${css("--chu")};font-size:14px`},g).textContent=tieu;
-    dong.forEach((d,i)=>S("text",{x:x+ww/2,y:y+46+i*18,"text-anchor":"middle",style:"font-size:12.5px"},g).textContent=d); return g;};
-  const mui=(x1,y1,x2,y2,nhan,cong=0)=>{const mid=[(x1+x2)/2,(y1+y2)/2-cong];S("path",{d:`M${x1} ${y1}Q${mid[0]} ${mid[1]} ${x2} ${y2}`,fill:"none",stroke:css("--phu"),"stroke-width":2,"marker-end":"url(#mui)"},svg);
-    if(nhan)S("text",{x:mid[0],y:mid[1]-6,"text-anchor":"middle",style:"font-size:12px"},svg).textContent=nhan;};
-  const defs=S("defs",{},svg);const mk=S("marker",{id:"mui",viewBox:"0 0 10 10",refX:9,refY:5,markerWidth:7,markerHeight:7,orient:"auto"},defs);S("path",{d:"M0 0L10 5L0 10Z",fill:css("--phu")},mk);
-  hop(20,40,250,130,"Mỗi tuyến ứng viên",["≤ 12 tuyến / luồng, 4–5 luồng","15 tĩnh + 6 động + 3 trạng thái","+ 8 mã bước khử nhiễu = 32 số"],"--w07");
-  hop(20,330,250,130,"Mỗi liên kết",["chỉ các liên kết nằm trên kho","18 tĩnh + 3 giông quanh UAV","+ 3 tải động = 24 số"],"--x3");
-  hop(320,40,200,130,"Mã hoá tuyến",[`MLP 32 → ${H_} → ${H_}`,`${k(ts.vao_uv)} tham số`],"--w07");
-  hop(320,330,200,130,"Mã hoá liên kết",[`MLP 24 → ${H_} → ${H_}`,`${k(ts.vao_lk)} tham số`],"--x3");
-  // khối lặp
-  S("rect",{x:570,y:20,width:400,height:470,rx:16,fill:"none",stroke:css("--x10"),"stroke-width":2,"stroke-dasharray":"8 6"},svg);
-  S("text",{x:770,y:46,"text-anchor":"middle","font-weight":700,style:`fill:${css("--x10")};font-size:15px`},svg).textContent=`Trao đổi tin × ${MG.cau_hinh.so_lop} vòng`;
-  hop(600,70,340,110,"① Tuyến → liên kết",[`tuyến đang chọn "gửi tin" lên các liên kết của nó`,`Linear ${H_} → ${H_} · ${k(ts["gui.0"])} / vòng`],"--x10");
-  hop(600,200,340,110,"② Cập nhật liên kết",[`liên kết biết ai đang dùng mình, tải bao nhiêu`,`MLP ${2*H_} → ${H_} → ${H_} · ${k(ts["cap_lk.0"])} / vòng`],"--x10");
-  hop(600,330,340,140,"③ Liên kết → tuyến",["mỗi tuyến đọc: chính nó + TB các liên kết",`+ liên kết nghẽn nhất + ngữ cảnh luồng`,`MLP ${4*H_} → ${H_} → ${H_} · ${k(ts["cap_uv.0"])} / vòng`],"--x10");
-  hop(1010,170,170,150,"Đầu ra",["mỗi tuyến 3 nhãn:","không chọn · dự phòng","· chính",`${ts.ra} tham số`],"--tot");
-  hop(1010,380,170,150,"Giải mã",["5 bước khử nhiễu","× 32 chuỗi song song","lấy chuỗi xác suất cao","nhất → tập tuyến"],"--w05");
-  mui(270,105,320,105); mui(270,395,320,395); mui(520,105,600,125); mui(520,395,600,255);
-  mui(770,180,770,200); mui(770,310,770,330); mui(940,400,1010,245,"",20); mui(1095,320,1095,380);
-  S("path",{d:`M1095 530 L1095 548 L8 548 L8 105 L18 105`,fill:"none",stroke:css("--w05"),"stroke-width":2,"stroke-dasharray":"6 5","marker-end":"url(#mui)"},svg);
-  S("text",{x:560,y:566,"text-anchor":"middle",style:"font-size:12.5px"},svg).textContent="lựa chọn tạm của bước trước quay lại làm \"trạng thái\" của mọi tuyến ở bước sau (5 bước)";
-  S("text",{x:w/2,y:h-8,"text-anchor":"middle","font-weight":600,style:"font-size:13px"},svg).textContent=`Tổng: ${MG.tong.toLocaleString("vi-VN")} tham số · độ rộng H = ${H_} · ${MG.cau_hinh.so_lop} vòng trao đổi tin`;
-  // tham số theo khối
-  const nhom=[["Mã hoá tuyến",ts.vao_uv,"--w07"],["Mã hoá liên kết",ts.vao_lk,"--x3"],["① gửi tin (3 vòng)",ts["gui.0"]+ts["gui.1"]+ts["gui.2"],"--x10"],
-    ["② cập nhật liên kết (3 vòng)",ts["cap_lk.0"]+ts["cap_lk.1"]+ts["cap_lk.2"],"--x10"],["③ cập nhật tuyến (3 vòng)",ts["cap_uv.0"]+ts["cap_uv.1"]+ts["cap_uv.2"],"--x10"],["Đầu ra",ts.ra,"--tot"]];
-  const b2=$("#m-tham-so"); const w2=560,rh=34,l2=210,h2=nhom.length*rh+30; const svg2=S("svg",{viewBox:`0 0 ${w2} ${h2}`},b2);
-  const mx=Math.max(...nhom.map(n=>n[1])); const x2=thang(0,mx,l2,w2-90);
-  nhom.forEach(([t,v,mm],i)=>{const yy=8+i*rh;S("text",{x:l2-8,y:yy+18,"text-anchor":"end"},svg2).textContent=t;
-    const r=S("rect",{x:l2,y:yy+5,width:Math.max(2,x2(v)-l2),height:rh-12,rx:3,fill:css(mm),"fill-opacity":.85},svg2);
-    S("text",{x:x2(v)+6,y:yy+18},svg2).textContent=`${(v/1000).toLocaleString("vi-VN",{maximumFractionDigits:1})}k · ${f(v/MG.tong*100,0)}%`; treo(r,`<b>${t}</b>: ${v.toLocaleString("vi-VN")} tham số`);});
+  const ts=MG.tham_so, Hh=MG.cau_hinh.H, so_lop=MG.cau_hinh.so_lop;
+  $("#m-chi-so").innerHTML=[[MG.tong.toLocaleString("vi-VN"),"tham số, đếm từ checkpoint"],[`H = ${Hh}`,"số mô tả mỗi tuyến và mỗi liên kết"],
+    [`${so_lop} vòng`,"trao đổi tin giữa tuyến và liên kết"],["5 × 32","bước giải mã × chuỗi song song"],["0,15–0,24 s","một quyết định 4–5 luồng, trên CPU"]]
+    .map(([a,b])=>`<div class="so-tile"><span class="lon">${a}</span><span class="phu nho">${b}</span></div>`).join("");
+  veOng(); veDoChoi(0); veGiaiMa(); veThamSo(); veDocMang(); veBangDauVao();
+}
+function veOng(){
+  const ts=MG.tham_so, Hh=MG.cau_hinh.H, box=$("#m-ong"); box.innerHTML="";
+  const W=1200, Hc=592, svg=svgMoi(box,W,Hc,`Sơ đồ MangDT: đầu vào tuyến (32 số) và liên kết (24 số) được mã hoá thành ${Hh} số, trao đổi tin ${MG.cau_hinh.so_lop} vòng, rồi chấm 3 nhãn cho mỗi tuyến; lựa chọn tạm quay lại làm đầu vào ở 5 bước giải mã.`);
+  const defs=S("defs",{},svg);
+  for(const [id,cls] of [["mui-m","m-phu"],["mui-d","m-dong"]]){ const m=S("marker",{id,viewBox:"0 0 10 10",refX:8.5,refY:5,markerWidth:7,markerHeight:7,orient:"auto-start-reverse"},defs); S("path",{d:"M0 1L9 5L0 9Z",class:cls},m); }
+  const thanh=(x,y,n,toi)=>{ const len=Math.max(2,n/82432*100); S("rect",{x,y,width:len,height:6,rx:3,class:toi?"b-toi":"b-sang"},svg); T(svg,x+len+6,y+6.5,kN(n),{class:toi?"t-tren-mo nho":"t-mo nho"}); };
+  const hop=(x,y,w,h,toi,tieu,dong,meo)=>{ const r=S("rect",{x,y,width:w,height:h,rx:12,class:toi?"hop-toi":"hop"},svg);
+    T(svg,x+14,y+24,tieu,{class:toi?"t-tren":"t-dam",style:"font-weight:600"});
+    dong.forEach((d,i)=>T(svg,x+14,y+43+i*17,d,{class:toi?"t-tren-mo":""})); if(meo) treo(r,meo); return r; };
+  [["ĐẦU VÀO",135],["MÃ HOÁ",385],["TRAO ĐỔI TIN",740],["ĐẦU RA",1085]].forEach(([t_,x])=>T(svg,x,22,t_,{"text-anchor":"middle",class:"t-nhan"}));
+  // dải đặc trưng
+  const dai=(x,y,nhom,cw,gap)=>{ let i=0; for(const [n,cls,ten,ds] of nhom){ const x0=x+i*(cw+gap);
+      for(let j=0;j<n;j++) S("rect",{x:x+(i+j)*(cw+gap),y,width:cw,height:16,rx:1.5,class:cls},svg);
+      const x1=x+(i+n)*(cw+gap)-gap; S("path",{d:`M${x0} ${y+21}v3H${x1}v-3`,class:"l-noi",style:"stroke-width:1"},svg);
+      T(svg,(x0+x1)/2,y+37,String(n),{"text-anchor":"middle",class:"t-dam nho"});
+      const hit=S("rect",{x:x0,y:y-2,width:x1-x0,height:42,class:"vung-bat",style:"cursor:default"},svg); treo(hit,`<b>${n} số ${ten}</b><br>${ds}`); i+=n; } };
+  hop(20,44,230,190,false,"Tuyến ứng viên",["4–5 luồng × tối đa 12 tuyến"],"Mỗi luồng có một kho tối đa 12 tuyến ứng viên; mạng nhìn mọi tuyến của mọi luồng cùng lúc.");
+  dai(34,100,[[15,"o-tinh","tĩnh","trễ, số chặng, rủi ro hỏng, tải so với dung lượng trống, loại chặng đầu…; tính một lần"],[6,"o-dong","động","trễ có tải, mức tải nếu làm chính / dự phòng, trùng cạnh: tính lại từ lựa chọn tạm của mọi luồng"],[3,"o-dong","trạng thái","xác suất đang là không chọn / dự phòng / chính"],[8,"o-buoc","mã bước","sin / cos của bước khử nhiễu t"]],5.3,.9);
+  T(svg,34,174,"15 tĩnh + 6 động + 3 trạng thái",{class:"nho"}); T(svg,34,191,"+ 8 mã bước = 32 số mỗi tuyến",{class:"nho"});
+  hop(20,324,230,190,false,"Liên kết trên kho",["chỉ các liên kết mà kho đi qua"],"Chỉ những liên kết nằm trên ít nhất một tuyến ứng viên.");
+  dai(34,380,[[18,"o-tinh","tĩnh","dung lượng, tải nền, trễ, rủi ro hỏng; mưa, gió giật, giông lúc quyết định và 15 phút trước"],[3,"o-tinh","giông quanh UAV","thêm từ TN6"],[3,"o-dong","tải động","mức tải tuyến chính, chính + dự phòng, dự phòng so với dung lượng trống: tính lại mỗi bước"]],7.3,1);
+  T(svg,34,454,"18 tĩnh + 3 giông quanh UAV",{class:"nho"}); T(svg,34,471,"+ 3 tải động = 24 số mỗi liên kết",{class:"nho"});
+  hop(290,92,190,90,false,"Mã hoá tuyến",[`MLP 32 → ${Hh} → ${Hh}`],`${ts.vao_uv.toLocaleString("vi-VN")} tham số`); thanh(304,154,ts.vao_uv,false);
+  hop(290,372,190,90,false,"Mã hoá liên kết",[`MLP 24 → ${Hh} → ${Hh}`],`${ts.vao_lk.toLocaleString("vi-VN")} tham số`); thanh(304,434,ts.vao_lk,false);
+  S("rect",{x:520,y:40,width:440,height:470,rx:18,class:"khung-lap"},svg);
+  T(svg,740,64,`lặp ${MG.cau_hinh.so_lop} vòng · mỗi vòng tin lan thêm một bước`,{"text-anchor":"middle",class:"t-dam nho"});
+  hop(640,84,200,98,true,"Trạng thái tuyến",[`${Hh} số mỗi tuyến`,`④ cập nhật: MLP ${4*Hh} → ${Hh}`],`④ cập nhật tuyến: ${ts["cap_uv.0"].toLocaleString("vi-VN")} tham số mỗi vòng × ${MG.cau_hinh.so_lop} vòng`); thanh(654,160,ts["cap_uv.0"],true);
+  hop(640,364,200,98,true,"Trạng thái liên kết",[`${Hh} số mỗi liên kết`,`② cập nhật: MLP ${2*Hh} → ${Hh}`],`② cập nhật liên kết: ${ts["cap_lk.0"].toLocaleString("vi-VN")} tham số mỗi vòng × ${MG.cau_hinh.so_lop} vòng`); thanh(654,440,ts["cap_lk.0"],true);
+  ["① gửi tin","tuyến đang được chọn","gửi lên các liên kết","của nó, cân theo tải"].forEach((d,i)=>T(svg,540,236+i*17,d,{class:i?"nho":"t-dam"}));
+  T(svg,540,312,`Linear ${Hh} → ${Hh}`,{class:"nho"}); thanh(540,320,ts["gui.0"],false);
+  ["③ đọc lại","trung bình các liên kết","+ liên kết nghẽn nhất","+ ngữ cảnh cùng luồng","(không có tham số)"].forEach((d,i)=>T(svg,812,236+i*17,d,{class:i===0?"t-dam":(i===4?"t-mo nho":"nho")}));
+  hop(990,70,190,150,false,"Đầu ra",["mỗi tuyến 3 nhãn:"],`SiLU + Linear ${Hh} → 3 · ${ts.ra} tham số`);
+  [["không chọn",.18],["dự phòng",.3],["chính",.62]].forEach(([n,v],i)=>{ T(svg,1004,134+i*18,n,{class:"nho"}); S("rect",{x:1080,y:125+i*18,width:v*80,height:9,rx:2,style:`fill:var(--chu);opacity:${.35+i*.3}`},svg); });
+  T(svg,1004,206,`${ts.ra} tham số`,{class:"t-mo nho"});
+  hop(990,300,190,122,false,"Giải mã",["mỗi luồng chọn 1 tuyến","chính + (m − 1) dự phòng","giữ chuỗi tốt nhất / 32"],"Tuyến chính = tuyến có xác suất 'chính' cao nhất; dự phòng = các tuyến có xác suất 'dự phòng' cao hơn 'không chọn' nhiều nhất.");
+  const mui=(d,dong)=>S("path",{d,class:dong?"mui-dong":"mui","marker-end":dong?"url(#mui-d)":"url(#mui-m)"},svg);
+  const p={
+    in1:mui("M250 137H286"), in2:mui("M250 417H286"),
+    ma1:mui("M480 137H636"), ma2:mui("M480 417H636"),
+    gui:mui("M680 182V360"), doc:mui("M800 364V186"),
+    ra:mui("M840 133H986"), gm:mui("M1085 220V296"),
+    lap:mui("M1085 422V552H8V137H16",true) };
+  mui("M8 417H16",true);
+  T(svg,560,572,"lựa chọn tạm quay lại làm đặc trưng động và trạng thái ở bước sau · 5 bước × 32 chuỗi song song",{"text-anchor":"middle",class:"t-dong nho"});
+  const ds=[{p:p.in1,bd:0},{p:p.in2,bd:0},{p:p.ma1,bd:.35},{p:p.ma2,bd:.35},{p:p.gui,bd:.8},{p:p.doc,bd:1.2},{p:p.ra,bd:1.6},{p:p.gm,bd:1.95},{p:p.lap,bd:2.2,dur:.95}];
+  const x=xung(svg,ds,{chu_ky:3.4});
+  const b=$("#m-xung-nut"), nhanNut=()=>{ b.innerHTML = x.dangChay() ? `${ic("dung")}Dừng chuyển động` : `${ic("chay")}Chạy chuyển động`; };
+  b.onclick=()=>{ x.dangChay() ? x.dung() : x.chay(); nhanNut(); }; nhanNut();
+  $("#m-ong-doc").innerHTML=`<p><b>Đọc từ trái sang phải.</b> Mỗi tuyến ứng viên và mỗi liên kết được tả bằng một dãy số (32 và 24 số), rồi mã hoá thành ${Hh} số.
+    Trong khung lặp, tuyến và liên kết "bàn bạc" qua nhau ${MG.cau_hinh.so_lop} vòng: ① tuyến đang được chọn gửi tin lên liên kết của nó, ② liên kết cập nhật, ③ tuyến đọc lại tình trạng liên kết,
+    ④ tuyến cập nhật. Cuối cùng mỗi tuyến được chấm 3 nhãn và giải mã thành một tập tuyến. Đường xanh ngọc dưới đáy: lựa chọn vừa giải mã quay lại làm đầu vào cho bước sau, 5 bước như vậy.</p>`;
+}
+// ---------------- ví dụ nhỏ: hai luồng, một liên kết chung
+const DC = {
+  nut:{A:[90,125,"user","người dùng A"],B:[90,262,"user","người dùng B"],U:[275,125,"uav","UAV"],S:[475,50,"leo","LEO-1"],H:[475,193,"haps","HAPS"],T:[475,330,"leo","LEO-2"],G:[790,193,"gateway","trạm mặt đất"]},
+  canh:[["A","U"],["U","H"],["H","G"],["A","S"],["S","G"],["B","H"],["B","T"],["T","G"]],
+  tuyen:{A1:["A","U","H","G"],A2:["A","S","G"],B1:["B","H","G"],B2:["B","T","G"]},
+  ten:{A1:"A · qua UAV, HAPS",A2:"A · qua LEO-1",B1:"B · qua HAPS",B2:"B · qua LEO-2"},
+  nhan:{A1:[.15,.6,.25],A2:[.1,.25,.65],B1:[.1,.15,.75],B2:[.2,.65,.15]},
+  buoc:[
+    ["Lựa chọn tạm", "Mỗi luồng đang có một lựa chọn tạm từ bước giải mã trước. Luồng A: tuyến chính qua UAV và HAPS, dự phòng qua LEO-1. Luồng B: tuyến chính qua HAPS, dự phòng qua LEO-2. Hai tuyến chính cùng đi qua liên kết HAPS → trạm."],
+    ["① Gửi tin", "Mỗi tuyến đang được chọn (chính hoặc dự phòng) gửi một tin lên từng liên kết nó đi qua, nặng nhẹ theo lưu lượng của luồng. Chữ trên liên kết cho biết luồng nào đang dùng nó."],
+    ["② Liên kết cập nhật", "Mỗi liên kết gộp tin vừa nhận với những gì nó biết về chính mình: dung lượng, tải nền, mưa, gió, giông. HAPS → trạm nhận tin từ cả hai luồng, nên trạng thái của nó cho thấy đang bị dồn tải."],
+    ["③ Tuyến đọc lại", "Mỗi tuyến đọc lại trạng thái các liên kết của mình: trung bình mọi liên kết, liên kết nghẽn nhất, và các tuyến khác cùng luồng. Tuyến chính của A và của B đều thấy liên kết nghẽn nhất là HAPS → trạm. Mạng lặp ① → ③ ba vòng."],
+    ["④ Chấm nhãn", "Sau ba vòng, mạng chấm cho mỗi tuyến ba nhãn. Giải mã chọn cho mỗi luồng tuyến có nhãn \"chính\" cao nhất làm tuyến chính, rồi tuyến dự phòng. Ở ví dụ này A chuyển tuyến chính sang LEO-1, B giữ nguyên, nên hai tuyến chính không còn chung liên kết."]]};
+let dcBuoc=0, dcX=null, dcHen=0;
+function lech(pts, d){ return pts.map((p,i)=>{ const a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)]; const dx=b[0]-a[0], dy=b[1]-a[1], L=Math.hypot(dx,dy)||1; return [p[0]-dy/L*d, p[1]+dx/L*d]; }); }
+function veDoChoi(buoc){
+  dcBuoc=buoc; if(dcX){ dcX.huy(); dcX=null; }
+  const box=$("#m-dochoi"); box.innerHTML=""; const W=900, Hh=380, svg=svgMoi(box,W,Hh,"Ví dụ minh hoạ trao đổi tin, bước "+buoc);
+  const N=DC.nut, P_=k=>N[k].slice(0,2);
+  for(const [a,b] of DC.canh) S("line",{x1:P_(a)[0],y1:P_(a)[1],x2:P_(b)[0],y2:P_(b)[1],class:"l-canh"},svg);
+  const nongBuoc = buoc===2 || buoc===3;
+  if(nongBuoc){ const [a,b]=[P_("H"),P_("G")]; S("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],class:"l-nong"},svg); }
+  const chon = buoc<4 ? {A:["A1","A2"],B:["B1","B2"]} : {A:["A2","A1"],B:["B1","B2"]};
+  const duong={};
+  for(const lu of ["A","B"]) chon[lu].forEach((tu,i)=>{ const pts=lech(DC.tuyen[tu].map(P_), lu==="A"?-4:4);
+    duong[tu]=pts; S("path",{d:"M"+pts.map(q=>q.join(" ")).join("L"),class:`l-tuyen ${i===0?"chinh":"dp"} luong-${lu}`},svg); });
+  if(buoc>=1){ for(const [a,b] of DC.canh){ const dung=[]; for(const lu of ["A","B"]) for(const tu of chon[lu]){ const r=DC.tuyen[tu]; for(let i=0;i<r.length-1;i++) if((r[i]===a&&r[i+1]===b)||(r[i]===b&&r[i+1]===a)) if(!dung.includes(lu)) dung.push(lu); }
+      if(!dung.length) continue; const [x1,y1]=P_(a), [x2,y2]=P_(b), mx=(x1+x2)/2, my=(y1+y2)/2, L=Math.hypot(x2-x1,y2-y1), nx=(y1-y2)/L, ny=(x2-x1)/L;
+      const cx=mx+nx*20*(ny>0?-1:1), cy=my+ny*20*(ny>0?-1:1), txt=dung.join(" + "), ww=12+txt.length*7;
+      const nong = nongBuoc && ((a==="H"&&b==="G")||(a==="G"&&b==="H"));
+      S("rect",{x:cx-ww/2,y:cy-10,width:ww,height:20,rx:10,style:nong?"fill:color-mix(in srgb,var(--chua) 22%,var(--the));stroke:var(--chua)":"fill:var(--the);stroke:var(--vien)"},svg);
+      T(svg,cx,cy+4,txt,{"text-anchor":"middle",class:"t-dam nho"}); } }
+  if(nongBuoc){ const [a,b]=[P_("H"),P_("G")]; T(svg,(a[0]+b[0])/2,a[1]+34,"dồn tải từ hai luồng",{"text-anchor":"middle",class:"t-dam nho",style:"fill:var(--chua)"}); }
+  for(const [k,[x,y,loai,ten]] of Object.entries(N)){ kyHieu(svg,loai,x,y,"var(--chu)",loai==="gateway"?8:(loai==="user"?7:6));
+    const trai=k==="A"||k==="B"; T(svg,trai?x-14:(k==="G"?x+16:x),trai?y+4:(k==="G"?y+4:(k==="T"?y+26:y-16)),ten,{"text-anchor":trai?"end":(k==="G"?"start":"middle"),class:"t-dam nho"}); }
+  T(svg,96,Hh-8,"nét đậm = tuyến chính · nét đứt = dự phòng · đen = luồng A · xám = luồng B",{class:"t-mo nho"});
+  if(!GIAM && (buoc===1||buoc===3)){
+    const tuyenXung = buoc===1 ? [...chon.A,...chon.B] : ["A1","B1"];
+    const ds = tuyenXung.map((tu,i)=>{ let pts=duong[tu]; if(buoc===3) pts=pts.slice().reverse();
+      const pth=S("path",{d:"M"+pts.map(q=>q.join(" ")).join("L"),fill:"none",stroke:"none"},svg); return {p:pth,bd:i*.18,dur:1.1}; });
+    dcX = xung(svg, ds, {chu_ky:2.4, chay:true});
+  }
+  $("#m-buoc-loi").innerHTML=`<b>${DC.buoc[buoc][0]}.</b> ${DC.buoc[buoc][1]}`;
+  $("#m-bang-nhan").innerHTML=Object.keys(DC.tuyen).map(tu=>{ const lu=tu[0], la=chon[lu].indexOf(tu)===0?"chính":"dự phòng";
+    if(buoc<4) return `<div class="bn-hang"><span>${DC.ten[tu]}</span><span class="bn-thanh"></span><span class="mo nho">chưa chấm</span></div>`;
+    const [k,d,c]=DC.nhan[tu]; return `<div class="bn-hang"><span>${DC.ten[tu]}</span><span class="bn-thanh"><i class="k" style="flex-grow:${k}"></i><i class="d" style="flex-grow:${d}"></i><i class="c" style="flex-grow:${c}"></i></span><span class="bn-chon">${la}</span></div>`; }).join("");
+  const nb=$("#m-buoc"); nb.innerHTML=""; DC.buoc.forEach((bb,i)=>{ const b=nut(String(i),i===buoc,"nho"); b.setAttribute("aria-label",bb[0]); b.title=bb[0]; b.onclick=()=>{ dungHen(); veDoChoi(i); }; nb.appendChild(b); });
+}
+function dungHen(){ clearTimeout(dcHen); dcHen=0; $("#m-buoc-chay").innerHTML=`${ic("chay")}Xem lần lượt`; }
+$("#m-buoc-lui").onclick=()=>{ dungHen(); veDoChoi(Math.max(0,dcBuoc-1)); };
+$("#m-buoc-toi").onclick=()=>{ dungHen(); veDoChoi(Math.min(4,dcBuoc+1)); };
+$("#m-buoc-chay").onclick=()=>{ if(dcHen){ dungHen(); return; }
+  $("#m-buoc-chay").innerHTML=`${ic("dung")}Dừng`; veDoChoi(0);
+  const tiep=()=>{ if(dcBuoc>=4){ dungHen(); return; } veDoChoi(dcBuoc+1); dcHen=setTimeout(tiep,3200); }; dcHen=setTimeout(tiep,3200); };
+// ---------------- giải mã: tái nhiễu và không tái nhiễu
+function veGiaiMa(){
+  const box=$("#m-giai-ma"); box.innerHTML=""; const W=1060, Hh=250, svg=svgMoi(box,W,Hh,"So sánh giải mã tái nhiễu và không tái nhiễu");
+  const defs=S("defs",{},svg); const m=S("marker",{id:"mui-g",viewBox:"0 0 10 10",refX:8.5,refY:5,markerWidth:7,markerHeight:7,orient:"auto"},defs); S("path",{d:"M0 1L9 5L0 9Z",class:"m-phu"},m);
+  const xs=[300,440,580,720,860];
+  const hang=(y,ten,phu,taiNhieu)=>{
+    T(svg,0,y-4,ten,{class:"t-dam"}); T(svg,0,y+14,phu,{class:"t-mo nho"});
+    S("rect",{x:170,y:y-18,width:86,height:36,rx:10,class:"hop"},svg); T(svg,213,y+4,"ngẫu nhiên",{"text-anchor":"middle",class:"nho"});
+    xs.forEach((x,i)=>{ S("rect",{x,y:y-20,width:76,height:40,rx:10,class:"hop-toi"},svg); T(svg,x+38,y-2,"mạng",{"text-anchor":"middle",class:"t-tren",style:"font-weight:600"}); T(svg,x+38,y+13,"bước "+(i+1),{"text-anchor":"middle",class:"t-tren-mo nho"});
+      const xa = i===0 ? 256 : xs[i-1]+76; S("path",{d:`M${xa} ${y}H${x-4}`,class:"mui","marker-end":"url(#mui-g)"},svg);
+      if(taiNhieu && i>0){ const cx=(xa+x)/2; S("rect",{x:cx-9,y:y-9,width:18,height:18,rx:4,style:"fill:var(--the);stroke:var(--chua);stroke-width:1.6"},svg);
+        [[-4,-4],[4,4],[0,0]].forEach(([dx,dy])=>S("circle",{cx:cx+dx,cy:y+dy,r:1.6,style:"fill:var(--chua)"},svg)); } });
+    S("path",{d:`M936 ${y}H966`,class:"mui","marker-end":"url(#mui-g)"},svg);
+    S("rect",{x:970,y:y-18,width:88,height:36,rx:10,class:"hop"},svg); T(svg,1014,y+4,"tập tuyến",{"text-anchor":"middle",class:"t-dam nho"}); };
+  hang(70,"DM11 · tái nhiễu","trộn lại ngẫu nhiên giữa các bước",true);
+  hang(176,"TN15b · không tái nhiễu","dùng thẳng lời giải bước trước",false);
+  T(svg,(xs[0]+76+xs[1])/2,38,"trộn lại với lựa chọn ngẫu nhiên",{"text-anchor":"middle",class:"nho",style:"fill:var(--chua)"});
+  T(svg,(xs[0]+76+xs[1])/2,148,"đầu ra bước trước đi thẳng vào bước sau",{"text-anchor":"middle",class:"nho"});
+  T(svg,W/2,Hh-8,"mỗi hàng chạy 32 chuỗi như vậy cùng lúc, rồi giữ chuỗi có log-xác suất cao nhất",{"text-anchor":"middle",class:"t-mo nho"});
+  $("#m-giai-ma-doc").innerHTML=`<p><b>Đọc:</b> giải mã kiểu cũ (DM11) sau mỗi bước lại trộn một phần lời giải với lựa chọn ngẫu nhiên (ô vuông có chấm), giống như sửa bài rồi xoá bớt một ít.
+    Kiểu không tái nhiễu giữ nguyên lời giải vừa sửa và cho mạng sửa tiếp. Trên dữ liệu mới của TN15b, bỏ tái nhiễu giảm mất dịch vụ
+    ${f(-P.P3.diem)} điểm ở 7/3 và ${f(-P.P4.diem)} điểm ở x10 (giả thuyết P3, P4 đều đạt), mà không cần học lại mô hình.</p>`;
+}
+function veThamSo(){
+  const ts=MG.tham_so, L=MG.cau_hinh.so_lop, sum=(k)=>Array.from({length:L},(_,i)=>ts[`${k}.${i}`]).reduce((a,b)=>a+b,0);
+  const nhom=[["④ cập nhật tuyến",sum("cap_uv"),"var(--chu)",1],["② cập nhật liên kết",sum("cap_lk"),"var(--chu)",.72],["① gửi tin",sum("gui"),"var(--chu)",.5],
+    ["Mã hoá tuyến",ts.vao_uv,"var(--mo)",.75],["Mã hoá liên kết",ts.vao_lk,"var(--mo)",.5],["Đầu ra",ts.ra,"var(--mo)",.3]];
+  const box=$("#m-tham-so"); box.innerHTML=""; const W=560, Hh=70, svg=svgMoi(box,W,Hh,"Phân bố tham số");
+  let x=0; const X=v=>v/MG.tong*W;
+  nhom.forEach(([t_,v,c,o])=>{ const w=Math.max(X(v)-2,1.5); const r=S("rect",{x,y:10,width:w,height:30,rx:4,style:`fill:${c};opacity:${o}`},svg);
+    if(w>70){ T(svg,x+8,30,`${t_.split(" ")[0]} ${f(v/MG.tong*100,0)}%`,{class:"t-tren nho",style:"font-weight:600"}); }
+    treo(r,`<b>${t_}</b>: ${v.toLocaleString("vi-VN")} tham số (${f(v/MG.tong*100,1)}%)`); x+=X(v); });
+  T(svg,0,62,"0",{class:"t-mo nho"}); T(svg,W,62,MG.tong.toLocaleString("vi-VN"),{"text-anchor":"end",class:"t-mo nho"});
+  $("#m-tham-so-bang").innerHTML=`<table><tr><th>Khối</th><th class="so">Tham số</th><th class="so">Tỷ lệ</th></tr>${nhom.map(([t_,v,c,o])=>`<tr><td><i class="sw" style="background:${c};opacity:${o};border-radius:3px;margin-right:6px"></i>${t_}${t_.startsWith("①")||t_.startsWith("②")||t_.startsWith("④")?` <span class="mo nho">(${L} vòng)</span>`:""}</td><td class="so">${v.toLocaleString("vi-VN")}</td><td class="so">${f(v/MG.tong*100,1)}%</td></tr>`).join("")}
+    <tr><td><b>Tổng</b></td><td class="so"><b>${MG.tong.toLocaleString("vi-VN")}</b></td><td class="so">100%</td></tr></table>`;
+}
+function veDocMang(){
+  const ts=MG.tham_so;
   $("#m-doc").innerHTML=`<p><b>Ý tưởng:</b> mỗi luồng có một "kho" tối đa 12 tuyến ứng viên. Mạng phải chọn cho mỗi luồng <b>1 tuyến chính</b> và vài <b>tuyến dự phòng</b>, sao cho các luồng không dồn vào cùng liên kết dễ hỏng hay dễ quá tải.</p>
-    <p><b>Trao đổi tin</b> là cách các tuyến "bàn bạc" qua liên kết chung. ① Tuyến nào đang được chọn thì báo lên các liên kết của nó. ② Liên kết tổng hợp xem mình đang bị bao nhiêu luồng dùng. ③ Mỗi tuyến đọc lại tình trạng các liên kết của mình, nhất là liên kết nghẽn nhất. Lặp 3 vòng thì tin lan được qua 3 bước.</p>
+    <p><b>Trao đổi tin</b> là cách các tuyến "bàn bạc" qua liên kết chung. Lặp 3 vòng thì tin lan được qua 3 bước, đủ để một tuyến biết luồng khác đang định đi đâu.</p>
     <div class="vd"><b>Ví dụ:</b> năm tài xế chọn đường. Sau vòng 1 ai cũng biết cây cầu nào nhiều người định đi; vòng 2 có người đổi sang cầu khác; vòng 3 kế hoạch ổn định.</div>
-    <p><b>Khuếch tán:</b> không chọn một lần mà <b>5 bước</b>. Bắt đầu từ lựa chọn ngẫu nhiên, mỗi bước mạng sửa dần lựa chọn của mọi luồng cùng lúc, chạy 32 chuỗi song song rồi lấy chuỗi tốt nhất. Giải mã "không tái nhiễu" (dùng thẳng lời giải bước trước, không trộn nhiễu lại) tốt hơn 0,16–0,17 điểm mất dịch vụ ở TN15b.</p>
-    <p class="phu">Khối nặng nhất là ③ cập nhật tuyến (khoảng ${f((ts["cap_uv.0"]*3)/MG.tong*100,0)}% tham số), vì mỗi tuyến phải gộp 4 nguồn tin (chính nó, trung bình liên kết, liên kết nghẽn nhất, ngữ cảnh luồng). Cả mạng chỉ khoảng 0,5 triệu tham số, nên chạy được trên CPU: khoảng 0,15–0,24 giây một quyết định ở 4–5 luồng.</p>`;
+    <p><b>Khuếch tán:</b> không chọn một lần mà sửa dần qua <b>5 bước</b>, bắt đầu từ lựa chọn ngẫu nhiên, sửa lựa chọn của mọi luồng cùng lúc, chạy 32 chuỗi song song rồi lấy chuỗi tốt nhất.</p>
+    <p class="phu nho">Khối nặng nhất là ④ cập nhật tuyến (khoảng ${f(ts["cap_uv.0"]*MG.cau_hinh.so_lop/MG.tong*100,0)}% tham số), vì mỗi tuyến gộp 4 nguồn tin: chính nó, trung bình liên kết, liên kết nghẽn nhất, ngữ cảnh luồng. Cả mạng chỉ khoảng 0,5 triệu tham số nên chạy được trên CPU.</p>`;
+}
+function veBangDauVao(){
   $("#m-uv").innerHTML=`<table><tr><th>Nhóm</th><th>Gồm</th></tr>
     <tr><td>Tĩnh (15)</td><td>số chặng, trễ truyền, trễ cơ sở, trễ chuẩn hoá trong luồng, lưu lượng so với dung lượng trống nhỏ nhất, lưu lượng so với trung bình, xác suất hỏng của tuyến (2 dạng), rủi ro liên kết lớn nhất, một đặc trưng mức tải; loại chặng đầu (LEO / UAV / HAPS), có thuộc lời giải Suurballe không, số loại đường lên của nguồn</td></tr>
     <tr><td>Động (6)</td><td>tính lại mỗi bước từ lựa chọn tạm của <b>mọi</b> luồng: trễ có tải, trễ chuẩn hoá, mức tải lớn nhất nếu làm tuyến chính, mức tải nếu tính cả dự phòng, mức trùng cạnh với tuyến khác của luồng, mức trùng loại đường lên</td></tr>
@@ -608,8 +1109,11 @@ function veMang(){
     <tr><td>Tĩnh (18)</td><td>dung lượng, tải nền, dung lượng còn trống, trễ truyền, trễ cơ sở, rủi ro hỏng (2 dạng); thời tiết quan sát lúc quyết định và 15 phút trước: băng tần, mưa, xu hướng mưa, gió giật và giông ở đầu UAV…</td></tr>
     <tr><td>Giông quanh UAV (3)</td><td>đặc trưng giông lân cận UAV (thêm từ TN6)</td></tr>
     <tr><td>Động (3)</td><td>tính lại mỗi bước: mức tải tuyến chính, mức tải chính + dự phòng, tải dự phòng so với dung lượng trống</td></tr></table>
-    <p class="phu">Mọi đặc trưng chỉ dùng thông tin có ở lúc quyết định; mô hình không thấy thế giới chấm.</p>`;
+    <p class="mo nho" style="margin-top:8px">Mọi đặc trưng chỉ dùng thông tin có ở lúc quyết định; mô hình không thấy thế giới chấm.</p>`;
 }
+
+datChi($('nav button[aria-selected="true"]'), true);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>datChi($('nav button[aria-selected="true"]'), true));
 ve_tab("tong");
 </script>
 </body>
